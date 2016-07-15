@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FriendListViewController">
+            <connections>
+                <outlet property="friendSearcgBar" destination="hMd-Dd-3OC" id="3JB-ER-zX1"/>
+                <outlet property="friendsTabelView" destination="4h2-Ny-1Ws" id="EbP-ee-to4"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="hMd-Dd-3OC">
+                    <rect key="frame" x="0.0" y="2" width="600" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="qf9-76-Zx8"/>
+                    </constraints>
+                    <textInputTraits key="textInputTraits"/>
+                </searchBar>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4h2-Ny-1Ws">
+                    <rect key="frame" x="0.0" y="46" width="600" height="554"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="4h2-Ny-1Ws" firstAttribute="top" secondItem="hMd-Dd-3OC" secondAttribute="bottom" id="22m-tp-VRV"/>
+                <constraint firstAttribute="bottom" secondItem="4h2-Ny-1Ws" secondAttribute="bottom" id="AbY-zN-3ab"/>
+                <constraint firstItem="hMd-Dd-3OC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Du9-MQ-RMM"/>
+                <constraint firstAttribute="trailing" secondItem="hMd-Dd-3OC" secondAttribute="trailing" id="JPO-1O-fy4"/>
+                <constraint firstAttribute="trailing" secondItem="4h2-Ny-1Ws" secondAttribute="trailing" id="Sh6-VH-6pI"/>
+                <constraint firstItem="hMd-Dd-3OC" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="2" id="gBb-aq-E0X"/>
+                <constraint firstItem="4h2-Ny-1Ws" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="qNB-Y5-mrL"/>
+            </constraints>
+        </view>
+    </objects>
+</document>
