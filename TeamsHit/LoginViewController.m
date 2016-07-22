@@ -12,6 +12,11 @@
 #import "MyTabBarController.h"
 
 @interface LoginViewController ()<UITextFieldDelegate>
+
+{
+    MBProgressHUD* hud ;
+}
+
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
 @property (strong, nonatomic) IBOutlet UIImageView *logoImageView;
 @property (strong, nonatomic) IBOutlet UITextField *accountNumber;
@@ -145,9 +150,13 @@
                                    @"Account":self.accountNumber.text,
                                    @"Password":self.passwordTF.text,
                                    };
+        hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"登录中...";
+        [hud show:YES];
         [[HDNetworking sharedHDNetworking] POST:@"user/login" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
             ;
         } success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
             NSLog(@"**%@", responseObject);
             if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -161,10 +170,32 @@
                 [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
                 [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
                 
+                // 连接融云服务器
+                [[RCIM sharedRCIM] connectWithToken:[UserInfo shareUserInfo].rongToken success:^(NSString *userId) {
+                    NSLog(@"连接融云成功");
+                } error:^(RCConnectErrorCode status) {
+                    NSLog(@"连接融云失败");
+                } tokenIncorrect:^{
+                    NSLog(@"IncorrectToken");
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [hud hide:YES];
+                    });
+                    
+                }];
+                
+                // 同步好友列表
+                NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
+                
+                // 同步组群
+                [RCDDataSource syncGroups];
+                
                 [self pushMyTabbarViewController];
                 
             }
         } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
             NSLog(@"error = %@", error);
         }];
     }
