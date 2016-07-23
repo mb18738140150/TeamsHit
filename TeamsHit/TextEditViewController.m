@@ -11,6 +11,7 @@
 #define SELF_WIDTH self.view.frame.size.width
 #define SELF_HEIGHT self.view.frame.size.height
 #define TOOLBAR_HEIGHT 40
+#define MaxLength (2000)
 
 @interface TextEditViewController ()<UITextViewDelegate>
 
@@ -32,6 +33,17 @@
 @property (nonatomic, strong)DropList * sizeDropList;
 @property (nonatomic, strong)DropList * alinDropList;
 
+// 富文本编辑
+@property (nonatomic, assign)NSRange newRange;
+@property (nonatomic, copy)NSString * newstr;
+@property (nonatomic, assign)BOOL isBold;// 是否加粗
+@property (nonatomic, strong)UIColor * fontColor;// 字体颜色
+@property (nonatomic, assign)CGFloat font;// 字体大小
+@property (nonatomic, assign)NSUInteger location;// 记录变化的起始位置
+@property (nonatomic, strong)NSMutableAttributedString * locationStr;
+@property (nonatomic, assign)CGFloat lineSpace;// 行间距
+@property (nonatomic, assign)BOOL isDelete;// 是否是回删
+
 @end
 
 @implementation TextEditViewController
@@ -51,6 +63,13 @@
     self.ideaTextView.textColor = UIColorFromRGB(0xBBBBBB);
     self.ideaTextView.text = @"这一刻的想法...";
     self.ideaTextView.delegate = self;
+    self.font = self.ideaTextView.font.pointSize;
+    self.fontColor = [UIColor blackColor];
+    self.location = 0;
+    self.isBold = NO;
+    self.lineSpace = 5;
+    [self setInitLocation];
+    
     [self.view addSubview:self.ideaTextView];
     
     [self.view addSubview:self.toolBar];
@@ -115,11 +134,11 @@
     NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"ico_bold_unchecked"]);
     if ([data1 isEqual:data2]) {
         [_boldItem setImage:[[UIImage imageNamed:@"ico_bold_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
-        self.ideaTextView.font = [UIFont boldSystemFontOfSize:self.ideaTextView.font.pointSize];
+        self.isBold = YES;
     }else
     {
         [_boldItem setImage:[[UIImage imageNamed:@"ico_bold_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
-        self.ideaTextView.font = [UIFont systemFontOfSize:self.ideaTextView.font.pointSize];
+        self.isBold = NO;
     }
     boldImage = _boldItem.image;
 }
@@ -143,8 +162,9 @@
             __weak TextEditViewController * vc = self;
             [self.sizeDropList getSelectRow:^(NSInteger number) {
                 NSInteger textFont = number + 15;
-                vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
+//                vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
                 [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+                vc.font = textFont;
             }];
             
             [self.sizeDropList showWithAnimate:YES];
@@ -244,6 +264,20 @@
     }
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if (range.length == 1) { // 回删
+        return YES;
+    }else
+    {
+        // 超过长度限制
+        if (textView.text.length >= MaxLength ) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
 - (void)textViewDidChange:(UITextView *)textView
 {
     NSLog(@"内容改变了");
@@ -258,6 +292,54 @@
         textView.text = @"这一刻的想法...";
         textView.textColor = UIColorFromRGB(0xBBBBBB);
     }
+    
+    NSInteger len = textView.attributedText.length - self.locationStr.length;
+    if (len>0) {
+        self.isDelete = NO;
+        self.newRange = NSMakeRange(self.ideaTextView.selectedRange.location - len, len);
+        self.newstr = [textView.text substringWithRange:self.newRange];
+    }else
+    {
+        self.isDelete = YES;
+    }
+    
+#warning If there are some problems when you input,please chech here
+    bool isChinese; // 判断当前输入法是否是中文
+    if ([[[textView textInputMode] primaryLanguage] isEqualToString:@"en-US"]) {
+        isChinese = false;
+    }else
+    {
+        isChinese = true;
+    }
+    
+    NSString * str = [[self.ideaTextView text]stringByReplacingOccurrencesOfString:@"?" withString:@""];
+    if (isChinese) {
+        UITextRange * selectedRange = [self.ideaTextView markedTextRange];
+        // 获取高亮部分
+        UITextPosition * position = [self.ideaTextView positionFromPosition:selectedRange.start offset:0];
+        // 没有高亮选择的字，则对已输入的文字进行数字统计和限制
+        if (!position) {
+            [self setStyle];
+            if (str.length>=MaxLength) {
+                NSString * strNew = [NSString stringWithString:str];
+                [self.ideaTextView setText:[strNew substringToIndex:MaxLength]];
+            }
+        }else
+        {
+            if ([str length]>=MaxLength+10) {
+                NSString *strNew = [NSString stringWithString:str];
+                [ self.ideaTextView setText:[strNew substringToIndex:MaxLength+10]];
+            }
+        }
+    }else
+    {
+        [self setStyle];
+        if ([str length]>=MaxLength) {
+            NSString *strNew = [NSString stringWithString:str];
+            [ self.ideaTextView setText:[strNew substringToIndex:MaxLength]];
+        }
+    }
+    
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
@@ -272,13 +354,53 @@
     }
 }
 
+#pragma mark - 富文本编辑
+- (void)setInitLocation
+{
+    self.locationStr = nil;
+    self.locationStr = [[NSMutableAttributedString alloc]initWithAttributedString:self.ideaTextView.attributedText];
+}
+- (void)setStyle
+{
+    // 把最新内容进行替换
+    [self setInitLocation];
+    
+    if (self.isDelete) {
+        return;
+    }
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    paragraphStyle.lineSpacing = self.lineSpace;// 字体的行间距
+    NSDictionary * attributes = nil;
+    if (self.isBold) {
+        attributes = @{
+                       NSFontAttributeName:[UIFont boldSystemFontOfSize:self.font],
+                       NSForegroundColorAttributeName:self.fontColor,
+                       NSParagraphStyleAttributeName:paragraphStyle
+                       };
+    }else
+    {
+        attributes = @{
+                       NSFontAttributeName:[UIFont systemFontOfSize:self.font],
+                       NSForegroundColorAttributeName:self.fontColor,
+                       NSParagraphStyleAttributeName:paragraphStyle
+                       };
+    }
+    
+    NSAttributedString * replaceStr = [[NSAttributedString alloc]initWithString:self.newstr attributes:attributes];
+    [self.locationStr replaceCharactersInRange:self.newRange withAttributedString:replaceStr];
+    _ideaTextView.attributedText = self.locationStr;
+    
+    // 重新设置光标位置
+    self.ideaTextView.selectedRange = NSMakeRange(self.newRange.location + self.newRange.length, 0);
+    
+}
 
 
 #pragma mark - 键盘监听事件
 - (void)keyboardWillShow:(NSNotification *)note
 {
     NSDictionary * info = [note userInfo];
-    CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     
     CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
     
@@ -314,6 +436,8 @@
     }
     [UIView commitAnimations];
 }
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
