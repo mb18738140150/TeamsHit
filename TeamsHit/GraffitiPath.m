@@ -10,14 +10,5 @@
 
 @implementation GraffitiPath
 
-+ (instancetype)paintPathWithLineWidth:(CGFloat)width startPoint:(CGPoint)startP
-{
-    GraffitiPath * path = [[self alloc]init];
-    path.lineWidth = width;
-    path.lineCapStyle = kCGLineCapRound;
-    path.lineJoinStyle = kCGLineJoinRound;
-    [path moveToPoint:startP];
-    return path;
-}
 
 @end

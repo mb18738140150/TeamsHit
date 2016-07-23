@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^SelectBlock)(NSInteger number);
+
 typedef enum :NSInteger {
   
     ListWidth = 0,
@@ -23,5 +25,7 @@ typedef enum :NSInteger {
 - (void)showWithAnimate:(BOOL)animate;
 
 - (void)dismiss;
+
+- (void)getSelectRow:(SelectBlock)selectBlock;
 
 @end

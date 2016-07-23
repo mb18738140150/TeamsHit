@@ -21,10 +21,12 @@
 
 - (void)createSubview
 {
-    self.backimageView = [[UIImageView alloc]initWithFrame:self.frame];
+    
+    self.backimageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 1, 28, 28)];
     [self.contentView addSubview:self.backimageView];
     
-    self.titleLabel = [[UILabel alloc]initWithFrame:self.frame];
+    self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 28, 30)];
+    self.titleLabel.textAlignment = 1;
     [self.contentView addSubview:self.titleLabel];
     
     self.imageView.hidden = YES;

@@ -9,10 +9,13 @@
 #import "GraffitiDrawView.h"
 #import "GraffitiPath.h"
 
+
 @interface GraffitiDrawView ()
 
+// 绘制图形的路径
 @property (nonatomic, strong)GraffitiPath * path;
-@property (nonatomic, strong)CAShapeLayer * slayer;
+// 装在所有路径的数组
+@property (nonatomic, strong)NSMutableArray<GraffitiPath *> *pathArray;
 
 @end
 
@@ -36,61 +39,51 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    CGPoint startP = [self pointWithTouches:touches];
     
-    if ([event allTouches].count == 1) {
-        GraffitiPath *path = [GraffitiPath paintPathWithLineWidth:_width startPoint:startP];
-        _path = path;
-        
-        CAShapeLayer * slayer = [CAShapeLayer layer];
-        slayer.path = path.CGPath;
-        slayer.backgroundColor = [UIColor clearColor].CGColor;
-        slayer.fillColor = [UIColor clearColor].CGColor;
-        slayer.lineCap = kCALineCapRound;
-        slayer.lineJoin = kCALineJoinRound;
-        slayer.strokeColor = self.lineColor.CGColor;
-        slayer.lineWidth = path.lineWidth;
-        [self.layer addSublayer:slayer];
-        _slayer = slayer;
-        [[self mutableArrayValueForKey:@"canceledLines"] removeAllObjects];
-        [[self mutableArrayValueForKey:@"lines"] addObject:_slayer];
+    UITouch *touch = touches.anyObject;
+    CGPoint loc = [touch locationInView:self];
+    
+    self.path = [GraffitiPath bezierPath];
+    [self.path moveToPoint:loc];
+    
+    [self.pathArray addObject:self.path];
+    
+    self.path.lineWidth = self.width;
+    self.path.lineColor = self.lineColor;
+    if (self.isEraser) {
+        self.path.isEraser = YES;
+    }else
+    {
+        self.path.isEraser = NO;
     }
     
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    // 获取移动点
-    CGPoint moveP = [self pointWithTouches:touches];
+    UITouch * touch = touches.anyObject;
+    CGPoint loc = [touch locationInView:self];
     
-    if ([event allTouches].count > 1){
-        
-        [self.superview touchesMoved:touches withEvent:event];
-        
-    }else if ([event allTouches].count == 1) {
-        
-        [_path addLineToPoint:moveP];
-        
-        _slayer.path = _path.CGPath;
-        
-    }
-    
-    
+    [self.path addLineToPoint:loc];
+    [self setNeedsDisplay];
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    if ([event allTouches].count > 1){
-        [self.superview touchesMoved:touches withEvent:event];
-    }
-}
 
 /**
  *  画线
  */
-- (void)drawLine{
+- (void)drawRect:(CGRect)rect{
     
-    [self.layer addSublayer:self.lines.lastObject];
+    [self.pathArray enumerateObjectsUsingBlock:^(GraffitiPath * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj.lineColor setStroke];
+        if (obj.isEraser) {
+            [obj strokeWithBlendMode:kCGBlendModeClear alpha:1.0];
+        }
+        obj.lineCapStyle = kCGLineCapRound;
+        obj.lineJoinStyle = kCGLineJoinRound;
+        //渲染
+        [obj stroke];
+    }];
     
 }
 /**
@@ -98,13 +91,9 @@
  */
 - (void)clearScreen
 {
+    [self.pathArray removeAllObjects];
     
-    if (!self.lines.count) return ;
-    
-    [self.lines makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
-    [[self mutableArrayValueForKey:@"lines"] removeAllObjects];
-    [[self mutableArrayValueForKey:@"canceledLines"] removeAllObjects];
-    
+    [self setNeedsDisplay];
 }
 
 /**
@@ -113,42 +102,22 @@
 - (void)undo
 {
     //当前屏幕已经清空，就不能撤销了
-    if (!self.lines.count) return;
-    [[self mutableArrayValueForKey:@"canceledLines"] addObject:self.lines.lastObject];
-    [self.lines.lastObject removeFromSuperlayer];
-    [[self mutableArrayValueForKey:@"lines"] removeLastObject];
-    
-}
-
-
-/**
- *  恢复
- */
-- (void)redo
-{
-    //当没有做过撤销操作，就不能恢复了
-    if (!self.canceledLines.count) return;
-    [[self mutableArrayValueForKey:@"lines"] addObject:self.canceledLines.lastObject];
-    [[self mutableArrayValueForKey:@"canceledLines"] removeLastObject];
-    [self drawLine];
-    
+    if (!self.pathArray.count) {
+        return;
+    }
+    [self.pathArray removeLastObject];
+    [self setNeedsDisplay];
 }
 
 
 #pragma mark - Getters
 
-- (NSMutableArray *)lines {
-    if (!_lines) {
-        _lines = [NSMutableArray array];
+- (NSMutableArray<GraffitiPath *> *)pathArray
+{
+    if (!_pathArray) {
+        _pathArray = [NSMutableArray array];
     }
-    return _lines;
-}
-
-- (NSMutableArray *)canceledLines {
-    if (!_canceledLines) {
-        _canceledLines = [NSMutableArray array];
-    }
-    return _canceledLines;
+    return _pathArray;
 }
 
 

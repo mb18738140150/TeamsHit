@@ -10,17 +10,9 @@
 
 @interface GraffitiDrawView : UIView
 
-@property (nonatomic, assign)CGFloat width;
-@property (nonatomic, strong)UIColor * lineColor;
+@property (nonatomic, assign)CGFloat width;//接收线宽
+@property (nonatomic, strong)UIColor * lineColor;// 接收颜色
 
-/**
- *  撤销的线条数组
- */
-@property (nonatomic, strong)NSMutableArray * canceledLines;
-/**
- *  线条数组
- */
-@property (nonatomic, strong)NSMutableArray * lines;
 
 /**
  *  清屏
@@ -32,9 +24,7 @@
  */
 - (void)undo;
 
-/**
- *  恢复
- */
-- (void)redo;
+
+@property (nonatomic, assign)BOOL isEraser;
 
 @end

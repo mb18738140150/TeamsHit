@@ -8,6 +8,7 @@
 
 #import "GraffitiView.h"
 #import "GraffitiDrawView.h"
+#import "DropList.h"
 
 #define SELF_WIDTH self.frame.size.width
 #define SELF_HEIGHT self.frame.size.height
@@ -28,6 +29,8 @@ static CGSize minSize1 = {40, 40};
 @property (nonatomic, strong)GraffitiDrawView * drawer;
 @property (nonatomic, strong)UIImageView * imageView;
 
+@property (nonatomic, strong)DropList * widthDropList;
+@property (nonatomic, assign)BOOL isdrop;
 
 @end
 
@@ -42,6 +45,7 @@ static CGSize minSize1 = {40, 40};
             self.backgroundColor = [UIColor blackColor];
         }
         [self creatSubViews];
+        self.isdrop = NO;
     }
     return self;
 }
@@ -61,8 +65,8 @@ static CGSize minSize1 = {40, 40};
         [self addSubview:self.imageView];
         
         self.drawer = [[GraffitiDrawView alloc]initWithFrame:self.imageView.frame];
-        _drawer.width = 3;
-        
+        _drawer.width = 2;
+        _drawer.backgroundColor = [UIColor clearColor];
         [self addSubview:_drawer];
         
         self.imageView.center = centerPonit;
@@ -71,7 +75,8 @@ static CGSize minSize1 = {40, 40};
     }else
     {
         self.drawer = [[GraffitiDrawView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_height - 104)];
-        _drawer.width = 3;
+        _drawer.width = 2;
+        _drawer.backgroundColor = [UIColor clearColor];
         [self addSubview:_drawer];
     }
     [self addSubview:self.toolBar];
@@ -153,6 +158,13 @@ static CGSize minSize1 = {40, 40};
         [_drawItem setImage:[[UIImage imageNamed:@"ico_scrawl_02_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     }
     self.drawer.lineColor = [UIColor blackColor];
+    self.drawer.isEraser = NO;
+    if (self.widthDropList) {
+        [self.widthDropList dismiss];
+        self.isdrop = !self.isdrop;
+    }
+    
+    
 }
 - (void)eraser
 {
@@ -162,19 +174,75 @@ static CGSize minSize1 = {40, 40};
         [_eraserItem setImage:[[UIImage imageNamed:@"ico_eraser_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         [_drawItem setImage:[[UIImage imageNamed:@"ico_scrawl_02_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     }
-    self.drawer.lineColor = [UIColor whiteColor];
+    self.drawer.lineColor = [UIColor clearColor];
+    self.drawer.isEraser = YES;
+    if (self.widthDropList) {
+        [self.widthDropList dismiss];
+        self.isdrop = !self.isdrop;
+    }
+    
 }
 - (void)print
 {
     NSLog(@"打印");
+    if (self.widthDropList) {
+        [self.widthDropList dismiss];
+        self.isdrop = !self.isdrop;
+    }
 }
 - (void)lianeWidth
 {
-    self.drawer.width = 3;
+    self.isdrop = !self.isdrop;
+    if (self.isdrop) {
+        if (!self.widthDropList) {
+            NSArray * array = @[@"dot_01", @"dot_02", @"dot_03", @"dot_04", @"dot_05"];
+//            NSArray * array1 = @[@"2", @"5", @"8", @"11", @"15"];
+            self.widthDropList = [[DropList alloc]initWithFrame:CGRectMake(SELF_WIDTH / 2 + SELF_WIDTH / 5 - 15, SELF_HEIGHT - TOOLBAR_HEIGHT - 64 - 160, 30, 160) listType:ListAlin sourceArr:array];
+            [self addSubview:self.widthDropList];
+            [self.widthDropList showWithAnimate:NO];
+            __weak GraffitiView * graffitiView = self;
+            [self.widthDropList getSelectRow:^(NSInteger number) {
+                graffitiView.isdrop = !graffitiView.isdrop;
+                switch (number) {
+                    case 0:
+                        graffitiView.drawer.width = 2;
+                        break;
+                    case 1:
+                        graffitiView.drawer.width = 5;
+                        break;
+                    case 2:
+                        graffitiView.drawer.width = 9;
+                        break;
+                    case 3:
+                        graffitiView.drawer.width = 13;
+                        break;
+                    case 4:
+                        graffitiView.drawer.width = 18;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                
+            }];
+            
+        }else
+        {
+            [self.widthDropList showWithAnimate:NO];
+        }
+    }else
+    {
+        [self.widthDropList dismiss];
+    }
+    
 }
 - (void)cancle
 {
     [self.drawer undo];
+    if (self.widthDropList) {
+        [self.widthDropList dismiss];
+        self.isdrop = !self.isdrop;
+    }
 }
 - (UIImage *)getGraffitiImage
 {
