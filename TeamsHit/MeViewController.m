@@ -39,7 +39,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     UINavigationBar * bar = self.navigationController.navigationBar;
-    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+//    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     
 }

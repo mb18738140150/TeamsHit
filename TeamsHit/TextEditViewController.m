@@ -8,6 +8,9 @@
 
 #import "TextEditViewController.h"
 #import "DropList.h"
+#import "UIColor+HDExtension.h"
+#import "UIImage+HDExtension.h"
+
 #define SELF_WIDTH self.view.frame.size.width
 #define SELF_HEIGHT self.view.frame.size.height
 #define TOOLBAR_HEIGHT 40
@@ -27,11 +30,21 @@
     UIImage * alinImage ;
 }
 
+@property (nonatomic, copy)TextEditBlock textEditImage;
+
 @property (nonatomic, strong)UITextView * ideaTextView;
 @property (nonatomic, strong)UIToolbar * toolBar;
 
 @property (nonatomic, strong)DropList * sizeDropList;
 @property (nonatomic, strong)DropList * alinDropList;
+
+@property (strong, nonatomic) UILabel *placeholderLabel;
+
+// 富文本旋转操作以后生成的图片
+@property (nonatomic, strong)UIImage * rotateInmage;
+@property (nonatomic, strong)UIScrollView * backScrollView;
+@property (nonatomic, strong)UIScrollView * scrollView;
+@property (nonatomic, strong)UIImageView * rotateImageView;
 
 // 富文本编辑
 @property (nonatomic, assign)NSRange newRange;
@@ -51,7 +64,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.view.backgroundColor = [UIColor whiteColor];
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"写字板"];
     
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -61,9 +74,8 @@
     
     self.ideaTextView = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height - 64 - 40)];
     self.ideaTextView.textColor = UIColorFromRGB(0xBBBBBB);
-    self.ideaTextView.text = @"这一刻的想法...";
     self.ideaTextView.delegate = self;
-    self.font = self.ideaTextView.font.pointSize;
+    self.font = 15;
     self.fontColor = [UIColor blackColor];
     self.location = 0;
     self.isBold = NO;
@@ -72,7 +84,29 @@
     
     [self.view addSubview:self.ideaTextView];
     
+    self.placeholderLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 8, 70, 15)];
+    self.placeholderLabel.text = @"请输入...";
+    self.placeholderLabel.textColor = [UIColor grayColor];
+    self.placeholderLabel.font = [UIFont systemFontOfSize:15];
+    NSLog(@"%f", self.ideaTextView.font.pointSize);
+    [self.view addSubview:self.placeholderLabel];
+    
     [self.view addSubview:self.toolBar];
+    
+    self.backScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height - 64 - 40)];
+    self.backScrollView.backgroundColor = [UIColor whiteColor];
+    self.backScrollView.hidden = YES;
+    [self.view addSubview:self.backScrollView];
+    
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.backScrollView.hd_height)];
+    self.scrollView.backgroundColor = [UIColor whiteColor];
+    self.scrollView.hidden = YES;
+    [self.backScrollView addSubview:self.scrollView];
+    
+    self.rotateImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.scrollView.hd_width, self.scrollView.hd_height)];
+    self.rotateImageView.backgroundColor = [UIColor whiteColor];
+    [self.scrollView addSubview:self.rotateImageView];
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.hd_width, self.rotateImageView.hd_height);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -88,7 +122,39 @@
 
 - (void)done
 {
+    if (self.rotateInmage) {
+        self.rotateInmage = [self getcuttingImage1];
+        
+        if (self.textEditImage) {
+            _textEditImage(self.rotateInmage);
+        }
+    }else
+    {
+        CGSize size = [self.ideaTextView sizeThatFits:CGSizeMake(self.ideaTextView.hd_width, CGFLOAT_MAX)];
+        
+        self.ideaTextView.frame = CGRectMake(0 ,0, self.ideaTextView.hd_width,size.height);
+        CGFloat topCorrect = ([_ideaTextView bounds].size.height - [_ideaTextView contentSize].height);
+        topCorrect = (topCorrect <0.0 ?0.0 : topCorrect);
+        _ideaTextView.contentOffset = (CGPoint){.x =0, .y = -topCorrect/2};
+        
+        UIImage * image = [self getcuttingImage];
+        
+        if (self.textEditImage) {
+            if (image) {
+                _textEditImage(image);
+            }else
+            {
+                NSLog(@"没有图片");
+            }
+        }
+    }
     [self.navigationController popViewControllerAnimated:YES];
+    
+}
+
+- (void)getTextEditImage:(TextEditBlock)processImage
+{
+    self.textEditImage = [processImage copy];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -128,6 +194,7 @@
     return _toolBar;
 }
 
+#pragma mark - toolBar点击事件
 - (void)changeBold
 {
     NSData * data1 = UIImagePNGRepresentation(_boldItem.image);
@@ -145,6 +212,13 @@
 
 - (void)changeSize
 {
+    
+    if (self.alinDropList) {
+        [self.alinDropList dismiss];
+        [_alinItem setImage:[[UIImage imageNamed:@"ico_align_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        alinImage = [UIImage imageNamed:@"ico_align_unchecked"];
+    }
+    
     NSData * data1 = UIImagePNGRepresentation(_sizeItem.image);
     NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"ico_size_unchecked"]);
     if ([data1 isEqual:data2]) {
@@ -165,6 +239,7 @@
 //                vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
                 [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
                 vc.font = textFont;
+                sizeImage = [UIImage imageNamed:@"ico_size_unchecked"];
             }];
             
             [self.sizeDropList showWithAnimate:YES];
@@ -188,6 +263,12 @@
 }
 - (void)changeAlin
 {
+    if (self.sizeDropList) {
+        [self.sizeDropList dismiss];
+        [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        sizeImage = [UIImage imageNamed:@"ico_size_unchecked"];
+    }
+    
     NSData * data1 = UIImagePNGRepresentation(_alinItem.image);
     NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"ico_align_unchecked"]);
     if ([data1 isEqual:data2]) {
@@ -203,6 +284,7 @@
             [self.alinDropList getSelectRow:^(NSInteger number) {
                 vc.ideaTextView.textAlignment = number;
                 [_alinItem setImage:[[UIImage imageNamed:@"ico_align_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+                alinImage = [UIImage imageNamed:@"ico_align_unchecked"];
                 
             }];
             
@@ -223,9 +305,21 @@
     alinImage = _alinItem.image;
 }
 
-
+#pragma mark - rotate
 - (void)rotate
 {
+    [self.ideaTextView resignFirstResponder];
+    
+    if (self.sizeDropList) {
+        [self.sizeDropList dismiss];
+        [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        sizeImage = [UIImage imageNamed:@"ico_size_unchecked"];
+    }
+    if (self.alinDropList) {
+        [self.alinDropList dismiss];
+        [_alinItem setImage:[[UIImage imageNamed:@"ico_align_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        alinImage = [UIImage imageNamed:@"ico_align_unchecked"];
+    }
     
     NSData * data1 = UIImagePNGRepresentation(_fontRotaItem.image);
     NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"ico_fontrota_unchecked"]);
@@ -239,6 +333,8 @@
         [_alinItem setImage:nil];
         _alinItem.enabled = NO;
         
+        [self getrotateTextImage];
+        
     }else
     {
         [_fontRotaItem setImage:[[UIImage imageNamed:@"ico_fontrota_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
@@ -249,19 +345,77 @@
         _sizeItem.enabled = YES;
         [_alinItem setImage:[alinImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         _alinItem.enabled = YES;
+        [self removeRotateView];
     }
 }
 
+- (void)getrotateTextImage
+{
+    self.backScrollView.hidden = NO;
+    self.scrollView.hidden = NO;
+    self.rotateImageView.hidden = NO;
+    CGSize size = [self.ideaTextView sizeThatFits:CGSizeMake(CGFLOAT_MAX, self.ideaTextView.hd_width)];
+    
+    self.ideaTextView.frame = CGRectMake(0 ,0, size.width,self.ideaTextView.hd_width);
+    CGFloat topCorrect = ([_ideaTextView bounds].size.height - [_ideaTextView contentSize].height);
+    topCorrect = (topCorrect <0.0 ?0.0 : topCorrect);
+//    _ideaTextView.contentOffset = (CGPoint){.x =0, .y = -topCorrect/2};
+    _ideaTextView.contentInset = UIEdgeInsetsMake(topCorrect / 2, 0, topCorrect / 2, 0);
+    UIImage * image = [self getcuttingImage];
+    
+    UIImage * newImage = [UIImage image:image rotation:UIImageOrientationRight];
+    self.rotateInmage = newImage;
+    self.rotateImageView.image = newImage;
+    self.scrollView.contentInset = UIEdgeInsetsMake(0, -topCorrect / 2, 0, topCorrect / 2);
+    self.rotateImageView.hd_height = newImage.size.height;
+    
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.hd_width , self.rotateImageView.hd_height );
+//    self.rotateInmage = [self getcuttingImage1];
+}
+
+- (void)removeRotateView
+{
+    self.backScrollView.hidden = YES;
+    self.scrollView.hidden = YES;
+    self.rotateImageView.hidden = YES;
+    self.rotateInmage = nil;
+    self.ideaTextView.frame = CGRectMake(0, 0, self.view.hd_width, self.view.hd_height - 40);
+    self.ideaTextView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+}
+
+// 截取字体图片
+- (UIImage *)getcuttingImage
+{
+    UIGraphicsBeginImageContext(self.ideaTextView.bounds.size);
+    [self.ideaTextView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return viewImage;
+}
+
+- (UIImage *)getcuttingImage1
+{
+    self.toolBar.hidden = YES;
+    self.backScrollView.frame = CGRectMake(self.backScrollView.hd_x, self.backScrollView.hd_y, self.backScrollView.hd_width, self.rotateImageView.hd_height);
+    self.scrollView.frame = CGRectMake(self.scrollView.hd_x, self.scrollView.hd_y, self.scrollView.hd_width, self.rotateImageView.hd_height);
+    UIGraphicsBeginImageContext(CGSizeMake(self.view.hd_width, self.rotateImageView.hd_height));
+    [self.backScrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    self.toolBar.hidden = NO;
+//    self.view.frame = CGRectMake(self.view.hd_x, self.view.hd_y, self.view.hd_width, [UIScreen mainScreen].bounds.size.height - 64);
+    return viewImage;
+}
 
 #pragma mark - uitextviewDelegate
 - (void)textViewDidChangeSelection:(UITextView *)textView
 {
-    if ([textView.text isEqualToString:@"这一刻的想法..."]) {
-        NSRange range;
-        range.location = 0;
-        range.length = 0;
-        textView.selectedRange = range;
-    }
+//    if ([textView.text isEqualToString:@"这一刻的想法..."]) {
+//        NSRange range;
+//        range.location = 0;
+//        range.length = 0;
+//        textView.selectedRange = range;
+//    }
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
@@ -280,19 +434,13 @@
 
 - (void)textViewDidChange:(UITextView *)textView
 {
-    NSLog(@"内容改变了");
-    if ([textView.text containsString:@"这一刻的想法..."]) {
-        NSMutableString * str = [[NSMutableString alloc]initWithString:textView.text];
-        NSRange range = [str rangeOfString:@"这一刻的想法..."];
-        [str deleteCharactersInRange:range];
-        textView.text = str;
-        textView.textColor = UIColorFromRGB(0x323232);
-    }else if (textView.text.length == 0)
-    {
-        textView.text = @"这一刻的想法...";
-        textView.textColor = UIColorFromRGB(0xBBBBBB);
+    if (self.ideaTextView.attributedText.length>0) {
+        self.placeholderLabel.hidden=YES;
     }
-    
+    else
+    {
+        self.placeholderLabel.hidden=NO;
+    }
     NSInteger len = textView.attributedText.length - self.locationStr.length;
     if (len>0) {
         self.isDelete = NO;
@@ -303,7 +451,7 @@
         self.isDelete = YES;
     }
     
-#warning If there are some problems when you input,please chech here
+#warning If there are some problems when you input,please check here
     bool isChinese; // 判断当前输入法是否是中文
     if ([[[textView textInputMode] primaryLanguage] isEqualToString:@"en-US"]) {
         isChinese = false;
@@ -396,18 +544,15 @@
     
 }
 
-
 #pragma mark - 键盘监听事件
 - (void)keyboardWillShow:(NSNotification *)note
 {
-    NSDictionary * info = [note userInfo];
     
     CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
     
     CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
     
     //因为第三方键盘或者是在键盘加个toolbar会导致回调三次，这个判断用来判断是否是第三次回调，原生只有一次
-    //    NSLog(@"begin.size.height = %f *** end.size.height = %f", begin.size.height, end.size.height);
     if(begin.size.height>0 && (begin.origin.y-end.origin.y>0)){
         
         //处理逻辑
@@ -436,8 +581,6 @@
     }
     [UIView commitAnimations];
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

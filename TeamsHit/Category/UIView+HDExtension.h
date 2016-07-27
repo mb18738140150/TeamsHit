@@ -63,5 +63,5 @@ typedef NS_ENUM(NSInteger, HDAnimationType)
  *  @param completion 动画结束后的代码快
  */
 - (void)hd_addAnimationAtPoint:(CGPoint)point WithDuration:(NSTimeInterval)duration WithType:(HDAnimationType) type withColor:(UIColor *)animationColor completion:(void (^)(BOOL finished))completion;
-
+- (void)removeAllSubviews;
 @end

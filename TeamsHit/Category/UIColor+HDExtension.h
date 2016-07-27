@@ -291,5 +291,6 @@
 + (instancetype)crayolaYellowGreenColor;
 + (instancetype)crayolaYellowOrangeColor;
 + (instancetype)crayolaYellowSunshineColor;
+- (NSString *)HEXString;
 
 @end

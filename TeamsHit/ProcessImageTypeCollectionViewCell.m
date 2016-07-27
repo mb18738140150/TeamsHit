@@ -13,7 +13,7 @@
 - (UIImageView *)photoImageView
 {
     if (!_photoImageView) {
-        _photoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(6, 3, self.hd_width - 12, self.hd_height - 13)];
+        _photoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(6, 3, self.hd_width - 12, self.hd_height - 6)];
         [self.contentView addSubview:_photoImageView];
     }
     return _photoImageView;
@@ -23,6 +23,12 @@
 {
     if (!_titleLB) {
         _titleLB = [[UILabel alloc]initWithFrame:CGRectMake(0, self.hd_height - 8, self.hd_width, 7)];
+        if (_photoImageView) {
+            _photoImageView.frame = CGRectMake(6, 3, self.hd_width - 12, self.hd_height - 13);
+        }else
+        {
+            _titleLB.frame = CGRectMake(6, 3, self.hd_width - 12, self.hd_height - 6);
+        }
         _titleLB.font = [UIFont systemFontOfSize:7];
         _titleLB.textAlignment = 1;
         _titleLB.textColor = [UIColor grayColor];

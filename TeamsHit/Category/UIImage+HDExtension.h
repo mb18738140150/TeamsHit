@@ -144,6 +144,11 @@
  */
 - (UIImage *)hd_blearImageWithBlurLevel:(CGFloat)blurLevel;
 
+/**
+    图片旋转
+ 
+ */
++ (UIImage *)image:(UIImage *)image rotation:(UIImageOrientation)orientation;
 @end
 
 
