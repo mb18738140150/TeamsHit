@@ -15,6 +15,7 @@
 #import "ProcessImageTypeView.h"
 #import "TailorImageViewController.h"
 #import "GraffitiViewController.h"
+#import "UIImage+HDExtension.h"
 
 @interface ProcessingImagesViewController ()
 
@@ -175,25 +176,11 @@
         [processVC tailorImage:imageDic];
     }];
     [self.navigationController pushViewController:tailorVC animated:NO];
-    
 }
-
 
 - (void)print
 {
-    GraffitiViewController * graffitiVC = [[GraffitiViewController alloc]init];
-    graffitiVC.sourceimage = self.finalImage;
-    
-    [graffitiVC graffitiImage:^(UIImage *image) {
-        if (image) {
-            self.imageView.image = image;
-            self.finalImage = image;
-            NSLog(@"获取到了");
-        }
-    }];
-    
-    [self.navigationController pushViewController:graffitiVC animated:YES];
-    
+    NSLog(@"打印功能");
 }
 - (void)graffiti
 {
@@ -214,15 +201,15 @@
     if (_rotateNumber == 5) {
         _rotateNumber = 1;
     }
-    [UIView animateWithDuration:.3 animations:^{
-//        NSLog(@"width = %f, height = %f", self.imageView.hd_width, self.imageView.hd_height);
-        self.imageView.transform = CGAffineTransformRotate(self.imageView.transform, M_PI/2);
-//        NSLog(@"width = %f, height = %f", self.imageView.hd_width, self.imageView.hd_height);
+    [UIView animateWithDuration:.1 animations:^{
+
+//        self.imageView.transform = CGAffineTransformRotate(self.imageView.transform, M_PI/2);
         
-        
+        self.imageView.image = [UIImage image:self.imageView.image rotation:UIImageOrientationRight];
         switch (_rotateNumber) {
             case 1:
             {
+                self.imageView.frame = CGRectMake(0, 0, self.defaultImage.size.width, self.defaultImage.size.height);
                 if (self.defaultImage.size.height > self.scrollView.hd_width) {
                     self.imageView.frame = self.initailRect;
                 }
@@ -230,20 +217,27 @@
                 break;
             case 2:
             {
+                self.imageView.frame = CGRectMake(0, 0, self.defaultImage.size.height, self.defaultImage.size.width);
                 if (self.defaultImage.size.height > self.scrollView.hd_width) {
                     self.imageView.frame = CGRectMake(0, 0, _scrollView.hd_width, _scrollView.hd_width * self.imageView.hd_height / self.imageView.hd_width);
                 }
             }
                 break;
             case 3:
+            {
+                self.imageView.frame = CGRectMake(0, 0, self.defaultImage.size.width, self.defaultImage.size.height);
                 if (self.defaultImage.size.height > self.scrollView.hd_width) {
                     self.imageView.frame = self.initailRect;
                 }
+            }
                 break;
             case 4:
+            {
+                self.imageView.frame = CGRectMake(0, 0, self.defaultImage.size.height, self.defaultImage.size.width);
                 if (self.defaultImage.size.height > self.scrollView.hd_width) {
                     self.imageView.frame = CGRectMake(0, 0, _scrollView.hd_width, _scrollView.hd_width * self.imageView.hd_height / self.imageView.hd_width);
                 }
+            }
                 break;
                 
             default:

@@ -7,6 +7,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MeViewController">
             <connections>
+                <outlet property="equipmentImage" destination="Q5N-VD-nHJ" id="EPI-BD-O41"/>
+                <outlet property="equipmentLB" destination="HQs-QA-rDM" id="iX4-Cc-w4X"/>
+                <outlet property="equipmentmanagerView" destination="cCZ-q6-NFd" id="r7o-aC-JcQ"/>
                 <outlet property="iconImageView" destination="qPn-x4-qLW" id="VP7-Ip-ZOU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -172,10 +175,19 @@
                                     <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="next_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="Bes-3P-UHN">
+                                    <rect key="frame" x="576" y="16" width="8" height="13"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="13" id="NkJ-NN-zjk"/>
+                                        <constraint firstAttribute="width" constant="8" id="aiK-fN-Kc8"/>
+                                    </constraints>
+                                </imageView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="HQs-QA-rDM" firstAttribute="top" secondItem="cCZ-q6-NFd" secondAttribute="top" constant="15" id="Ewn-Ob-wo9"/>
+                                <constraint firstItem="Bes-3P-UHN" firstAttribute="top" secondItem="cCZ-q6-NFd" secondAttribute="top" constant="16" id="G7V-EZ-peE"/>
+                                <constraint firstAttribute="trailing" secondItem="Bes-3P-UHN" secondAttribute="trailing" constant="16" id="IAd-jG-C9U"/>
                                 <constraint firstItem="Q5N-VD-nHJ" firstAttribute="leading" secondItem="cCZ-q6-NFd" secondAttribute="leading" constant="15" id="NdX-MS-hQf"/>
                                 <constraint firstItem="Q5N-VD-nHJ" firstAttribute="top" secondItem="cCZ-q6-NFd" secondAttribute="top" constant="8" id="UOz-Gf-6yJ"/>
                                 <constraint firstItem="HQs-QA-rDM" firstAttribute="leading" secondItem="Q5N-VD-nHJ" secondAttribute="trailing" constant="10" id="gFO-cN-W8O"/>

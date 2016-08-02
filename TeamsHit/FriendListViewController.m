@@ -7,6 +7,7 @@
 //
 
 #import "FriendListViewController.h"
+#import "NewFriendListViewController.h"
 
 #import "RCDUserInfo.h"
 #import "RCDataBaseManager.h"
@@ -147,6 +148,15 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 70.0;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        NewFriendListViewController * newfriendVC = [[NewFriendListViewController alloc]initWithNibName:@"NewFriendListViewController" bundle:nil];
+        newfriendVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:newfriendVC animated:YES];
+    }
 }
 
 -(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView{

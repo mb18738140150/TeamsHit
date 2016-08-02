@@ -12,6 +12,9 @@
 #import "NSDictionary+Unicode.h"
 #import "JRSwizzle.h"
 
+#import "ConfigurationWiFiViewController.h"
+#import "MyTabBarController.h"
+
 #import <RongIMKit/RongIMKit.h>
 #import "RCDRCIMDataSource.h"
 #import <AudioToolbox/AudioToolbox.h>
@@ -260,11 +263,26 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+//    ConfigurationWiFiViewController
+//    MyTabBarController
+    if ([self.window.rootViewController isKindOfClass:[MyTabBarController class]]) {
+        MyTabBarController * myVC = (MyTabBarController *)self.window.rootViewController;
+        UINavigationController * nav = myVC.selectedViewController;
+        UIViewController * vc = nav.viewControllers.lastObject;
+        if ([vc isKindOfClass:[ConfigurationWiFiViewController class]]) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:kNetChangedNotification object:nil];
+            NSLog(@"设置界面，该发送通知");
+        }
+    }
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
 - (void)redirectNSlogToDocumentFolder {
     NSLog(@"Log重定向到本地，如果您需要控制台Log，注释掉重定向逻辑即可。");
     //  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
@@ -307,8 +325,6 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         NSLog(@"not handled the request: %@", userInfo);
     }
 }
-
-
 
 #pragma mark - RCWKAppInfoProvider
 - (NSString *)getAppName {

@@ -9,11 +9,18 @@
 #import "MeViewController.h"
 #import "ProcessingImagesViewController.h"
 #import "MaterialViewController.h"
+#import "EquipmentManagerViewController.h"
 
 @interface MeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
 // 图片选择器
 @property (nonatomic, strong)UIImagePickerController * imagePic;
+
+
+@property (strong, nonatomic) IBOutlet UIView *equipmentmanagerView;
+@property (strong, nonatomic) IBOutlet UIImageView *equipmentImage;
+@property (strong, nonatomic) IBOutlet UILabel *equipmentLB;
+
 @end
 
 @implementation MeViewController
@@ -32,6 +39,12 @@
     self.imagePic = [[UIImagePickerController alloc] init];
 //    _imagePic.allowsEditing = YES;
     _imagePic.delegate = self;
+    
+    self.equipmentImage.userInteractionEnabled = YES;
+    self.equipmentLB.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer * equipmentTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(equipmentAction:)];
+    [self.equipmentmanagerView addGestureRecognizer:equipmentTap];
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -52,35 +65,7 @@
     processVC.hidesBottomBarWhenPushed = YES;
     
     [self.navigationController pushViewController:processVC animated:YES];
-    
-//    UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//    
-//    UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-//    UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//            self.imagePic.sourceType = UIImagePickerControllerSourceTypeCamera;
-//            [self presentViewController:self.imagePic animated:YES completion:nil];
-//        }else
-//        {
-//            UIAlertController * tipControl = [UIAlertController alertControllerWithTitle:@"提示" message:@"没有相机,请选择图库" preferredStyle:UIAlertControllerStyleAlert];
-//            UIAlertAction * sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//                ;
-//            }];
-//            [tipControl addAction:sureAction];
-//            [self presentViewController:tipControl animated:YES completion:nil];
-//            
-//        }
-//    }];
-//    UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"从相册获取" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        self.imagePic.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-//        [self presentViewController:self.imagePic animated:YES completion:nil];
-//    }];
-//    
-//    [alertcontroller addAction:cancleAction];
-//    [alertcontroller addAction:cameraAction];
-//    [alertcontroller addAction:libraryAction];
-    
-//    [self presentViewController:alertcontroller animated:YES completion:nil];
+
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
@@ -90,6 +75,14 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     
     //    [self uploadImageWithUrlString];
+}
+
+- (void)equipmentAction:(UITapGestureRecognizer *)sender
+{
+    EquipmentManagerViewController * equipmentVC = [[EquipmentManagerViewController alloc]initWithNibName:@"EquipmentManagerViewController" bundle:nil];
+    
+    equipmentVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:equipmentVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

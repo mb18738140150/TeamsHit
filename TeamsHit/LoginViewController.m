@@ -161,7 +161,7 @@
             if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
-                [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+                [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.2];
             }else
             {
                 [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];

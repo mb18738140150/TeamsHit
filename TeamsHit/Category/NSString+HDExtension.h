@@ -191,6 +191,9 @@
  */
 - (BOOL)hd_isValidEmail;
 
++(NSString * )SSID;
++(NSDictionary *)SSIDInfo;
+
 @end
 
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NewFriendListViewController">
+            <connections>
+                <outlet property="friendtableview" destination="9Wf-xY-pZY" id="Q6n-XX-gft"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="9Wf-xY-pZY">
+                    <rect key="frame" x="0.0" y="2" width="600" height="598"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="WI6-DA-VSU"/>
+                        <outlet property="delegate" destination="-1" id="Hbv-3q-oVb"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="9Wf-xY-pZY" secondAttribute="trailing" id="8JL-a8-e7w"/>
+                <constraint firstAttribute="bottom" secondItem="9Wf-xY-pZY" secondAttribute="bottom" id="dVh-72-0HT"/>
+                <constraint firstItem="9Wf-xY-pZY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gwp-Yf-MgQ"/>
+                <constraint firstItem="9Wf-xY-pZY" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="2" id="xFs-LI-y9b"/>
+            </constraints>
+        </view>
+    </objects>
+</document>

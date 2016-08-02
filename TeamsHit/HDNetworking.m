@@ -212,6 +212,59 @@ HDSingletonM(HDNetworking) // 单例实现
     }];
 }
 
+- (void)POSTwithWiFi:(NSString *)URLString parameters:(NSString *)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSMutableSet *contentTypes = [[NSMutableSet alloc] initWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"text/html"];
+    [contentTypes addObject:@"text/plain"];
+    [contentTypes addObject:@"application/json"];
+    [contentTypes addObject:@"text/json"];
+    [contentTypes addObject:@"text/javascript"];
+    [contentTypes addObject:@"text/xml"];
+    [contentTypes addObject:@"image/*"];
+    
+    manager.responseSerializer.acceptableContentTypes = contentTypes;
+    manager.requestSerializer.timeoutInterval = (self.timeoutInterval ? self.timeoutInterval : 20);
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; // 开启状态栏动画
+    
+    
+    NSLog(@"postUrl = %@", URLString);
+    [manager POST:URLString parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+        if (progress)
+        {
+            progress(uploadProgress); // HDLog(@"%lf", 1.0 * uploadProgress.completedUnitCount / uploadProgress.totalUnitCount);
+        }
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        if (success)
+        {
+            success(responseObject);
+        }
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; // 关闭状态栏动画
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        if (error.code == 3840) {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"json数据格式不正确，解析失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+        }
+        
+        if (failure)
+        {
+            failure(error);
+        }
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; // 关闭状态栏动画
+    }];
+}
+
 - (NSString *)getpostUrlWithStr:(NSString *)str
 {
     // 拼接请求url

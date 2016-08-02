@@ -235,7 +235,7 @@
             
             __weak TextEditViewController * vc = self;
             [self.sizeDropList getSelectRow:^(NSInteger number) {
-                NSInteger textFont = number + 15;
+                NSInteger textFont = number * number  + 15;
 //                vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
                 [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
                 vc.font = textFont;

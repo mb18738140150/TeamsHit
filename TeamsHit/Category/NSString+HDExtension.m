@@ -8,6 +8,17 @@
 
 #import "NSString+HDExtension.h"
 #import <CommonCrypto/CommonDigest.h>
+#import <SystemConfiguration/CaptiveNetwork.h>
+
+
+// 获取WiFi信息
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <net/if.h>
+#include <ifaddrs.h>
+#import <dlfcn.h>
+
+#include <SystemConfiguration/SystemConfiguration.h>
 
 @implementation NSString (HDExtension)
 
@@ -245,6 +256,77 @@
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     return [emailTest evaluateWithObject:self];
+}
+
+// 获取当前WiFi ssid
++(NSString * )SSID
+{
+    
+    NSString * wifiName = nil;
+    CFArrayRef wifiInterfaces = CNCopySupportedInterfaces();
+    if (!wifiInterfaces) {
+        return nil;
+    }
+    
+    NSArray * interfaces = (__bridge NSArray *)wifiInterfaces;
+    
+    for (NSString * interfaceName in interfaces) {
+        CFDictionaryRef dicRef = CNCopyCurrentNetworkInfo((__bridge CFStringRef)(interfaceName));
+        if (dicRef) {
+            NSDictionary *networkInfo = (__bridge NSDictionary *)dicRef;
+//            NSLog(@"network info -> %@", networkInfo);
+            wifiName = [networkInfo objectForKey:(__bridge NSString *)kCNNetworkInfoKeySSID];
+            CFRelease(dicRef);
+        }
+    }
+    CFRelease(wifiInterfaces);
+    return wifiName;
+}
++(NSDictionary *)SSIDInfo
+{
+    NSDictionary * dic = nil;
+    CFArrayRef wifiInterfaces = CNCopySupportedInterfaces();
+    if (!wifiInterfaces) {
+        return nil;
+    }
+    
+    NSArray * interfaces = (__bridge NSArray *)wifiInterfaces;
+    
+    for (NSString * interfaceName in interfaces) {
+        CFDictionaryRef dicRef = CNCopyCurrentNetworkInfo((__bridge CFStringRef)(interfaceName));
+        if (dicRef) {
+            NSDictionary *networkInfo = (__bridge NSDictionary *)dicRef;
+//            NSLog(@"network info -> %@", networkInfo);
+            dic = networkInfo;
+            CFRelease(dicRef);
+        }
+    }
+    CFRelease(wifiInterfaces);
+    return dic;
+}
+
+// 获取本地WiFi ip地址
+- (NSString *) localWiFiIPAddress
+{
+    BOOL success;
+    struct ifaddrs * addrs;
+    const struct ifaddrs * cursor;
+    success = getifaddrs(&addrs) == 0;
+    if (success) {
+        cursor = addrs;
+        while (cursor != NULL) {
+            // the second test keeps from picking up the loopback address
+            if (cursor->ifa_addr->sa_family == AF_INET && (cursor->ifa_flags & IFF_LOOPBACK) == 0)
+            {
+                NSString *name = [NSString stringWithUTF8String:cursor->ifa_name];
+                if ([name isEqualToString:@"en0"])  // Wi-Fi adapter
+                    return [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)cursor->ifa_addr)->sin_addr)];
+            }
+            cursor = cursor->ifa_next;
+        }
+        freeifaddrs(addrs);
+    }
+    return nil;
 }
 
 @end

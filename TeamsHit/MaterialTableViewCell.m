@@ -73,6 +73,7 @@
     self.deleteBlock = [deleteBlock copy];
 }
 
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code

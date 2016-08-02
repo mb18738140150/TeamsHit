@@ -41,7 +41,7 @@
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
         CGFloat left = 50;
         CGFloat cropWidth = ScreenWidth - left * 2.0;
-        CGRect rect = CGRectMake(left, (screenHeight - bottomViewHeight) / 2.0 - 100, cropWidth, 100);
+        CGRect rect = CGRectMake((screenWidth - 100) / 2.0, (screenHeight - bottomViewHeight) / 2.0 - 100, 100, 100);
         _rect = rect;
         
         [UIColor colorWithRed:0 green:0 blue:0 alpha:1];

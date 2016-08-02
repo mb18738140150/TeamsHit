@@ -67,6 +67,8 @@
     
     self.view.backgroundColor = UIColorFromRGB(0x12B7F5);
     
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+    
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"素材"];
     
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -81,6 +83,7 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.layer.cornerRadius = 5;
     self.tableView.layer.masksToBounds = YES;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[MaterialTableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     [self.view addSubview:self.tableView];
     
