@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString *const kNetChangedNotification;
-
 @interface ConfigurationWiFiViewController : UIViewController
+
+@property (nonatomic, assign)BOOL isEquipmentManagerVc;
 
 @end

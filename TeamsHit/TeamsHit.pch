@@ -31,9 +31,12 @@
 #import "TeamsHitNavigationViewController.h"
 #import "TeamHitBarButtonItem.h"
 #import "UserInfo.h"
+#import "RCDGroupInfo.h"
+#import "RCDHttpTool.h"
 
 #import "JSONKit.h"
 #import "RCDRCIMDataSource.h"
+#import "RCDataBaseManager.h"
 
 #import "MLSelectPhotoPickerViewController.h"
 #import "MLSelectPhotoAssets.h"

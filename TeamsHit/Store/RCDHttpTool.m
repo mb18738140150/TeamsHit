@@ -130,19 +130,37 @@
                          completion:(void (^)(RCUserInfo *user))completion {
     RCUserInfo *userInfo = [[RCDataBaseManager shareInstance] getUserByUserId:userID];
     if (!userInfo) {
-        [AFHttpTool getUserInfo:userID success:^(id response) {
-            if (response) {
-                NSString *code = [NSString stringWithFormat:@"%@",response[@"code"]];
+        
+        NSDictionary * jsonDic = @{
+                                   @"UserId":userID
+                                   };
+        NSString * url = [NSString stringWithFormat:@"%@userinfo/getUserInfor?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+        
+        [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+            ;
+        } success:^(id  _Nonnull responseObject) {
+            if (responseObject) {
+                NSLog(@"getUserInfor responseObject = %@", responseObject);
+                NSString *code = [NSString stringWithFormat:@"%@",responseObject[@"Code"]];
                 if ([code isEqualToString:@"200"]) {
-                    NSDictionary *dic = response[@"result"];
+                    NSDictionary *dic = responseObject[@"UserInfor"];
+                    NSLog(@"%@", [dic class]);
                     RCUserInfo *user = [RCUserInfo new];
-                    user.userId = dic[@"id"];
-                    user.name = [dic objectForKey:@"nickname"];
-                    user.portraitUri = [dic objectForKey:@"portraitUri"];
-                    if (!user.portraitUri || user.portraitUri.length <= 0) {
+                    if (![dic isKindOfClass:[NSNull class]]) {
+                        user.userId = [NSString stringWithFormat:@"%@", dic[@"UserId"]];
+                        user.name = [dic objectForKey:@"Nickname"];
+                        user.portraitUri = [dic objectForKey:@"PortraitUri"];
+                        if (!user.portraitUri || user.portraitUri.length <= 0) {
+                            user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                        }
+                        [[RCDataBaseManager shareInstance] insertUserToDB:user];
+                    }else
+                    {
+                        user.userId = userID;
+                        user.name = [NSString stringWithFormat:@"name%@", userID];
                         user.portraitUri = [RCDUtilities defaultUserPortrait:user];
                     }
-                    [[RCDataBaseManager shareInstance] insertUserToDB:user];
+                   
                     if (completion) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             completion(user);
@@ -172,7 +190,7 @@
                     });
                 }
             }
-        } failure:^(NSError *err) {
+        } failure:^(NSError * _Nonnull error) {
             NSLog(@"getUserInfoByUserID error");
             if (completion) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -185,6 +203,62 @@
                 });
             }
         }];
+        
+//        [AFHttpTool getUserInfo:userID success:^(id response) {
+//            if (response) {
+//                NSString *code = [NSString stringWithFormat:@"%@",response[@"code"]];
+//                if ([code isEqualToString:@"200"]) {
+//                    NSDictionary *dic = response[@"result"];
+//                    RCUserInfo *user = [RCUserInfo new];
+//                    user.userId = dic[@"id"];
+//                    user.name = [dic objectForKey:@"nickname"];
+//                    user.portraitUri = [dic objectForKey:@"portraitUri"];
+//                    if (!user.portraitUri || user.portraitUri.length <= 0) {
+//                        user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+//                    }
+//                    [[RCDataBaseManager shareInstance] insertUserToDB:user];
+//                    if (completion) {
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                            completion(user);
+//                        });
+//                    }
+//                } else {
+//                    RCUserInfo *user = [RCUserInfo new];
+//                    user.userId = userID;
+//                    user.name = [NSString stringWithFormat:@"name%@", userID];
+//                    user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+//                    
+//                    if (completion) {
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                            completion(user);
+//                        });
+//                    }
+//                }
+//            } else {
+//                RCUserInfo *user = [RCUserInfo new];
+//                user.userId = userID;
+//                user.name = [NSString stringWithFormat:@"name%@", userID];
+//                user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+//                
+//                if (completion) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completion(user);
+//                    });
+//                }
+//            }
+//        } failure:^(NSError *err) {
+//            NSLog(@"getUserInfoByUserID error");
+//            if (completion) {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    RCUserInfo *user = [RCUserInfo new];
+//                    user.userId = userID;
+//                    user.name = [NSString stringWithFormat:@"name%@", userID];
+//                    user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+//                    
+//                    completion(user);
+//                });
+//            }
+//        }];
     } else {
         if (completion) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -606,40 +680,42 @@
           complete:(void (^)(NSMutableArray*))friendList {
     NSMutableArray* list = [NSMutableArray new];
     
+    
+    
     [[HDNetworking sharedHDNetworking]POSTwithToken:userId parameters:nil progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
         
         NSLog(@"***%@", responseObject);
         
-        NSString *code = [NSString stringWithFormat:@"%@",responseObject[@"code"]];
+        NSString *code = [NSString stringWithFormat:@"%@",responseObject[@"Code"]];
         if (friendList) {
             if ([code isEqualToString:@"200"]) {
                 [_allFriends removeAllObjects];
-                NSArray * regDataArray = responseObject[@"result"];
+                NSArray * regDataArray = responseObject[@"FriendList"];
                 [[RCDataBaseManager shareInstance] clearFriendsData];
                 for(int i = 0;i < regDataArray.count;i++) {
                     NSDictionary *dic = [regDataArray objectAtIndex:i];
                     //                    if([[dic objectForKey:@"status"] intValue] != 1)
                     //                        continue;
-                    NSDictionary *userDic = dic[@"user"];
+                    NSDictionary *userDic = dic;
                     if (![userDic[@"id"] isEqualToString:userId]) {
                         RCDUserInfo*userInfo = [RCDUserInfo new];
-                        userInfo.userId = userDic[@"id"];
-                        userInfo.name = userDic[@"nickname"];
-                        userInfo.portraitUri = userDic[@"portraitUri"];
+                        userInfo.userId = [NSString stringWithFormat:@"%@", userDic[@"TargetId"]];
+                        userInfo.name = userDic[@"NickName"];
+                        userInfo.portraitUri = userDic[@"PortraitUri"];
                         if (!userInfo.portraitUri || userInfo.portraitUri <= 0) {
                             userInfo.portraitUri = [RCDUtilities defaultUserPortrait:userInfo];
                         }
-                        userInfo.status = [NSString stringWithFormat:@"%@",[dic objectForKey:@"status"]];
-                        userInfo.updatedAt = [NSString stringWithFormat:@"%@",[dic objectForKey:@"updatedAt"]];
+                        userInfo.status = [NSString stringWithFormat:@"%@",[dic objectForKey:@"Status"]];
+                        userInfo.updatedAt = [NSString stringWithFormat:@"%@",[dic objectForKey:@"UpdatedAt"]];
                         [list addObject:userInfo];
                         [_allFriends addObject:userInfo];
                         
                         RCUserInfo *user = [RCUserInfo new];
-                        user.userId = userDic[@"id"];
-                        user.name = userDic[@"nickname"];
-                        user.portraitUri = userDic[@"portraitUri"];
+                        user.userId = userDic[@"UserId"];
+                        user.name = userDic[@"Nickname"];
+                        user.portraitUri = userDic[@"PortraitUri"];
                         if (!user.portraitUri || user.portraitUri <= 0) {
                             user.portraitUri = [RCDUtilities defaultUserPortrait:user];
                         }
@@ -976,29 +1052,93 @@
 - (void)updateUserInfo:(NSString *) userID
                success:(void (^)(RCUserInfo * user))success
                failure:(void (^)(NSError* err))failure {
-    [AFHttpTool getUserInfo:userID success:^(id response) {
-        if (response) {
-            NSString *code = [NSString stringWithFormat:@"%@",response[@"code"]];
+    
+    NSDictionary * jsonDic = @{
+                               @"UserId":userID
+                               };
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getUserInfor?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        if (responseObject) {
+            NSLog(@"getUserInfor responseObject = %@", responseObject);
+            NSString *code = [NSString stringWithFormat:@"%@",responseObject[@"Code"]];
             if ([code isEqualToString:@"200"]) {
-                NSDictionary *dic = response[@"result"];
+                NSDictionary *dic = responseObject[@"UserInfor"];
+                NSLog(@"%@", [dic class]);
                 RCUserInfo *user = [RCUserInfo new];
-                user.userId = dic[@"id"];
-                user.name = [dic objectForKey:@"nickname"];
-                user.portraitUri = [dic objectForKey:@"portraitUri"];
-                if (!user.portraitUri || user.portraitUri.length <= 0) {
+                if (![dic isKindOfClass:[NSNull class]]) {
+                    user.userId = [NSString stringWithFormat:@"%@", dic[@"UserId"]];
+                    user.name = [dic objectForKey:@"Nickname"];
+                    user.portraitUri = [dic objectForKey:@"PortraitUri"];
+                    if (!user.portraitUri || user.portraitUri.length <= 0) {
+                        user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                    }
+                    [[RCDataBaseManager shareInstance] insertUserToDB:user];
+                }else
+                {
+                    user.userId = userID;
+                    user.name = [NSString stringWithFormat:@"name%@", userID];
                     user.portraitUri = [RCDUtilities defaultUserPortrait:user];
                 }
-                [[RCDataBaseManager shareInstance] insertUserToDB:user];
+                
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        success(user);
+                    });
+                }
+            } else {
+                RCUserInfo *user = [RCUserInfo new];
+                user.userId = userID;
+                user.name = [NSString stringWithFormat:@"name%@", userID];
+                user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                
                 if (success) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         success(user);
                     });
                 }
             }
+        } else {
+            RCUserInfo *user = [RCUserInfo new];
+            user.userId = userID;
+            user.name = [NSString stringWithFormat:@"name%@", userID];
+            user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+            
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(user);
+                });
+            }
         }
-    } failure:^(NSError *err) {
-        failure(err);
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"getUserInfoByUserID error");
+        failure(error);
     }];
+    
+//    [AFHttpTool getUserInfo:userID success:^(id response) {
+//        if (response) {
+//            NSString *code = [NSString stringWithFormat:@"%@",response[@"code"]];
+//            if ([code isEqualToString:@"200"]) {
+//                NSDictionary *dic = response[@"result"];
+//                RCUserInfo *user = [RCUserInfo new];
+//                user.userId = dic[@"id"];
+//                user.name = [dic objectForKey:@"nickname"];
+//                user.portraitUri = [dic objectForKey:@"portraitUri"];
+//                if (!user.portraitUri || user.portraitUri.length <= 0) {
+//                    user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+//                }
+//                [[RCDataBaseManager shareInstance] insertUserToDB:user];
+//                if (success) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        success(user);
+//                    });
+//                }
+//            }
+//        }
+//    } failure:^(NSError *err) {
+//        failure(err);
+//    }];
 
 }
 
@@ -1019,4 +1159,67 @@
          failure(err);
      }];
 }
+
+- (void)refreshUserInfoByUserID:(NSString *)userID
+{
+    NSDictionary * jsonDic = @{
+                               @"UserId":userID
+                               };
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getUserInfor?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        if (responseObject) {
+            NSLog(@"user getUserInfor responseObject = %@", responseObject);
+            NSString *code = [NSString stringWithFormat:@"%@",responseObject[@"Code"]];
+            if ([code isEqualToString:@"200"]) {
+                NSDictionary *dic = responseObject[@"UserInfor"];
+                NSLog(@"%@", [dic class]);
+                RCUserInfo *user = [RCUserInfo new];
+                if (![dic isKindOfClass:[NSNull class]]) {
+                    user.userId = [NSString stringWithFormat:@"%@", dic[@"UserId"]];
+                    user.name = [dic objectForKey:@"Nickname"];
+                    user.portraitUri = [dic objectForKey:@"PortraitUri"];
+                    if (!user.portraitUri || user.portraitUri.length <= 0) {
+                        user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                    }
+                    [[RCDataBaseManager shareInstance] insertUserToDB:user];
+                    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:userID];
+                    [RCIM sharedRCIM].currentUserInfo = user;
+                    [DEFAULTS setObject:user.portraitUri forKey:@"userPortraitUri"];
+                    [DEFAULTS setObject:user.name forKey:@"userNickName"];
+                }else
+                {
+                    user.userId = [NSString stringWithFormat:@"%@", userID];
+                    user.name = [NSString stringWithFormat:@"name%@", userID];
+                    user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                }
+                
+            } else {
+                RCUserInfo *user = [RCUserInfo new];
+                user.userId = userID;
+                user.name = [NSString stringWithFormat:@"name%@", userID];
+                user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                
+            }
+        } else {
+            RCUserInfo *user = [RCUserInfo new];
+            user.userId = userID;
+            user.name = [NSString stringWithFormat:@"name%@", userID];
+            user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+            
+        }
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"getUserInfoByUserID error");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            RCUserInfo *user = [RCUserInfo new];
+            user.userId = userID;
+            user.name = [NSString stringWithFormat:@"name%@", userID];
+            user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+            
+        });
+    }];
+}
+
 @end

@@ -9,17 +9,20 @@
 #import "EquipmentManagerViewController.h"
 #import "EquipmentTableViewCell.h"
 #import "EquipmentModel.h"
-
+#import "ChangeEquipmentNameView.h"
 #import "ConfigurationWiFiViewController.h"
-
+#import "AppDelegate.h"
+#import "AddEquipmentViewController.h"
 #define CELL_IDENTIFIRE @"cellid"
 
 
 @interface EquipmentManagerViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *addNewEquipmentView;
 @property (strong, nonatomic) IBOutlet UITableView *equipmentTableView;
-
 @property (nonatomic, strong)NSMutableArray * equipmentArray;
+
+// 修改设备名称
+@property (nonatomic, strong)ChangeEquipmentNameView  * changeNameView;
 
 @end
 
@@ -44,24 +47,11 @@
     [self.equipmentTableView registerClass:[EquipmentTableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIRE];
     self.equipmentTableView.bounces = NO;
     
-    EquipmentModel * model = [[EquipmentModel alloc]init];
-    model.equipmentTitle = @"对对机";
-    model.state = @1;
-    model.buzzer = @1;
-    model.indicatorLight = @1;
-    
-    EquipmentModel * model1 = [[EquipmentModel alloc]init];
-    model1.equipmentTitle = @"对对机";
-    model1.state = @0;
-    model1.buzzer = @0;
-    model1.indicatorLight = @1;
-    
-    [self.equipmentArray addObject:model];
-    [self.equipmentArray addObject:model1];
-    
     
     UITapGestureRecognizer * equipmentTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(equipmentAction:)];
     [self.addNewEquipmentView addGestureRecognizer:equipmentTap];
+    
+    [self getDeviceData];
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -71,9 +61,50 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)getDeviceData
+{
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getDeviceList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    __weak EquipmentManagerViewController * equipmentVC = self;
+    
+    [[HDNetworking sharedHDNetworking]GET:url parameters:nil success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        int command = [[responseObject objectForKey:@"Command"] intValue];
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        
+        if (code == 200) {
+            
+            if (equipmentVC.equipmentArray.count != 0) {
+                [equipmentVC.equipmentArray removeAllObjects];
+            }
+            
+            NSArray * array = [responseObject objectForKey:@"DeviceList"];
+            for (NSDictionary * dic in array) {
+                EquipmentModel * model = [[EquipmentModel alloc]initWithDictionary:dic];
+                [equipmentVC.equipmentArray addObject:model];
+            }
+            [self.equipmentTableView reloadData];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        ;
+    }];
+}
+
 - (void)equipmentAction:(UITapGestureRecognizer *)sender
 {
-    NSLog(@"跳转到绑定新设备界面");
+    AddEquipmentViewController * addVC = [[AddEquipmentViewController alloc]init];
+    __weak EquipmentManagerViewController * equipmentVC = self;
+    [addVC refreshDeviceData:^{
+        [equipmentVC getDeviceData];
+    }];
+    [self.navigationController pushViewController:addVC animated:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -101,28 +132,135 @@
             {
                 NSLog(@"配置WiFi");
                 ConfigurationWiFiViewController * configurationVC = [[ConfigurationWiFiViewController alloc]initWithNibName:@"ConfigurationWiFiViewController" bundle:nil];
+                configurationVC.isEquipmentManagerVc = YES;
                 [equipmentVC.navigationController pushViewController:configurationVC animated:YES];
             }
                 break;
             case 1:
             {
                 NSLog(@"设备名称");
+                
+                if (equipmentVC.changeNameView) {
+                   AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+                    [delegate.window addSubview:self.changeNameView];
+                }else
+                {
+                    NSArray * nibarr = [[NSBundle mainBundle]loadNibNamed:@"ChangeEquipmentNameView" owner:self options:nil];
+                    equipmentVC.changeNameView = [nibarr objectAtIndex:0];
+                    CGRect tmpFrame = [[UIScreen mainScreen] bounds];
+                    equipmentVC.changeNameView.frame = tmpFrame;
+                    equipmentVC.changeNameView.equipmentNameTF.text = model.deviceName;
+                    AppDelegate * delegate = [[UIApplication sharedApplication] delegate];
+                    [delegate.window addSubview:self.changeNameView];
+                    
+//                    __weak EquipmentManagerViewController * equipmentVC = self;
+                    [equipmentVC.changeNameView getEquipmentOption:^(NSString *name) {
+                        NSLog(@"name = %@", name);
+                        [equipmentVC.changeNameView removeFromSuperview];
+                        
+                        NSDictionary * jsonDic = @{
+                                                   @"Uuid":model.uuid,
+                                                   @"NewDeviceName":equipmentVC.changeNameView.equipmentNameTF.text
+                                                   };
+                        
+                        NSString * url = [NSString stringWithFormat:@"%@userinfo/ModifyDeviceName?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                        
+                        [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+                            ;
+                        } success:^(id  _Nonnull responseObject) {
+                            NSLog(@"responseObject = %@", responseObject);
+                            int code = [[responseObject objectForKey:@"Code"] intValue];
+                            if (code == 200) {
+                                model.deviceName = equipmentVC.changeNameView.equipmentNameTF.text;
+                            }else
+                            {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                                [alert show];
+                                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                            }
+                            [equipmentVC.equipmentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                        } failure:^(NSError * _Nonnull error) {
+                            NSLog(@"%@", error);
+                        }];
+                        
+                    }];
+                }
+                
             }
                 break;
             case 2:
             {
                 NSLog(@"蜂鸣器");
+                NSNumber * state = @0;
+                if (model.buzzer.intValue == 0) {
+                    state = @1;
+                }
+                
+                NSDictionary * jsonDic = @{
+                                           @"Uuid":model.uuid,
+                                           @"BuzzerState":state
+                                           };
+                
+                NSString * url = [NSString stringWithFormat:@"%@userinfo/BuzzerSwitch?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                
+                [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+                    ;
+                } success:^(id  _Nonnull responseObject) {
+                    NSLog(@"responseObject = %@", responseObject);
+                    int code = [[responseObject objectForKey:@"Code"] intValue];
+                    if (code == 200) {
+                        model.buzzer = state;
+                    }else
+                    {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                        [alert show];
+                        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                    }
+                    [equipmentVC.equipmentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"%@", error);
+                }];
+                
             }
                 break;
             case 3:
             {
                 NSLog(@"指示灯");
-                NSString * str = [NSString SSID];
+                NSNumber * state = @0;
+                if (model.indicator.intValue == 0) {
+                    state = @1;
+                }
+                
+                NSDictionary * jsonDic = @{
+                                           @"Uuid":model.uuid,
+                                           @"IndicatorState":state
+                                           };
+                
+                NSString * url = [NSString stringWithFormat:@"%@userinfo/IndicatorSwitch?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                
+                [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+                    ;
+                } success:^(id  _Nonnull responseObject) {
+                    NSLog(@"responseObject = %@", responseObject);
+                    int code = [[responseObject objectForKey:@"Code"] intValue];
+                    if (code == 200) {
+                        model.indicator = state;
+                    }else
+                    {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                        [alert show];
+                        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                    }
+                    [equipmentVC.equipmentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"%@", error);
+                }];
             }
                 break;
             case 100:
             {
                 NSLog(@"删除设备");
+                [equipmentVC unBindWithUuid:model.uuid];
             }
                 break;
                 
@@ -138,6 +276,44 @@
 {
     return 143;
 }
+
+#pragma mark - 解绑
+- (void)unBindWithUuid:(NSString *)uuid
+{
+    NSDictionary * jsonDic = @{
+                               @"Uuid":uuid,
+                               @"UserFor":@2
+                               };
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/binddevice?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    __weak EquipmentManagerViewController * equipmentVC = self;
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        
+        int command = [[responseObject objectForKey:@"Command"] intValue];
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (command == 10010) {
+            if (code == 200) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"解绑成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                [equipmentVC getDeviceData];
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

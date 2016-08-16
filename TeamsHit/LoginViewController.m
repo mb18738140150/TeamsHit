@@ -8,10 +8,11 @@
 
 #import "LoginViewController.h"
 #import "RegisterViewController.h"
-
+#import "RCDUtilities.h"
 #import "MyTabBarController.h"
+#import "CompleteInformationViewController.h"
 
-@interface LoginViewController ()<UITextFieldDelegate>
+@interface LoginViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
 
 {
     MBProgressHUD* hud ;
@@ -156,9 +157,10 @@
         [[HDNetworking sharedHDNetworking] POST:@"user/login" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
             ;
         } success:^(id  _Nonnull responseObject) {
-            [hud hide:YES];
+            
             NSLog(@"**%@", responseObject);
             if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
+                [hud hide:YES];
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
                 [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.2];
@@ -166,16 +168,23 @@
             {
                 [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];
                 [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
-                // 账号密码保存到本地
-                [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
-                [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
                 
+                RCUserInfo *user = [RCUserInfo new];
+                user.userId = [NSString stringWithFormat:@"%@", responseObject[@"UserId"]];
+                user.name = [NSString stringWithFormat:@"name%@", [NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                [RCIM sharedRCIM].currentUserInfo = user;
+                
+                [hud hide:YES];
                 // 连接融云服务器
                 [[RCIM sharedRCIM] connectWithToken:[UserInfo shareUserInfo].rongToken success:^(NSString *userId) {
                     NSLog(@"连接融云成功");
+                   
                 } error:^(RCConnectErrorCode status) {
+                    [hud hide:YES];
                     NSLog(@"连接融云失败");
                 } tokenIncorrect:^{
+                    [hud hide:YES];
                     NSLog(@"IncorrectToken");
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -183,15 +192,24 @@
                     });
                     
                 }];
-                
+                // 账号密码保存到本地
+                [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
+                [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
+                if ([[responseObject objectForKey:@"IsCompleteInfor"] intValue ] == 1) {
+                    [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                    [self pushMyTabbarViewController];
+                }else
+                {
+                    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请先完善用户信息" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alert show];
+                    
+                }
                 // 同步好友列表
                 NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
                 [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
                 
                 // 同步组群
                 [RCDDataSource syncGroups];
-                
-                [self pushMyTabbarViewController];
                 
             }
         } failure:^(NSError * _Nonnull error) {
@@ -201,6 +219,13 @@
     }
     
 }
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    CompleteInformationViewController * completeVc = [[CompleteInformationViewController alloc]initWithNibName:@"CompleteInformationViewController" bundle:nil];
+    [self.navigationController pushViewController:completeVc animated:YES];
+}
+
 - (IBAction)registerAction:(id)sender {
     RegisterViewController * registerVC = [[RegisterViewController alloc]initWithNibName:@"RegisterViewController" bundle:nil];
     [self.navigationController pushViewController:registerVC animated:YES];

@@ -8,30 +8,17 @@
 
 #import "ConfigurationWiFiViewController.h"
 #include <mach/mach.h>
-#include "autoconf.h"
+#import "ConfigurationWiFiSecondViewController.h"
+#import "EquipmentTanChuView.h"
+#import "AppDelegate.h"
 
-
-status = configget(storePrivate->server,
-                   myKeyRef,
-                   myKeyLen,
-                   &xmlDataRef,
-                   (int *)&xmlDataLen,
-                   &newInstance,
-                   (int *)&sc_status);
-
-routine configget	(	server		: mach_port_t;
-                     key		: xmlData;
-                     out	data		: xmlDataOut, dealloc;
-                     out	newInstance	: int;
-                     out	status		: int);
-
-NSString *const kNetChangedNotification = @"kNetChangedNotification";
 
 @interface ConfigurationWiFiViewController ()<UITextFieldDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *wifiNameLb;
 @property (strong, nonatomic) IBOutlet UITextField *wifiPasswordTF;
 @property (strong, nonatomic) IBOutlet UIButton *matchBT;
 
+@property (nonatomic, strong)EquipmentTanChuView * tanchuView;
 @property (nonatomic, copy)NSString * myssid;
 @property (nonatomic, copy)NSString * myPassword;
 
@@ -50,13 +37,6 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
     self.matchBT.layer.cornerRadius = 2;
     self.matchBT.layer.masksToBounds = YES;
     
-//    [self.matchBT setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
-    
-    self.matchBT.enabled = NO;
-    self.matchBT.backgroundColor = [UIColor grayColor];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netChange:) name:kNetChangedNotification object:nil];
-    
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -69,31 +49,39 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
     self.myssid = str;
     NSData * data = [dic objectForKey:@"SSIDDATA"];
     NSLog(@"%@  ** SSIDDATA = %@", [[dic objectForKey:@"SSIDDATA"] class], [data description]);
-    if ([self.wifiNameLb.text containsString:@"memobird"]) {
-        [self.matchBT setTitle:@"开始配置" forState:UIControlStateNormal];
-    }
     
     NSDictionary * ssiddic = [self getSCdata:str];
     NSLog(@"ssiddic = %@", ssiddic);
-
+    
+    NSMutableArray * imageArr = [NSMutableArray array];
+    for (int i = 1; i < 14; i++) {
+        NSString * imageStr = nil;
+        if (i < 10) {
+            imageStr = [NSString stringWithFormat:@"wifi_paring_0%d", i];
+        }else
+        {
+            imageStr = [NSString stringWithFormat:@"wifi_paring_%d", i];
+        }
+        [imageArr addObject:imageStr];
+    }
+    if (self.isEquipmentManagerVc) {
+        self.tanchuView = [[EquipmentTanChuView alloc]initWithFrame:[UIScreen mainScreen].bounds andImages:imageArr];
+        [self.tanchuView.removeButton addTarget:self action:@selector(removeAction) forControlEvents:UIControlEventTouchUpInside];
+        self.tanchuView.detailLabel.text = @"长按按键6s\n进入WiFi智能配置模式";
+        AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+        [delegate.window addSubview:self.tanchuView];
+    }
 }
 
+- (void)removeAction
+{
+    [self.tanchuView removeFromSuperview];
+}
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-- (void)netChange:(NSNotification *)notiInfo
-{
-    NSLog(@"收到通知，从新获取ssid");
-    NSString * str = [NSString SSID];
-    NSDictionary * dic = [NSString SSIDInfo];
-    
-    self.wifiNameLb.text = [NSString stringWithFormat:@"%@", str];
-    if ([self.wifiNameLb.text containsString:@"memobird"]) {
-        [self.matchBT setTitle:@"开始配置" forState:UIControlStateNormal];
-    }
-    
-}
+
 
 - (IBAction)configurationWLAN:(id)sender {
     
@@ -103,100 +91,18 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
     }else
     {
         
-        if ([self.matchBT.titleLabel.text isEqualToString:@"去配置WLAN"]) {
-            NSURL * url = [NSURL URLWithString:@"prefs:root=WIFI"];
-            
-            if ([[UIApplication sharedApplication]canOpenURL:url]) {
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            
-        }else
-        {
-            NSLog(@"开始配置");
-            NSDictionary * dic = @{@"ssid":self.myssid, @"security":@4, @"key":self.myPassword, @"ip":@0};
-            NSString * jsonStr = [dic JSONString];
-            
-            [self post:@"http://192.168.10.1/sys/network" HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            //        [[HDNetworking sharedHDNetworking]POSTwithWiFi:@"http://192.168.10.1/sys/network" parameters:jsonStr progress:nil success:^(id  _Nonnull responseObject) {
-            //            NSLog(@"responseObject = %@", responseObject);
-            //        } failure:^(NSError * _Nonnull error) {
-            //             NSLog(@"error = %@", error);
-            //        }];
-        }
+        ConfigurationWiFiSecondViewController * secondVC = [[ConfigurationWiFiSecondViewController alloc]initWithNibName:@"ConfigurationWiFiSecondViewController" bundle:nil];
+        secondVC.myssid = self.myssid;
+        secondVC.myPassword = self.myPassword;
+        [self.navigationController pushViewController:secondVC animated:YES];
+        
     }
-    
-}
-
-
-- (void)post:(NSString *)urlString HTTPBody:(NSData *)body
-{
-
-    /*
-     stringByAddingPercentEscapesUsingEncoding(只对 `#%^{}[]|\"<> 加空格共14个字符编码，不包括”&?”等符号), ios9将淘汰，建议用stringByAddingPercentEncodingWithAllowedCharacters方法
-     
-     URLFragmentAllowedCharacterSet  "#%<>[\]^`{|}
-     
-     URLHostAllowedCharacterSet      "#%/<>?@\^`{|}
-     
-     URLPasswordAllowedCharacterSet  "#%/:<>?@[\]^`{|}
-     
-     URLPathAllowedCharacterSet      "#%;<>?[\]^`{|}
-     
-     URLQueryAllowedCharacterSet     "#%<>[\]^`{|}
-     
-     URLUserAllowedCharacterSet      "#%/:<>?@[\]^`
-     */
-    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSURL * url = [NSURL URLWithString:newUrlStr];
-    NSLog(@"urlStr = %@", urlString);
-    // 创建请求
-    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:body];
-    // 和服务器建立异步联接
-    
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionTask * task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (error) {
-            
-            if (error.code == -1009) {
-                ;
-            }
-            // 此处如果不返回主线程的话，请求是异步线程，直接执行代理方法可能会修改程序的线程布局，就可能会导致崩溃
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                
-                
-            });
-            NSLog(@"++++++=%@", error);
-            
-        }else
-        {
-            NSLog(@"data = %@", data);
-            
-            NSError *errpr = nil;
-            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:&errpr];
-            //            NSLog(@"*****%@", [dic description]);
-            // 此处如果不返回主线程的话，请求是异步线程，直接执行代理方法可能会修改程序的线程布局，就可能会导致崩溃
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                
-                if (dic != nil) {
-                    NSLog(@"dic = %@", dic);
-                }else
-                {
-                    NSLog(@"***error = %@", errpr);
-                }
-            });
-        }
-    }];
-    
-    [task resume];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     NSLog(@"界面消失了");
+    self.isEquipmentManagerVc = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -208,14 +114,6 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
 {
     NSLog(@"结束编辑");
     self.myPassword = textField.text;
-    if (self.myPassword.length != 0) {
-        self.matchBT.enabled = YES;
-        self.matchBT.backgroundColor = UIColorFromRGB(0x12B7F5);
-    }else
-    {
-        self.matchBT.enabled = NO;
-        self.matchBT.backgroundColor = [UIColor grayColor];
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -223,16 +121,38 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:kNetChangedNotification object:nil];
-}
-
 
 #define kMachPortConfigd "com.apple.SystemConfiguration.configd"
 //@«Setup:/Network/Interface/en0/AirPort»
 -(NSDictionary *)getSCdata:(NSString *)key
 {
+    key = @"State:/Network/Global/DNS";// ServerAddresses
+    key = @"Setup:/Network/Interface/en0/AirPort"; // JoinModel
+    key = @"State:/Network/Interface/en0/CaptiveNetwork";
+    key = @"State:/IOKit/PowerManagement/CurrentSettings";
+    key = @"State:/IOKit/PowerManagement/SystemLoad/Detailed";/*{
+                                                               BatteryLevel = 3,
+                                                               UserLevel = 3,
+                                                               ThermalLevel = 3,
+                                                               CombinedLevel = 3
+                                                               }*/
+    key = @"State:/Network/Global/Proxies";/*{
+                                            __SCOPED__ = {
+                                            en0 = {
+                                            FTPPassive = 1,
+                                            ExceptionsList = [
+                                            *.local,
+                                            169.254/16
+                                            ]
+                                            }
+                                            },
+                                            FTPPassive = 1,
+                                            ExceptionsList = [
+                                            *.local,
+                                            169.254/16
+                                            ]
+                                            }*/
+    key = @"Setup:/Network/Interface/en0/AirPort";
     
     struct send_body {mach_msg_header_t header; int count; UInt8 *addr; CFIndex size0; int flags; NDR_record_t ndr; CFIndex size; int retB; int rcB; int f24; int f28;};
     

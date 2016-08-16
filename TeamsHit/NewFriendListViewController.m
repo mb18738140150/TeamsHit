@@ -14,18 +14,21 @@
 #define CELL_IDENTIFIRE @"cellId"
 
 @interface NewFriendListViewController ()<UITableViewDelegate, UITableViewDataSource>
+{
+    MBProgressHUD* hud ;
+}
 @property (strong, nonatomic) IBOutlet UITableView *friendtableview;
-@property (nonatomic, strong)NSMutableArray * newfriendLiatArray;
+@property (nonatomic, strong)NSMutableArray * newfriendListArray;
 @end
 
 @implementation NewFriendListViewController
 
-- (NSMutableArray *)newfriendLiatArray
+- (NSMutableArray *)newfriendListArray
 {
-    if (!_newfriendLiatArray) {
-        _newfriendLiatArray = [NSMutableArray array];
+    if (!_newfriendListArray) {
+        _newfriendListArray = [NSMutableArray array];
     }
-    return _newfriendLiatArray;
+    return _newfriendListArray;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -46,29 +49,52 @@
     
     self.friendtableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.friendtableview registerClass:[NewFriendListTableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIRE];
-    for (int i = 0; i< 4; i++) {
-        NewFriendModel * model = [[NewFriendModel alloc]init];
-        model.iconImageUrl = @"http://image.baidu.com/search/detail?ct=503316480&z=0&ipn=d&word=%E5%9B%BE%E7%89%87&pn=1&spn=0&di=125546894330&pi=&rn=1&tn=baiduimagedetail&ie=utf-8&oe=utf-8&cl=2&lm=-1&cs=1003704465%2C1400426357&os=4246966059%2C4277404619&simid=4210997991%2C798394471&adpicid=0&ln=30&fr=ala&fm=&sme=&cg=&bdtype=0&oriquery=&objurl=http%3A%2F%2Fpic25.nipic.com%2F20121112%2F5955207_224247025000_2.jpg&fromurl=ippr_z2C%24qAzdH3FAzdH3Fooo_z%26e3Bgtrtv_z%26e3Bv54AzdH3Ffi5oAzdH3FnAzdH3F0nAzdH3F0al8l0mhdj9v1c9n_z%26e3Bip4s&gsm=0";
-        model.name = @"小马哥";
-        model.detaile = @"我是小马哥呵呵哒";
-        if (i == 0) {
-            model.state = @1;
-        }else
-        {
-            model.state = @0;
-        }
-        [self.newfriendLiatArray addObject:model];
-    }
+    
 
+    [self getFriendlistData];
+    
 }
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)getFriendlistData
+{
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"加载中...";
+    [hud show:YES];
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getNewFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    __weak NewFriendListViewController * newFVC = self;
+    [[HDNetworking sharedHDNetworking] GET:url parameters:nil success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            NSArray * nfList = [responseObject objectForKey:@"NewFriendList"];
+            for (NSDictionary * dic in nfList) {
+                NewFriendModel * model = [[NewFriendModel alloc]initWithDictionary:dic];
+                [newFVC.newfriendListArray addObject:model];
+            }
+            [newFVC.friendtableview reloadData];
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+        }
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+       NSLog(@"%@", error);
+    }];
+    
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.newfriendLiatArray.count;
+    return self.newfriendListArray.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -81,9 +107,13 @@
     NewFriendListTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIRE forIndexPath:indexPath];
     
     [cell createSubView:tableView.bounds];
-    NewFriendModel * model = self.newfriendLiatArray[indexPath.row];
+    NewFriendModel * model = self.newfriendListArray[indexPath.row];
     cell.nFriendModel = model;
     
+    __weak NewFriendListViewController * newFriendVC = self;
+    [cell acceptRequest:^{
+        [newFriendVC acceptRequestWith:model atIndexPath:indexPath];
+    }];
     return cell;
 }
 
@@ -93,9 +123,56 @@
     [self.navigationController pushViewController:newfriendVerifyVC animated:YES];
 }
 
+- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewRowAction * deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        NSLog(@"删除");
+    }];
+    deleteAction.backgroundColor = [UIColor redColor];
+    
+    return @[deleteAction];
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 64;
+}
+
+- (void)acceptRequestWith:(NewFriendModel *)model atIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary * jsonDic = @{
+                               @"TargetId":model.userId,
+                               @"LeaveMsg":@"",
+                               @"ApplyId":model.applyId,
+                               @"Type":@2
+                               };
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"处理中...";
+    [hud show:YES];
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/operationFriend?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    __weak NewFriendListViewController * newFriendVC = self;
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            model.status = @1;
+            [newFriendVC.friendtableview reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+            [RCDDataSource syncFriendList:url complete:^(NSMutableArray * result) {
+            }];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        NSLog(@"%@", error);
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

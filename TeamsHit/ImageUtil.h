@@ -14,6 +14,10 @@
 
 + (UIImage *)grayImage:(UIImage *)sourceImage;
 
-+(UIImage*) grayscale:(UIImage*)anImage type:(char)type;
 + (UIImage *)imageBlackToTransparent:(UIImage*) image;
+
++ (UIImage *)splashInk:(UIImage *)image;
+
++ (UIImage*)memory:(UIImage*)inImage;
+
 @end

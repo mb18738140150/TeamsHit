@@ -14,9 +14,5 @@
 @property (nonatomic, copy)NSString * userToken;
 @property (nonatomic, copy)NSString * rongToken;
 
-
-// 是否开启后台定位
-
-
 - (void)setUserInfoWithDictionary:(NSDictionary *)dic;
 @end

@@ -70,7 +70,7 @@
                         <constraint firstAttribute="height" constant="45" id="O9M-Uz-qIw"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <state key="normal" title="去配置WLAN">
+                    <state key="normal" title="下一步">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>

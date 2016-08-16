@@ -9,6 +9,8 @@
 #import "FriendListViewController.h"
 #import "NewFriendListViewController.h"
 
+#import "ChatViewController.h"
+
 #import "RCDUserInfo.h"
 #import "RCDataBaseManager.h"
 #import "DefaultPortraitView.h"
@@ -41,7 +43,7 @@
     
     _searchReasult = [[NSMutableArray alloc]init];
     _friends = [[NSMutableArray alloc]init];
-    
+    self.friendsArr = [NSMutableArray array];
     self.friendsTabelView.tableFooterView = [UIView new];
     float colorFloat = 245.f / 255.f;
     self.friendsTabelView.backgroundColor = [[UIColor alloc] initWithRed:colorFloat green:colorFloat blue:colorFloat alpha:1];
@@ -64,7 +66,6 @@
         [_friendsArr removeAllObjects];
         [self getAllData];
     }
-    
 }
 
 #pragma mark - uitableviewDelegate
@@ -152,10 +153,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
+    if (indexPath.row == 0 && indexPath.section == 0) {
+        
         NewFriendListViewController * newfriendVC = [[NewFriendListViewController alloc]initWithNibName:@"NewFriendListViewController" bundle:nil];
         newfriendVC.hidesBottomBarWhenPushed = YES;
+        
         [self.navigationController pushViewController:newfriendVC animated:YES];
+    }else if (indexPath.section != 0)
+    {
+        
+        NSString *key = [_allKeys objectAtIndex:indexPath.section - 1];
+        _arrayForKey = [_allFriends objectForKey:key];
+        
+        RCDUserInfo *user = _arrayForKey[indexPath.row];
+        
+        RCUserInfo *userInfo = [RCUserInfo new];
+        userInfo.userId = user.userId;
+        userInfo.portraitUri = user.portraitUri;
+        userInfo.name = user.name;
+        ChatViewController * chatVc = [[ChatViewController alloc]init];
+        chatVc.hidesBottomBarWhenPushed = YES;
+        chatVc.conversationType = ConversationType_PRIVATE;
+        chatVc.targetId = userInfo.userId;
+        chatVc.title = userInfo.name;
+        chatVc.needPopToRootView = YES;
+        [self.navigationController pushViewController:chatVc animated:YES];
     }
 }
 
@@ -200,7 +222,6 @@
     }
 }
 
-
 #pragma mark - 获取好友并排序
 - (void)getAllData
 {
@@ -212,7 +233,7 @@
     if (_friends.count > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (RCDUserInfo *user in _friends) {
-                if ([user.status isEqualToString:@"20"]) {
+                if ([user.status isEqualToString:@"1"]) {
                     [_friendsArr addObject:user];
                 }
             }
@@ -227,7 +248,6 @@
             [self getAllData];
         }];
     }
-    
 }
 #pragma mark - 拼音排序
 

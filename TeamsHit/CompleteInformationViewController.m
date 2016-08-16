@@ -70,7 +70,13 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+}
 #pragma mark - 选择图片
 - (void)changeImageAction:(UITapGestureRecognizer *)sender
 {
@@ -191,8 +197,8 @@
         
          NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
         NSLog(@"dic = %@", dic);
-        self.iconImageUrl = [responseObject objectForKey:@"ImgPath"];
-//        [self completeInformation1];
+        self.iconImageUrl = [dic objectForKey:@"ImgPath"];
+        [self completeInformation1];
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"error = %@", error);
         NSLog(@"上传失败");
@@ -316,14 +322,14 @@
 - (void)completeInformation
 {
     
-     [self uploadImage];
+//     [self uploadImage];
     
     PublishCircleOfFriendViewController * pVC = [[PublishCircleOfFriendViewController alloc]init];
     
 //    [self.navigationController pushViewController:pVC animated:YES];
 
     
-    self.iconImageUrl = @"isdbfj";
+//    self.iconImageUrl = @"isdbfj";
     
     if (self.nickNameTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入昵称" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -357,17 +363,29 @@
 
 - (void)completeInformation1
 {
-    self.iconImageUrl = @"hhhh";
+//    self.iconImageUrl = @"hhhh";
     
     NSArray * cityArr = [self.cityBT.text componentsSeparatedByString:@","];
+    NSString * Province = nil;
+    NSString * city = nil;
+    if (cityArr.count > 1) {
+        Province = cityArr[0];
+        city = cityArr[1];
+    }else
+    {
+        Province = @"";
+        city = @"请选择";
+    }
+    
+   
     
     NSDictionary * jsonDic = @{
                                @"IconUrl":self.iconImageUrl,
                                @"NickName":self.nickNameTF.text,
                                @"UserName":self.accountNameTF.text,
-                               @"Province":cityArr[0],
+                               @"Province":Province,
                                @"Gender":self.genderBT.titleLabel.text,
-                               @"City":cityArr[1],
+                               @"City":city,
                                @"BirthDate":self.birthBt.text
                                };
     
@@ -377,6 +395,17 @@
         ;
     } success:^(id  _Nonnull responseObject) {
          NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            [RCDHTTPTOOL refreshUserInfoByUserID:[RCIM sharedRCIM].currentUserInfo.userId];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+        }
+        
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];

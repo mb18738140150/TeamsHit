@@ -8,6 +8,7 @@
 
 #import "RegisterViewController.h"
 #import "CompleteInformationViewController.h"
+#import "RCDUtilities.h"
 @interface RegisterViewController ()
 {
     int _t;
@@ -151,7 +152,7 @@
 #pragma mark = 注册
 - (void)registerAction:(UIButton *)button
 {
-    [self pushComPleteVC];
+    [self pushCompleteVC];
     
     if (self.verifyCodeTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入验证码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -194,8 +195,8 @@
     [[HDNetworking sharedHDNetworking] POST:@"user/register" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
-        NSLog(@"**%@", responseObject);
         [self pushCompleteVC];
+        NSLog(@"**%@", responseObject);
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"error = %@", error);
     }];
@@ -228,7 +229,13 @@
         {
             [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];
             [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
+            RCUserInfo *user = [RCUserInfo new];
+            user.userId = [NSString stringWithFormat:@"%@", responseObject[@"UserId"]];
+            user.name = [NSString stringWithFormat:@"name%@", [NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+            user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+            [RCIM sharedRCIM].currentUserInfo = user;
             
+            NSLog(@"%@", [RCIM sharedRCIM].currentUserInfo.userId);
             CompleteInformationViewController * completeVc = [[CompleteInformationViewController alloc]initWithNibName:@"CompleteInformationViewController" bundle:nil];
             [rVC.navigationController pushViewController:completeVc animated:YES];
         }
@@ -236,11 +243,11 @@
         NSLog(@"error = %@", error);
     }];
 }
-- (void)pushComPleteVC
-{
-    CompleteInformationViewController * completeVc = [[CompleteInformationViewController alloc]initWithNibName:@"CompleteInformationViewController" bundle:nil];
-    [self.navigationController pushViewController:completeVc animated:YES];
-}
+//- (void)pushComPleteVC
+//{
+//    CompleteInformationViewController * completeVc = [[CompleteInformationViewController alloc]initWithNibName:@"CompleteInformationViewController" bundle:nil];
+//    [self.navigationController pushViewController:completeVc animated:YES];
+//}
 
 /*
 #pragma mark - Navigation

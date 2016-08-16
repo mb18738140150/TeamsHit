@@ -15,6 +15,8 @@
 @property (nonatomic, strong)UILabel * detaileLabel;
 @property (nonatomic, strong)UIButton * acceptButton;
 
+@property (nonatomic, copy)AcceptRequestBlock myBlock;
+
 @end
 
 @implementation NewFriendListTableViewCell
@@ -31,6 +33,9 @@
         self.nameLabel.font = [UIFont systemFontOfSize:16];
         self.nameLabel.textColor = UIColorFromRGB(0x323232);
         self.nameLabel.backgroundColor = [UIColor whiteColor];
+        self.nameLabel.layer.borderColor = [UIColor whiteColor].CGColor;
+        self.nameLabel.layer.borderWidth = .5;
+//        NSLog(@"%f", self.nameLabel.layer.borderWidth);
         [self.contentView addSubview:self.nameLabel];
         
         self.detaileLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_detailImage.frame) + 15, CGRectGetMaxY(_nameLabel.frame) + 8, 30, 14)];
@@ -54,25 +59,35 @@
 
 - (void)setNFriendModel:(NewFriendModel *)nFriendModel
 {
-    [self.detailImage sd_setImageWithURL:[NSURL URLWithString:nFriendModel.iconImageUrl] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
-    self.nameLabel.text = nFriendModel.name;
+    [self.detailImage sd_setImageWithURL:[NSURL URLWithString:nFriendModel.portraitUri] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+    self.nameLabel.text = nFriendModel.nickname;
     CGSize size = [self.nameLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, self.nameLabel.hd_height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil].size;
-    self.nameLabel.hd_width = size.width;
-    self.detaileLabel.text = nFriendModel.detaile;
+    self.nameLabel.hd_width = size.width + 5;
+    self.detaileLabel.text = nFriendModel.message;
     CGSize dsize = [self.detaileLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, self.detaileLabel.hd_height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
     self.detaileLabel.hd_width = dsize.width;
     
-    if (nFriendModel.state.intValue == 1) {
+    if (nFriendModel.status.intValue == 1) {
         self.acceptButton.enabled = NO;
-        self.acceptButton.backgroundColor = [UIColor whiteColor];
-        [self.acceptButton setTitle:@"已接受" forState:UIControlStateNormal];
+        self.acceptButton.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+        [self.acceptButton setTitle:@"已添加" forState:UIControlStateNormal];
         [self.acceptButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    }else
+//        self.acceptButton.layer.cornerRadius = 2;
+//        self.acceptButton.layer.masksToBounds = YES;
+//        self.acceptButton.layer.borderWidth = .5;
+//        self.acceptButton.layer.borderColor = [UIColor grayColor].CGColor;
+    }else if (nFriendModel.status.intValue == 2)
     {
         self.acceptButton.enabled = YES;
         [self.acceptButton setTitle:@"接受" forState:UIControlStateNormal];
         self.acceptButton.backgroundColor = UIColorFromRGB(0x12B7F5);
         [self.acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    }else if (nFriendModel.status.intValue == 3)
+    {
+        self.acceptButton.enabled = NO;
+        [self.acceptButton setTitle:@"等待验证" forState:UIControlStateNormal];
+        self.acceptButton.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+        [self.acceptButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     }
 }
 
@@ -91,7 +106,14 @@
 
 - (void)acceptItemAction:(UIButton *)button
 {
-    
+    if (self.myBlock) {
+        _myBlock();
+    }
+}
+
+- (void)acceptRequest:(AcceptRequestBlock)acceptRequestBlock
+{
+    self.myBlock = [acceptRequestBlock copy];
 }
 
 - (void)awakeFromNib {

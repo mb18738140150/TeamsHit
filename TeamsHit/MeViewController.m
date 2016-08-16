@@ -9,9 +9,12 @@
 #import "MeViewController.h"
 #import "ProcessingImagesViewController.h"
 #import "MaterialViewController.h"
+#import "MeDetailInfomationViewController.h"
+
 #import "EquipmentManagerViewController.h"
 
 @interface MeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@property (strong, nonatomic) IBOutlet UIView *infoView;
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
 // 图片选择器
 @property (nonatomic, strong)UIImagePickerController * imagePic;
@@ -35,6 +38,10 @@
     UITapGestureRecognizer * imageTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeImageAction:)];
     _iconImageView.userInteractionEnabled = YES;
     [_iconImageView addGestureRecognizer:imageTap];
+    
+    UITapGestureRecognizer * infoTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeImageAction:)];
+    _infoView.userInteractionEnabled = YES;
+    [_infoView addGestureRecognizer:infoTap];
     
     self.imagePic = [[UIImagePickerController alloc] init];
 //    _imagePic.allowsEditing = YES;
@@ -60,11 +67,17 @@
 #pragma mark - 选择图片
 - (void)changeImageAction:(UITapGestureRecognizer *)sender
 {
-    
-    MaterialViewController * processVC = [[MaterialViewController alloc]init];
-    processVC.hidesBottomBarWhenPushed = YES;
-    
-    [self.navigationController pushViewController:processVC animated:YES];
+    if ([sender.view isEqual:_infoView]) {
+        MeDetailInfomationViewController * meinfoVC = [[MeDetailInfomationViewController alloc]initWithNibName:@"MeDetailInfomationViewController" bundle:nil];
+        meinfoVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:meinfoVC animated:YES];
+    }else
+    {
+        MaterialViewController * processVC = [[MaterialViewController alloc]init];
+        processVC.hidesBottomBarWhenPushed = YES;
+        
+        [self.navigationController pushViewController:processVC animated:YES];
+    }
 
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info

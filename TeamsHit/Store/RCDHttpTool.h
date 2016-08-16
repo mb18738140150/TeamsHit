@@ -32,6 +32,8 @@
 -(void) getUserInfoByUserID:(NSString *) userID
                          completion:(void (^)(RCUserInfo *user)) completion;
 
+- (void)refreshUserInfoByUserID:(NSString *)userID;
+
 //设置个人头像地址
 -(void) setUserPortraitUri:(NSString *)portraitUri
               complete:(void (^)(BOOL))result;

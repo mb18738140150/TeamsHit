@@ -71,11 +71,13 @@
     
     barButtonItem.frame = CGRectMake(0, 0, buttontitleSize.width + 15, 33);
     
-    [barButtonItem setImage:image forState:UIControlStateNormal];
+    [barButtonItem setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [barButtonItem setTitle:title forState:UIControlStateNormal];
+    [barButtonItem setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
+    [barButtonItem setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
     //按钮字体颜色默认为白色
-    barButtonItem.tintColor = UIColorFromRGB(0x323232);
-    barButtonItem.titleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
+    [barButtonItem setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal]  ;
+    barButtonItem.titleLabel.font = [UIFont systemFontOfSize:17.0f];
     
     return barButtonItem;
 }

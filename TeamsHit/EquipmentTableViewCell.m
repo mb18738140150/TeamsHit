@@ -127,11 +127,36 @@
 
 - (void)setEmodel:(EquipmentModel *)emodel
 {
-    if (emodel.state.intValue == 1) {
-        self.equipmentTitle.text = [NSString stringWithFormat:@"%@(在线)", emodel.equipmentTitle];
-    }else
-    {
-        self.equipmentTitle.text = [NSString stringWithFormat:@"%@(离线)", emodel.equipmentTitle];
+    
+    switch (emodel.state.intValue) {
+        case 0:
+        {
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(正常)", emodel.deviceName];
+        }
+            break;
+        case 1:
+        {
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(缺纸)", emodel.deviceName];
+        }
+            break;
+        case 2:
+        {
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(温度保护报警)", emodel.deviceName];
+        }
+            break;
+        case 3:
+        {
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(忙碌)", emodel.deviceName];
+        }
+            break;
+        case 4:
+        {
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(离线)", emodel.deviceName];
+        }
+            break;
+            
+        default:
+            break;
     }
     
     CGSize size = [self.equipmentTitle.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, self.equipmentTitle.hd_height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
@@ -146,7 +171,7 @@
         model.isbuzzer = NO;
     }
     
-    if (emodel.indicatorLight.intValue == 1) {
+    if (emodel.indicator.intValue == 1) {
         EquipmentcollectionModel * model = self.array[3];
         model.isIndicatorLight = YES;
     }else

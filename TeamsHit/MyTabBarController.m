@@ -20,6 +20,7 @@
 @property (nonatomic, strong)FindViewController *findVC;
 @property (nonatomic, strong)MeViewController *meVC;
 
+
 @end
 
 @implementation MyTabBarController
@@ -30,7 +31,8 @@
     self.tabBar.tintColor = UIColorFromRGB(0x12B7F5);
     self.tabBar.translucent = NO;
     
-    self.chatListVC = [[ChatListViewController alloc]init];
+    self.chatListVC = [[ChatListViewController alloc]initWithDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_GROUP),@(ConversationType_SYSTEM)] collectionConversationType:@[@(ConversationType_SYSTEM)]];
+    
     _chatListVC.tabBarItem.title = @"对对碰";
     _chatListVC.tabBarItem.image = [UIImage imageNamed:@"chat-1"] ;
     _chatListVC.tabBarItem.selectedImage = [UIImage imageNamed:@"chat-2"] ;

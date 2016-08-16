@@ -52,7 +52,7 @@
                                         <constraint firstAttribute="height" constant="25" id="DLD-iS-uCn"/>
                                     </constraints>
                                 </view>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pNZ-cS-o54">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pNZ-cS-o54">
                                     <rect key="frame" x="505" y="11" width="80" height="30"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="80" id="30C-rP-RO0"/>

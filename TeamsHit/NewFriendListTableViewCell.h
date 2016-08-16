@@ -9,9 +9,13 @@
 #import <UIKit/UIKit.h>
 @class NewFriendModel;
 
+typedef void(^AcceptRequestBlock)();
+
 @interface NewFriendListTableViewCell : UITableViewCell
 
 @property (nonatomic, strong)NewFriendModel * nFriendModel;
 - (void)createSubView:(CGRect)frame;
+
+- (void)acceptRequest:(AcceptRequestBlock)acceptRequestBlock;
 
 @end

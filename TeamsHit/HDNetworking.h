@@ -73,7 +73,7 @@ HDSingletonH(HDNetworking) // 单例声明
 - (void)POSTwithToken:(NSString *)URLString parameters:(NSDictionary *)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure;
 - (void)POST:(NSString *)URLString parameters:(NSDictionary *)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure;
 
-- (void)POSTwithWiFi:(NSString *)URLString parameters:(NSString *)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure;
+- (void)POSTwithWiFi:(NSString *)URLString parameters:(id)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure;
 
 /**
  *  封装POST图片上传(多张图片) // 可扩展成多个别的数据上传如:mp3等

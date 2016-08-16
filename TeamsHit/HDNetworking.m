@@ -68,6 +68,11 @@ HDSingletonM(HDNetworking) // 单例实现
     NSMutableSet *contentTypes = [[NSMutableSet alloc] initWithSet:manager.responseSerializer.acceptableContentTypes];
     [contentTypes addObject:@"text/html"];
     [contentTypes addObject:@"text/plain"];
+    [contentTypes addObject:@"application/json"];
+    [contentTypes addObject:@"text/json"];
+    [contentTypes addObject:@"text/javascript"];
+    [contentTypes addObject:@"text/xml"];
+    [contentTypes addObject:@"image/*"];
     
     manager.responseSerializer.acceptableContentTypes = self.acceptableContentTypes;
     manager.requestSerializer.timeoutInterval = (self.timeoutInterval ? self.timeoutInterval : 20);
@@ -212,7 +217,7 @@ HDSingletonM(HDNetworking) // 单例实现
     }];
 }
 
-- (void)POSTwithWiFi:(NSString *)URLString parameters:(NSString *)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure
+- (void)POSTwithWiFi:(NSString *)URLString parameters:(id)parameters progress:(Progress)progress success:(Success)success failure:(Failure)failure
 {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     

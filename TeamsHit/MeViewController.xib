@@ -11,6 +11,7 @@
                 <outlet property="equipmentLB" destination="HQs-QA-rDM" id="iX4-Cc-w4X"/>
                 <outlet property="equipmentmanagerView" destination="cCZ-q6-NFd" id="r7o-aC-JcQ"/>
                 <outlet property="iconImageView" destination="qPn-x4-qLW" id="VP7-Ip-ZOU"/>
+                <outlet property="infoView" destination="Hf3-LO-EPb" id="nzE-FJ-ttV"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -51,21 +52,21 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AGf-rD-Rda">
-                                    <rect key="frame" x="570" y="38" width="25" height="25"/>
+                                    <rect key="frame" x="577" y="44" width="8" height="13"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="25" id="JIv-Sw-cP3"/>
-                                        <constraint firstAttribute="height" constant="25" id="km9-lf-ANT"/>
+                                        <constraint firstAttribute="width" constant="8" id="JIv-Sw-cP3"/>
+                                        <constraint firstAttribute="height" constant="13" id="km9-lf-ANT"/>
                                     </constraints>
                                     <state key="normal" title="Button" image="next_icon.png"/>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstAttribute="trailing" secondItem="AGf-rD-Rda" secondAttribute="trailing" constant="5" id="Qff-KK-2V6"/>
+                                <constraint firstAttribute="trailing" secondItem="AGf-rD-Rda" secondAttribute="trailing" constant="15" id="Qff-KK-2V6"/>
                                 <constraint firstItem="Jrh-5t-oNh" firstAttribute="leading" secondItem="qPn-x4-qLW" secondAttribute="trailing" constant="16" id="Rjp-jE-kyN"/>
                                 <constraint firstItem="qPn-x4-qLW" firstAttribute="top" secondItem="Hf3-LO-EPb" secondAttribute="top" constant="15" id="Tnn-RX-vW8"/>
                                 <constraint firstAttribute="height" constant="100" id="eL8-Uz-kAS"/>
-                                <constraint firstItem="AGf-rD-Rda" firstAttribute="top" secondItem="Hf3-LO-EPb" secondAttribute="top" constant="38" id="gXP-tb-4ne"/>
+                                <constraint firstItem="AGf-rD-Rda" firstAttribute="top" secondItem="Hf3-LO-EPb" secondAttribute="top" constant="44" id="gXP-tb-4ne"/>
                                 <constraint firstItem="Jrh-5t-oNh" firstAttribute="top" secondItem="Dom-g5-bV1" secondAttribute="bottom" constant="16" id="h6D-rj-eHc"/>
                                 <constraint firstItem="Dom-g5-bV1" firstAttribute="leading" secondItem="qPn-x4-qLW" secondAttribute="trailing" constant="16" id="liY-Py-uif"/>
                                 <constraint firstItem="qPn-x4-qLW" firstAttribute="leading" secondItem="Hf3-LO-EPb" secondAttribute="leading" constant="15" id="tJi-2U-EfH"/>

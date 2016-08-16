@@ -13,6 +13,7 @@
 #import "JRSwizzle.h"
 
 #import "ConfigurationWiFiViewController.h"
+#import "ConfigurationWiFiSecondViewController.h"
 #import "MyTabBarController.h"
 
 #import <RongIMKit/RongIMKit.h>
@@ -154,6 +155,33 @@
      name:RCKitDispatchMessageNotification
      object:nil];
     
+    // 网络监听
+    AFNetworkReachabilityManager * manager = [AFNetworkReachabilityManager sharedManager];
+    [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        switch (status) {
+            case AFNetworkReachabilityStatusUnknown:
+                NSLog(@"未识别的网络");
+                break;
+                
+            case AFNetworkReachabilityStatusNotReachable:
+                NSLog(@"不可达的网络(未连接)");
+                break;
+                
+            case AFNetworkReachabilityStatusReachableViaWWAN:
+                NSLog(@"2G,3G,4G...的网络");
+                break;
+                
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+                NSLog(@"wifi的网络");
+                [[NSNotificationCenter defaultCenter]postNotificationName:kNetChangedNotification object:nil];
+                break;
+            default:
+                break;
+        }
+    }];
+    
+    [manager startMonitoring];
+    
     return YES;
 }
 
@@ -263,18 +291,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    
-//    ConfigurationWiFiViewController
-//    MyTabBarController
-    if ([self.window.rootViewController isKindOfClass:[MyTabBarController class]]) {
-        MyTabBarController * myVC = (MyTabBarController *)self.window.rootViewController;
-        UINavigationController * nav = myVC.selectedViewController;
-        UIViewController * vc = nav.viewControllers.lastObject;
-        if ([vc isKindOfClass:[ConfigurationWiFiViewController class]]) {
-            [[NSNotificationCenter defaultCenter]postNotificationName:kNetChangedNotification object:nil];
-            NSLog(@"设置界面，该发送通知");
-        }
-    }
     
 }
 
@@ -425,6 +441,8 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
 
 -(void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left
 {
+    NSLog(@"message.targetId = %@, *** %@ *** ", message.targetId, message.senderUserId);
+    
     // 通知类消息
     if ([message.content isMemberOfClass:[RCInformationNotificationMessage class]]) {
         RCInformationNotificationMessage *msg=(RCInformationNotificationMessage *)message.content;
@@ -437,8 +455,15 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     } else if ([message.content isMemberOfClass:[RCContactNotificationMessage class]]) {
         // 好友请求消息类
         RCContactNotificationMessage *msg = (RCContactNotificationMessage *)message.content;
+        
+        NSLog(@"msg.operation = %@", msg.operation);
+        if ([msg.operation isEqualToString:ContactNotificationMessage_ContactOperationRequest]) {
+            ;
+        }
+        
         if ([msg.operation isEqualToString:ContactNotificationMessage_ContactOperationAcceptResponse]) {
-            [RCDDataSource syncFriendList:[RCIM sharedRCIM].currentUserInfo.userId complete:^(NSMutableArray *friends) {
+            NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+            [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {
             }];
         }
     }else if ([message.content isMemberOfClass:[RCGroupNotificationMessage class]]) {
@@ -464,9 +489,6 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
      name:RCKitDispatchMessageNotification
      object:nil];
 }
-
-
-
 
 - (void)umengTrack {
     //        [MobClick setCrashReportEnabled:NO]; // 如果不需要捕捉异常，注释掉此行

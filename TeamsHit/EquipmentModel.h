@@ -10,9 +10,13 @@
 
 @interface EquipmentModel : NSObject
 
-@property (nonatomic, copy)NSString * equipmentTitle;
+@property (nonatomic, copy)NSString * uuid;
+@property (nonatomic, copy)NSString * deviceName;
 @property (nonatomic, strong)NSNumber *buzzer;
-@property (nonatomic, strong)NSNumber *indicatorLight;
+@property (nonatomic, strong)NSNumber *indicator;
 @property (nonatomic, strong)NSNumber * state;
+@property (nonatomic, copy)NSString * deviceMac;
+
+- (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

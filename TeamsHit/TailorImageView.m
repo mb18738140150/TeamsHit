@@ -243,7 +243,6 @@ static CGSize minSize = {40, 40};
             }
             self.overlayView.clearRect = storeRect;
         }
-        
     }
     
     if (self.isCleanRect) {
@@ -301,15 +300,12 @@ static CGSize minSize = {40, 40};
     [self.overlayView.rectArray removeObjectAtIndex:self.whichRect];
     [self.overlayView.rectArray insertObject:NSStringFromCGRect(newClearRect) atIndex:self.whichRect];
     
-    //控制clearrect的lable的frame
-    UILabel *lable = [self.overlayView viewWithTag:_whichRect + 1000];
-    lable.frame = newClearRect;
     
     [self.overlayView setNeedsDisplay];
 }
 
 - (void)panCenterOverlayView:(UIPanGestureRecognizer *)sender {
-    CGPoint d = [sender translationInView:self];
+    CGPoint d = [sender translationInView:self];// 拖动手势的translationInView:方法取得在相对指定视图的移动
     CGRect newClearRect = self.overlayView.clearRect;
     
     CGFloat width = self.frame.size.width;
@@ -332,10 +328,6 @@ static CGSize minSize = {40, 40};
     
     [self.overlayView.rectArray removeObjectAtIndex:self.whichRect];
     [self.overlayView.rectArray insertObject:NSStringFromCGRect(newClearRect) atIndex:self.whichRect];
-    
-    //控制clearrect的lable的frame
-    UILabel *lable = [self.overlayView viewWithTag:_whichRect + 1000];
-    lable.frame = newClearRect;
     
     [self.overlayView setNeedsDisplay];
 }

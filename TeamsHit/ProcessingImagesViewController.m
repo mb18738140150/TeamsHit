@@ -285,9 +285,13 @@
             break;
         case 3:
              NSLog(@"描边");
+            self.imageView.image = [ImageUtil memory:self.defaultImage];
+            self.finalImage = [ImageUtil memory:self.defaultImage];
             break;
         case 4:
              NSLog(@"喷墨");
+            self.imageView.image = [ImageUtil splashInk:self.defaultImage];
+            self.finalImage = [ImageUtil splashInk:self.defaultImage];
             break;
             
         default:

@@ -10,10 +10,12 @@
 
 @interface NewFriendModel : NSObject
 
-@property (nonatomic, copy)NSString * iconImageUrl;
-@property (nonatomic, copy)NSString * name;
-@property (nonatomic, copy)NSString * detaile;
-@property (nonatomic, strong)NSNumber * state;
+@property (nonatomic, copy)NSString * portraitUri;
+@property (nonatomic, copy)NSString * nickname;
+@property (nonatomic, copy)NSString * message;
+@property (nonatomic, strong)NSNumber * status;
+@property (nonatomic, copy)NSNumber * userId;
+@property (nonatomic, strong)NSNumber * applyId;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 
