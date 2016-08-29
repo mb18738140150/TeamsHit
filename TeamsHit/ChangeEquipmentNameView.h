@@ -11,8 +11,12 @@
 typedef void(^EquipmentNameBlock)(NSString * name);
 
 @interface ChangeEquipmentNameView : UIView
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UITextField *equipmentNameTF;
 @property (strong, nonatomic) IBOutlet UIButton *changeBT;
 @property (strong, nonatomic) IBOutlet UIButton *cancleBT;
 - (void)getEquipmentOption:(EquipmentNameBlock)equipmentBlock;
+
+@property (nonatomic, copy)NSString * title;
+
 @end

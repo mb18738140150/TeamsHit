@@ -170,7 +170,7 @@
     NSLog(@"搜索账号");
     
     NSDictionary * jsonDic = @{
-                               @"Phone":self.searchBarView.searchTextView.text
+                               @"Account":self.searchBarView.searchTextView.text
                                };
     
     NSString * url = [NSString stringWithFormat:@"%@userinfo/SearchFriend?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
@@ -215,6 +215,8 @@
 
 - (void)groupAction
 {
+    SearchGrouplistViewController * groupListVc = [[SearchGrouplistViewController alloc]init];
+    [self.navigationController pushViewController:groupListVc animated:YES];
     
     [self.searchBarView.searchTextView resignFirstResponder];
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];

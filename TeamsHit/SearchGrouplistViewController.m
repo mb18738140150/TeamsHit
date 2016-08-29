@@ -39,7 +39,7 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    self.groupTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 17, self.view.hd_width, self.view.hd_height) style:UITableViewStylePlain];
+    self.groupTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 17, self.view.hd_width, self.view.hd_height - 64 - 17) style:UITableViewStylePlain];
     self.groupTableView.delegate = self;
     self.groupTableView.dataSource = self;
     [self.groupTableView registerNib:[UINib nibWithNibName:@"SearcgGroupListCell" bundle:nil] forCellReuseIdentifier:CELL_IDENTIFIRE];
@@ -61,7 +61,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.groupInfoArr.count;
+//    return self.groupInfoArr.count;
+    return 8;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -70,8 +71,8 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.iconImageView.layer.masksToBounds = YES;
     
-    SearchGroupListModel * model = self.groupInfoArr[indexPath.row];
-    cell.model = model;
+//    SearchGroupListModel * model = self.groupInfoArr[indexPath.row];
+//    cell.model = model;
     return cell;
 }
 

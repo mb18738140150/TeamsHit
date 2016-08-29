@@ -54,6 +54,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    NSDictionary *remoteNotification = [launchOptions objectForKey: UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (nil != remoteNotification) {
+        NSLog(@"remoteNotification = %@", remoteNotification);
+    }
+    
+    
     LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
     TeamsHitNavigationViewController * teamsNav = [[TeamsHitNavigationViewController alloc]initWithRootViewController:loginVC];
     UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
@@ -466,6 +472,10 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
             [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {
             }];
         }
+        if ([msg.operation isEqualToString:@"DelFriend"]) {
+                NSString * strId = msg.extra;
+                [self deleteFriendWithUserId:strId];
+        }
     }else if ([message.content isMemberOfClass:[RCGroupNotificationMessage class]]) {
         //  群组通知消息类
         RCGroupNotificationMessage *msg = (RCGroupNotificationMessage *)message.content;
@@ -481,6 +491,22 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
                     }];
         }
     }
+}
+
+- (void)deleteFriendWithUserId:(NSString * )strId
+{
+    [[RCIMClient sharedRCIMClient]deleteMessages:ConversationType_PRIVATE targetId:strId success:^{
+        ;
+    } error:^(RCErrorCode status) {
+        ;
+    }];
+    
+    [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_PRIVATE targetId:strId];
+    
+    // 同步好友列表
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
+    
 }
 
 - (void)dealloc {
@@ -507,5 +533,9 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     
 }
 
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    NSLog(@"application userInfo = %@", userInfo);
+}
 
 @end

@@ -23,13 +23,14 @@
 {
     if (!_titleLB) {
         _titleLB = [[UILabel alloc]initWithFrame:CGRectMake(0, self.hd_height - 8, self.hd_width, 7)];
+        _titleLB.font = [UIFont systemFontOfSize:7];
         if (_photoImageView) {
             _photoImageView.frame = CGRectMake(6, 3, self.hd_width - 12, self.hd_height - 13);
         }else
         {
             _titleLB.frame = CGRectMake(6, 3, self.hd_width - 12, self.hd_height - 6);
+            _titleLB.font = [UIFont systemFontOfSize:14];
         }
-        _titleLB.font = [UIFont systemFontOfSize:7];
         _titleLB.textAlignment = 1;
         _titleLB.textColor = [UIColor grayColor];
         [self.contentView addSubview:_titleLB];

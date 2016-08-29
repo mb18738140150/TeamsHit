@@ -53,7 +53,7 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
             [db executeUpdate:createIndexSQL];
         }
         if (![DBHelper isTableOK: friendTableName withDB:db]) {
-            NSString *createTableSQL = @"CREATE TABLE FRIENDSTABLE (id integer PRIMARY KEY autoincrement, userid text,name text, portraitUri text, status text, updatedAt text)";
+            NSString *createTableSQL = @"CREATE TABLE FRIENDSTABLE (id integer PRIMARY KEY autoincrement, userid text,name text, portraitUri text, status text, updatedAt text, displayName text)";
             [db executeUpdate:createTableSQL];
             NSString *createIndexSQL=@"CREATE unique INDEX idx_friendsId ON FRIENDSTABLE(userid);";
             [db executeUpdate:createIndexSQL];
@@ -327,10 +327,10 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
 //-(void)insertFriendToDB:(RCUserInfo *)friend
 -(void)insertFriendToDB:(RCDUserInfo *)friendInfo
 {
-    NSString *insertSql = @"REPLACE INTO FRIENDSTABLE (userid, name, portraitUri, status,updatedAt) VALUES (?, ?, ?, ?, ?)";
+    NSString *insertSql = @"REPLACE INTO FRIENDSTABLE (userid, name, portraitUri, status,updatedAt,displayName) VALUES (?, ?, ?, ?, ?, ?)";
         FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
         [queue inDatabase:^(FMDatabase *db) {
-            [db executeUpdate:insertSql,friendInfo.userId, friendInfo.name, friendInfo.portraitUri, friendInfo.status, friendInfo.updatedAt];
+            [db executeUpdate:insertSql,friendInfo.userId, friendInfo.name, friendInfo.portraitUri, friendInfo.status, friendInfo.updatedAt, friendInfo.displayName];
         }];
 }
 
@@ -350,6 +350,7 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
             model.portraitUri = [rs stringForColumn:@"portraitUri"];
             model.status = [rs stringForColumn:@"status"];
             model.updatedAt = [rs stringForColumn:@"updatedAt"];
+            model.displayName = [rs stringForColumn:@"displayName"];
             [allUsers addObject:model];
         }
         [rs close];
@@ -370,6 +371,7 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
             friendInfo.portraitUri = [rs stringForColumn:@"portraitUri"];
             friendInfo.status = [rs stringForColumn:@"status"];
             friendInfo.updatedAt = [rs stringForColumn:@"updatedAt"];
+            friendInfo.displayName = [rs stringForColumn:@"displayName"];
         }
         [rs close];
     }];

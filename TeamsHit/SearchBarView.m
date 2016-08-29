@@ -52,6 +52,10 @@
     
 }
 
+- (void)setBottomColor:(UIColor *)bottomColor
+{
+    self.bottomLineView.backgroundColor = bottomColor;
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

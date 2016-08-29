@@ -18,6 +18,8 @@
 
 + (instancetype)rightButtonWithTitle:(NSString *)title;
 
++ (instancetype)rightButtonWithTitle:(NSString *)title backgroundcolor:(UIColor *)color cornerRadio:(CGFloat)cornerRadius;
+
 +(instancetype)rightButtonWithImage:(UIImage *)image title:(NSString *)title;
 
 @end

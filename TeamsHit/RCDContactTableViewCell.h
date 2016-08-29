@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^SelectBlock)(BOOL isSelect);
+
 @interface RCDContactTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) UIImageView *portraitView;
 
 @property (nonatomic, strong) UILabel *nicknameLabel;
+
+@property (nonatomic, strong) UIButton * selectStateBT;
+
+- (void)getSelectState:(SelectBlock)selectBlock;
 
 @end

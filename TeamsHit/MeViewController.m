@@ -61,7 +61,6 @@
     UINavigationBar * bar = self.navigationController.navigationBar;
 //    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
-    
 }
 
 #pragma mark - 选择图片

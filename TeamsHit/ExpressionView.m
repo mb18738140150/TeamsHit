@@ -7,11 +7,19 @@
 //
 
 #import "ExpressionView.h"
-
+#import "ProcessImageTypeModel.h"
 #import "ProcessImageTypeCollectionViewCell.h"
-#define kPublishCellID @"PublishCellID"
+#import "ExpressionImageCollectionViewCell.h"
+#define kExpressionImageCellID @"expressionCellID"
+#define kTitleCellID @"titleCellID"
+
+#define IMAGEITEMSIZE 80
 
 @interface ExpressionView ()<UICollectionViewDelegate, UICollectionViewDataSource>
+{
+    NSIndexPath *_lastIndexPath;
+}
+@property (nonatomic, copy)ExpressionBlock expressionBlock;
 
 @property (nonatomic, strong)UICollectionView * imageCollectionView;
 @property (nonatomic, strong)UICollectionView * titleCollectionView;
@@ -19,11 +27,17 @@
 @property (nonatomic, strong)NSMutableArray * allImageArr;
 @property (nonatomic, strong)NSArray * currentImageArr;
 @property (nonatomic, strong)NSArray * titleArr;
-
+@property (nonatomic, strong)NSMutableArray * modelArr;
 @end
 
 @implementation ExpressionView
-
+- (NSMutableArray *)modelArr
+{
+    if (!_modelArr) {
+        _modelArr = [NSMutableArray array];
+    }
+    return _modelArr;
+}
 - (NSMutableArray *)allImageArr
 {
     if (!_allImageArr) {
@@ -44,9 +58,9 @@
 {
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
     // 设置item大小
-    layout.itemSize = CGSizeMake((self.hd_width - 64) / 5, self.hd_height - 10);
+    layout.itemSize = CGSizeMake(IMAGEITEMSIZE, IMAGEITEMSIZE);
     // 设置边界缩进
-    layout.sectionInset = UIEdgeInsetsMake(5, 10, 0, 10);
+    layout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     
     // item之间最小间距
     layout.minimumInteritemSpacing = 8;
@@ -55,10 +69,10 @@
     layout.minimumLineSpacing = 10;
     
     // 集合视图滑动方向
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
     
-    self.imageCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, (self.hd_width - 64) / 5 + 10) collectionViewLayout:layout];
+    self.imageCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, 80) collectionViewLayout:layout];
     self.imageCollectionView.delegate = self;
     self.imageCollectionView.dataSource = self;
     
@@ -66,13 +80,138 @@
     [self addSubview:self.imageCollectionView];
     
     // 注册item
-    [self.imageCollectionView registerClass:[ProcessImageTypeCollectionViewCell class] forCellWithReuseIdentifier:kPublishCellID];
+    [self.imageCollectionView registerClass:[ExpressionImageCollectionViewCell class] forCellWithReuseIdentifier:kExpressionImageCellID];
     self.titleArr = @[@"表情", @"美食", @"气泡", @"花边", @"邮戳", @"探索"];
+    for (int i = 0; i<6; i++) {
+        ProcessImageTypeModel * model = [[ProcessImageTypeModel alloc]init];
+        model.titleName = _titleArr[i];
+        model.isBallColor = NO;
+        if (i == 0) {
+            model.isBallColor = YES;
+        }
+        [self.modelArr addObject:model];
+    }
     
-    NSArray * arr1 = @[];
+    [self getImageSource];
+    
+    UICollectionViewFlowLayout * titlelayout = [[UICollectionViewFlowLayout alloc]init];
+    titlelayout.itemSize = CGSizeMake(self.hd_width / 6, 40);
+    titlelayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    titlelayout.minimumInteritemSpacing = 0;
+    titlelayout.minimumLineSpacing = 10;
+    titlelayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    
+    self.titleCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 80, self.hd_width, 40) collectionViewLayout:titlelayout];
+    self.titleCollectionView.delegate = self;
+    self.titleCollectionView.dataSource = self;
+    
+    self.titleCollectionView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [self addSubview:self.titleCollectionView];
+    [self.titleCollectionView registerClass:[ProcessImageTypeCollectionViewCell class] forCellWithReuseIdentifier:kTitleCellID];
     
 }
 
+- (void)getImageSource
+{
+    NSMutableArray * imageSourceArr = [NSMutableArray array];
+    NSMutableArray * foodSourceArr = [NSMutableArray array];
+    NSMutableArray * bubbleSourceArr = [NSMutableArray array];
+    NSMutableArray * lineSourceArr = [NSMutableArray array];
+    NSMutableArray * postmarkSourceArr = [NSMutableArray array];
+    NSMutableArray * questSourceArr = [NSMutableArray array];
+    
+    for (int i = 1; i < 18; i++) {
+        [imageSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"im%d.bmp", i]]];
+    }
+    for (int i = 1; i < 6; i++) {
+        [foodSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"food_%d.bmp", i]]];
+    }
+    for (int i = 1; i < 6; i++) {
+        [bubbleSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"bubble_graph_%d.bmp", i]]];
+    }
+    for (int i = 1; i < 7; i++) {
+        [lineSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"line_%d.bmp", i]]];
+    }
+    for (int i = 1; i < 5; i++) {
+        [postmarkSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"postmark_%d.bmp", i]]];
+    }
+    for (int i = 1; i < 8; i++) {
+        [questSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"quest_%d.bmp", i]]];
+    }
+    self.allImageArr = [NSMutableArray arrayWithObjects:imageSourceArr, foodSourceArr, bubbleSourceArr, lineSourceArr, postmarkSourceArr, questSourceArr, nil];
+    self.currentImageArr = [NSArray arrayWithArray:self.allImageArr.firstObject];
+}
+
+#pragma mark - UIcollectionView Delegate
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    if ([collectionView isEqual:_titleCollectionView]) {
+        return self.modelArr.count;
+    }else
+    {
+        return self.currentImageArr.count;
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([collectionView isEqual:_titleCollectionView]) {
+        ProcessImageTypeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kTitleCellID forIndexPath:indexPath];
+        ProcessImageTypeModel * model = self.modelArr[indexPath.row];
+        cell.titleLB.text = model.titleName;
+        cell.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+        if (model.isBallColor) {
+            cell.titleLB.textColor = UIColorFromRGB(0x12B7F5);
+        }else{
+            cell.titleLB.textColor = [UIColor grayColor];
+        }
+        return cell;
+    }else
+    {
+        ExpressionImageCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:kExpressionImageCellID forIndexPath:indexPath];
+        cell.expressionImage = self.currentImageArr[indexPath.item];
+        return cell;
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([collectionView isEqual:_titleCollectionView]) {
+        if (_lastIndexPath) {
+            ProcessImageTypeModel * model = self.modelArr[_lastIndexPath.item];
+            model.isBallColor = NO;
+//            [self.titleCollectionView reloadData];
+        }else {
+            ProcessImageTypeModel * model = self.modelArr[0];
+            model.isBallColor = NO;
+//            [self.titleCollectionView reloadData];
+        }
+        _lastIndexPath = indexPath;
+        ProcessImageTypeModel * model = self.modelArr[_lastIndexPath.item];
+        model.isBallColor = YES;
+        [self.titleCollectionView reloadData];
+        
+        self.currentImageArr = self.allImageArr[indexPath.item];
+        [self.imageCollectionView reloadData];
+    }else
+    {
+        NSLog(@"%d", indexPath.item);
+        UIImage * image = self.currentImageArr[indexPath.item];
+        if (self.expressionBlock) {
+            _expressionBlock(image);
+        }
+    }
+}
+
+- (void)getExpressionImage:(ExpressionBlock)expressionBlock
+{
+    self.expressionBlock = [expressionBlock copy];
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

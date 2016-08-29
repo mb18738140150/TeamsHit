@@ -13,13 +13,29 @@
 #import "RealTimeLocationStatusView.h"
 #import "RealTimeLocationEndCell.h"
 #import "RCDTestMessageCell.h"
+
+#import "MaterialViewController.h"
+
+#import "ChatSettingViewController.h"
+#import "FriendInformationViewController.h"
+#import "FriendInformationModel.h"
+
+#import "MeDetailInfomationViewController.h"
+
 //#import "RCChatSessionInputBarControl.h"
 
 @interface ChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCRealTimeLocationObserver, RCMessageCellDelegate, RealTimeLocationStatusViewDelegate>
+{
+    MBProgressHUD* hud ;
+}
 @property (nonatomic, weak)id<RCRealTimeLocationProxy> realTimeLocation;
 @property (nonatomic, strong)RealTimeLocationStatusView *realTimeLocationStatusView;
 @property (nonatomic, strong)RCDGroupInfo *groupInfo;
 @property (nonatomic, strong)NSMutableArray *groupMemberList;
+
+// 好友详情
+@property (nonatomic, strong)FriendInformationModel * friendmodel;
+@property (nonatomic, assign)BOOL isRightBarItem;
 @end
 
 @implementation ChatViewController
@@ -29,13 +45,14 @@
     
     self.enableInteractivePopGestureRecognizer = YES;
     self.enableSaveNewPhotoToLocalSystem = YES;
-    
+    self.isRightBarItem = NO;
     
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:self.title];
+    self.title = @"";
     [leftBarItem addTarget:self action:@selector(leftBarButtonItemPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"backImage.jpg"] title:@"红包" tag:10006];
+    [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"backImage.jpg"] title:@"素材" tag:10006];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
@@ -152,25 +169,25 @@
     //打开单聊强制从demo server 获取用户信息更新本地数据库
     if (self.conversationType == ConversationType_PRIVATE) {
         if (![self.targetId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
-            [[RCDRCIMDataSource shareInstance]getUserInfoWithUserId:self.targetId completion:^(RCUserInfo *userInfo) {
-#warning getPrivateInformation ****
-                [[RCDHttpTool shareInstance]updateUserInfo:self.targetId success:^(RCUserInfo * user) {
-                    //                if (![userInfo.name isEqualToString:user.name]) {
-                    self.navigationItem.title = user.name;
-                    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
-                    RCDUserInfo *friendInfo = [[RCDataBaseManager shareInstance] getFriendInfo:user.userId];
-                    friendInfo.name = user.name;
-                    friendInfo.portraitUri = user.portraitUri;
-                    [[RCDataBaseManager shareInstance] insertFriendToDB:friendInfo];
-                    //                    [[NSNotificationCenter defaultCenter]
-                    //                     postNotificationName:@"kRCUpdateUserNameNotification"
-                    //                     object:user];
-                    //                }
-                    
-                } failure:^(NSError *err) {
-                    
-                }];
-            }];
+//            [[RCDRCIMDataSource shareInstance]getUserInfoWithUserId:self.targetId completion:^(RCUserInfo *userInfo) {
+//#warning getPrivateInformation ****
+//                [[RCDHttpTool shareInstance]updateUserInfo:self.targetId success:^(RCUserInfo * user) {
+//                    //                if (![userInfo.name isEqualToString:user.name]) {
+////                    self.navigationItem.title = user.name;
+//                    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+//                    RCDUserInfo *friendInfo = [[RCDataBaseManager shareInstance] getFriendInfo:user.userId];
+//                    friendInfo.name = user.name;
+//                    friendInfo.portraitUri = user.portraitUri;
+//                    [[RCDataBaseManager shareInstance] insertFriendToDB:friendInfo];
+//                    //                    [[NSNotificationCenter defaultCenter]
+//                    //                     postNotificationName:@"kRCUpdateUserNameNotification"
+//                    //                     object:user];
+//                    //                }
+//                    
+//                } failure:^(NSError *err) {
+//                    
+//                }];
+//            }];
         }
     }
     
@@ -180,13 +197,13 @@
                                                  name:@"renameGroupName"
                                                object:nil];
     
-    //群组改名之后，更新当前页面的Title
+    //当前聊天清空聊天记录以后，更新界面
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(clearHistoryMSG:)
                                                  name:@"ClearHistoryMsg"
                                                object:nil];
     
-    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(renamefriendName:) name:@"renameFriendName" object:nil];
     // Do any additional setup after loading the view.
 }
 
@@ -235,7 +252,9 @@
         //            }];
         //        }
         
-        
+    }
+    if (self.conversationType == ConversationType_PRIVATE) {
+        [self getfriendInformation];
     }
 }
 
@@ -248,6 +267,25 @@
 -(void)renameGroupName:(NSNotification*) notification
 {
     self.title = [notification object];
+}
+
+- (void)renamefriendName:(NSNotification *)notification
+{
+    NSLog(@"displayName = %@", notification);
+    if (_friendmodel) {
+        _friendmodel.displayName = [notification.userInfo objectForKey:@"displayName"];
+    }
+    
+    RCUserInfo * info = [RCUserInfo new];
+    info.userId = [NSString stringWithFormat:@"%@", _friendmodel.userId];
+    info.portraitUri = _friendmodel.iconUrl;
+    info.name = _friendmodel.displayName;
+    
+    [[RCIM sharedRCIM]refreshUserInfoCache:info withUserId:info.userId];
+    
+    RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", _friendmodel.userId]];
+    userinfo.displayName = [notification.userInfo objectForKey:@"displayName"];
+    [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
 }
 
 -(void)clearHistoryMSG:(NSNotification*) notification
@@ -304,6 +342,19 @@
         
         //
 //        [self.navigationController pushViewController:settingsVC animated:YES];
+        if (!self.friendmodel) {
+            self.isRightBarItem = YES;
+            [self getfriendInformation];
+        }else
+        {
+            ChatSettingViewController * chatSettingVC = [[ChatSettingViewController alloc]initWithNibName:@"ChatSettingViewController" bundle:nil];
+            chatSettingVC.model = _friendmodel;
+            [self.navigationController pushViewController:chatSettingVC animated:YES];
+            
+            
+//            FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+//            friend.model = _friendmodel;
+        }
         
     } else if (self.conversationType == ConversationType_DISCUSSION) {
         
@@ -532,9 +583,8 @@
         } break;
         case 10006: {
             
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"发红包哇" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            [alert show];
-            NSLog(@"发红包");
+            MaterialViewController * processVC = [[MaterialViewController alloc]init];
+            [self.navigationController pushViewController:processVC animated:YES];
             
         } break;
         default:
@@ -568,6 +618,28 @@
         textMsg.extra = @"";
     }
     return messageCotent;
+}
+
+- (void)willDisplayMessageCell:(RCMessageBaseCell *)cell
+                   atIndexPath:(NSIndexPath *)indexPath
+{
+    if ([cell.model.content isMemberOfClass:[RCTextMessage class]]) {
+        RCTextMessage * textMessage = cell.model.content;
+        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , textMessage.content);
+    }else
+    {
+        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , [cell.model.content class]);
+    }
+    
+    
+}
+- (void)didSendMessage:(NSInteger)stauts
+               content:(RCMessageContent *)messageCotent
+{
+    if ([messageCotent isMemberOfClass:[RCTextMessage class]]) {
+        RCTextMessage * textMessage = messageCotent;
+        NSLog(@"%@", textMessage.content);
+    }
 }
 
 #pragma mark override
@@ -663,7 +735,26 @@
         }];
         
     }
-    
+    if (self.conversationType == ConversationType_PRIVATE) {
+        
+        if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
+            MeDetailInfomationViewController * meinfoVC = [[MeDetailInfomationViewController alloc]initWithNibName:@"MeDetailInfomationViewController" bundle:nil];
+            [self.navigationController pushViewController:meinfoVC animated:YES];
+        }else
+        {
+            if (!self.friendmodel) {
+                self.isRightBarItem = YES;
+                [self getfriendInformation];
+            }else
+            {
+                FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+                friend.model = _friendmodel;
+                [self.navigationController pushViewController:friend animated:YES];
+            }
+            
+        }
+        
+    }
 }
 
 #pragma mark override
@@ -908,6 +999,59 @@
     }
 }
 
+#pragma mark - 获取target信息详情
+- (void)getfriendInformation
+{
+    NSDictionary * jsonDic = @{
+                               @"Account":self.targetId
+                               };
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/SearchFriend?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    __weak ChatViewController * chatVC = self;
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            self.friendmodel = [[FriendInformationModel alloc]initWithDictionery:responseObject];
+            
+//            RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.friendmodel.userId]];
+//            userinfo.name = self.friendmodel.nickName;
+//            userinfo.portraitUri = self.friendmodel.iconUrl;
+//            userinfo.displayName = self.friendmodel.displayName;
+//            [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
+//            
+//            RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.friendmodel.userId]];
+//            user.portraitUri = self.friendmodel.iconUrl;
+//            if (self.friendmodel.displayName.length != 0) {
+//                user.name = self.friendmodel.displayName;
+//            }else
+//            {
+//                user.name = self.friendmodel.nickName;
+//            }
+//            [[RCDataBaseManager shareInstance]insertUserToDB:user];
+            
+            if (self.isRightBarItem) {
+                    FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+                    friend.model = _friendmodel;
+                    [self.navigationController pushViewController:friend animated:YES];
+            }
+           
+        }else
+        {
+            if (self.isRightBarItem) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+     self.isRightBarItem = NO;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

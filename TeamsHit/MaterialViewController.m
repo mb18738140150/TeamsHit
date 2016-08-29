@@ -16,6 +16,8 @@
 #import "MaterialDataModel.h"
 #import "MaterialTableViewCell.h"
 
+#import "ExpressionView.h"
+
 #define CELL_IDENTIFIER @"MaterialTableViewCell"
 
 #define SELF_WIDTH self.view.frame.size.width
@@ -32,6 +34,8 @@
     UIBarButtonItem * _graffitiItem;
     UIBarButtonItem * _historyItem;
 }
+
+@property (nonatomic, strong)ExpressionView * expressionView;//表情view
 
 @property (nonatomic, strong)DragCellTableView * tableView;
 @property (nonatomic, strong)UIToolbar * toolBar;
@@ -110,9 +114,16 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     
+    self.expressionView = [[ExpressionView alloc]initWithFrame:CGRectMake(0, self.view.hd_height - 120 - 64, self.view.hd_width, 120)];
+    
     // Do any additional setup after loading the view.
 }
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+    
+}
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -285,6 +296,40 @@
 - (void)expression
 {
     NSLog(@"表情弹窗");
+    
+    NSData * data1 = UIImagePNGRepresentation(_expressionItem.image);
+    NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"3"]);
+    if ([data1 isEqual:data2]) {
+        [_expressionItem setImage:[[UIImage imageNamed:@"3_1"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        [self.view addSubview:_expressionView];
+        self.tableView.hd_height = self.tableView.hd_height - 120;
+        self.toolBar.hd_y = self.toolBar.hd_y - 120;
+        
+    }else
+    {
+        [_expressionItem setImage:[[UIImage imageNamed:@"3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        [_expressionView removeFromSuperview];
+        self.tableView.hd_height = self.tableView.hd_height + 120;
+        self.toolBar.hd_y = self.toolBar.hd_y + 120;
+        
+    }
+    
+    __weak MaterialViewController * matervc = self;
+    [_expressionView getExpressionImage:^(UIImage *expressionImage) {
+        UIImage * image = expressionImage;
+        if (image) {
+            matervc.iconImageView.image = image;
+            NSLog(@"获取到了");
+            MaterialDataModel * model = [[MaterialDataModel alloc]init];
+            model.image = image;
+            model.imageModel = expressionModel;
+            [matervc.dataArr addObject:model];
+            
+            NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
+            [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
+            [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+        }
+    }];
 }
 
 #pragma mark - 二维码

@@ -113,12 +113,25 @@
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    self.iconImageView.image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    UIImage * image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    self.iconImageView.image = [self imageCompressForWidth:image targetWidth:150.0];
     [self dismissViewControllerAnimated:YES completion:nil];
     
 //    [self uploadImageWithUrlString];
 }
-
+-(UIImage *) imageCompressForWidth:(UIImage *)sourceImage targetWidth:(CGFloat)defineWidth
+{
+    CGSize imageSize = sourceImage.size;
+    CGFloat width = imageSize.width;
+    CGFloat height = imageSize.height;
+    CGFloat targetWidth = defineWidth;
+    CGFloat targetHeight = (targetWidth / width) * height;
+    UIGraphicsBeginImageContext(CGSizeMake(targetWidth, targetHeight));
+    [sourceImage drawInRect:CGRectMake(0,0,targetWidth,  targetHeight)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
 
 - (IBAction)genderAction:(id)sender {
     NSLog(@"选择性别");
@@ -322,14 +335,7 @@
 - (void)completeInformation
 {
     
-//     [self uploadImage];
-    
-    PublishCircleOfFriendViewController * pVC = [[PublishCircleOfFriendViewController alloc]init];
-    
-//    [self.navigationController pushViewController:pVC animated:YES];
-
-    
-//    self.iconImageUrl = @"isdbfj";
+//    PublishCircleOfFriendViewController * pVC = [[PublishCircleOfFriendViewController alloc]init];
     
     if (self.nickNameTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入昵称" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -376,8 +382,6 @@
         Province = @"";
         city = @"请选择";
     }
-    
-   
     
     NSDictionary * jsonDic = @{
                                @"IconUrl":self.iconImageUrl,

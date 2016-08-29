@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^ExpressionBlock)(UIImage * expressionImage);
+
 @interface ExpressionView : UIView
+
+- (void)getExpressionImage:(ExpressionBlock)expressionBlock;
 
 @end

@@ -19,4 +19,9 @@
 @property(nonatomic, strong) NSString* status;
 
 @property(nonatomic, strong) NSString* updatedAt;
+
+@property (nonatomic, copy) NSString * displayName;
+
+@property (nonatomic, assign)BOOL  isSelect;
+
 @end

@@ -560,4 +560,54 @@ HDSingletonM(HDNetworking) // 单例实现
     return task;
 }
 
+// 设置好友备注名
+- (void)setFriendDisplayName:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/setDisplayName?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:nil success:success failure:failure];
+    
+}
+// 好友朋友圈权限设置
+- (void)setTargetPermission:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/setTargetPermission?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:nil success:success failure:failure];
+}
+// 我的朋友圈权限设置
+- (void)setUserPermission:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/setUserPermission?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:nil success:success failure:failure];
+}
+// 获取朋友圈权限状态
+- (void)getPermission:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getPermission?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:nil success:success failure:failure];
+}
+
+// 获取个人详细资料getDetailInfor
+- (void)getDetailInfor:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getDetailInfor?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        if (success) {
+            success(responseObject);
+        }
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+
+
+
 @end

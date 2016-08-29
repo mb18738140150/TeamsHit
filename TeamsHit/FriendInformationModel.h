@@ -12,12 +12,12 @@
 
 @property (nonatomic, copy)NSString * iconUrl;
 @property (nonatomic, strong)NSNumber * userId;
-@property (nonatomic, copy)NSString * nickName;
-@property (nonatomic, copy)NSString * remark;
+@property (nonatomic, copy)NSString * nickName;// 好友昵称
+@property (nonatomic, copy)NSString * displayName;// 备注名
 @property (nonatomic, copy)NSString * phone;
 @property (nonatomic, copy)NSString * address;
 @property (nonatomic, strong)NSNumber * isFriend;
-@property (nonatomic, strong)NSArray * galleryList;
+@property (nonatomic, strong)NSArray * galleryList;// 朋友圈图片地址链接数组
 
 - (instancetype)initWithDictionery:(NSDictionary *)dic;
 

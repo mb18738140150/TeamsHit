@@ -50,6 +50,8 @@
     _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"群组", nil];
     _defaultCellsPortrait   = [NSArray arrayWithObjects:@"newFriend",@"defaultGroup", nil];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deletefriend:) name:@"deleteFriend" object:nil];
+    
     // Do any additional setup after loading the view from its nib.
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -66,6 +68,11 @@
         [_friendsArr removeAllObjects];
         [self getAllData];
     }
+}
+
+- (void)deletefriend:(NSNotification *)notification
+{
+    [self getAllData];
 }
 
 #pragma mark - uitableviewDelegate
@@ -116,7 +123,12 @@
         
         RCDUserInfo *user = _arrayForKey[indexPath.row];
         if(user){
-            cell.nicknameLabel.text = user.name;
+            if (user.displayName.length == 0) {
+                cell.nicknameLabel.text = user.name;
+            }else
+            {
+                cell.nicknameLabel.text = user.displayName;
+            }
             if ([user.portraitUri isEqualToString:@""]) {
                 DefaultPortraitView *defaultPortrait = [[DefaultPortraitView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
                 [defaultPortrait setColorAndLabel:user.userId Nickname:user.name];
@@ -170,10 +182,11 @@
         RCUserInfo *userInfo = [RCUserInfo new];
         userInfo.userId = user.userId;
         userInfo.portraitUri = user.portraitUri;
-        userInfo.name = user.name;
+        userInfo.name = user.displayName;
         ChatViewController * chatVc = [[ChatViewController alloc]init];
         chatVc.hidesBottomBarWhenPushed = YES;
         chatVc.conversationType = ConversationType_PRIVATE;
+        chatVc.displayUserNameInCell = NO;
         chatVc.targetId = userInfo.userId;
         chatVc.title = userInfo.name;
         chatVc.needPopToRootView = YES;
@@ -202,9 +215,9 @@
     [_searchReasult removeAllObjects];
     if ([searchText length]) {
         for (RCDUserInfo * user in _friends) {
-            if ([user.status isEqualToString:@"20"] || [user.name rangeOfString:searchText].location == NSNotFound) {
+            if ([user.status isEqualToString:@"1"] || [user.name rangeOfString:searchText].location == NSNotFound) {
                 // 忽略大小写去判断是否包含
-                if ([user.name rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                if ([user.displayName rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound) {
                     [_searchReasult addObject:user];
                 }
             }
@@ -229,6 +242,8 @@
     _allFriends = [NSMutableDictionary new];
     _allKeys = [NSMutableArray new];
     _friends = [NSMutableArray arrayWithArray:[[RCDataBaseManager shareInstance] getAllFriends]];
+    
+    [_friendsArr removeAllObjects];
     
     if (_friends.count > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -294,7 +309,7 @@
         
         NSMutableArray *tempArr = [NSMutableArray new];
         for (RCDUserInfo *user in friends) {
-            NSString * pyResult = [self hanZiToPinYinWithString:user.name];
+            NSString * pyResult = [self hanZiToPinYinWithString:user.displayName];
             NSString * firstLetter = [pyResult substringToIndex:1];
             if ([firstLetter isEqualToString:key]) {
                 [tempArr addObject:user];

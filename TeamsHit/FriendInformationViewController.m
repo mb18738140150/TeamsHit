@@ -9,6 +9,8 @@
 #import "FriendInformationViewController.h"
 #import "FriendInformationModel.h"
 #import "VirifyFriendViewController.h"
+#import "FriendDetailDataSettingViewController.h"
+
 @interface FriendInformationViewController ()
 
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageview;
@@ -35,6 +37,12 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
+    
+    TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"点点"]];
+    [rightBarItem addTarget:self action:@selector(friendDetailDatSettingAction) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
+    
+    
     self.imageview.tag = 1000;
     self.imageView1.tag = 1001;
     self.imageview2.tag = 1002;
@@ -42,19 +50,43 @@
     self.imageview4.tag = 1004;
     
     [self refreshData];
-    
+    [self updataDataSource];
     // Do any additional setup after loading the view from its nib.
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+    if (self.model.displayName.length == 0) {
+        self.nickNameLabel.text = self.model.nickName;
+    }else
+    {
+        self.nickNameLabel.text = self.model.displayName;
+    }
+}
 
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)friendDetailDatSettingAction
+{
+    FriendDetailDataSettingViewController * fvc = [[FriendDetailDataSettingViewController alloc]initWithNibName:@"FriendDetailDataSettingViewController" bundle:nil];
+    fvc.model = self.model;
+    [self.navigationController pushViewController:fvc animated:YES];
+}
+
 - (void)refreshData
 {
-    self.nickNameLabel.text = self.model.nickName;
+    if (self.model.displayName.length == 0) {
+        self.nickNameLabel.text = self.model.nickName;
+    }else
+    {
+        self.nickNameLabel.text = self.model.displayName;
+    }
+    
+    
     self.accountNumberLabel.text = [NSString stringWithFormat:@"%@", self.model.userId];
     [self.iconImageview sd_setImageWithURL:[NSURL URLWithString:self.model.iconUrl] placeholderImage:[UIImage imageNamed:@"logo(1)"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (image) {
@@ -70,6 +102,7 @@
     }else
     {
         [self.oparationBT setTitle:@"添加好友" forState:UIControlStateNormal];
+        self.navigationItem.rightBarButtonItem.customView.hidden = YES;
     }
     
     for (int i = 0; i < self.model.galleryList.count; i++) {
@@ -82,7 +115,6 @@
             }];
         }
     }
-    
 }
 - (IBAction)addfriendAction:(id)sender {
     
@@ -96,6 +128,73 @@
     }
     
 }
+
+- (void)updataDataSource
+{
+    RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
+    userinfo.name = self.model.nickName;
+    userinfo.portraitUri = self.model.iconUrl;
+    userinfo.displayName = self.model.displayName;
+    [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
+    
+    RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
+    user.portraitUri = self.model.iconUrl;
+    if (self.model.displayName.length != 0) {
+        user.name = self.model.displayName;
+    }else
+    {
+        user.name = self.model.nickName;
+    }
+    [[RCDataBaseManager shareInstance]insertUserToDB:user];
+
+    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+}
+
+- (void)getfriendInformation
+{
+    NSDictionary * jsonDic = @{
+                               @"Account":self.targetId
+                               };
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/SearchFriend?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    __weak FriendInformationViewController * chatVC = self;
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            self.model = [[FriendInformationModel alloc]initWithDictionery:responseObject];
+            
+            RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
+            userinfo.name = self.model.nickName;
+            userinfo.portraitUri = self.model.iconUrl;
+            userinfo.displayName = self.model.displayName;
+            [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
+            
+            RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
+            user.portraitUri = self.model.iconUrl;
+            if (self.model.displayName.length != 0) {
+                user.name = self.model.displayName;
+            }else
+            {
+                user.name = self.model.nickName;
+            }
+            [[RCDataBaseManager shareInstance]insertUserToDB:user];
+            
+            
+        }else
+        {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

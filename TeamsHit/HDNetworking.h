@@ -125,6 +125,17 @@ HDSingletonH(HDNetworking) // 单例声明
  */
 - (NSURLSessionDownloadTask *)downLoadWithURL:(NSString *)URLString progress:(Progress)progress destination:(Destination)destination downLoadSuccess:(DownLoadSuccess)downLoadSuccess failure:(Failure)failure;
 
+// 设置好友备注名
+- (void)setFriendDisplayName:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 好友朋友圈权限设置
+- (void)setTargetPermission:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 我的朋友圈权限设置
+- (void)setUserPermission:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 获取朋友圈权限状态
+- (void)getPermission:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 获取个人详细资料getDetailInfor
+- (void)getDetailInfor:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+
 @end
 
 NS_ASSUME_NONNULL_END

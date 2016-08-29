@@ -681,7 +681,6 @@
     NSMutableArray* list = [NSMutableArray new];
     
     
-    
     [[HDNetworking sharedHDNetworking]POSTwithToken:userId parameters:nil progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
@@ -709,6 +708,7 @@
                         }
                         userInfo.status = [NSString stringWithFormat:@"%@",[dic objectForKey:@"Status"]];
                         userInfo.updatedAt = [NSString stringWithFormat:@"%@",[dic objectForKey:@"UpdatedAt"]];
+                        userInfo.displayName = [NSString stringWithFormat:@"%@", [dic objectForKey:@"DisplayName"]];
                         [list addObject:userInfo];
                         [_allFriends addObject:userInfo];
                         

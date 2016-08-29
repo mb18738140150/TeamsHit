@@ -15,6 +15,7 @@
 #import "RCDHttpTool.h"
 
 #import "FriendListViewController.h"
+#import "CreatGroupChatRoomViewController.h"
 
 @interface ChatListViewController ()
 
@@ -490,9 +491,39 @@
     }else{
         dispatch_async(dispatch_get_main_queue(), ^{
             //调用父类刷新未读消息数
+            NSLog(@"[message.content class] = %@", [message.content class]);
             [super didReceiveMessageNotification:notification];
-            //            [blockSelf_ resetConversationListBackgroundViewIfNeeded];
-            //            [self notifyUpdateUnreadMessageCount]; super会调用notifyUpdateUnreadMessageCount
+//                        [self notifyUpdateUnreadMessageCount]; //super会调用notifyUpdateUnreadMessageCount
+            [blockSelf_ refreshConversationTableViewIfNeeded];
+//            [RCDHTTPTOOL getUserInfoByUserID:message.senderUserId
+//                                  completion:^(RCUserInfo *user) {
+//                                      RCDUserInfo *rcduserinfo_ = [RCDUserInfo new];
+//                                      rcduserinfo_.name = user.name;
+//                                      rcduserinfo_.userId = user.userId;
+//                                      rcduserinfo_.portraitUri = user.portraitUri;
+//                                      
+//                                      RCConversationModel *customModel = [RCConversationModel new];
+//                                      customModel.conversationModelType = RC_CONVERSATION_MODEL_TYPE_CUSTOMIZATION;
+//                                      customModel.extend = rcduserinfo_;
+//                                      customModel.senderUserId = message.senderUserId;
+//                                      customModel.lastestMessage = message.content;
+//                                      //[_myDataSource insertObject:customModel atIndex:0];
+//                                      
+//                                      dispatch_async(dispatch_get_main_queue(), ^{
+//                                          //调用父类刷新未读消息数
+//                                          [blockSelf_ refreshConversationTableViewWithConversationModel:customModel];
+//                                          //[super didReceiveMessageNotification:notification];
+//                                          //              [blockSelf_ resetConversationListBackgroundViewIfNeeded];
+//                                          [self notifyUpdateUnreadMessageCount];
+//                                          
+//                                          //当消息为RCContactNotificationMessage时，没有调用super，如果是最后一条消息，可能需要刷新一下整个列表。
+//                                          //原因请查看super didReceiveMessageNotification的注释。
+//                                          NSNumber *left = [notification.userInfo objectForKey:@"left"];
+//                                          if (0 == left.integerValue) {
+//                                              [super refreshConversationTableViewIfNeeded];
+//                                          }
+//                                      });
+//                                  }];
         });
     }
 }
@@ -508,6 +539,7 @@
         _conversationVC.title = model.conversationTitle;
         _conversationVC.conversation = model;
         _conversationVC.unReadMessage = model.unreadMessageCount;
+        _conversationVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:_conversationVC animated:YES];
     }
     
@@ -532,6 +564,7 @@
 //            [self.navigationController pushViewController:addressBookVC animated:YES];
             return;
         }
+        _conversationVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:_conversationVC animated:YES];
     }
     
@@ -583,6 +616,10 @@
 - (void) pushContactSelected:(id) sender
 {
     NSLog(@"创建群组");
+    CreatGroupChatRoomViewController * crearGroupVc = [[CreatGroupChatRoomViewController alloc]init];
+    crearGroupVc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:crearGroupVc animated:YES];
+    
 }
 - (void) pushAddFriend:(id) sender
 {
@@ -594,6 +631,8 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+//    [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_PRIVATE targetId:@""];
+    
 }
 
 /*
