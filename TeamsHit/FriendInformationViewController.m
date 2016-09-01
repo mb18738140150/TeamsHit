@@ -105,10 +105,10 @@
         self.navigationItem.rightBarButtonItem.customView.hidden = YES;
     }
     
-    for (int i = 0; i < self.model.galleryList.count; i++) {
+    for (int i = 0; i < self.model.galleriesList.count; i++) {
         if (i<=4) {
             UIImageView * imageView = [self.imageview viewWithTag:1001 + i];
-            [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.galleryList[i]] placeholderImage:[UIImage imageNamed:@"logo(1)"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.galleriesList[i]] placeholderImage:[UIImage imageNamed:@"logo(1)"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 if (image) {
                     imageView.image = image;
                 }

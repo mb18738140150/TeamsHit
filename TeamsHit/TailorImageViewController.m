@@ -37,20 +37,20 @@
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(complete)];
         
-        CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-        CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+        CGFloat screenWidth1 = [UIScreen mainScreen].bounds.size.width;
+        CGFloat screenHeight1 = [UIScreen mainScreen].bounds.size.height;
         CGFloat left = 50;
         CGFloat cropWidth = ScreenWidth - left * 2.0;
-        CGRect rect = CGRectMake((screenWidth - 100) / 2.0, (screenHeight - bottomViewHeight) / 2.0 - 100, 100, 100);
+        CGRect rect = CGRectMake((screenWidth1 - 100) / 2.0, (screenHeight1 - bottomViewHeight) / 2.0 - 100, 100, 100);
         _rect = rect;
         
         [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
         
-        self.imageCropperView = [[TailorImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight - bottomViewHeight) image:image rectArray:@[NSStringFromCGRect(rect)]];
+        self.imageCropperView = [[TailorImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth1, screenHeight1 - bottomViewHeight) image:image rectArray:@[NSStringFromCGRect(rect)]];
         //        [self.imageCropperView setConstrain:CGSizeMake(30, 10)];
         [self.view addSubview:_imageCropperView];
         
-        UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, screenHeight - bottomViewHeight, screenWidth, bottomViewHeight)];
+        UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, screenHeight1 - bottomViewHeight, screenWidth1, bottomViewHeight)];
         bottomView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
         bottomView.userInteractionEnabled = YES;
         
@@ -65,7 +65,7 @@
         [cancleButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [bottomView addSubview:cancleButton];
         
-        CGFloat imageButtonWidth = (screenWidth - 100 - 30) / 2.0;
+        CGFloat imageButtonWidth = (screenWidth1 - 100 - 30) / 2.0;
         
         UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
         addButton.frame = CGRectMake(CGRectGetMaxX(cancleButton.frame) + 10, buttonTop, imageButtonWidth, buttonHeight);

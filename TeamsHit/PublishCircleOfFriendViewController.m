@@ -12,9 +12,16 @@
 #import "MLSelectPhotoBrowserViewController.h"
 #import "PublishCollectionViewCell.h"
 
+#import "HDPicModle.h"
+
 #define kPublishCellID @"PublishCellID"
 
 @interface PublishCircleOfFriendViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate>
+{
+    MBProgressHUD* hud ;
+}
+
+@property (nonatomic, copy)PublishBlock myPublishBlock;
 
 @property (nonatomic, strong)UIScrollView * publishScrollView;
 
@@ -22,12 +29,22 @@
 @property (nonatomic, strong)UITextView * ideaTextView;
 @property (nonatomic, strong)UICollectionView * phoneCollectionView;
 @property (nonatomic , strong) NSMutableArray *assets;
+@property (nonatomic, strong) NSMutableArray * imageUrlArr;
 
 @property (nonatomic, strong)UIView * permissionView;
 
 @end
 
 @implementation PublishCircleOfFriendViewController
+
+- (NSMutableArray *)imageUrlArr
+{
+    if (!_imageUrlArr) {
+        self.imageUrlArr = [NSMutableArray array];
+    }
+    return _imageUrlArr;
+}
+
 - (NSMutableArray *)assets{
     if (!_assets) {
         _assets = [NSMutableArray array];
@@ -40,10 +57,36 @@
     
     self.view.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
     
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"发布朋友圈"];
+    [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
+    
+    TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"title_right_icon"] title:@"发表"];
+    [rightBarItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateNormal];
+    [rightBarItem addTarget:self action:@selector(publishAction:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
+    
     
     [self creatSubViews];
 }
-
+- (void)backAction:(UIButton *)button
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)publishAction:(UIButton *)button
+{
+    NSLog(@"发表");
+    
+    if (self.ideaTextView.text.length == 0 && self.imageUrlArr.count == 0) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"内容与图片不能全部为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }else
+    {
+        [self uploadImage];
+    }
+    
+    
+}
 - (void)creatSubViews
 {
     self.publishScrollView = [[UIScrollView alloc]initWithFrame:self.view.bounds];
@@ -193,7 +236,226 @@
     
 }
 
+#pragma mark - 上传图片
+- (void)uploadImage
+{
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"图片上传中...";
+    NSLog(@"***** 上传图片");
+    [hud show:YES];
+    
+    if (self.assets.count > 1) {
+        
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_queue_create("cn.gcd-group.www", DISPATCH_QUEUE_CONCURRENT);
+        
+        for (int i = 0; i < self.assets.count; i++) {
+            MLSelectPhotoAssets *asset = self.assets[i];
+            
+            HDPicModle * imageModel = [[HDPicModle alloc]init];
+            imageModel.pic = asset.originImage;
+            imageModel.picName = [self imageName];
+            imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+            NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"2"];
+            NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+            
+            
+            dispatch_group_enter(group);
+            dispatch_async(queue, ^{
+                [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
+                    NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
+                } success:^(id  _Nonnull responseObject) {
+                    NSLog(@"上传成功");
+                    NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+                    NSLog(@"dic = %@", dic);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.imageUrlArr addObject:[dic objectForKey:@"ImgPath"]];
+                        dispatch_group_leave(group);
+                    });
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"error = %@", error);
+                    NSLog(@"上传失败");
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        dispatch_group_leave(group);
+                    });
+                }];
+            });
+            
+        }
+        
+        dispatch_group_notify(group, dispatch_get_global_queue(0, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self publishShuoshuo];
+                [hud hide:YES];
+            });
+        });
+    }else if(self.assets.count == 1)
+    {
+        HDPicModle * imageModel = [[HDPicModle alloc]init];
+        imageModel.pic = [[self.assets firstObject] originImage];
+        imageModel.picName = [self imageName];
+        imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+        NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"2"];
+        NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        
+        [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
+            NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
+        } success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"上传成功");
+            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSLog(@"dic = %@", dic);
+            [self.imageUrlArr addObject:[dic objectForKey:@"ImgPath"]];
+            [self publishShuoshuo];
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            NSLog(@"error = %@", error);
+            NSLog(@"上传失败");
+        }];
+    }else
+    {
+        [self publishShuoshuo];
+    }
+}
 
+- (NSString *)imageName
+{
+    NSDateFormatter * myFormatter = [[NSDateFormatter alloc]init];
+    [myFormatter setDateFormat:@"yyyyMMddhhmmss"];
+    NSString * strTime = [myFormatter stringFromDate:[NSDate date]];
+    NSString * name = [NSString stringWithFormat:@"t%@%lld.png",  strTime, arc4random() % 9000000000 + 1000000000];
+    return name;
+}
+
+- (NSString *)getLibraryCachePath
+{
+    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+- (void)publishShuoshuo
+{
+    NSString * imageUrlStr = @"";
+    for (int i = 0; i < self.imageUrlArr.count; i++) {
+        if (i == 0) {
+            imageUrlStr = self.imageUrlArr.firstObject;
+        }else
+        {
+            imageUrlStr = [imageUrlStr stringByAppendingString:[NSString stringWithFormat:@",%@", self.imageUrlArr[i]]];
+        }
+        
+    }
+    [hud hide:YES];
+    hud = nil;
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"发布中...";
+    [hud show:YES];
+    NSDictionary * jsonDic = @{
+                               @"TakeContent":self.ideaTextView.text,
+                               @"PhotoLists":imageUrlStr
+                               };
+    
+    NSLog(@"imageUrlStr = %@", imageUrlStr);
+    
+    NSString * url = [NSString stringWithFormat:@"%@news/publishTake?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    __weak PublishCircleOfFriendViewController * addVC = self;
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        [hud hide:YES];
+        int command = [[responseObject objectForKey:@"Command"] intValue];
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (command == 10029) {
+            if (code == 200) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"发布成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                
+                if (self.myPublishBlock) {
+                    
+                    WFMessageBody * messageBody = [[WFMessageBody alloc]init];
+                    messageBody.posterContent = self.ideaTextView.text;
+                    messageBody.posterId = [responseObject objectForKey:@"TakeId"];
+                    messageBody.publishTime = [self getTimeStr:[responseObject objectForKey:@"CreateTime"]];
+                    
+                    NSString * photoLists = imageUrlStr;
+                    if (![photoLists isEqual:[NSNull null]]) {
+                        if ([photoLists containsString:@","]) {
+                            messageBody.posterPostImage = [photoLists componentsSeparatedByString:@","];
+                        }else
+                        {
+                            messageBody.posterPostImage = @[imageUrlStr];
+                        }
+                    }
+                    messageBody.posterReplies = [NSMutableArray array];
+                    messageBody.posterImgstr = [RCIM sharedRCIM].currentUserInfo.portraitUri;
+                    messageBody.posterName = [RCIM sharedRCIM].currentUserInfo.name;
+                    messageBody.posterUserId = [RCIM sharedRCIM].currentUserInfo.userId;
+                    messageBody.posterFavour = [NSMutableArray array];
+                    messageBody.posterFavourUserArr = [NSMutableArray array];
+                    messageBody.isFavour = NO;
+                    
+                    _myPublishBlock(messageBody);
+                }
+                [self.navigationController popViewControllerAnimated:YES];
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+        }else
+        {
+            ;
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+        [hud hide:YES];
+    }];
+}
+- (NSString *)getTimeStr:(NSNumber *)number
+{
+    double lastactivityInterval = [number doubleValue];
+    NSDateFormatter * fomatter = [[NSDateFormatter alloc]init];
+    fomatter.dateFormat = @"yyyy-MM-dd";
+    
+    NSDate * date = [NSDate dateWithTimeIntervalSince1970:lastactivityInterval];
+    
+    NSDate * currentDate = [NSDate dateWithTimeIntervalSinceNow:0];
+    
+    NSTimeInterval time = [currentDate timeIntervalSinceDate:date];
+    
+    NSLog(@"time = %.0f", time);
+    
+    if (time < 60 && time >= 0) {
+        return @"刚刚";
+    } else if (time >= 60 && time < 3600) {
+        return [NSString stringWithFormat:@"%.0f分钟前", time / 60];
+    } else if (time >= 3600 && time < 3600 * 24) {
+        return [NSString stringWithFormat:@"%.0f小时前", time / 3600];
+    } else if (time >= 3600 * 24 && time < 3600 * 24 * 2) {
+        return @"昨天";
+    } else if (time >= 3600 * 24 * 2 && time < 3600 * 24 * 30) {
+        return [NSString stringWithFormat:@"%.0f天前", time / 3600 / 24];
+    } else if (time >= 3600 * 24 * 30 && time < 3600 * 24 * 30 * 12) {
+        return [NSString stringWithFormat:@"%.0f月前", time / 3600 / 24 / 30];
+    } else if (time >= 3600 * 24 * 30 * 12) {
+        return [NSString stringWithFormat:@"%.0f年前", time / 3600 / 24 / 30 / 12];
+    } else {
+        return @"刚刚";
+    }
+    
+    NSString * dateString = [fomatter stringFromDate:date];
+    
+    return dateString;
+    
+}
+- (void)publishShuoShuoSuccess:(PublishBlock)publishBlock
+{
+    self.myPublishBlock = [publishBlock copy];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

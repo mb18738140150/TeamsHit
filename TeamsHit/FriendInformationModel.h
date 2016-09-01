@@ -17,7 +17,7 @@
 @property (nonatomic, copy)NSString * phone;
 @property (nonatomic, copy)NSString * address;
 @property (nonatomic, strong)NSNumber * isFriend;
-@property (nonatomic, strong)NSArray * galleryList;// 朋友圈图片地址链接数组
+@property (nonatomic, strong)NSMutableArray * galleriesList;// 朋友圈图片地址链接数组
 
 - (instancetype)initWithDictionery:(NSDictionary *)dic;
 

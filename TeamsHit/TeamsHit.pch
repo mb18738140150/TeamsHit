@@ -41,6 +41,9 @@
 #import "MLSelectPhotoPickerViewController.h"
 #import "MLSelectPhotoAssets.h"
 
+#import "YMTextData.h"
+#import "WFMessageBody.h"
+
 #import "TipView.h"
 
 // 图片最多显示张数，超过九张取消单击事件

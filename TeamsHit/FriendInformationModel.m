@@ -14,7 +14,7 @@
 {
     self = [super init];
     if (self) {
-        self.galleryList = [NSArray array];
+        self.galleriesList = [NSMutableArray array];
         [self setValuesForKeysWithDictionary:dic];
     }
     return self;
@@ -22,6 +22,11 @@
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
 {
+    if ([key isEqualToString:@"GalleryList"]) {
+        for (NSDictionary * imageUrlDic in value) {
+            [self.galleriesList addObject:[imageUrlDic objectForKey:@"ImgUrl"]];
+        }
+    }
     NSLog(@"UndefinedKey = %@", key);
 }
 

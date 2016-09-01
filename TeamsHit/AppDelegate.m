@@ -245,7 +245,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
      */
     [[RCIMClient sharedRCIMClient] recordRemoteNotificationEvent:userInfo];
     /**
-     * 获取融云推送服务扩展字段2
+     * 获取融云推送服务扩展字段2 
      */
     NSDictionary *pushServiceData = [[RCIMClient sharedRCIMClient] getPushExtraFromRemoteNotification:userInfo];
     if (pushServiceData) {

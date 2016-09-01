@@ -279,6 +279,7 @@ HDSingletonM(HDNetworking) // 单例实现
     // 时间戳
     NSDate *datenow = [NSDate date];
     NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+    
     /*
      appid : 627515567417   1114a89792a97e51659
      appsecret : aQmo3zbxT6bhsmaZweCd
@@ -340,7 +341,7 @@ HDSingletonM(HDNetworking) // 单例实现
         {
             @autoreleasepool {
                 HDPicModle *picModle = picArray[i];
-                fileName = [NSString stringWithFormat:@"pic%02d.jpg", i];
+                fileName = [NSString stringWithFormat:@"%@.jpg", picModle.picName];
                 /**
                  *  压缩图片然后再上传(1.0代表无损 0~~1.0区间)
                  */

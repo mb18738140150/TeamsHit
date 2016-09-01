@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^PublishBlock)(WFMessageBody * messageBody);
+
 @interface PublishCircleOfFriendViewController : UIViewController
+
+- (void)publishShuoShuoSuccess:(PublishBlock)publishBlock;
 
 @end
