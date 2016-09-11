@@ -10,4 +10,6 @@
 
 @interface CreatGroupChatRoomViewController : UIViewController
 
+@property (nonatomic, copy)NSString * targetId;
+
 @end

@@ -41,6 +41,7 @@
 
     _messageBody = messageBody;
     _showImageArray = messageBody.posterPostImage;
+    _thumbnailShowImageArray = messageBody.thumbnailPosterImage;
     _foldOrNot = YES;
     _showShuoShuo = messageBody.posterContent;
     _defineAttrData = [self findAttrWith:messageBody.posterReplies];

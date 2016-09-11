@@ -28,6 +28,7 @@
 #import "RCDataBaseManager.h"
 #import "RCDTestMessage.h"
 #import "MobClick.h"
+#import "RCFriendCircleUserInfo.h"
 
 #define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // online key
 
@@ -268,6 +269,9 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     //震动
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
     AudioServicesPlaySystemSound(1007);
+    
+    NSLog(@"notification = %@", notification);
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -283,7 +287,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
                                            @(ConversationType_GROUP)
                                            ]];
     application.applicationIconBadgeNumber = unreadMsgCount;
-    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -464,18 +467,29 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         
         NSLog(@"msg.operation = %@", msg.operation);
         if ([msg.operation isEqualToString:ContactNotificationMessage_ContactOperationRequest]) {
-            ;
+            [self updateNewFriendRequestDB:msg.senderUserInfo];
         }
         
         if ([msg.operation isEqualToString:ContactNotificationMessage_ContactOperationAcceptResponse]) {
+            
+            NSLog(@"msg.senderUserInfo.userid = %@ msg.senderUserInfo.name = %@ ** %@", msg.senderUserInfo.userId, msg.senderUserInfo.name, msg.senderUserInfo.portraitUri);
+            
             NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
             [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {
             }];
         }
         if ([msg.operation isEqualToString:@"DelFriend"]) {
-                NSString * strId = msg.extra;
+            
+            NSLog(@"收到删除好友的通知了");
+            
+                NSString * strId = msg.sourceUserId;
                 [self deleteFriendWithUserId:strId];
         }
+        if ([msg.operation isEqualToString:@"LatestFriendCircleMessage"]) {
+            NSLog(@"被评论了");
+            [self updateFriendCircleMessageDB: msg.senderUserInfo];
+        }
+        
     }else if ([message.content isMemberOfClass:[RCGroupNotificationMessage class]]) {
         //  群组通知消息类
         RCGroupNotificationMessage *msg = (RCGroupNotificationMessage *)message.content;
@@ -493,8 +507,66 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     }
 }
 
+-(BOOL)onRCIMCustomLocalNotification:(RCMessage*)message
+                      withSenderName:(NSString *)senderName
+{
+    if ([message.content isMemberOfClass:[RCContactNotificationMessage class]]) {
+        // 好友请求消息类
+        RCContactNotificationMessage *msg = (RCContactNotificationMessage *)message.content;
+        if ([msg.operation isEqualToString:@"DelFriend"]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)updateNewFriendRequestDB:(RCUserInfo *)userinfo
+{
+    RCUserInfo * model = [[RCUserInfo alloc]init];
+    model.userId = userinfo.userId;
+    model.name = userinfo.name;
+    model.portraitUri = userinfo.portraitUri;
+    
+    BOOL ishave = NO;
+    NSArray * newFriendRequestArr = [[RCDataBaseManager shareInstance]getAllNewFriendRequests];
+    if (newFriendRequestArr) {
+        for (RCUserInfo * User in newFriendRequestArr) {
+            if ([User.userId isEqualToString:userinfo.userId]) {
+                ishave = YES;
+                break;
+            }
+        }
+    }
+    if (!ishave) {
+        [[RCDataBaseManager shareInstance]insertNewFriendUserInfo:model];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"newFriendRequestNotification" object:nil];
+    }
+}
+
+#pragma mark - 更新说说评论数据库
+- (void)updateFriendCircleMessageDB:(RCUserInfo *)userinfo
+{
+    RCFriendCircleUserInfo * model = [[RCFriendCircleUserInfo alloc]init];
+    model.name = userinfo.name;
+    model.userId = userinfo.userId;
+    model.portraitUri = userinfo.portraitUri;
+    NSInteger number = [[RCDataBaseManager shareInstance]getFriendcircleMessageNumber];
+    model.number = [NSString stringWithFormat:@"%d", number + 1];
+    
+    [[RCDataBaseManager shareInstance]insertFriendcircleMessageToDB:model];
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"UpdateFriendCircleMessageCount" object:nil];
+}
+
+// 被解除好友关系操作
 - (void)deleteFriendWithUserId:(NSString * )strId
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"被删除" message:@"你呗好友删除！" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+//        [alert show];
+        
+    });
+    
     [[RCIMClient sharedRCIMClient]deleteMessages:ConversationType_PRIVATE targetId:strId success:^{
         ;
     } error:^(RCErrorCode status) {
@@ -502,7 +574,8 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     }];
     
     [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_PRIVATE targetId:strId];
-    
+    NSLog(@"删除好友通知");
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteFriendNotification" object:nil];
     // 同步好友列表
     NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
@@ -536,6 +609,11 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     NSLog(@"application userInfo = %@", userInfo);
+     //判断应用程序当前的运行状态，如果是激活状态，则进行提醒，否则不提醒
+    if (application.applicationState == UIApplicationStateActive) {
+        //显示警告内容
+    }
 }
+
 
 @end

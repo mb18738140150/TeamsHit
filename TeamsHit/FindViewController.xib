@@ -8,6 +8,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FindViewController">
             <connections>
                 <outlet property="friendCircle" destination="QsF-42-lgT" id="u5J-bb-Sjx"/>
+                <outlet property="noreadMassageNumberLabel" destination="YYY-XO-ndi" id="rJg-T3-h85"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -36,11 +37,29 @@
                             <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YYY-XO-ndi">
+                            <rect key="frame" x="125" y="17" width="16" height="16"/>
+                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="7gM-fy-vkn"/>
+                                <constraint firstAttribute="width" constant="16" id="oWf-ec-xA7"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="6"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="EoY-lD-Pto"/>
+                        <constraint firstItem="YYY-XO-ndi" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="top" constant="17" id="Lj7-zB-2fn"/>
                         <constraint firstItem="eDd-P0-xcw" firstAttribute="leading" secondItem="QsF-42-lgT" secondAttribute="leading" constant="14" id="Tad-DM-aKR"/>
+                        <constraint firstItem="YYY-XO-ndi" firstAttribute="leading" secondItem="AaM-5q-3e2" secondAttribute="trailing" constant="15" id="sA4-VL-sQM"/>
                         <constraint firstItem="eDd-P0-xcw" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="top" constant="8" id="uJO-VB-gRD"/>
                         <constraint firstItem="AaM-5q-3e2" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="top" constant="17" id="w7l-BP-Tik"/>
                         <constraint firstItem="AaM-5q-3e2" firstAttribute="leading" secondItem="eDd-P0-xcw" secondAttribute="trailing" constant="12" id="zr7-zL-i7T"/>

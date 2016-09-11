@@ -18,6 +18,8 @@ typedef void(^SelectBlock)(BOOL isSelect);
 
 @property (nonatomic, strong) UIButton * selectStateBT;
 
+@property (nonatomic, strong)UILabel * noreadlabel;
+
 - (void)getSelectState:(SelectBlock)selectBlock;
 
 @end

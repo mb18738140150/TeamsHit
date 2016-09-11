@@ -209,7 +209,7 @@
             image.tag = kImageTag + i;
             //        image.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[ymData.showImageArray objectAtIndex:i]]];
             
-            [image sd_setImageWithURL:[NSURL URLWithString:[ymData.showImageArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"1"]];
+            [image sd_setImageWithURL:[NSURL URLWithString:[ymData.thumbnailShowImageArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"1"]];
             
             [self.contentView addSubview:image];
             [_imageArray addObject:image];
@@ -226,7 +226,7 @@
         image.backgroundColor = [UIColor clearColor];
         image.tag = kImageTag;
         
-        [image sd_setImageWithURL:[NSURL URLWithString:[ymData.showImageArray firstObject]] placeholderImage:[UIImage imageNamed:@"1"]];
+        [image sd_setImageWithURL:[NSURL URLWithString:[ymData.thumbnailShowImageArray firstObject]] placeholderImage:[UIImage imageNamed:@"1"]];
         
         [self.contentView addSubview:image];
         [_imageArray addObject:image];
@@ -364,6 +364,7 @@
         _deleteBtn.frame = CGRectMake(offSet_X + publishSize.width + 20 , replyImageView.frame.origin.y - 24, 30, publishSize.height);
     }
     
+    [self setNeedsDisplay];
 }
 
 - (CGSize)getpublishSizeWith:(NSString *)string
@@ -435,6 +436,18 @@
     
     [_delegate showImageViewWithImageViews:tapGes.appendArray byClickWhich:tapGes.view.tag];
     
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetRGBStrokeColor(context, 0.7, 0.7, 0.7, 1);
+    CGContextSetLineCap(context, kCGLineCapSquare);
+    CGContextSetLineWidth(context, .7);
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, 10, self.hd_height - 0.7);
+    CGContextAddLineToPoint(context, self.hd_width, self.hd_height - 0.7);
+    CGContextStrokePath(context);
 }
 
 @end

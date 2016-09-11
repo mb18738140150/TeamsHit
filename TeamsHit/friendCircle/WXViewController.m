@@ -21,6 +21,10 @@
 
 #import "PublishCircleOfFriendViewController.h"
 
+#import "FriendCircleMessgaeViewController.h"
+#import "NoreadMessageCell.h"
+#import "RCFriendCircleUserInfo.h"
+
 #define dataCount 10
 #define kLocationToBottom 20
 #define kAdmin [RCIM sharedRCIM].currentUserInfo.name
@@ -52,6 +56,10 @@
 @property (nonatomic, assign)int page;
 @property (nonatomic,strong) WFPopView *operationView;
 @property (nonatomic,strong) NSIndexPath *selectedIndexPath;
+
+@property (nonatomic, strong)UIView * noReadMessageView;
+
+@property (nonatomic, assign)BOOL isHaveNoreadMessage;
 
 @end
 
@@ -323,16 +331,29 @@
         if (![photoLists isEqual:[NSNull null]]) {
             if ([photoLists containsString:@","]) {
                 NSArray * imageArr = [[friendCircleDic objectForKey:@"PhotoLists"] componentsSeparatedByString:@","];
+                NSMutableArray * thumbnailImageArr = [NSMutableArray array];
                 if (imageArr.count > 1) {
                     messageBody.posterPostImage = imageArr;
+                    for (NSString * imageUrl in imageArr) {
+                        NSString * newImageAtr = [imageUrl stringByAppendingString:@".w150.png"];
+                        [thumbnailImageArr addObject:newImageAtr];
+                    }
+                    
                 }else
                 {
                     messageBody.posterPostImage = @[imageArr.firstObject];
+                    for (NSString * imageUrl in imageArr) {
+                        NSString * newImageAtr = [imageUrl stringByAppendingString:@".w375.png"];
+                        [thumbnailImageArr addObject:newImageAtr];
+                    }
                 }
+                
+                messageBody.thumbnailPosterImage = [thumbnailImageArr copy];
 //                messageBody.posterPostImage = [[friendCircleDic objectForKey:@"PhotoLists"] componentsSeparatedByString:@","];
             }else
             {
                 messageBody.posterPostImage = @[[friendCircleDic objectForKey:@"PhotoLists"]];
+                messageBody.thumbnailPosterImage = @[[NSString stringWithFormat:@"%@%@", [friendCircleDic objectForKey:@"PhotoLists"],@".w375.png" ]];
             }
         }
         messageBody.posterReplies = posterReplies;
@@ -397,6 +418,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
+    
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"朋友圈"];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
@@ -406,10 +428,12 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     _page = 1;
     
+    if ([[RCDataBaseManager shareInstance]getFriendcircleMessageNumber]) {
+        _isHaveNoreadMessage = YES;
+    }
+    
     [self initTableview];
     [self configData];
-    
-    
 }
 
 - (void)backAction:(UIButton *)button
@@ -459,7 +483,6 @@
     });
 }
 
-
 #pragma mark - 计算高度
 - (void)calculateHeight:(NSMutableArray *)dataArray{
 
@@ -488,25 +511,6 @@
         [_tableDataSource addObject:ymData];
     }
     
-//    for (YMTextData *ymData in dataArray) {
-//        
-//        [ymData.completionReplySource removeAllObjects];
-//        [ymData.attributedDataReply removeAllObjects];
-//        [ymData.attributedDataFavour removeAllObjects];
-//        [ymData.attributedDataShuoshuo removeAllObjects];
-//        
-//        ymData.shuoshuoHeight = [ymData calculateShuoshuoHeightWithWidth:self.view.frame.size.width withUnFoldState:NO];//折叠
-//        
-//        ymData.unFoldShuoHeight = [ymData calculateShuoshuoHeightWithWidth:self.view.frame.size.width withUnFoldState:YES];//展开
-//        
-//        ymData.replyHeight = [ymData calculateReplyHeightWithWidth:self.view.frame.size.width];
-//        
-//        ymData.favourHeight = [ymData calculateFavourHeightWithWidth:self.view.frame.size.width];
-//        
-//        [_tableDataSource addObject:ymData];
-//        
-//    }
-    
     double deltaTime = [[NSDate date] timeIntervalSinceDate:tmpStartData];
     NSLog(@"cost time = %f", deltaTime);
     
@@ -521,8 +525,9 @@
 
     mainTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64)];
     mainTable.backgroundColor = [UIColor clearColor];
-    // mainTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+     mainTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     mainTable.tableHeaderView = [self getMainTableHeadView];
+    
     mainTable.delegate = self;
     mainTable.dataSource = self;
     [self.view addSubview:mainTable];
@@ -639,45 +644,84 @@
 
 //**
 // *  ///////////////////////////////////////////////////
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    return  _tableDataSource.count;
+    if (section == 1) {
+        return  _tableDataSource.count;
+    }else
+    {
+        if (_isHaveNoreadMessage) {
+            return 1;
+        }
+        return 0;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
    
-    YMTextData *ym = [_tableDataSource objectAtIndex:indexPath.row];
-    BOOL unfold = ym.foldOrNot;
     
-    if (ym.showImageHeight == 0) {
-        return TableHeader + kLocationToBottom + ym.replyHeight + ym.showImageHeight  + kDistance + (ym.islessLimit?0:30) + (unfold?ym.shuoshuoHeight:ym.unFoldShuoHeight) + kReplyBtnDistance + ym.favourHeight + (ym.favourHeight == 0?0:kReply_FavourDistance) - 50;
+    if (indexPath.section == 1) {
+        YMTextData *ym = [_tableDataSource objectAtIndex:indexPath.row];
+        BOOL unfold = ym.foldOrNot;
+        
+        if (ym.showImageHeight == 0) {
+            return TableHeader + kLocationToBottom + ym.replyHeight + ym.showImageHeight  + kDistance + (ym.islessLimit?0:30) + (unfold?ym.shuoshuoHeight:ym.unFoldShuoHeight) + kReplyBtnDistance + ym.favourHeight + (ym.favourHeight == 0?0:kReply_FavourDistance) - 50;
+        }
+        return TableHeader + kLocationToBottom + ym.replyHeight + ym.showImageHeight  + kDistance + (ym.islessLimit?0:30) + (unfold?ym.shuoshuoHeight:ym.unFoldShuoHeight) + kReplyBtnDistance + ym.favourHeight + (ym.favourHeight == 0?0:kReply_FavourDistance) - 30;
+    }else
+    {
+        if (_isHaveNoreadMessage) {
+            return 60;
+        }
+        return 0;
     }
-    return TableHeader + kLocationToBottom + ym.replyHeight + ym.showImageHeight  + kDistance + (ym.islessLimit?0:30) + (unfold?ym.shuoshuoHeight:ym.unFoldShuoHeight) + kReplyBtnDistance + ym.favourHeight + (ym.favourHeight == 0?0:kReply_FavourDistance) - 30;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    static NSString *CellIdentifier = @"ILTableViewCell";
-    
-    YMTableViewCell *cell = (YMTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[YMTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    if (indexPath.section == 1) {
+        static NSString *CellIdentifier = @"ILTableViewCell";
+        
+        YMTableViewCell *cell = (YMTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            cell = [[YMTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        cell.stamp = indexPath.row;
+        cell.replyBtn.appendIndexPath = indexPath;
+        [cell.replyBtn addTarget:self action:@selector(replyAction:) forControlEvents:UIControlEventTouchUpInside];
+        cell.deleteBtn.appendIndexPath = indexPath;
+        [cell deleteTake:^{
+            NSLog(@"删除说说");
+            [self deleteTake:[_tableDataSource objectAtIndex:indexPath.row]];
+        }];
+        
+        cell.delegate = self;
+        [cell setYMViewWith:[_tableDataSource objectAtIndex:indexPath.row]];
+        
+        return cell;
+    }else
+    {
+        NoreadMessageCell * cell = [tableView dequeueReusableCellWithIdentifier:KNoreadFriendCircleMessgaeCellIdentifire];
+        if (cell == nil) {
+            cell = [[NoreadMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:KNoreadFriendCircleMessgaeCellIdentifire];
+        }
+        RCFriendCircleUserInfo * model = [[RCDataBaseManager shareInstance]getFriendcircleMessage];
+        [cell creatCellWithFrame:tableView.frame];
+        [cell.iconImageView sd_setImageWithURL:[NSURL URLWithString:model.portraitUri] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+        cell.numberLabel.text = [NSString stringWithFormat:@"%@条未读评论", model.number];
+        
+        UITapGestureRecognizer * readNewMessageCommentTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(readNewMessageComment)];
+        [cell.backView addGestureRecognizer:readNewMessageCommentTap];
+        
+        return cell;
     }
-    cell.stamp = indexPath.row;
-    cell.replyBtn.appendIndexPath = indexPath;
-    [cell.replyBtn addTarget:self action:@selector(replyAction:) forControlEvents:UIControlEventTouchUpInside];
-    cell.deleteBtn.appendIndexPath = indexPath;
-    [cell deleteTake:^{
-        NSLog(@"删除说说");
-        [self deleteTake:[_tableDataSource objectAtIndex:indexPath.row]];
-    }];
-    
-    cell.delegate = self;
-    [cell setYMViewWith:[_tableDataSource objectAtIndex:indexPath.row]];
-    
-    return cell;
 }
+
 
 - (UIView *)getMainTableHeadView
 {
@@ -699,7 +743,6 @@
     
     return headView;
 }
-
 
 ////////////////////////////////////////////////////////////////////
 
@@ -786,7 +829,7 @@
     if (m.isFavour == YES) {//此时该取消赞
         
         NSDictionary * jsonDic = @{
-                                   @"UserId":myUserId,
+                                   @"UserId":m.posterUserId,
                                    @"TakeId":m.posterId
                                    };
         
@@ -823,10 +866,10 @@
     }else{
         
         NSDictionary * jsonDic = @{
-                                   @"UserId":myUserId,
+                                   @"UserId":m.posterUserId,
                                    @"TakeId":m.posterId
                                    };
-        
+        NSLog(@"jsonDic = %@", jsonDic);
         NSString * url = [NSString stringWithFormat:@"%@news/thumbsUp?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
         
         __weak WXViewController * wxVC = self;
@@ -980,7 +1023,8 @@
                                    @"TargetId":@0,
                                    @"CommentId":@0,
                                    @"Isreply":@2,
-                                   @"Reviewcontent":replyText
+                                   @"Reviewcontent":replyText,
+                                   @"TakeUserId":@(m.posterUserId.intValue)
                                    };
         
         NSString * url = [NSString stringWithFormat:@"%@news/publishComment?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
@@ -1034,7 +1078,8 @@
                                    @"TargetId":@(body.repliedUserInfo.userId.intValue),
                                    @"CommentId":body.commentId,
                                    @"Isreply":@1,
-                                   @"Reviewcontent":replyText
+                                   @"Reviewcontent":replyText,
+                                   @"TakeUserId":@(m.posterUserId.intValue)
                                    };
         
         NSString * url = [NSString stringWithFormat:@"%@news/publishComment?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
@@ -1132,13 +1177,22 @@
     }else{
         
     }
-   
+}
+
+#pragma mark - 读取新评论
+- (void)readNewMessageComment
+{
+    [[RCDataBaseManager shareInstance]clearFriendcircleMessage];
+    _isHaveNoreadMessage = NO;
+    FriendCircleMessgaeViewController * messageVc = [[FriendCircleMessgaeViewController alloc]init];
+    [messageVc noreadAction:^{
+        [mainTable reloadData];
+    }];
+    [self.navigationController pushViewController:messageVc animated:YES];
 }
 
 - (void)dealloc{
-    
     NSLog(@"销毁");
-
 }
 
 @end

@@ -50,8 +50,18 @@
     _selectStateBT.layer.borderColor = UIColorFromRGB(0xA6A6A6).CGColor;
     _selectStateBT.layer.borderWidth = 1;
     _selectStateBT.hidden = YES;
-    
     [_selectStateBT addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.noreadlabel = [[UILabel alloc]initWithFrame:CGRectMake(self.hd_width - 55, 23, 23, 23)];
+    self.noreadlabel.backgroundColor = [UIColor redColor];
+    self.noreadlabel.layer.cornerRadius = 2;
+    self.noreadlabel.layer.masksToBounds = YES;
+    self.noreadlabel.textColor = [UIColor whiteColor];
+    self.noreadlabel.font = [UIFont systemFontOfSize:15];
+    self.noreadlabel.textAlignment = 1;
+    self.noreadlabel.hidden = YES;
+    [self.contentView addSubview:self.noreadlabel];
+    
 }
 
 

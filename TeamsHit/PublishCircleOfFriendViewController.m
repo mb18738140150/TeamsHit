@@ -84,8 +84,6 @@
     {
         [self uploadImage];
     }
-    
-    
 }
 - (void)creatSubViews
 {
@@ -246,8 +244,8 @@
     
     if (self.assets.count > 1) {
         
-        dispatch_group_t group = dispatch_group_create();
-        dispatch_queue_t queue = dispatch_queue_create("cn.gcd-group.www", DISPATCH_QUEUE_CONCURRENT);
+        NSMutableArray * imageArr = [NSMutableArray array];
+        
         
         for (int i = 0; i < self.assets.count; i++) {
             MLSelectPhotoAssets *asset = self.assets[i];
@@ -256,39 +254,81 @@
             imageModel.pic = asset.originImage;
             imageModel.picName = [self imageName];
             imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
-            NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"2"];
-            NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
             
+            [imageArr addObject:imageModel];
             
-            dispatch_group_enter(group);
-            dispatch_async(queue, ^{
-                [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
-                    NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
-                } success:^(id  _Nonnull responseObject) {
-                    NSLog(@"上传成功");
-                    NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
-                    NSLog(@"dic = %@", dic);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.imageUrlArr addObject:[dic objectForKey:@"ImgPath"]];
-                        dispatch_group_leave(group);
-                    });
-                } failure:^(NSError * _Nonnull error) {
-                    NSLog(@"error = %@", error);
-                    NSLog(@"上传失败");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        dispatch_group_leave(group);
-                    });
-                }];
-            });
             
         }
+        NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"2"];
+        NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         
-        dispatch_group_notify(group, dispatch_get_global_queue(0, 0), ^{
+        [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPicArray:imageArr progress:^(NSProgress * _Nullable progress) {
+            NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
+        } success:^(id  _Nonnull responseObject) {
+            NSLog(@"上传成功");
+            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSString * strImage = [dic objectForKey:@"ImgPath"];
+            NSArray * imageurlArr = [strImage componentsSeparatedByString:@","];
             dispatch_async(dispatch_get_main_queue(), ^{
+                for (NSString * imageUrlStr in imageurlArr) {
+                    [self.imageUrlArr addObject:imageUrlStr];
+                }
+                NSLog(@"dic = %@", dic);
                 [self publishShuoshuo];
-                [hud hide:YES];
             });
-        });
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"error = %@", error);
+            NSLog(@"上传失败");
+            
+        }];
+        
+        
+        // 以下方式为并发上传多张图片，但是不能保证图片上传结束顺序
+//        dispatch_group_t group = dispatch_group_create();
+//        dispatch_queue_t queue = dispatch_queue_create("cn.gcd-group.www", DISPATCH_QUEUE_CONCURRENT);
+//        
+//        for (int i = 0; i < self.assets.count; i++) {
+//            MLSelectPhotoAssets *asset = self.assets[i];
+//            
+//            HDPicModle * imageModel = [[HDPicModle alloc]init];
+//            imageModel.pic = asset.originImage;
+//            imageModel.picName = [self imageName];
+//            imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+//            NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"2"];
+//            NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+//            
+//            
+//            dispatch_group_enter(group);
+//            dispatch_async(queue, ^{
+//                [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
+//                    NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
+//                } success:^(id  _Nonnull responseObject) {
+//                    NSLog(@"上传成功");
+//                    NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+//                    NSLog(@"dic = %@", dic);
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        [self.imageUrlArr addObject:[dic objectForKey:@"ImgPath"]];
+//                        dispatch_group_leave(group);
+//                    });
+//                } failure:^(NSError * _Nonnull error) {
+//                    NSLog(@"error = %@", error);
+//                    NSLog(@"上传失败");
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        dispatch_group_leave(group);
+//                    });
+//                }];
+//            });
+//            
+//        }
+//        
+//        dispatch_group_notify(group, dispatch_get_global_queue(0, 0), ^{
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self publishShuoshuo];
+//                [hud hide:YES];
+//            });
+//        });
+        
+        
     }else if(self.assets.count == 1)
     {
         HDPicModle * imageModel = [[HDPicModle alloc]init];
@@ -381,12 +421,40 @@
                     
                     NSString * photoLists = imageUrlStr;
                     if (![photoLists isEqual:[NSNull null]]) {
+//                        if ([photoLists containsString:@","]) {
+//                            messageBody.posterPostImage = [photoLists componentsSeparatedByString:@","];
+//                        }else
+//                        {
+//                            messageBody.posterPostImage = @[imageUrlStr];
+//                        }
+                        
                         if ([photoLists containsString:@","]) {
-                            messageBody.posterPostImage = [photoLists componentsSeparatedByString:@","];
+                            NSArray * imageArr = [photoLists componentsSeparatedByString:@","];
+                            NSMutableArray * thumbnailImageArr = [NSMutableArray array];
+                            if (imageArr.count > 1) {
+                                messageBody.posterPostImage = imageArr;
+                                for (NSString * imageUrl in imageArr) {
+                                    NSString * newImageAtr = [imageUrl stringByAppendingString:@".w150.png"];
+                                    [thumbnailImageArr addObject:newImageAtr];
+                                }
+                                
+                            }else
+                            {
+                                messageBody.posterPostImage = @[imageArr.firstObject];
+                                for (NSString * imageUrl in imageArr) {
+                                    NSString * newImageAtr = [imageUrl stringByAppendingString:@".w375.png"];
+                                    [thumbnailImageArr addObject:newImageAtr];
+                                }
+                            }
+                            
+                            messageBody.thumbnailPosterImage = [thumbnailImageArr copy];
+                            //                messageBody.posterPostImage = [[friendCircleDic objectForKey:@"PhotoLists"] componentsSeparatedByString:@","];
                         }else
                         {
-                            messageBody.posterPostImage = @[imageUrlStr];
+                            messageBody.posterPostImage = @[photoLists];
+                            messageBody.thumbnailPosterImage = @[[NSString stringWithFormat:@"%@%@", photoLists,@".w375.png" ]];
                         }
+                        
                     }
                     messageBody.posterReplies = [NSMutableArray array];
                     messageBody.posterImgstr = [RCIM sharedRCIM].currentUserInfo.portraitUri;

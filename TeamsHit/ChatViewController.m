@@ -214,6 +214,8 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     [super viewWillAppear:animated];
     if (self.conversationType == ConversationType_GROUP)
@@ -261,6 +263,8 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@""] forBarMetrics:UIBarMetricsDefault];
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [bar setShadowImage:[UIImage imageNamed:@""]];
     [self.navigationController.navigationBar setBarTintColor:UIColorFromRGB(0x12B7F5)];
 }
 

@@ -27,6 +27,8 @@
     if (!_detailImage) {
         
         self.detailImage = [[UIImageView alloc]initWithFrame:CGRectMake(12, 8, 49, 49)];
+        self.detailImage.layer.cornerRadius = 3;
+        self.detailImage.layer.masksToBounds = YES;
         [self.contentView addSubview:self.detailImage];
         
         self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_detailImage.frame) + 15, 14, 30, 16)];

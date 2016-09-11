@@ -19,6 +19,8 @@ static NSString * const groupTableName = @"GROUPTABLEV2";
 static NSString * const friendTableName = @"FRIENDSTABLE";
 static NSString * const blackTableName = @"BLACKTABLE";
 static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
+static NSString * const friendCircleMessageTableName = @"FRIENDCIRCLEMESSAGETABLE";
+static NSString * const NewFriendRequestTableName = @"NEWFRINDREQUESTTABLE";
 
 + (RCDataBaseManager*)shareInstance
 {
@@ -47,7 +49,7 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
         }
         
         if (![DBHelper isTableOK: groupTableName withDB:db]) {
-            NSString *createTableSQL = @"CREATE TABLE GROUPTABLEV2 (id integer PRIMARY KEY autoincrement, groupId text,name text, portraitUri text,inNumber text,maxNumber text ,introduce text ,creatorId text,creatorTime text, isJoin text, isDismiss text)";
+            NSString *createTableSQL = @"CREATE TABLE GROUPTABLEV2 (id integer PRIMARY KEY autoincrement, groupId text,name text, portraitUri text,inNumber text,maxNumber text ,introduce text ,creatorId text,creatorTime text, isJoin text, isDismiss text, groupType text)";
             [db executeUpdate:createTableSQL];
             NSString *createIndexSQL=@"CREATE unique INDEX idx_groupid ON GROUPTABLEV2(groupId);";
             [db executeUpdate:createIndexSQL];
@@ -69,6 +71,18 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
             NSString *createTableSQL = @"CREATE TABLE GROUPMEMBERTABLE (id integer PRIMARY KEY autoincrement, groupid text, userid text,name text, portraitUri text)";
             [db executeUpdate:createTableSQL];
             NSString *createIndexSQL=@"CREATE unique INDEX idx_groupmemberId ON GROUPMEMBERTABLE(groupid,userid);";
+            [db executeUpdate:createIndexSQL];
+        }
+        if (![DBHelper isTableOK:friendCircleMessageTableName withDB:db]) {
+            NSString *createTableSQL = @"CREATE TABLE FRIENDCIRCLEMESSAGETABLE (id integer PRIMARY KEY autoincrement, userid text,name text, portraitUri text, number text)";
+            [db executeUpdate:createTableSQL];
+            NSString *createIndexSQL =@"CREATE unique INDEX idx_groupmemberId ON FRIENDCIRCLEMESSAGETABLE(userid);";
+            [db executeUpdate:createIndexSQL];
+        }
+        if (![DBHelper isTableOK: NewFriendRequestTableName withDB:db]) {
+            NSString *createTableSQL = @"CREATE TABLE NEWFRINDREQUESTTABLE (id integer PRIMARY KEY autoincrement, userid text,name text, portraitUri text)";
+            [db executeUpdate:createTableSQL];
+            NSString *createIndexSQL=@"CREATE unique INDEX idx_userid ON NEWFRINDREQUESTTABLE(userid);";
             [db executeUpdate:createIndexSQL];
         }
     }];
@@ -185,13 +199,13 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
     if(group == nil || [group.groupId length]<1)
         return;
     
-    NSString *insertSql = @"REPLACE INTO GROUPTABLEV2 (groupId, name,portraitUri,inNumber,maxNumber,introduce,creatorId,creatorTime,isJoin,isDismiss) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    NSString *insertSql = @"REPLACE INTO GROUPTABLEV2 (groupId, name,portraitUri,inNumber,maxNumber,introduce,creatorId,creatorTime,isJoin,isDismiss,groupType) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
     FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
         if (queue==nil) {
             return;
         }
     [queue inDatabase:^(FMDatabase *db) {
-        [db executeUpdate:insertSql,group.groupId, group.groupName,group.portraitUri,group.number,group.maxNumber,group.introduce,group.creatorId,group.creatorTime,[NSString stringWithFormat:@"%d",group.isJoin],group.isDismiss];
+        [db executeUpdate:insertSql,group.groupId, group.groupName,group.portraitUri,group.number,group.maxNumber,group.introduce,group.creatorId,group.creatorTime,[NSString stringWithFormat:@"%d",group.isJoin],group.isDismiss, [NSString stringWithFormat:@"%d", group.GroupType]];
     }];
     
 }
@@ -215,6 +229,7 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
             model.creatorTime=[rs stringForColumn:@"creatorTime"];
             model.isJoin=[rs boolForColumn:@"isJoin"];
             model.isDismiss = [rs stringForColumn:@"isDismiss"];
+            model.GroupType = [rs intForColumn:@"groupType"];
             
         }
         [rs close];
@@ -272,6 +287,8 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
             model.creatorId=[rs stringForColumn:@"creatorId"];
             model.creatorTime=[rs stringForColumn:@"creatorTime"];
             model.isJoin=[rs boolForColumn:@"isJoin"];
+            model.isDismiss = [rs stringForColumn:@"isDismiss"];
+            model.GroupType = [rs intForColumn:@"groupType"];
             [allGroups addObject:model];
         }
         [rs close];
@@ -415,6 +432,160 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
         [queue inDatabase:^(FMDatabase *db) {
             [db executeUpdate:deleteSql];
         }];
+}
+
+
+// 存储说说评论数据
+- (void)insertFriendcircleMessageToDB:(RCFriendCircleUserInfo *)friendCircleMessageUserInfo
+{
+    NSString * insertSql = @"REPLACE INTO FRIENDCIRCLEMESSAGETABLE (userid, name, portraitUri, number) VALUES (?, ?, ?, ?)";
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:insertSql, friendCircleMessageUserInfo.userId, friendCircleMessageUserInfo.name, friendCircleMessageUserInfo.portraitUri, friendCircleMessageUserInfo.number];
+    }];
+}
+
+// 清空说说评论缓存数据
+- (void)clearFriendcircleMessage
+{
+    NSString * deleteSql = @"DELETE FROM FRIENDCIRCLEMESSAGETABLE";
+    FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return;
+    }
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:deleteSql];
+    }];
+}
+
+// 获取评论信息
+- (RCFriendCircleUserInfo *)getFriendcircleMessage
+{
+    RCFriendCircleUserInfo * modelM = [[RCFriendCircleUserInfo alloc]init];
+    int number = 0;
+    
+    NSMutableArray *allBlackList = [NSMutableArray new];
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return nil;
+    }
+    
+    [queue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:@"SELECT * FROM FRIENDCIRCLEMESSAGETABLE"];
+        while ([rs next]) {
+            RCFriendCircleUserInfo *model = [[RCFriendCircleUserInfo alloc]init];
+            model.userId = [rs stringForColumn:@"userid"];
+            model.name = [rs stringForColumn:@"name"];
+            model.portraitUri = [rs stringForColumn:@"portraitUri"];
+            model.number = [rs stringForColumn:@"number"];
+            [allBlackList addObject:model];
+        }
+        [rs close];
+    }];
+    
+    for (int i = 0; i < allBlackList.count ; i++) {
+        RCFriendCircleUserInfo * model = [allBlackList objectAtIndex:i];
+        if (number < model.number.intValue) {
+            number = model.number.intValue;
+            modelM.userId = model.userId;
+            modelM.name = model.name;
+            modelM.portraitUri = model.portraitUri;
+            modelM.number = model.number;
+        }
+    }
+    
+    return modelM;
+}
+
+// 获取评论信息数量
+- (NSInteger )getFriendcircleMessageNumber
+{
+    NSMutableArray *allBlackList = [NSMutableArray new];
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return 0;
+    }
+    
+    [queue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:@"SELECT * FROM FRIENDCIRCLEMESSAGETABLE"];
+        while ([rs next]) {
+            RCFriendCircleUserInfo *model = [[RCFriendCircleUserInfo alloc]init];
+            model.userId = [rs stringForColumn:@"userid"];
+            model.name = [rs stringForColumn:@"name"];
+            model.portraitUri = [rs stringForColumn:@"portraitUri"];
+            model.number = [rs stringForColumn:@"number"];
+            [allBlackList addObject:model];
+        }
+        [rs close];
+    }];
+    return allBlackList.count;
+}
+
+// 存储新好友请求信息
+- (void)insertNewFriendUserInfo:(RCUserInfo *)userInfo
+{
+    NSString * insertSql = @"REPLACE INTO NEWFRINDREQUESTTABLE (userid, name, portraitUri) VALUES (?, ?, ?)";
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:insertSql, userInfo.userId, userInfo.name, userInfo.portraitUri];
+    }];
+}
+
+// 清空新好友请求信息
+- (void)clearNewFriendUserInfo
+{
+    NSString * deleteSql = @"DELETE FROM NEWFRINDREQUESTTABLE";
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return;
+    }
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:deleteSql];
+    }];
+}
+
+// 获取新朋友请求数量
+- (NSInteger)getNewFriendUserInfoNumber
+{
+    NSMutableArray *allBlackList = [NSMutableArray new];
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return 0;
+    }
+    
+    [queue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:@"SELECT * FROM NEWFRINDREQUESTTABLE"];
+        while ([rs next]) {
+            RCUserInfo *model = [[RCFriendCircleUserInfo alloc]init];
+            model.userId = [rs stringForColumn:@"userid"];
+            model.name = [rs stringForColumn:@"name"];
+            model.portraitUri = [rs stringForColumn:@"portraitUri"];
+            [allBlackList addObject:model];
+        }
+        [rs close];
+    }];
+    return allBlackList.count;
+}
+-(NSArray *) getAllNewFriendRequests
+{
+    NSMutableArray *allBlackList = [NSMutableArray new];
+    FMDatabaseQueue * queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return nil;
+    }
+    
+    [queue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:@"SELECT * FROM NEWFRINDREQUESTTABLE"];
+        while ([rs next]) {
+            RCUserInfo *model = [[RCFriendCircleUserInfo alloc]init];
+            model.userId = [rs stringForColumn:@"userid"];
+            model.name = [rs stringForColumn:@"name"];
+            model.portraitUri = [rs stringForColumn:@"portraitUri"];
+            [allBlackList addObject:model];
+        }
+        [rs close];
+    }];
+    return allBlackList;
 }
 
 @end

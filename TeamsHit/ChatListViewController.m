@@ -13,7 +13,7 @@
 #import "ChatViewController.h"
 #import "RCDChatListCell.h"
 #import "RCDHttpTool.h"
-
+#import "GameChatViewController.h"
 #import "FriendListViewController.h"
 #import "CreatGroupChatRoomViewController.h"
 
@@ -62,9 +62,15 @@
     
     self.showConnectingStatusOnNavigatorBar = YES;
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshUIWithNotification) name:@"deleteFriendNotification" object:nil];
+    
     // Do any additional setup after loading the view.
 }
-
+- (void)refreshUIWithNotification
+{
+    NSLog(@"删除好友了");
+    [self refreshConversationTableViewIfNeeded];
+}
 - (void)showMenu:(UIBarButtonItem *)button
 {
     NSArray *menuItems =
@@ -199,33 +205,53 @@
         }
         
         if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
-            ChatViewController *_conversationVC = [[ChatViewController alloc]init];
-            _conversationVC.conversationType = model.conversationType;
-            _conversationVC.targetId = model.targetId;
-            _conversationVC.userName = model.conversationTitle;
-            _conversationVC.title = model.conversationTitle;
-            _conversationVC.conversation = model;
-            _conversationVC.unReadMessage = model.unreadMessageCount;
-            _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
-            _conversationVC.enableUnreadMessageIcon=YES;
             
-            if (model.conversationType == ConversationType_SYSTEM) {
-                _conversationVC.userName = @"系统消息";
-                _conversationVC.title = @"系统消息";
+            if (model.conversationType == 3) {
+                GameChatViewController * _conversationVC = [[GameChatViewController alloc]init];
+                _conversationVC.conversationType = model.conversationType;
+                _conversationVC.targetId = model.targetId;
+                _conversationVC.userName = model.conversationTitle;
+                _conversationVC.title = model.conversationTitle;
+                _conversationVC.conversation = model;
+                _conversationVC.unReadMessage = model.unreadMessageCount;
+                _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+                _conversationVC.enableUnreadMessageIcon=YES;
+                _conversationVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:_conversationVC animated:YES];
+//                [self presentViewController:_conversationVC animated:NO completion:nil];
+            }else
+            {
+                
+                ChatViewController *_conversationVC = [[ChatViewController alloc]init];
+                _conversationVC.conversationType = model.conversationType;
+                _conversationVC.targetId = model.targetId;
+                _conversationVC.userName = model.conversationTitle;
+                _conversationVC.title = model.conversationTitle;
+                _conversationVC.conversation = model;
+                _conversationVC.unReadMessage = model.unreadMessageCount;
+                _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+                _conversationVC.enableUnreadMessageIcon=YES;
+                
+                if (model.conversationType == ConversationType_SYSTEM) {
+                    _conversationVC.userName = @"系统消息";
+                    _conversationVC.title = @"系统消息";
+                }
+                if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
+                    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                    //                RCDAddressBookViewController *addressBookVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddressBookViewController"];
+                    //                addressBookVC.needSyncFriendList = YES;
+                    //                [self.navigationController pushViewController:addressBookVC animated:YES];
+                    return;
+                }
+                //如果是单聊，不显示发送方昵称
+                if (model.conversationType == ConversationType_PRIVATE) {
+                    _conversationVC.displayUserNameInCell = NO;
+                }
+                _conversationVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:_conversationVC animated:YES];
             }
-            if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
-                UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//                RCDAddressBookViewController *addressBookVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddressBookViewController"];
-//                addressBookVC.needSyncFriendList = YES;
-//                [self.navigationController pushViewController:addressBookVC animated:YES];
-                return;
-            }
-            //如果是单聊，不显示发送方昵称
-            if (model.conversationType == ConversationType_PRIVATE) {
-                _conversationVC.displayUserNameInCell = NO;
-            }
-            _conversationVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:_conversationVC animated:YES];
+            
+            
             
         }
         

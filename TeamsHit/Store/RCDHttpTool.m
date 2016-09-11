@@ -348,36 +348,54 @@
     [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:nil progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
-        NSArray *allGroups = responseObject[@"result"];
+        NSArray *allGroups = responseObject[@"GroupList"];
         NSMutableArray *tempArr = [NSMutableArray new];
         if (allGroups) {
             [[RCDataBaseManager shareInstance] clearGroupfromDB];
-            for (NSDictionary *dic in allGroups) {
-                NSDictionary *groupInfo = dic[@"group"];
+            for (NSDictionary *groupInfo in allGroups) {
+                NSLog(@"groupInfo = %@", groupInfo);
                 RCDGroupInfo *group = [[RCDGroupInfo alloc] init];
-                group.groupId = [groupInfo objectForKey:@"id"];
-                group.groupName = [groupInfo objectForKey:@"name"];
-                group.portraitUri = [groupInfo objectForKey:@"portraitUri"];
+                group.groupId = [groupInfo objectForKey:@"GroupId"];
+                group.groupName = [groupInfo objectForKey:@"GroupName"];
+                group.portraitUri = [groupInfo objectForKey:@"PortraitUri"];
                 if (!group.portraitUri || group.portraitUri.length == 0) {
                     group.portraitUri = [RCDUtilities defaultGroupPortrait:group];
                 }
-                group.creatorId = [groupInfo objectForKey:@"creatorId"];
-                //                group.introduce = [dic objectForKey:@"introduce"];
+                group.creatorId = [groupInfo objectForKey:@"CreatorId"];
+                group.introduce = [groupInfo objectForKey:@"Introduce"];
                 if (!group.introduce) {
                     group.introduce=@"";
                 }
-                group.number = [groupInfo objectForKey:@"memberCount"];
-                group.maxNumber = @"500";
-                //                group.maxNumber = [dic objectForKey:@"max_number"];
-                //                group.creatorTime = [dic objectForKey:@"creat_datetime"];
+                group.number = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"Number"]];
+                group.maxNumber = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"MaxNumber"]];
                 if (!group.number) {
-                    group.number=@"";
+                    group.number=@"0";
                 }
                 if (!group.maxNumber) {
-                    group.maxNumber=@"";
+                    group.maxNumber=@"1000";
                 }
+                
+                if ([[groupInfo objectForKey:@"Role"] intValue] == 1) {
+                    group.isJoin = YES;
+                }else
+                {
+                    group.isJoin = NO;
+                }
+                if ([[groupInfo objectForKey:@"GroupType"] intValue] == 1) {
+                    group.GroupType = 1;
+                }else
+                {
+                    group.isJoin = 2;
+                }
+                if ([[groupInfo objectForKey:@"IsDismiss"] intValue] == 1) {
+                    group.isDismiss = @"1";
+                }else
+                {
+                    group.isDismiss = @"0";
+                }
+                group.creatorTime = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"CreatorTime"]];
+                
                 [tempArr addObject:group];
-                group.isJoin = YES;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                     [[RCDataBaseManager shareInstance] insertGroupToDB:group];
                 });
@@ -685,7 +703,7 @@
         ;
     } success:^(id  _Nonnull responseObject) {
         
-        NSLog(@"***%@", responseObject);
+//        NSLog(@"***%@", responseObject);
         
         NSString *code = [NSString stringWithFormat:@"%@",responseObject[@"Code"]];
         if (friendList) {

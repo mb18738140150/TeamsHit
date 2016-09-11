@@ -10,6 +10,7 @@
 #import "FriendInformationModel.h"
 #import "VirifyFriendViewController.h"
 #import "FriendDetailDataSettingViewController.h"
+#import "ChatViewController.h"
 
 @interface FriendInformationViewController ()
 
@@ -48,6 +49,10 @@
     self.imageview2.tag = 1002;
     self.imageview3.tag = 1003;
     self.imageview4.tag = 1004;
+    
+    if (self.model == nil) {
+        [self getfriendInformation];
+    }
     
     [self refreshData];
     [self updataDataSource];
@@ -99,6 +104,7 @@
     
     if (self.model.isFriend.intValue == 1) {
         [self.oparationBT setTitle:@"发消息" forState:UIControlStateNormal];
+        self.navigationItem.rightBarButtonItem.customView.hidden = NO;
     }else
     {
         [self.oparationBT setTitle:@"添加好友" forState:UIControlStateNormal];
@@ -120,13 +126,20 @@
     
     if ([self.oparationBT.titleLabel.text isEqualToString:@"发消息"]) {
         NSLog(@"发消息");
+        ChatViewController * chatVc = [[ChatViewController alloc]init];
+        chatVc.hidesBottomBarWhenPushed = YES;
+        chatVc.conversationType = ConversationType_PRIVATE;
+        chatVc.displayUserNameInCell = NO;
+        chatVc.targetId = self.targetId;
+        chatVc.title = self.model.displayName;
+        chatVc.needPopToRootView = YES;
+        [self.navigationController pushViewController:chatVc animated:YES];
     }else
     {
         VirifyFriendViewController * verifyVc = [[VirifyFriendViewController alloc]initWithNibName:@"VirifyFriendViewController" bundle:nil];
         verifyVc.userId = self.model.userId;
         [self.navigationController pushViewController:verifyVc animated:YES];
     }
-    
 }
 
 - (void)updataDataSource
@@ -182,7 +195,7 @@
             }
             [[RCDataBaseManager shareInstance]insertUserToDB:user];
             
-            
+            [self refreshData];
         }else
         {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

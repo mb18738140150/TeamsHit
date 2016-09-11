@@ -23,7 +23,10 @@
 @property(nonatomic, strong) NSString* creatorTime;
 /** 是否加入 */
 @property(nonatomic, assign) BOOL  isJoin;
+@property (nonatomic, assign)int Role;
 /** 是否解散 */
 @property(nonatomic, strong) NSString *isDismiss;
+
+@property (nonatomic, assign)int  GroupType;// 游戏类型 1.吹牛 2.21点
 
 @end

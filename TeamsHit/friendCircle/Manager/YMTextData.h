@@ -36,6 +36,7 @@ typedef enum : NSUInteger {
 @property (nonatomic,strong) NSMutableArray *attributedDataShuoshuo;//说说部分附带的点击区域数组
 @property (nonatomic,strong) NSMutableArray *attributedDataFavour;//点赞部分附带的点击区域数组
 
+@property (nonatomic, strong)NSArray *thumbnailShowImageArray;// 缩略图数组
 @property (nonatomic,strong) NSArray        *showImageArray;//图片数组
 @property (nonatomic,strong) NSMutableArray *favourArray;//点赞昵称数组
 @property (nonatomic,strong) NSMutableArray *defineAttrData;//自行添加 元素为每条回复中的自行添加的range组成的数组 如：第一条回复有（0，2）和（5，2） 第二条为（0，2）。。。。

@@ -42,6 +42,8 @@
  */
 @property (nonatomic,strong) NSArray *posterPostImage;//
 
+@property (nonatomic, strong)NSArray *thumbnailPosterImage;// 缩略图数组
+
 /**
  *  用户收到的赞 (该数组存点赞的人的昵称)
  */

@@ -8,8 +8,9 @@
 
 #import "FriendListViewController.h"
 #import "NewFriendListViewController.h"
-
+#import "FriendInformationViewController.h"
 #import "ChatViewController.h"
+#import "GroupListViewController.h"
 
 #import "RCDUserInfo.h"
 #import "RCDataBaseManager.h"
@@ -27,6 +28,8 @@
 @property (nonatomic, strong)NSMutableArray * friendsArr; // 好友信息
 @property (nonatomic, strong)NSArray * defaultCellsTitle;// 默认显示列表： 新朋友、群组
 @property (nonatomic, strong)NSArray * defaultCellsPortrait;// 默认显示列表头像
+
+@property (nonatomic, strong)UILabel * noreadLabel;
 
 @end
 
@@ -50,8 +53,12 @@
     _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"群组", nil];
     _defaultCellsPortrait   = [NSArray arrayWithObjects:@"newFriend",@"defaultGroup", nil];
     
+    _allFriends = [NSMutableDictionary new];
+    _allKeys = [NSMutableArray new];
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deletefriend:) name:@"deleteFriend" object:nil];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(newfriendRequest:) name:@"newFriendRequestNotification" object:nil];
     // Do any additional setup after loading the view from its nib.
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -68,9 +75,23 @@
         [_friendsArr removeAllObjects];
         [self getAllData];
     }
+    
+    if ([[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count] > 0) {
+        self.noreadLabel.hidden = NO;
+        self.noreadLabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+    }else
+    {
+        self.noreadLabel.hidden = YES;
+        self.noreadLabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+    }
 }
 
 - (void)deletefriend:(NSNotification *)notification
+{
+    [self getAllData];
+}
+
+- (void)newfriendRequest:(NSNotification *)notification
 {
     [self getAllData];
 }
@@ -116,6 +137,15 @@
     if (indexPath.section == 0) {
         cell.nicknameLabel.text = [_defaultCellsTitle objectAtIndex:indexPath.row];
         [cell.portraitView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@",[_defaultCellsPortrait objectAtIndex:indexPath.row]]]];
+        if (indexPath.row == 0) {
+            self.noreadLabel = cell.noreadlabel;
+            if ([[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count] > 0) {
+//                self.noreadLabel.hidden = NO;
+//                self.noreadLabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+                cell.noreadlabel.hidden = NO;
+                cell.noreadlabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+            }
+        }
     }else
     {
         NSString *key = [_allKeys objectAtIndex:indexPath.section - 1];
@@ -167,6 +197,10 @@
 {
     if (indexPath.row == 0 && indexPath.section == 0) {
         
+        [[RCDataBaseManager shareInstance] clearNewFriendUserInfo];
+        self.noreadLabel.hidden = YES;
+        self.noreadLabel.text = self.noreadLabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+        
         NewFriendListViewController * newfriendVC = [[NewFriendListViewController alloc]initWithNibName:@"NewFriendListViewController" bundle:nil];
         newfriendVC.hidesBottomBarWhenPushed = YES;
         
@@ -183,6 +217,11 @@
         userInfo.userId = user.userId;
         userInfo.portraitUri = user.portraitUri;
         userInfo.name = user.displayName;
+        
+        FriendInformationViewController * vc = [[FriendInformationViewController alloc]init];
+        vc.targetId = userInfo.userId;
+        vc.hidesBottomBarWhenPushed = YES;
+        
         ChatViewController * chatVc = [[ChatViewController alloc]init];
         chatVc.hidesBottomBarWhenPushed = YES;
         chatVc.conversationType = ConversationType_PRIVATE;
@@ -190,7 +229,12 @@
         chatVc.targetId = userInfo.userId;
         chatVc.title = userInfo.name;
         chatVc.needPopToRootView = YES;
-        [self.navigationController pushViewController:chatVc animated:YES];
+        [self.navigationController pushViewController:vc animated:YES];
+    }else if (indexPath.row == 1 && indexPath.section == 0)
+    {
+        GroupListViewController * groupListVC = [[GroupListViewController alloc]init];
+        groupListVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:groupListVC animated:YES];
     }
 }
 
@@ -239,8 +283,7 @@
 - (void)getAllData
 {
     _keys = @[@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#"];
-    _allFriends = [NSMutableDictionary new];
-    _allKeys = [NSMutableArray new];
+    
     _friends = [NSMutableArray arrayWithArray:[[RCDataBaseManager shareInstance] getAllFriends]];
     
     [_friendsArr removeAllObjects];
@@ -255,6 +298,9 @@
             _allFriends = [self sortedArrayWithPinYinDic:_friendsArr];
             [self.friendsTabelView reloadData];
         });
+    }else
+    {
+        [self.friendsTabelView reloadData];
     }
     if ([_friends count] == 0 && isSyncFriends == NO) {
         NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];

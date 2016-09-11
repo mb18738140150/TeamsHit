@@ -17,12 +17,12 @@
 }
 
 
-- (void)setModel:(SearchGroupListModel *)model
+- (void)setModel:(RCDGroupInfo *)model
 {
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:model.groupIconUrl] placeholderImage:[UIImage imageNamed:@""]];
-    self.groupNamelabel.text = [NSString stringWithFormat:@"%@", model.GroupName];
-    self.numberOfGroup.text = [NSString stringWithFormat:@"%@", model.GroupPeople];
-    self.groupDetailes.text = model.groupIntro;
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:model.portraitUri] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+    self.groupNamelabel.text = [NSString stringWithFormat:@"%@", model.groupName];
+    self.numberOfGroup.text = [NSString stringWithFormat:@"%@", model.number];
+    self.groupDetailes.text = model.introduce;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -103,7 +103,7 @@
     NSLog(@"增加好友创建讨论组");
     
     CreatGroupChatRoomViewController * crearGroupVc = [[CreatGroupChatRoomViewController alloc]init];
-    
+    crearGroupVc.targetId = [NSString stringWithFormat:@"%@", self.model.userId];
     [self.navigationController pushViewController:crearGroupVc animated:YES];
     
 }
@@ -168,7 +168,7 @@
 //    [actionSheet showInView:self.view];
 //    actionSheet.tag = 100;
     
-    TipView * tipView = [[TipView alloc]initWithFrame:[UIScreen mainScreen].bounds Message:[NSString stringWithFormat:@"确定清空和%@的聊天记录吗？", self.model.nickName] delete:NO];
+    TipView * tipView = [[TipView alloc]initWithFrame:[UIScreen mainScreen].bounds Message:[NSString stringWithFormat:@"确定清空和%@的聊天记录吗？", self.model.displayName] delete:NO];
     tipView.delegate = self;
     [tipView show];
     

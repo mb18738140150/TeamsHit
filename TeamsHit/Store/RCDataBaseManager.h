@@ -10,6 +10,7 @@
 #import <RongIMKit/RongIMKit.h>
 #import "RCDUserInfo.h"
 #import "RCDGroupInfo.h"
+#import "RCFriendCircleUserInfo.h"
 
 @interface RCDataBaseManager : NSObject
 
@@ -74,5 +75,28 @@
 
 //删除好友信息
 -(void)deleteFriendFromDB:(NSString *)userId;
+
+// 存储说说评论数据
+- (void)insertFriendcircleMessageToDB:(RCFriendCircleUserInfo *)friendCircleMessageUserInfo;
+
+// 清空说说评论缓存数据
+- (void)clearFriendcircleMessage;
+
+// 获取评论信息
+- (RCFriendCircleUserInfo *)getFriendcircleMessage;
+
+// 获取评论信息数量
+- (NSInteger )getFriendcircleMessageNumber;
+
+// 存储新好友请求信息
+- (void)insertNewFriendUserInfo:(RCUserInfo *)userInfo;
+
+// 清空新好友请求信息
+- (void)clearNewFriendUserInfo;
+
+// 获取新朋友请求数量
+- (NSInteger)getNewFriendUserInfoNumber;
+
+-(NSArray *) getAllNewFriendRequests;
 
 @end

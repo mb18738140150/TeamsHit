@@ -36,7 +36,6 @@
     return instance;
 }
 
-
 -(void) syncGroups
 {
     //开发者调用自己的服务器接口获取所属群组信息，同步给融云服务器，也可以直接

@@ -16,6 +16,8 @@
 #import "RCDContactTableViewCell.h"
 #import "RCDRCIMDataSource.h"
 
+#import "CreatGroupViewController.h"
+
 @interface CreatGroupChatRoomViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong)NSMutableArray * tempOtherArr;// 首字母不是A~Z的好友列表
@@ -32,6 +34,8 @@
 @property (nonatomic, strong)NSMutableArray * seleteUsers;// 选中的好友数组
 
 @property (nonatomic, strong)SearchBarView * searchBarView;
+
+@property (nonatomic, assign)BOOL isCreatGroupVC;
 
 @end
 
@@ -50,7 +54,6 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithTitle:@"确定" backgroundcolor:UIColorFromRGB(0x12B7F5) cornerRadio:3];
-//    rightBarItem.enabled = NO;
     [rightBarItem addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     
@@ -86,9 +89,22 @@
 {
     
     if (self.seleteUsers.count > 1) {
-        for (RCDUserInfo * user in _seleteUsers) {
-            NSLog(@"添加的群组成员%@", user.displayName);
+        NSString * userIdStr = @"";
+        for (int i = 0; i < self.seleteUsers.count; i++) {
+            RCDUserInfo * userInfo = [self.seleteUsers objectAtIndex:i];
+            if (i == 0) {
+                userIdStr = [[RCIM sharedRCIM].currentUserInfo.userId stringByAppendingFormat:@",%@", userInfo.userId];
+            }else
+            {
+                userIdStr = [userIdStr stringByAppendingFormat:@",%@", userInfo.userId];
+            }
         }
+        
+        CreatGroupViewController * crearVC = [[CreatGroupViewController alloc]init];
+        crearVC.userIdArrayStr = userIdStr;
+        self.isCreatGroupVC = YES;
+        [self.navigationController pushViewController:crearVC animated:YES];
+        
     }else
     {
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"至少添加两个好友才能创建群组" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
@@ -104,7 +120,9 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     
     [_friendsArr removeAllObjects];
-    [self getAllData];
+    if (!self.isCreatGroupVC) {
+        [self getAllData];
+    }
 }
 
 - (void)textFieldChanged:(id)sender
@@ -151,7 +169,7 @@
 {
     NSString * title;
     
-        title = [_allKeys objectAtIndex:section];
+    title = [_allKeys objectAtIndex:section];
     return title;
 }
 
@@ -203,24 +221,30 @@
     cell.portraitView.contentMode = UIViewContentModeScaleAspectFill;
     cell.nicknameLabel.font = [UIFont systemFontOfSize:15.f];
     
-    [cell getSelectState:^(BOOL isSelect) {
-        if (!isSelect) {
-            user.isSelect = NO;
-            for (int i = 0; i < self.seleteUsers.count; i++) {
-                RCDUserInfo *selectUser = _seleteUsers[i];
-                if ([selectUser.userId isEqualToString:user.userId]) {
-                    [_seleteUsers removeObject:selectUser];
-                    break;
+    
+    if (self.targetId && [self.targetId isEqualToString:user.userId]) {
+        cell.selectStateBT.userInteractionEnabled = NO;
+    }else
+    {
+        [cell getSelectState:^(BOOL isSelect) {
+            if (!isSelect) {
+                user.isSelect = NO;
+                for (int i = 0; i < self.seleteUsers.count; i++) {
+                    RCDUserInfo *selectUser = _seleteUsers[i];
+                    if ([selectUser.userId isEqualToString:user.userId]) {
+                        [_seleteUsers removeObject:selectUser];
+                        break;
+                    }
                 }
+            }else
+            {
+                user.isSelect = YES;
+                [self.seleteUsers addObject:user];
             }
-        }else
-        {
-            user.isSelect = YES;
-            [self.seleteUsers addObject:user];
-        }
-        [self.friendsTabelView reloadData];
-        [self refreshRihgtBaritem];
-    }];
+            [self.friendsTabelView reloadData];
+            [self refreshRihgtBaritem];
+        }];
+    }
     
     return cell;
 }
@@ -241,23 +265,29 @@
     userInfo.userId = user.userId;
     userInfo.portraitUri = user.portraitUri;
     userInfo.name = user.displayName;
-    if (user.isSelect) {
-        user.isSelect = NO;
-        for (int i = 0; i < self.seleteUsers.count; i++) {
-            RCDUserInfo *selectUser = _seleteUsers[i];
-            if ([selectUser.userId isEqualToString:user.userId]) {
-                [_seleteUsers removeObject:selectUser];
-                break;
-            }
-        }
+    
+    if (self.targetId && [user.userId isEqualToString:self.targetId]) {
+        ;
     }else
     {
-        user.isSelect = YES;
-        [self.seleteUsers addObject:user];
+        if (user.isSelect) {
+            user.isSelect = NO;
+            for (int i = 0; i < self.seleteUsers.count; i++) {
+                RCDUserInfo *selectUser = _seleteUsers[i];
+                if ([selectUser.userId isEqualToString:user.userId]) {
+                    [_seleteUsers removeObject:selectUser];
+                    break;
+                }
+            }
+        }else
+        {
+            user.isSelect = YES;
+            [self.seleteUsers addObject:user];
+        }
+        
+        [self.friendsTabelView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        [self refreshRihgtBaritem];
     }
-    
-    [self.friendsTabelView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    [self refreshRihgtBaritem];
 }
 
 -(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView{
@@ -278,7 +308,7 @@
     }
     CGSize buttontitleSize = [numberStr sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17]}];
     
-    barButtonItem.frame = CGRectMake(0, 0, buttontitleSize.width + 10, 33);
+    barButtonItem.frame = CGRectMake(barButtonItem.hd_x - (buttontitleSize.width - barButtonItem.hd_width), barButtonItem.hd_y, buttontitleSize.width + 10, 33);
     barButtonItem.layer.masksToBounds = YES;
     [barButtonItem setTitle:numberStr forState:UIControlStateNormal];
 }
@@ -296,6 +326,13 @@
     if (_friends.count > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (RCDUserInfo *user in _friends) {
+                if (self.targetId) {
+                    if ([user.userId isEqualToString:self.targetId]) {
+                        user.isSelect = YES;
+                        [_seleteUsers addObject:user];
+                        [self refreshRihgtBaritem];
+                    }
+                }
                 if ([user.status isEqualToString:@"1"]) {
                     [_friendsArr addObject:user];
                 }

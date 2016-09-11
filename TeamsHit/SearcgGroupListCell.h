@@ -15,6 +15,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *groupDetailes;
 @property (strong, nonatomic) IBOutlet UILabel *numberOfGroup;
 
-@property (nonatomic, strong)SearchGroupListModel * model;
+@property (nonatomic, strong)RCDGroupInfo * model;
 
 @end
