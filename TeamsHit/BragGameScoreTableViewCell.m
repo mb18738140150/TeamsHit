@@ -8,16 +8,21 @@
 
 #import "BragGameScoreTableViewCell.h"
 
-@implementation BragGameScoreTableViewCell
+@interface BragGameScoreTableViewCell ()
 
-- (instancetype)initWithFrame:(CGRect)frame
 {
-    if (self = [super initWithFrame:frame]) {
-        [self prepareUI];
-    }
-    return self;
+    BOOL win;
 }
 
+@end
+
+@implementation BragGameScoreTableViewCell
+
+- (void)creatWithFrame:(CGRect)frame
+{
+    win = NO;
+    [self prepareUI];
+}
 - (void)prepareUI
 {
     self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_height - 1)];
@@ -28,7 +33,7 @@
     [self.contentView addSubview:self.numberLabel];
     
     self.winImageView = [[UIImageView alloc]initWithFrame:CGRectMake(8, self.hd_height - 10, self.hd_width - 16, 9)];
-    self.winImageView.image = [UIImage imageNamed:@""];
+    self.winImageView.image = [UIImage imageNamed:@"船"];
     self.winImageView.hidden = YES;
     [self.contentView addSubview:self.winImageView];
     
@@ -39,28 +44,54 @@
 {
     if (iswin) {
         self.winImageView.hidden = NO;
-        [self setNeedsDisplay];
+        win = YES;
     }
+    [self setNeedsDisplay];
 }
 
 - (void)drawRect:(CGRect)rect
 {
+//    if (win) {
+//        NSLog(@"赢了");
+//        [self drawRedLin];
+//    }else
+//    {
+//        [self drawWhiteLine];
+//    }
     CGContextRef context = UIGraphicsGetCurrentContext();
-    if (self.iswin) {
-        CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
-    }else
-    {
-        CGContextSetRGBStrokeColor(context, 1, 1, 1, 1);
-    }
+    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
     CGContextSetLineCap(context, kCGLineCapSquare);
     CGContextSetLineWidth(context, 1);
     CGContextBeginPath(context);
-    CGContextMoveToPoint(context, 0, self.hd_height - 1);
-    CGContextAddLineToPoint(context, self.hd_width, self.hd_height - 1);
+    CGContextMoveToPoint(context, 0, 15.5);
+    CGContextAddLineToPoint(context, 33, 15.5);
     CGContextStrokePath(context);
-    
 }
 
+- (void)drawWhiteLine
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
+    CGContextSetLineCap(context, kCGLineCapSquare);
+    CGContextSetLineWidth(context, 1);
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, 0, 15.5);
+    CGContextAddLineToPoint(context, 33, 15.5);
+    CGContextStrokePath(context);
+
+}
+
+- (void)drawRedLin
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
+    CGContextSetLineCap(context, kCGLineCapSquare);
+    CGContextSetLineWidth(context, 1);
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, 0, 15.5);
+    CGContextAddLineToPoint(context, 33, 15.5);
+    CGContextStrokePath(context);
+}
 
 - (void)awakeFromNib {
     [super awakeFromNib];

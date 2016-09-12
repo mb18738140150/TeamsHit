@@ -14,4 +14,6 @@
 @property (nonatomic, assign)BOOL iswin;
 @property (nonatomic, strong)UIImageView * winImageView;
 
+- (void)creatWithFrame:(CGRect)frame;
+
 @end

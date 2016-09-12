@@ -27,11 +27,14 @@
 #import "SlideBlockView.h"
 #import "BragGameView.h"
 
+#define Web_Socket @"ws://192.168.1.111:8181/"
+
 #define ConversationViewHeight ([UIScreen mainScreen].bounds.size.height / 3) * 2 - 64
 
-@interface GameChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCRealTimeLocationObserver, RCMessageCellDelegate, RealTimeLocationStatusViewDelegate, RCChatSessionInputBarControlDelegate, BrageGameViewHeaderViewProtocol, PrepareGameProtocol>
+@interface GameChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCRealTimeLocationObserver, RCMessageCellDelegate, RealTimeLocationStatusViewDelegate, RCChatSessionInputBarControlDelegate,SRWebSocketDelegate, BrageGameViewHeaderViewProtocol, PrepareGameProtocol, BragGameViewProtocol>
 {
     MBProgressHUD* hud ;
+    SRWebSocket *_webSocket;
 }
 @property (nonatomic, weak)id<RCRealTimeLocationProxy> realTimeLocation;
 @property (nonatomic, strong)RealTimeLocationStatusView *realTimeLocationStatusView;
@@ -64,6 +67,14 @@
     
     self.groupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.targetId];
     
+     // 建立WebSocket连接
+    if (_webSocket ==nil) {
+        _webSocket = [[SRWebSocket alloc]initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:Web_Socket]]];
+        _webSocket.delegate =self;
+        [_webSocket open];
+    }
+    
+    
     // 设置聊天界面frame
     self.chatSessionInputBarControl.delegate = self;
     self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 50);
@@ -82,10 +93,12 @@
     
     self.prepareGameView = [[PrepareGameView alloc]initWithFrame:CGRectMake(0, 64, self.backImageView.hd_width, 400)];
     self.prepareGameView.delegate = self;
-    self.prepareGameView.hidden = YES;
+    self.prepareGameView.hidden = NO;
     [self.backImageView addSubview:self.prepareGameView];
     
     self.bragGameView = [[BragGameView alloc]initWithFrame:CGRectMake(0, 64, self.view.hd_width, self.view.hd_height)];
+    self.bragGameView.hidden = YES;
+    self.bragGameView.delegate = self;
     [self.backImageView addSubview:self.bragGameView];
     
     // 滑块view
@@ -858,10 +871,78 @@
     [self.prepareGameView reloadDataAction];
     self.prepareGameView.prepareBT.hidden = YES;
     self.prepareGameView.preparedButton.hidden = NO;
+    
+    [self performSelector:@selector(showGameView) withObject:nil afterDelay:1];
+    
 }
 - (void)quitPrepareViewAction
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)showGameView
+{
+    self.prepareGameView.hidden = YES;
+    
+    self.bragGameView.hidden = NO;
+}
+
+#pragma mark - SRWebSocketDelegate 写上具体聊天逻辑
+- (void)webSocketDidOpen:(SRWebSocket *)webSocket;
+{
+    // NSLog(@"Websocket Connected");
+    
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+//    [dictionary setValue:@"subscribe" forKey:@"cmd"];
+//    [dictionary setValue:@(VER)  forKey:@"ver"];
+//    [dictionary setValue:[settingInfo getSessionId] forKey:@"sid"];
+//    [dictionary setValue:@"1" forKey:@"channel"];
+//    [dictionary setValue:[[settingInfo getUserAccountInfo]objectForKey:@"user_id"] forKey:@"client_id"];
+    //NSLog(@"dictionary:%@",[dictionary JSONString]);
+    
+    [_webSocket send:[dictionary JSONString]];
+}
+
+- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
+{
+    NSLog(@"连接失败");
+}
+- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message//监控消息
+{
+    
+}
+- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
+{
+    
+}
+- (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload
+{
+    
+}
+
+#pragma mark - BragGameViewProtocol
+- (void)bragShakeDIceCup
+{
+    NSLog(@"开始摇骰盅");
+}
+- (void)bragReshakeCup
+{
+    NSLog(@"重新摇晃");
+}
+- (void)bragCompleteShakeDiceCup
+{
+    NSLog(@"摇晃完成");
+}
+
+- (void)bragChooseCompleteWithnumber:(int)number point:(int )point
+{
+    NSLog(@"您选择了 %d 个 *** %d 点", number , point);
+    
+    self.bragGameView.hidden = YES;
+    [self.bragGameView begainState];
+    [self.prepareGameView begainState];
+    self.prepareGameView.hidden = NO;
+    
 }
 
 - (void)didReceiveMemoryWarning {

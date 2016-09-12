@@ -27,4 +27,6 @@
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)reloadDataAction;
 
+- (void)begainState;
+
 @end

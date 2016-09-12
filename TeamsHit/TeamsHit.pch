@@ -34,6 +34,9 @@
 #import "RCDGroupInfo.h"
 #import "RCDHttpTool.h"
 
+// webSocket
+#import "SRWebSocket.h"
+
 #import "JSONKit.h"
 #import "RCDRCIMDataSource.h"
 #import "RCDataBaseManager.h"

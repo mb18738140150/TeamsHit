@@ -28,7 +28,7 @@
 @property (nonatomic, strong)UILabel * reTipLabel;
 @property (nonatomic, strong)UIImageView * gifImageView;
 
-@property (nonatomic, strong)NSMutableArray * dataSourceArr;
+
 
 @end
 
@@ -78,7 +78,7 @@
     _tipDiceCupButton.hd_centerX = self.center.x;
     [_tipDiceCupButton setTitle:@"点击骰盅摇一摇" forState:UIControlStateNormal];
     [_tipDiceCupButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_tipDiceCupButton addTarget:self action:@selector(tipDiceCupAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_tipDiceCupButton addTarget:self action:@selector(tipDiceCupAction) forControlEvents:UIControlEventTouchUpInside];
     [self.tipDiceCupView addSubview:self.tipDiceCupButton];
     
     [self addSubview:self.tipDiceCupView];
@@ -151,7 +151,7 @@
 }
 
 #pragma mark - 摇骰盅
-- (void)tipDiceCupAction:(UIButton *)button
+- (void)tipDiceCupAction
 {
     if (self.delegete && [self.delegete respondsToSelector:@selector(tipDiceCup)]) {
         [self.delegete tipDiceCup];
@@ -210,13 +210,18 @@
 
 - (void)reTipDiceCupAction:(UIButton *)button
 {
-    NSLog(@"重摇");
+    if (self.delegete && [self.delegete respondsToSelector:@selector(reShakeCup)]) {
+        [self.delegete reShakeCup];
+    }
     [self startGif];
 }
 
 - (void)completeTipDiceAction:(UIButton *)button
 {
-    NSLog(@"确定");
+    if (self.delegete && [self.delegete respondsToSelector:@selector(completeShakeDiceCup)]) {
+        [self.delegete completeShakeDiceCup];
+    }
+    
 }
 
 

@@ -11,6 +11,8 @@
 @protocol TipDiceCupProtocol <NSObject>
 
 - (void)tipDiceCup;
+- (void)reShakeCup;
+- (void)completeShakeDiceCup;
 
 @end
 
@@ -21,7 +23,8 @@
 @property (nonatomic, strong)UIView * diceCuptipResultView;
 
 @property (nonatomic, assign)id<TipDiceCupProtocol>delegete;
-
+@property (nonatomic, strong)NSMutableArray * dataSourceArr;
 - (instancetype)initWithFrame:(CGRect)frame;
+
 
 @end

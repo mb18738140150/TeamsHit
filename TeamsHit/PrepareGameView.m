@@ -124,6 +124,13 @@
     [self.prepareCollectionView reloadData];
 }
 
+- (void)begainState
+{
+    [self.dataSourceArray removeAllObjects];
+    [self reloadDataAction];
+    self.prepareBT.hidden = NO;
+    self.preparedButton.hidden = YES;
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.
