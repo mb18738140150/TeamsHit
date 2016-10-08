@@ -8,10 +8,14 @@
 
 #import "FindViewController.h"
 #import "WXViewController.h"
+#import "TypeofGameTableViewCell.h"
 
-@interface FindViewController ()
+#define TYPEOFGAMECELLIDENTIFIRE @"TypeofGameCell"
+
+@interface FindViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *friendCircle;
 @property (strong, nonatomic) IBOutlet UILabel *noreadMassageNumberLabel;
+@property (strong, nonatomic) IBOutlet UITableView *gameTypelist;
 
 @end
 
@@ -19,6 +23,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"navigationlogo"]];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
@@ -30,6 +35,9 @@
     self.noreadMassageNumberLabel.layer.masksToBounds = YES;
     self.noreadMassageNumberLabel.text = @"";
     self.noreadMassageNumberLabel.adjustsFontSizeToFitWidth = YES;
+    
+    [self.gameTypelist registerNib:[UINib nibWithNibName:@"TypeofGameTableViewCell" bundle:nil] forCellReuseIdentifier:TYPEOFGAMECELLIDENTIFIRE];
+//    self.gameTypelist.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateFriendCircleMessageCount:) name:@"UpdateFriendCircleMessageCount" object:nil];
     
@@ -72,6 +80,37 @@
     WXViewController * wxVC = [[WXViewController alloc]init];
     wxVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:wxVC animated:YES];
+}
+- (IBAction)addGroupAction:(id)sender {
+    
+    NSLog(@"加入群");
+}
+- (IBAction)creatGroupAction:(id)sender {
+    
+    NSLog(@"creat a group");
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    TypeofGameTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:TYPEOFGAMECELLIDENTIFIRE forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSeparatorStyleNone;
+    
+    return cell;
+}
+
+- (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 111;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"select");
 }
 
 /*

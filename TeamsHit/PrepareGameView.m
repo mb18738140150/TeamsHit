@@ -68,7 +68,7 @@
     self.preparedButton.hidden = YES;
     
     self.quitBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.quitBT.frame = CGRectMake(self.hd_width / 2 + 50, CGRectGetMaxY(self.prepareCollectionView.frame) + 119, 33, 33);
+    self.quitBT.frame = CGRectMake(self.hd_width / 2 + 70, CGRectGetMaxY(self.prepareCollectionView.frame) + 109, 54, 54);
     [self.quitBT setImage:[UIImage imageNamed:@"quieGameButton"] forState:UIControlStateNormal];
     [self addSubview:self.quitBT];
     [self.quitBT addTarget:self action:@selector(quitgame:) forControlEvents:UIControlEventTouchUpInside];
@@ -103,6 +103,7 @@
 {
     // 直接重用cell，不用创建，因为仓库里没有cell的话，collectionView会自己创建该wifeCell,不用我们管（更深层次的原因是，我们已经把wifeCell注册给collectionView了，所以collectionView会自己完成cell的创建工作）
     PrepareGameCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CELL_IDENTIFIRE forIndexPath:indexPath];
+    [cell prepareUI];
     if (indexPath.row >= self.dataSourceArray.count) {
         cell.iconImageView.image = [UIImage imageNamed:@"preparePlaceholdIcon"];
         cell.prepareImageView.hidden = YES;
@@ -130,6 +131,7 @@
     [self reloadDataAction];
     self.prepareBT.hidden = NO;
     self.preparedButton.hidden = YES;
+    self.hidden = NO;
 }
 
 /*

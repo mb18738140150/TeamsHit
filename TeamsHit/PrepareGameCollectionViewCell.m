@@ -20,6 +20,8 @@
 
 - (void)prepareUI
 {
+    [self.contentView removeAllSubviews];
+    
     self.iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width - 5, self.hd_width - 5)];
     self.iconImageView.layer.cornerRadius = (self.hd_width - 5) / 2;
     self.iconImageView.layer.masksToBounds = YES;

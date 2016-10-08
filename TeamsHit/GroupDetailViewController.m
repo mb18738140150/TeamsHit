@@ -18,11 +18,12 @@
 @property (strong, nonatomic) IBOutlet UIView *groupMenberInfo;
 @property (strong, nonatomic) IBOutlet UILabel *groupNumberLabel;// 群组人数
 @property (strong, nonatomic) IBOutlet UILabel *groupRoomNumberLabel;
+@property (strong, nonatomic) IBOutlet UILabel *groupVerifyLabel;
 
 @property (strong, nonatomic) IBOutlet UILabel *groupNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *groupTypeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *groupMumberlabel;// 游戏人数
-@property (strong, nonatomic) IBOutlet UIButton *noticeBT;
+@property (strong, nonatomic) IBOutlet UIButton *noticeBT;// 消息免打扰按钮
 @property (strong, nonatomic) IBOutlet UILabel *minCoinNumberLabel;
 @property (strong, nonatomic) IBOutlet UIButton *quitBT;
 
@@ -30,6 +31,8 @@
 
 @property (nonatomic, assign)int GroupType;
 @property (nonatomic, assign)int minCoin;
+
+@property (nonatomic, copy)NSString * groupManagerID;
 
 @end
 
@@ -51,7 +54,7 @@
     
     self.teamCollectionView = [[TeamHitCollectionView alloc]initWithFrame:CGRectMake(0, 9, screenWidth, (screenWidth - 64) / 5 + 16)];
     [self.groupMenberInfo addSubview:_teamCollectionView];
-    
+    self.groupManagerID = rcGroupInfo.creatorId;
     self.groupNumberLabel.text = [NSString stringWithFormat:@"全部群成员（%@）", rcGroupInfo.number];
     self.groupRoomNumberLabel.text = rcGroupInfo.groupId;
     self.groupNameLabel.text = rcGroupInfo.groupName;
@@ -63,6 +66,7 @@
         self.groupTypeLabel.text = @"21点";
     }
     
+    [self startLoadView];
     [self loadGroupData];
     
 }
@@ -73,6 +77,30 @@
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+-(void)startLoadView
+{
+//    currentConversation = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_GROUP
+//                                                                targetId:self.groupID];
+    [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_PRIVATE
+                                                            targetId:self.groupID
+                                                             success:^(RCConversationNotificationStatus nStatus) {
+                                                                 
+                                                                 if (nStatus == DO_NOT_DISTURB) {
+                                                                     NSLog(@"消息免打扰开启");
+                                                                     self.noticeBT.selected = YES;
+                                                                 }else
+                                                                 {
+                                                                     NSLog(@"消息免打扰开启未开启");
+                                                                     self.noticeBT.selected = NO;
+                                                                 }
+                                                             }
+                                                               error:^(RCErrorCode status){
+                                                                   
+                                                               }];
+    
 }
 
 - (void)loadGroupData
@@ -124,6 +152,7 @@
     userInfo.maxNumber = [NSString stringWithFormat:@"%@", [dic objectForKey:@"MaxNumber"]];
     userInfo.introduce = [dic objectForKey:@"Introduce"];
     userInfo.creatorId = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CreatorId"]];
+    self.groupManagerID = userInfo.creatorId;
     userInfo.creatorTime = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CreatorTime"]];
     if ([[dic objectForKey:@"Role"] intValue] == 1) {
         userInfo.isJoin = YES;
@@ -180,6 +209,12 @@
 
 
 - (IBAction)changeNameAction:(id)sender {
+    
+    if (![self isGroupManager]) {
+        [self showNotManagerTip];
+        return;
+    }
+    
     NSLog(@"改变群名称");
     NSArray * typeArr = [NSArray array];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"修改房间名称" content:typeArr];
@@ -191,6 +226,12 @@
     
 }
 - (IBAction)changeTypeAction:(id)sender {
+    
+    if (![self isGroupManager]) {
+        [self showNotManagerTip];
+        return;
+    }
+    
     NSLog(@"改变群type");
     NSArray * typeArr = @[@"吹牛", @"21点"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"游戏模式" content:typeArr];
@@ -216,6 +257,11 @@
     
 }
 - (IBAction)changeMinCoinAction:(id)sender {
+    
+    if (![self isGroupManager]) {
+        [self showNotManagerTip];
+        return;
+    }
     NSLog(@"改变碰碰币");
     NSArray * typeArr = @[@"50", @"100", @"200", @"400"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"最低碰碰币" content:typeArr];
@@ -234,8 +280,29 @@
 }
 - (IBAction)noticeAction:(id)sender {
     NSLog(@"消息免打扰");
-    UIButton * button = (UIButton *)sender;
-    button.selected = !button.selected;
+//    UIButton * button = (UIButton *)sender;
+//    button.selected = !button.selected;
+    
+    [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:ConversationType_PRIVATE
+                                                            targetId:self.groupID
+                                                           isBlocked:!self.noticeBT.selected
+                                                             success:^(RCConversationNotificationStatus nStatus) {
+                                                                 NSLog(@"设置消息免打扰成功");
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     if (nStatus == DO_NOT_DISTURB) {
+                                                                         NSLog(@"消息免打扰开启");
+                                                                         self.noticeBT.selected = YES;
+                                                                     }else
+                                                                     {
+                                                                         NSLog(@"消息免打扰未开启");
+                                                                         self.noticeBT.selected = NO;
+                                                                     }
+                                                                 });
+                                                                 
+                                                             } error:^(RCErrorCode status) {
+                                                                 NSLog(@"设置消息免打扰失败");
+                                                             }];
+    
 }
 - (IBAction)quitGroupAction:(id)sender {
     NSLog(@"退出群组");
@@ -246,6 +313,43 @@
         NSLog(@"%@", string);
         
     }];
+}
+- (IBAction)groupVerifyAction:(id)sender {
+    if (![self isGroupManager]) {
+        [self showNotManagerTip];
+        return;
+    }
+    NSArray * typeArr = @[@"允许任何人加入", @"不允许任何人加入"];
+    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"群组验证" content:typeArr];
+    [setTipView show];
+    [setTipView getPickerData:^(NSString *string) {
+        NSLog(@"%@", string);
+        if ([string isEqualToString:@"允许任何人加入"] && string == nil) {
+            self.GroupType = 1;
+            self.groupVerifyLabel.text = @"允许任何人加入";
+        }else if([string isEqualToString:@"不允许任何人加入"])
+        {
+            self.GroupType = 2;
+            self.groupVerifyLabel.text = @"不允许任何人加入";
+        }
+    }];
+}
+
+- (BOOL)isGroupManager
+{
+    if ([self.groupManagerID isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
+        return YES;
+    }else
+    {
+        return NO;
+    }
+}
+
+- (void)showNotManagerTip
+{
+    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"只有房主可以修改" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alert show];
+    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.2];
 }
 
 - (void)didReceiveMemoryWarning {

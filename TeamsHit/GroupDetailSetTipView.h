@@ -15,6 +15,9 @@ typedef void(^GroupDetailPickerBlock)(NSString * string);
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content;
 
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content isRule:(BOOL)isRule;
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content isRule:(BOOL)isRule ishaveQuit:(BOOL)ishaveQuit;
+
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title quit:(BOOL)quit;
 
 - (void)show;
 
@@ -28,5 +31,7 @@ typedef void(^GroupDetailPickerBlock)(NSString * string);
 @property (nonatomic, copy)NSString * comleteString;
 @property (nonatomic, strong)UITextField * textFiled;
 @property (nonatomic, strong)UITableView * tableView;
+
+@property (nonatomic, assign)BOOL ishaveQuit;
 
 @end

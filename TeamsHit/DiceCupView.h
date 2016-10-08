@@ -24,7 +24,8 @@
 
 @property (nonatomic, assign)id<TipDiceCupProtocol>delegete;
 @property (nonatomic, strong)NSMutableArray * dataSourceArr;
+@property (nonatomic, strong)NSMutableArray * dicePointArr;
 - (instancetype)initWithFrame:(CGRect)frame;
-
+- (void)showResult;
 
 @end

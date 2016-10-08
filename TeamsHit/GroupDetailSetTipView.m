@@ -14,8 +14,12 @@
 #define GAME_RULECELL_IDENTIFIRE @"gamerulecell"
 
 @interface GroupDetailSetTipView ()
-
+{
+    UIView * backWhiteView;
+}
 @property (nonatomic, strong)NSMutableArray * dataArray;
+
+@property (nonatomic, assign)BOOL isQuit;
 
 @end
 
@@ -37,6 +41,15 @@
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content isRule:(BOOL)isRule ishaveQuit:(BOOL)ishaveQuit
+{
+    if (self = [super initWithFrame:frame]) {
+        self.ishaveQuit = YES;
+        [self prepareUIWith:title Content:content isRule:isRule];
+    }
+    return self;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content isRule:(BOOL)isRule
 {
     if (self = [super initWithFrame:frame]) {
@@ -44,17 +57,27 @@
     }
     return self;
 }
-
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title quit:(BOOL)quit
+{
+    if (self = [super initWithFrame:frame]) {
+        self.isQuit = quit;
+        [self prepareUIWith:title Content:@[] isRule:NO];
+    }
+    return self;
+}
 
 - (void)prepareUIWith:(NSString *)title Content:(NSArray *)content isRule:(BOOL)isRule
 {
     self.backgroundColor = [UIColor clearColor];
     self.dataArr = [NSArray arrayWithArray:content];
     UIView * backBlackView = [[UIView alloc]initWithFrame:self.bounds];
-    backBlackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.6];
+    backBlackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
+    if (self.ishaveQuit) {
+        backBlackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:0];
+    }
     [self addSubview:backBlackView];
     
-    UIView * backWhiteView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 264, 152)];
+    backWhiteView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 264, 152)];
     backWhiteView.layer.cornerRadius = 5;
     backWhiteView.layer.masksToBounds = YES;
     backWhiteView.backgroundColor = [UIColor whiteColor];
@@ -94,69 +117,171 @@
         
     }else
     {
-        if (content.count == 1) {
-            UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(27, 60, backWhiteView.hd_width - 54, 70)];
-            tipLabel.font = [UIFont systemFontOfSize:15];
-            tipLabel.textColor = UIColorFromRGB(0x12B7F5);
-            tipLabel.text = content[0];
-            tipLabel.numberOfLines = 0;
-            CGSize tipSize = [tipLabel.text boundingRectWithSize:CGSizeMake(tipLabel.hd_width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
-            tipLabel.hd_height = tipSize.height;
-            [backWhiteView addSubview:tipLabel];
+        if (self.isQuit) {
+            backWhiteView.hd_height = 141;
+            backBlackView.backgroundColor = [UIColor colorWithWhite:.3 alpha:.3];
+            UIView * rulerView = [[UIView alloc]initWithFrame:CGRectMake(14, 60, backWhiteView.hd_width - 26, 20)];
+            rulerView.backgroundColor = [UIColor whiteColor];
+            [backWhiteView addSubview:rulerView];
             
-        }else if (content.count > 1)
-        {
-            self.customPicker = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 44, backWhiteView.hd_width, 70)];
-            self.customPicker.delegate = self;
-            self.customPicker.dataSource = self;
-            self.customPicker.backgroundColor = [UIColor clearColor];
+            UIImageView * rulerImageView = [[UIImageView alloc]initWithFrame:CGRectMake(14, 60, 17, 17)];
+            rulerImageView.backgroundColor = [UIColor whiteColor];
+            rulerImageView.image = [UIImage imageNamed:@"bragRuleImg"];
+            rulerImageView.userInteractionEnabled = YES;
+            [backWhiteView addSubview:rulerImageView];
             
-            UIView * pickBackView = [[UIView alloc]initWithFrame:CGRectMake(0, 65, _customPicker.hd_width, 28)];
-            pickBackView.backgroundColor = UIColorFromRGB(0x12B7F5);
-            pickBackView.alpha = .4;
-            pickBackView.userInteractionEnabled = YES;
-            [backWhiteView addSubview:pickBackView];
-            [backWhiteView addSubview:self.customPicker];
+            UILabel * rulerLabel = [[UILabel alloc]initWithFrame:CGRectMake(39, 61, 30, 15)];
+            rulerLabel.text = @"规则";
+            rulerLabel.textColor = UIColorFromRGB(0x12B7F5);
+            rulerLabel.font = [UIFont systemFontOfSize:15];
+            [backWhiteView addSubview:rulerLabel];
+            
+            UIImageView * goImageView = [[UIImageView alloc]initWithFrame:CGRectMake(backWhiteView.hd_width - 19, 60, 7, 15)];
+            goImageView.image = [UIImage imageNamed:@"quitGameImg"];
+            goImageView.userInteractionEnabled = YES;
+            [backWhiteView addSubview:goImageView];
+            
+            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(lookRuler)];
+            [rulerView addGestureRecognizer:tap];
+            
+            UIButton * quitBT = [UIButton buttonWithType:UIButtonTypeCustom];
+            quitBT.frame = CGRectMake(0, 92, 78, 25);
+            quitBT.backgroundColor = UIColorFromRGB(0x12B7F5);
+            quitBT.layer.cornerRadius = 8;
+            quitBT.layer.masksToBounds = YES;
+            [quitBT setTitle:@"退出游戏" forState:UIControlStateNormal];
+            [quitBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            quitBT.titleLabel.font = [UIFont systemFontOfSize:15];
+            [quitBT addTarget:self action:@selector(quitGameAction) forControlEvents:UIControlEventTouchUpInside];
+            quitBT.hd_centerX = backWhiteView.hd_width / 2;
+            [backWhiteView addSubview:quitBT];
+            
         }else
         {
-            self.textFiled = [[UITextField alloc]initWithFrame:CGRectMake(29, 66, backWhiteView.hd_width - 58, 34)];
-            self.textFiled.layer.borderColor = UIColorFromRGB(0x12B7F5).CGColor;
-            self.textFiled.layer.borderWidth = 1;
-            self.textFiled.layer.cornerRadius = 5;
-            self.textFiled.layer.masksToBounds = YES;
-            self.textFiled.borderStyle = UITextBorderStyleNone;
             
-            [backWhiteView addSubview:self.textFiled];
+            if (content.count == 1) {
+                UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(27, 60, backWhiteView.hd_width - 54, 70)];
+                tipLabel.font = [UIFont systemFontOfSize:15];
+                tipLabel.textColor = UIColorFromRGB(0x12B7F5);
+                tipLabel.text = content[0];
+                tipLabel.numberOfLines = 0;
+                CGSize tipSize = [tipLabel.text boundingRectWithSize:CGSizeMake(tipLabel.hd_width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
+                tipLabel.hd_height = tipSize.height;
+                [backWhiteView addSubview:tipLabel];
+                
+            }else if (content.count > 1)
+            {
+                self.customPicker = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 44, backWhiteView.hd_width, 70)];
+                self.customPicker.delegate = self;
+                self.customPicker.dataSource = self;
+                self.customPicker.backgroundColor = [UIColor clearColor];
+                
+                UIView * pickBackView = [[UIView alloc]initWithFrame:CGRectMake(0, 65, _customPicker.hd_width, 28)];
+                pickBackView.backgroundColor = UIColorFromRGB(0x12B7F5);
+                pickBackView.alpha = .4;
+                pickBackView.userInteractionEnabled = YES;
+                [backWhiteView addSubview:pickBackView];
+                [backWhiteView addSubview:self.customPicker];
+            }else
+            {
+                self.textFiled = [[UITextField alloc]initWithFrame:CGRectMake(29, 66, backWhiteView.hd_width - 58, 34)];
+                self.textFiled.layer.borderColor = UIColorFromRGB(0x12B7F5).CGColor;
+                self.textFiled.layer.borderWidth = 1;
+                self.textFiled.layer.cornerRadius = 5;
+                self.textFiled.layer.masksToBounds = YES;
+                self.textFiled.borderStyle = UITextBorderStyleNone;
+                
+                [backWhiteView addSubview:self.textFiled];
+            }
+            
+            UIButton * cancleBT = [UIButton buttonWithType:UIButtonTypeCustom];
+            cancleBT.frame = CGRectMake(backWhiteView.hd_width - 114, 118, 34, 16);
+            [cancleBT setTitle:@"取消" forState:UIControlStateNormal];
+            cancleBT.titleLabel.font = [UIFont systemFontOfSize:12];
+            [cancleBT setTitleColor:UIColorFromRGB(0xBABABA) forState:UIControlStateNormal];
+            [backWhiteView addSubview:cancleBT];
+            [cancleBT addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton * sureBT = [UIButton buttonWithType:UIButtonTypeCustom];
+            sureBT.frame = CGRectMake(backWhiteView.hd_width - 63, 118, 34, 16);
+            [sureBT setTitle:@"确定" forState:UIControlStateNormal];
+            sureBT.titleLabel.font = [UIFont systemFontOfSize:12];
+            [sureBT setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal];
+            [backWhiteView addSubview:sureBT];
+            [sureBT addTarget:self action:@selector(completeAction) forControlEvents:UIControlEventTouchUpInside];
         }
         
-        
-        UIButton * cancleBT = [UIButton buttonWithType:UIButtonTypeCustom];
-        cancleBT.frame = CGRectMake(backWhiteView.hd_width - 94, 118, 24, 16);
-        [cancleBT setTitle:@"取消" forState:UIControlStateNormal];
-        cancleBT.titleLabel.font = [UIFont systemFontOfSize:12];
-        [cancleBT setTitleColor:UIColorFromRGB(0xBABABA) forState:UIControlStateNormal];
-        [backWhiteView addSubview:cancleBT];
-        [cancleBT addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
-        
-        
-        UIButton * sureBT = [UIButton buttonWithType:UIButtonTypeCustom];
-        sureBT.frame = CGRectMake(backWhiteView.hd_width - 53, 118, 24, 16);
-        [sureBT setTitle:@"确定" forState:UIControlStateNormal];
-        sureBT.titleLabel.font = [UIFont systemFontOfSize:12];
-        [sureBT setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal];
-        [backWhiteView addSubview:sureBT];
-        [sureBT addTarget:self action:@selector(completeAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    
-    
     
     backWhiteView.center = self.center;
     
 }
 
+#pragma mark - 查看规则
+- (void)lookRuler
+{
+    if (self.myblock) {
+        self.myblock(@"lookRuler");
+    }
+}
+
+- (void)quitGameAction
+{
+    UIView * quitTipView = [[UIView alloc]initWithFrame:CGRectMake((self.hd_width - 275) / 2, backWhiteView.hd_y + 50, 275 , 138)];
+    quitTipView.backgroundColor = [UIColor whiteColor];
+    quitTipView.layer.cornerRadius = 3;
+    quitTipView.layer.masksToBounds = YES;
+    [self addSubview:quitTipView];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 16, 75, 15)];
+    titleLabel.text = @"三思而后行";
+    titleLabel.textColor = MAIN_COLOR;
+    titleLabel.font = [UIFont systemFontOfSize:15];
+    [quitTipView addSubview:titleLabel];
+    
+    UILabel * contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(40, 50, 196, 40)];
+    contentLabel.textColor = MAIN_COLOR;
+    contentLabel.text = @"游戏中退出，会损失大量的金 币和积分。";
+    contentLabel.font = [UIFont systemFontOfSize:15];
+    contentLabel.numberOfLines = 0;
+    [quitTipView addSubview:contentLabel];
+    
+    UIButton * sureBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    sureBT.frame = CGRectMake(quitTipView.hd_width - 133, 99, 45, 22);
+    sureBT.layer.cornerRadius = 3;
+    sureBT.layer.masksToBounds = YES;
+    sureBT.backgroundColor = MAIN_COLOR;
+    [sureBT setTitle:@"确定" forState:UIControlStateNormal];
+    [sureBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [sureBT addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
+    [quitTipView addSubview:sureBT];
+    
+    UIButton * cancleBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    cancleBT.frame = CGRectMake(quitTipView.hd_width - 73, 99, 45, 22);
+    cancleBT.layer.cornerRadius = 3;
+    cancleBT.layer.masksToBounds = YES;
+    cancleBT.backgroundColor = MAIN_COLOR;
+    [cancleBT setTitle:@"取消" forState:UIControlStateNormal];
+    [cancleBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [cancleBT addTarget:self action:@selector(cancleAction:) forControlEvents:UIControlEventTouchUpInside];
+    [quitTipView addSubview:cancleBT];
+    
+    
+}
+
+- (void)sureAction:(UIButton *)bt
+{
+    if (self.myblock) {
+        self.myblock(@"quit");
+    }
+}
+
+- (void)cancleAction:(UIButton *)bt
+{
+    [self dismiss];
+}
 
 #pragma mark - UIPickerViewDelegate
-
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {

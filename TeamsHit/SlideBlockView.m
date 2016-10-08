@@ -31,6 +31,9 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+    if (self.myresignBlock) {
+        self.myresignBlock();
+    }
     self.beginPoint = [[touches anyObject] locationInView:self];
     NSLog(@"begain");
 }
@@ -66,7 +69,7 @@
     {
         return;
     }
-    NSLog(@"move  %f", offSetPoint.y);
+//    NSLog(@"move  %f", offSetPoint.y);
     
 }
 
@@ -89,7 +92,10 @@
 {
     self.myBlock = [block copy];
 }
-
+- (void)resignBlock:(MoveConversationViewBlockResignFirstResponse)block
+{
+    self.myresignBlock = [block copy];
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

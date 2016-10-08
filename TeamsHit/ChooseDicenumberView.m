@@ -169,7 +169,16 @@
     [backWhiteView addSubview:self.completeBT];
     [self.completeBT addTarget:self action:@selector(completeAction:) forControlEvents:UIControlEventTouchUpInside];
     
-    
+}
+
+- (void)refreshViewWithDiceNumber:(int)diceNumber andDicePoint:(int)dicePoint
+{
+    [self.diceCountDataArray removeAllObjects];
+    [self.dicePOintDataArray removeAllObjects];
+    self.diceCountlabel.text = [NSString stringWithFormat:@"%d", diceNumber];
+    self.dicePointImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"骰子%d", dicePoint]];
+    self.begainDiceCount = diceNumber;
+    self.begainDicePoint = dicePoint;
     NSArray * pointarray = @[@"骰子1", @"骰子2", @"骰子3", @"骰子4", @"骰子5", @"骰子6"];
     for (int i = 0; i < 6; i++) {
         ChooseDiceModel * model = [[ChooseDiceModel alloc]init];
@@ -207,6 +216,7 @@
     [self.dicePointCollectionView reloadData];
     [self.diceCountCollectionView reloadData];
 }
+
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -268,9 +278,12 @@
         ChooseDiceModel * model = [self.diceCountDataArray objectAtIndex:indexPath.row];
         model.isSelect = YES;
         
-        self.diceCountlabel.text = model.contentStr;
         if (indexPath.row == self.diceCountDataArray.count - 1) {
-            self.diceCountlabel.text = [NSString stringWithFormat:@"%d", _begainDiceCount + 1];
+            NSLog(@"self.diceCountlabel.text = %@", self.diceCountlabel.text);
+            self.diceCountlabel.text = [NSString stringWithFormat:@"%d", self.diceCountlabel.text.intValue + 1];
+        }else
+        {
+            self.diceCountlabel.text = model.contentStr;
         }
         
         [self.diceCountCollectionView reloadData];
@@ -283,29 +296,37 @@
     ChooseDiceModel * model = [self.diceCountDataArray objectAtIndex:self.diceCountIndex];
     int count = 0;
     if ([model.contentStr isEqualToString:@"+1"]) {
-        count = _begainDiceCount + 1;
+        count = self.diceCountlabel.text.intValue;
     }else
     {
         count = model.contentStr.intValue;
     }
     
-    if (count <= self.begainDiceCount ) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"所选择的骰子数量必须大于上家所选数量" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-    }else
-    {
+    if (self.isSixPoint) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(chooseCompleteWithnumber:point:)]) {
             [self.delegate chooseCompleteWithnumber:count point:self.dicepointIndex + 1];
         }
         
         [self dismiss];
+    }else
+    {
+        if (count < self.begainDiceCount || (count == self.begainDiceCount && self.dicepointIndex + 1 < self.begainDicePoint) ) {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"所选择的骰子数量必须大于上家所选数量" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+        }else
+        {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(chooseCompleteWithnumber:point:)]) {
+                [self.delegate chooseCompleteWithnumber:count point:self.dicepointIndex + 1];
+            }
+            
+            [self dismiss];
+        }
     }
-    
 }
 
 - (void)show
 {
-    self.timeLenght = 30;
+    self.timeLenght = self.leaveTime;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
 }
 
@@ -313,6 +334,11 @@
 {
     self.timeLenght--;
     self.countdownLabel.text = [NSString stringWithFormat:@"%d", self.timeLenght];
+    if (self.timeLenght <= 0) {
+        [self.timer invalidate];
+        self.timer = nil;
+        [self dismiss];
+    }
     NSLog(@"剩余时间 %d", self.timeLenght);
 }
 
@@ -320,6 +346,7 @@
 {
     [self.timer invalidate];
     self.timer = nil;
+    self.hidden = YES;
 }
 /*
 // Only override drawRect: if you perform custom drawing.

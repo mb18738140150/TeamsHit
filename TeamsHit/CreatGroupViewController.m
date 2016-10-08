@@ -11,10 +11,11 @@
 #import "HDPicModle.h"
 #import "ChatViewController.h"
 
-@interface CreatGroupViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface CreatGroupViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate>
 {
     MBProgressHUD* hud ;
 }
+@property (strong, nonatomic) IBOutlet UIView *topView;
 @property (strong, nonatomic) IBOutlet UIImageView *groupIconimageview;
 @property (strong, nonatomic) IBOutlet UITextField *groupNameTF;
 @property (strong, nonatomic) IBOutlet UIView *gameTypeView;
@@ -46,6 +47,9 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction)];
+    [self.view addGestureRecognizer:tapGesture];
+    
     self.imagePic = [[UIImagePickerController alloc] init];
     _imagePic.allowsEditing = YES;
     _imagePic.delegate = self;
@@ -61,6 +65,17 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"%@", self.userIdArrayStr);
+}
+
+- (void)tapGestureAction
+{
+    [self.groupNameTF resignFirstResponder];
+    [self.groupIntroduceTF resignFirstResponder];
+}
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 - (IBAction)changegroupIconAction:(id)sender {
@@ -106,6 +121,8 @@
 }
 
 - (IBAction)gameTypeAction:(id)sender {
+    [self.groupNameTF resignFirstResponder];
+    [self.groupIntroduceTF resignFirstResponder];
     NSLog(@"选择游戏类型");
     NSArray * typeArr = @[@"吹牛", @"21点"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"游戏模式" content:typeArr];
@@ -123,6 +140,8 @@
 }
 - (IBAction)groupVerifyAction:(id)sender {
     NSLog(@"群组验证");
+    [self.groupNameTF resignFirstResponder];
+    [self.groupIntroduceTF resignFirstResponder];
     NSArray * typeArr = @[@"允许任何人加入", @"不允许任何人加入"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"群组验证" content:typeArr];
     [setTipView show];

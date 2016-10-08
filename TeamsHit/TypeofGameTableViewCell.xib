@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="TypeofGameCell" rowHeight="111" id="KGk-i7-Jjw" customClass="TypeofGameTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="337" height="111"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <frame key="frameInset" width="337" height="110"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bragBackgroundcolorView.png" translatesAutoresizingMaskIntoConstraints="NO" id="0BO-yp-KhT"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="吹牛" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LMg-z2-Rem">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="23" id="lip-Lb-rJL"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="23"/>
+                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="开始游戏" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gF5-pD-6t4">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="AUX-eT-Gp6"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findStartGame.png" translatesAutoresizingMaskIntoConstraints="NO" id="XTY-pd-Wtv">
+                        <constraints>
+                            <constraint firstAttribute="width" constant="6" id="5Ca-bm-jGy"/>
+                            <constraint firstAttribute="height" constant="13" id="hxN-Sh-mKf"/>
+                        </constraints>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BragSign.png" translatesAutoresizingMaskIntoConstraints="NO" id="vwc-6f-ySG">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="83" id="6qf-MO-pAv"/>
+                            <constraint firstAttribute="width" constant="80" id="6sj-o7-maz"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                <constraints>
+                    <constraint firstItem="0BO-yp-KhT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="0Xc-fM-gwM"/>
+                    <constraint firstItem="LMg-z2-Rem" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="23" id="53x-TX-g73"/>
+                    <constraint firstItem="LMg-z2-Rem" firstAttribute="leading" secondItem="vwc-6f-ySG" secondAttribute="trailing" constant="55" id="890-T5-8ZL"/>
+                    <constraint firstAttribute="bottom" secondItem="0BO-yp-KhT" secondAttribute="bottom" constant="9" id="BNh-Mm-WhS"/>
+                    <constraint firstItem="gF5-pD-6t4" firstAttribute="top" secondItem="LMg-z2-Rem" secondAttribute="bottom" constant="18" id="Glw-L1-Kkl"/>
+                    <constraint firstItem="XTY-pd-Wtv" firstAttribute="leading" secondItem="gF5-pD-6t4" secondAttribute="trailing" constant="7" id="JFL-e0-1K6"/>
+                    <constraint firstAttribute="trailing" secondItem="0BO-yp-KhT" secondAttribute="trailing" id="bAs-lL-2st"/>
+                    <constraint firstItem="XTY-pd-Wtv" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="65" id="cdC-YP-QHr"/>
+                    <constraint firstItem="vwc-6f-ySG" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="32" id="eaL-Js-Tmc"/>
+                    <constraint firstItem="vwc-6f-ySG" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="19" id="h9y-AV-Idv"/>
+                    <constraint firstItem="gF5-pD-6t4" firstAttribute="leading" secondItem="vwc-6f-ySG" secondAttribute="trailing" constant="54" id="m4X-mC-dxK"/>
+                    <constraint firstItem="0BO-yp-KhT" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="z5f-kD-umI"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+            <connections>
+                <outlet property="backGroundImageView" destination="0BO-yp-KhT" id="WiU-OO-Jtc"/>
+                <outlet property="titlelabel" destination="LMg-z2-Rem" id="p6X-jl-mRk"/>
+                <outlet property="typeOfGameImageView" destination="vwc-6f-ySG" id="8sG-JK-uiR"/>
+            </connections>
+            <point key="canvasLocation" x="389.5" y="367.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="BragSign.png" width="156" height="166"/>
+        <image name="bragBackgroundcolorView.png" width="720" height="202"/>
+        <image name="findStartGame.png" width="13" height="24"/>
+    </resources>
+</document>

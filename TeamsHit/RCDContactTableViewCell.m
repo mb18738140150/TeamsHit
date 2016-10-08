@@ -52,7 +52,7 @@
     _selectStateBT.hidden = YES;
     [_selectStateBT addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     
-    self.noreadlabel = [[UILabel alloc]initWithFrame:CGRectMake(self.hd_width - 55, 23, 23, 23)];
+    self.noreadlabel = [[UILabel alloc]initWithFrame:CGRectMake(screenWidth - 55, 23, 23, 23)];
     self.noreadlabel.backgroundColor = [UIColor redColor];
     self.noreadlabel.layer.cornerRadius = 2;
     self.noreadlabel.layer.masksToBounds = YES;

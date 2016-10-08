@@ -11,7 +11,7 @@
 #import "ChangeEquipmentNameView.h"
 #import "FriendInformationModel.h"
 
-@interface FriendDetailDataSettingViewController ()<TipViewDelegate>
+@interface FriendDetailDataSettingViewController ()<TipViewDelegate, UITextFieldDelegate>
 {
     MBProgressHUD* hud ;
 }
@@ -138,6 +138,8 @@
         AppDelegate * delegate = [UIApplication sharedApplication].delegate;
         [delegate.window addSubview:self.changeNameView];
         self.changeNameView.alpha = 0;
+        
+        self.changeNameView.equipmentNameTF.returnKeyType = UIReturnKeyDone;
         [UIView animateWithDuration:.3 animations:^{
             self.changeNameView.alpha = 1;
         }];
@@ -147,6 +149,8 @@
         self.changeNameView = [nibarr objectAtIndex:0];
         CGRect tmpFrame = [[UIScreen mainScreen] bounds];
         self.changeNameView.frame = tmpFrame;
+        self.changeNameView.equipmentNameTF.returnKeyType = UIReturnKeyDone;
+        self.changeNameView.equipmentNameTF.delegate = self;
         self.changeNameView.title = @"备注";
         self.changeNameView.titleLabel.text = @"修改备注";
         self.changeNameView.equipmentNameTF.placeholder = @"请输入备注";
@@ -165,6 +169,12 @@
             
         }];
     }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 - (void)setFriendDisplayName:(NSString *)name

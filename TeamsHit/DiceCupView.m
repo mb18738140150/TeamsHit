@@ -34,6 +34,14 @@
 
 @implementation DiceCupView
 
+- (NSMutableArray *)dicePointArr
+{
+    if (!_dicePointArr) {
+        _dicePointArr = [NSMutableArray array];
+    }
+    return _dicePointArr;
+}
+
 - (NSMutableArray *)dataSourceArr
 {
     if (!_dataSourceArr) {
@@ -71,14 +79,18 @@
     self.diceCupImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 144 - TOP_SPACE, 75, 85)];
     self.diceCupImageView.hd_centerX = self.center.x;
     self.diceCupImageView.image = [UIImage imageNamed:@"骰盅"];
+    self.diceCupImageView.userInteractionEnabled = YES;
     [self.tipDiceCupView addSubview:self.diceCupImageView];
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tipDiceCupAction)];
+    [self.diceCupImageView addGestureRecognizer:tap];
     
     self.tipDiceCupButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _tipDiceCupButton.frame = CGRectMake(0, 242 - TOP_SPACE, 131, 20);
     _tipDiceCupButton.hd_centerX = self.center.x;
     [_tipDiceCupButton setTitle:@"点击骰盅摇一摇" forState:UIControlStateNormal];
     [_tipDiceCupButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_tipDiceCupButton addTarget:self action:@selector(tipDiceCupAction) forControlEvents:UIControlEventTouchUpInside];
+//    [_tipDiceCupButton addTarget:self action:@selector(tipDiceCupAction) forControlEvents:UIControlEventTouchUpInside];
     [self.tipDiceCupView addSubview:self.tipDiceCupButton];
     
     [self addSubview:self.tipDiceCupView];
@@ -160,7 +172,7 @@
     // 摇骰子动画
     [self startTipDiceCup];
     
-    [self performSelector:@selector(showResult) withObject:nil afterDelay:1.2];
+    [self performSelector:@selector(showResult) withObject:nil afterDelay:1.5];
     
 }
 
@@ -176,6 +188,7 @@
     moveAnimation.duration = .3;
     
     [self.diceCupImageView.layer addAnimation:moveAnimation forKey:@"positionAnnimation"];
+    
 }
 
 - (void)showResult
@@ -192,19 +205,13 @@
     self.gifImageView.hidden = NO;
     self.diceResultCollectionView.hidden = YES;
     
-    [self performSelector:@selector(endGif) withObject:nil afterDelay:1.5];
+    [self performSelector:@selector(endGif) withObject:nil afterDelay:1.0];
 }
 
 - (void)endGif
 {
     self.gifImageView.hidden = YES;
     self.diceResultCollectionView.hidden = NO;
-    
-    [self.dataSourceArr removeAllObjects];
-    for (int i = 0; i < 5; i++) {
-        int a = arc4random() % (5) + 1;
-        [self.dataSourceArr addObject:[NSString stringWithFormat:@"%d", a]];
-    }
     [self.diceResultCollectionView reloadData];
 }
 
@@ -213,6 +220,33 @@
     if (self.delegete && [self.delegete respondsToSelector:@selector(reShakeCup)]) {
         [self.delegete reShakeCup];
     }
+    
+    self.gifImageView.hidden = YES;
+    self.diceResultCollectionView.hidden = YES;
+    [self startreshakeAnimation];
+    [self performSelector:@selector(endReshakeAnimation) withObject:nil afterDelay:1.5];
+    
+}
+
+- (void)startreshakeAnimation
+{
+    self.diceCupResultImageView.image = [UIImage imageNamed:@"骰盅"];
+    CABasicAnimation *moveAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+    moveAnimation.fromValue = [NSValue valueWithCGPoint:CGPointMake(self.hd_width / 2 - 79  - 20,
+                                                                    144 + 44.5  - TOP_SPACE)];
+    moveAnimation.toValue = [NSValue valueWithCGPoint:CGPointMake(self.hd_width / 2 + 79  + 20,
+                                                                  144 + 44.5 - TOP_SPACE)];
+    moveAnimation.autoreverses = YES;
+    moveAnimation.repeatCount = 4;
+    moveAnimation.duration = .3;
+    
+    [self.diceCupResultImageView.layer addAnimation:moveAnimation forKey:@"positionAnnimation"];
+}
+
+- (void)endReshakeAnimation
+{
+    self.diceCupResultImageView.image = [UIImage imageNamed:@"骰盅-1"];
+    [self.diceCupResultImageView.layer removeAllAnimations];
     [self startGif];
 }
 
@@ -223,7 +257,6 @@
     }
     
 }
-
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -238,7 +271,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PublishCollectionViewCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:DICECELLIDENTIFIRE forIndexPath:indexPath];
-    cell.photoImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"骰子%@", self.dataSourceArr[indexPath.row]]];
+    cell.photoImageView.image = [UIImage imageNamed:self.dataSourceArr[indexPath.row]];
     return cell;
 }
 

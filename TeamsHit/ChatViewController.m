@@ -36,6 +36,8 @@
 // 好友详情
 @property (nonatomic, strong)FriendInformationModel * friendmodel;
 @property (nonatomic, assign)BOOL isRightBarItem;
+@property (nonatomic, assign)BOOL isSelect;
+
 @end
 
 @implementation ChatViewController
@@ -214,6 +216,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    self.isSelect = NO;
     UINavigationBar * bar = self.navigationController.navigationBar;
     [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
@@ -347,12 +350,14 @@
         //
 //        [self.navigationController pushViewController:settingsVC animated:YES];
         if (!self.friendmodel) {
+            self.isSelect = YES;
             self.isRightBarItem = YES;
             [self getfriendInformation];
         }else
         {
             ChatSettingViewController * chatSettingVC = [[ChatSettingViewController alloc]initWithNibName:@"ChatSettingViewController" bundle:nil];
             chatSettingVC.model = _friendmodel;
+            chatSettingVC.userId = self.targetId;
             [self.navigationController pushViewController:chatSettingVC animated:YES];
             
             
@@ -747,12 +752,14 @@
         }else
         {
             if (!self.friendmodel) {
-                self.isRightBarItem = YES;
+                self.isSelect = YES;
+                self.isRightBarItem = NO;
                 [self getfriendInformation];
             }else
             {
                 FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
                 friend.model = _friendmodel;
+                friend.targetId = self.targetId;
                 [self.navigationController pushViewController:friend animated:YES];
             }
             
@@ -1020,28 +1027,21 @@
         if (code == 200) {
             self.friendmodel = [[FriendInformationModel alloc]initWithDictionery:responseObject];
             
-//            RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.friendmodel.userId]];
-//            userinfo.name = self.friendmodel.nickName;
-//            userinfo.portraitUri = self.friendmodel.iconUrl;
-//            userinfo.displayName = self.friendmodel.displayName;
-//            [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
-//            
-//            RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.friendmodel.userId]];
-//            user.portraitUri = self.friendmodel.iconUrl;
-//            if (self.friendmodel.displayName.length != 0) {
-//                user.name = self.friendmodel.displayName;
-//            }else
-//            {
-//                user.name = self.friendmodel.nickName;
-//            }
-//            [[RCDataBaseManager shareInstance]insertUserToDB:user];
-            
-            if (self.isRightBarItem) {
+            if (self.isSelect) {
+                if (!self.isRightBarItem) {
                     FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
                     friend.model = _friendmodel;
+                    friend.targetId = self.targetId;
                     [self.navigationController pushViewController:friend animated:YES];
+                }else
+                {
+                    ChatSettingViewController * chatSettingVC = [[ChatSettingViewController alloc]initWithNibName:@"ChatSettingViewController" bundle:nil];
+                    chatSettingVC.model = _friendmodel;
+                    chatSettingVC.userId = self.targetId;
+                    [self.navigationController pushViewController:chatSettingVC animated:YES];
+                }
             }
-           
+            
         }else
         {
             if (self.isRightBarItem) {

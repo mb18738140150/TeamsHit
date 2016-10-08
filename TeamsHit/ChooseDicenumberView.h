@@ -18,7 +18,13 @@
 
 @property (nonatomic, assign)id<ChooseDiceNumberProtocol>delegate;
 
-- (instancetype)initWithFrame:(CGRect)frame withDiceNumber:(int)diceNumber andDicePoint:(int)dicePoint;
-- (void)show;
+@property (nonatomic, assign)BOOL isSixPoint;
+@property (nonatomic, assign)int leaveTime;
 
+- (instancetype)initWithFrame:(CGRect)frame withDiceNumber:(int)diceNumber andDicePoint:(int)dicePoint;
+
+- (void)refreshViewWithDiceNumber:(int)diceNumber andDicePoint:(int)dicePoint;
+
+- (void)show;
+- (void)dismiss;
 @end

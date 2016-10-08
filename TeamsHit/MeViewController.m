@@ -75,7 +75,7 @@
         MaterialViewController * processVC = [[MaterialViewController alloc]init];
         processVC.hidesBottomBarWhenPushed = YES;
         
-        [self.navigationController pushViewController:processVC animated:YES];
+//        [self.navigationController pushViewController:processVC animated:YES];
     }
 
 }

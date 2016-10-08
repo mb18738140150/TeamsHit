@@ -25,9 +25,9 @@
 
 - (void)creatUI:(NSString *)type title:(NSString *)title
 {
-    self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 37 - TOP_SPACE, 18, 9)];
+    self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 32 - TOP_SPACE, 40, 16)];
     self.timeLB.textColor = MAINCOLOR;
-    self.timeLB.font = [UIFont systemFontOfSize:9];
+    self.timeLB.font = [UIFont systemFontOfSize:15];
     self.timeLB.text = @"时间";
     [self addSubview:self.timeLB];
     
@@ -45,35 +45,33 @@
     self.view2.backgroundColor = MAINCOLOR;
     [self addSubview:self.view2];
     
-    self.typeLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 37 - TOP_SPACE, 100, 9)];
+    self.typeLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 32 - TOP_SPACE, 100, 16)];
     self.typeLabel.textColor = MAINCOLOR;
-    self.typeLabel.font = [UIFont systemFontOfSize:9];
+    self.typeLabel.font = [UIFont systemFontOfSize:15];
     self.typeLabel.text = type;
     self.typeLabel.textAlignment = 1;
     [self addSubview:self.typeLabel];
     self.typeLabel.hd_centerX = self.hd_centerX - LEFTSPACE;
     
-    self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 51 - TOP_SPACE, 150, 12)];
+    self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 51 - TOP_SPACE, 150, 18)];
     self.titleLabel.textColor = MAINCOLOR;
     self.titleLabel.textAlignment = 1;
-    self.titleLabel.font = [UIFont systemFontOfSize:12];
+    self.titleLabel.font = [UIFont systemFontOfSize:17];
     self.titleLabel.text = title;
     [self addSubview:self.titleLabel];
     self.titleLabel.hd_centerX = self.hd_centerX- LEFTSPACE;
     
     self.setUpBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.setUpBT.frame = CGRectMake(self.hd_width - 55 - LEFTSPACE, 35 - TOP_SPACE, 44, 20);
+    self.setUpBT.frame = CGRectMake(self.hd_width - 65 - LEFTSPACE, 32 - TOP_SPACE, 54, 20);
     [self.setUpBT setTitleColor:MAINCOLOR forState:UIControlStateNormal];
     [self.setUpBT setTitle:@"设置" forState:UIControlStateNormal];
-    self.setUpBT.titleLabel.font = [UIFont systemFontOfSize:10];
+    self.setUpBT.titleLabel.font = [UIFont systemFontOfSize:14];
     [self.setUpBT setImage:[UIImage imageNamed:@"设置"] forState:UIControlStateNormal];
-    _setUpBT.titleEdgeInsets = UIEdgeInsetsMake(0, -30, 0, 0);
-    _setUpBT.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
+    _setUpBT.titleEdgeInsets = UIEdgeInsetsMake(0, -35, 0, 0);
+    _setUpBT.imageEdgeInsets = UIEdgeInsetsMake(0, 35, 0, 0);
     
     [self addSubview:self.setUpBT];
     [_setUpBT addTarget:self action:@selector(setupAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    
     
 }
 

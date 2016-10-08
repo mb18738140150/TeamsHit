@@ -552,21 +552,29 @@
     
     CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
     
-    //因为第三方键盘或者是在键盘加个toolbar会导致回调三次，这个判断用来判断是否是第三次回调，原生只有一次
-    if(begin.size.height>0 && (begin.origin.y-end.origin.y>0)){
-        
-        //处理逻辑
-        [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
-        [UIView setAnimationDuration:0.3];//设置动画时间 秒为单位
-        self.toolBar.frame = CGRectMake(0, end.origin.y - 40 - 64, self.toolBar.hd_width, 40);//UITextField位置的y坐标移动到offY
-        if (self.sizeDropList) {
-            self.sizeDropList.frame = CGRectMake(SELF_WIDTH / 2 - SELF_WIDTH / 5 - 15, _toolBar.hd_y - 154, 30, 160);
-        }
-        if (self.alinDropList) {
-            self.alinDropList.frame = CGRectMake(SELF_WIDTH / 2 + SELF_WIDTH / 5 - 15, _toolBar.hd_y - 92, 30, 96);
-        }
-        [UIView commitAnimations];//开始动画效果
+    self.toolBar.frame = CGRectMake(0, end.origin.y - 40 - 64, self.toolBar.hd_width, 40);//UITextField位置的y坐标移动到offY
+    if (self.sizeDropList) {
+        self.sizeDropList.frame = CGRectMake(SELF_WIDTH / 2 - SELF_WIDTH / 5 - 15, _toolBar.hd_y - 154, 30, 160);
     }
+    if (self.alinDropList) {
+        self.alinDropList.frame = CGRectMake(SELF_WIDTH / 2 + SELF_WIDTH / 5 - 15, _toolBar.hd_y - 92, 30, 96);
+    }
+    
+    //因为第三方键盘或者是在键盘加个toolbar会导致回调三次，这个判断用来判断是否是第三次回调，原生只有一次
+//    if(begin.size.height>0 && (begin.origin.y-end.origin.y>0)){
+//        
+//        //处理逻辑
+//        [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
+//        [UIView setAnimationDuration:0.3];//设置动画时间 秒为单位
+//        self.toolBar.frame = CGRectMake(0, end.origin.y - 40 - 64, self.toolBar.hd_width, 40);//UITextField位置的y坐标移动到offY
+//        if (self.sizeDropList) {
+//            self.sizeDropList.frame = CGRectMake(SELF_WIDTH / 2 - SELF_WIDTH / 5 - 15, _toolBar.hd_y - 154, 30, 160);
+//        }
+//        if (self.alinDropList) {
+//            self.alinDropList.frame = CGRectMake(SELF_WIDTH / 2 + SELF_WIDTH / 5 - 15, _toolBar.hd_y - 92, 30, 96);
+//        }
+//        [UIView commitAnimations];//开始动画效果
+//    }
     
 }
 -(void)keyboardWillHide:(NSNotification *)note{

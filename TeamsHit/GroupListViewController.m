@@ -10,6 +10,7 @@
 #import "SearcgGroupListCell.h"
 #import "SearchGroupListModel.h"
 #import "GameChatViewController.h"
+#import "BragGameChatViewController.h"
 
 #define CELL_IDENTIFIRE @"GroupCellIdentifire"
 
@@ -54,6 +55,13 @@
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void)getAllData
@@ -140,14 +148,28 @@
     [[RCIM sharedRCIM]refreshGroupInfoCache:groupInfo withGroupId:groupInfo.groupId];
     
     
-    GameChatViewController * chatVc = [[GameChatViewController alloc]init];
-    chatVc.hidesBottomBarWhenPushed = YES;
-    chatVc.conversationType = ConversationType_GROUP;
-    chatVc.displayUserNameInCell = NO;
-    chatVc.targetId = group.groupId;
-    chatVc.title = group.groupName;
-    chatVc.needPopToRootView = YES;
-    [self.navigationController pushViewController:chatVc animated:YES];
+//    GameChatViewController * chatVc = [[GameChatViewController alloc]init];
+//    chatVc.hidesBottomBarWhenPushed = YES;
+//    chatVc.conversationType = ConversationType_GROUP;
+//    chatVc.displayUserNameInCell = NO;
+//    chatVc.targetId = group.groupId;
+//    chatVc.title = group.groupName;
+//    chatVc.needPopToRootView = YES;
+//    [self.navigationController pushViewController:chatVc animated:YES];
+    
+    
+    BragGameChatViewController * conversationVC = [[BragGameChatViewController alloc]init];
+    conversationVC.conversationType = ConversationType_GROUP;
+    conversationVC.targetId = group.groupId;
+//    _conversationVC.userName = group.groupName;
+    conversationVC.title = group.groupName;
+//    _conversationVC.conversation = model;
+//    _conversationVC.unReadMessage = model.unreadMessageCount;
+    conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+    conversationVC.enableUnreadMessageIcon=YES;
+    conversationVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:conversationVC animated:YES];
+    
 }
 
 - (void)didReceiveMemoryWarning {

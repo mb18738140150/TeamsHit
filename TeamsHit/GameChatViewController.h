@@ -9,6 +9,11 @@
 #import <RongIMKit/RongIMKit.h>
 
 @interface GameChatViewController : RCConversationViewController
+{
+    SRWebSocket *_webSocket;
+}
+@property (nonatomic, strong)UIImageView * backImageView;
+
 /**
  *  会话数据模型
  */

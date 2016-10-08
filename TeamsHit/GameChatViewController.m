@@ -23,28 +23,23 @@
 #import "MeDetailInfomationViewController.h"
 #import "BrageGameViewHeaderView.h"
 #import "GroupDetailViewController.h"
-#import "PrepareGameView.h"
 #import "SlideBlockView.h"
-#import "BragGameView.h"
 
-#define Web_Socket @"ws://192.168.1.111:8181/"
+//#define Web_Socket @"ws://192.168.1.111:8182/"
+#define Web_Socket @"ws://120.26.131.140:8182/"
 
 #define ConversationViewHeight ([UIScreen mainScreen].bounds.size.height / 3) * 2 - 64
 
-@interface GameChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCRealTimeLocationObserver, RCMessageCellDelegate, RealTimeLocationStatusViewDelegate, RCChatSessionInputBarControlDelegate,SRWebSocketDelegate, BrageGameViewHeaderViewProtocol, PrepareGameProtocol, BragGameViewProtocol>
+@interface GameChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCRealTimeLocationObserver, RCMessageCellDelegate, RealTimeLocationStatusViewDelegate, RCChatSessionInputBarControlDelegate,SRWebSocketDelegate, BrageGameViewHeaderViewProtocol>
 {
     MBProgressHUD* hud ;
-    SRWebSocket *_webSocket;
 }
 @property (nonatomic, weak)id<RCRealTimeLocationProxy> realTimeLocation;
 @property (nonatomic, strong)RealTimeLocationStatusView *realTimeLocationStatusView;
 @property (nonatomic, strong)RCDGroupInfo *groupInfo;
 @property (nonatomic, strong)NSMutableArray *groupMemberList;
 
-@property (nonatomic, strong)UIImageView * backImageView;
-@property (nonatomic, strong)PrepareGameView * prepareGameView;
 @property (nonatomic, strong)SlideBlockView * slideBlockView;
-@property (nonatomic, strong)BragGameView * bragGameView;
 
 // 好友详情
 @property (nonatomic, strong)FriendInformationModel * friendmodel;
@@ -74,16 +69,15 @@
         [_webSocket open];
     }
     
-    
     // 设置聊天界面frame
     self.chatSessionInputBarControl.delegate = self;
-    self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 50);
+    self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 50);
     self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_y - self.chatSessionInputBarControl.hd_y;
+    self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 50;
     self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
     self.title = @"";
     
-    
-    // 游戏view
+    // 游戏
     self.backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height)];
     _backImageView.image = [UIImage imageNamed:@"gameBackGroundView"];
     [self.view addSubview:_backImageView];
@@ -91,20 +85,13 @@
     [self.view insertSubview:_backImageView belowSubview:self.conversationMessageCollectionView];
     self.navigationItem.titleView.userInteractionEnabled = YES;
     
-    self.prepareGameView = [[PrepareGameView alloc]initWithFrame:CGRectMake(0, 64, self.backImageView.hd_width, 400)];
-    self.prepareGameView.delegate = self;
-    self.prepareGameView.hidden = NO;
-    [self.backImageView addSubview:self.prepareGameView];
-    
-    self.bragGameView = [[BragGameView alloc]initWithFrame:CGRectMake(0, 64, self.view.hd_width, self.view.hd_height)];
-    self.bragGameView.hidden = YES;
-    self.bragGameView.delegate = self;
-    [self.backImageView addSubview:self.bragGameView];
-    
     // 滑块view
     self.slideBlockView = [[SlideBlockView alloc]initWithFrame:CGRectMake(self.view.hd_width / 2 - 24, self.conversationMessageCollectionView.hd_y - 30, 48, 30)];
     [self.view addSubview:self.slideBlockView];
     [self.view insertSubview:_slideBlockView belowSubview:self.conversationMessageCollectionView];
+    [self.slideBlockView resignBlock:^{
+        [self.chatSessionInputBarControl.inputTextView resignFirstResponder];
+    }];
     [self.slideBlockView moveSlideBlock:^(CGPoint point) {
         
         CGFloat offsetHeight = self.slideBlockView.hd_y - self.conversationMessageCollectionView.hd_y;
@@ -115,14 +102,14 @@
         self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_height;
         self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
         
-        NSLog(@"conversationMessageCollectionViewHeight = %f", self.conversationMessageCollectionViewHeight);
+//        NSLog(@"conversationMessageCollectionViewHeight = %f", self.conversationMessageCollectionViewHeight);
         
     }];
     
     [self creatHeaderView];
     
+    [self.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
     
-    [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"backImage.jpg"] title:@"素材" tag:10006];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
@@ -161,35 +148,6 @@
     //    intputTextRect.size.height = intputTextRect.size.height+50;
     //    [self.conversationMessageCollectionView setFrame:intputTextRect];
     //    [self scrollToBottomAnimated:YES];
-    /***********如何自定义面板功能***********************
-     自定义面板功能首先要继承RCConversationViewController，如现在所在的这个文件。
-     然后在viewDidLoad函数的super函数之后去编辑按钮：
-     插入到指定位置的方法如下：
-     [self.pluginBoardView insertItemWithImage:imagePic
-     title:title
-     atIndex:0
-     tag:101];
-     或添加到最后的：
-     [self.pluginBoardView insertItemWithImage:imagePic
-     title:title
-     tag:101];
-     删除指定位置的方法：
-     [self.pluginBoardView removeItemAtIndex:0];
-     删除指定标签的方法：
-     [self.pluginBoardView removeItemWithTag:101];
-     删除所有：
-     [self.pluginBoardView removeAllItems];
-     更换现有扩展项的图标和标题:
-     [self.pluginBoardView updateItemAtIndex:0 image:newImage title:newTitle];
-     或者根据tag来更换
-     [self.pluginBoardView updateItemWithTag:101 image:newImage title:newTitle];
-     以上所有的接口都在RCPluginBoardView.h可以查到。
-     
-     当编辑完扩展功能后，下一步就是要实现对扩展功能事件的处理，放开被注掉的函数
-     pluginBoardView:clickedItemWithTag:
-     在super之后加上自己的处理。
-     
-     */
     
     //默认输入类型为语音
     //self.defaultInputType = RCChatSessionInputBarInputExtention;
@@ -237,8 +195,8 @@
     NSString * title = [NSString stringWithFormat:@"%@房间", self.targetId];
     BrageGameViewHeaderView * headerView = [[BrageGameViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, 64) type:type title:title];
     headerView.delegete = self;
-//    [self.backImageView addSubview:headerView];
     self.navigationItem.titleView = headerView;
+    
 }
 
 #pragma mark - 键盘回收监听
@@ -252,11 +210,17 @@
 
 - (void)keyboardWillshow:(NSNotification *)note
 {
-    // 键盘的frame
-    CGRect keyboardF = [ [note.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    NSLog(@"%f  * %f * %f", keyboardF.size.height , keyboardF.origin.y, self.conversationMessageCollectionViewHeight);
+//    CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
+//    
+//    CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
     
-    self.conversationMessageCollectionView.hd_y = keyboardF.origin.y - self.conversationMessageCollectionViewHeight - 50;
+    // 键盘的frame
+//    CGRect keyboardF = [ [note.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    
+//    self.conversationMessageCollectionView.hd_y = end.origin.y - self.conversationMessageCollectionViewHeight - 50;
+    self.conversationMessageCollectionView.hd_y = self.chatSessionInputBarControl.hd_y - self.conversationMessageCollectionViewHeight;
+    self.conversationMessageCollectionView.hd_height = self.conversationMessageCollectionViewHeight;
+//    NSLog(@"%f  * %f * %f", self.chatSessionInputBarControl.hd_y , self.conversationMessageCollectionView.hd_y, self.conversationMessageCollectionViewHeight);
     self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
     if (self.conversationMessageCollectionView.hd_y < 64) {
         self.conversationMessageCollectionView.hd_y = 64;
@@ -443,12 +407,7 @@
             }
             
         } break;
-        case 10006: {
-            
-            MaterialViewController * processVC = [[MaterialViewController alloc]init];
-            [self.navigationController pushViewController:processVC animated:YES];
-            
-        } break;
+        
         default:
             [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
             break;
@@ -858,33 +817,10 @@
 #pragma mark - BrageGameViewHeaderViewProtocol
 - (void)setUpGameChatGroup
 {
-    NSLog(@"群组设置");
-    GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
-    groupDetailVC.groupID = self.targetId;
-    [self.navigationController pushViewController:groupDetailVC animated:YES];
-}
-
-#pragma mark - PrepareGameProtocol
-- (void)prepareAction
-{
-    [self.prepareGameView.dataSourceArray addObject:[RCIM sharedRCIM].currentUserInfo];
-    [self.prepareGameView reloadDataAction];
-    self.prepareGameView.prepareBT.hidden = YES;
-    self.prepareGameView.preparedButton.hidden = NO;
-    
-    [self performSelector:@selector(showGameView) withObject:nil afterDelay:1];
-    
-}
-- (void)quitPrepareViewAction
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)showGameView
-{
-    self.prepareGameView.hidden = YES;
-    
-    self.bragGameView.hidden = NO;
+//    NSLog(@"群组设置");
+//    GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
+//    groupDetailVC.groupID = self.targetId;
+//    [self.navigationController pushViewController:groupDetailVC animated:YES];
 }
 
 #pragma mark - SRWebSocketDelegate 写上具体聊天逻辑
@@ -917,31 +853,6 @@
 }
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload
 {
-    
-}
-
-#pragma mark - BragGameViewProtocol
-- (void)bragShakeDIceCup
-{
-    NSLog(@"开始摇骰盅");
-}
-- (void)bragReshakeCup
-{
-    NSLog(@"重新摇晃");
-}
-- (void)bragCompleteShakeDiceCup
-{
-    NSLog(@"摇晃完成");
-}
-
-- (void)bragChooseCompleteWithnumber:(int)number point:(int )point
-{
-    NSLog(@"您选择了 %d 个 *** %d 点", number , point);
-    
-    self.bragGameView.hidden = YES;
-    [self.bragGameView begainState];
-    [self.prepareGameView begainState];
-    self.prepareGameView.hidden = NO;
     
 }
 

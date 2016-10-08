@@ -139,6 +139,7 @@
         self.topChatbt.selected = !self.topChatbt.selected;
     }else
     {
+        [self tipalert];
     }
     
 }
@@ -149,7 +150,17 @@
                                                            isBlocked:!self.messageDisturbbt.selected
                                                              success:^(RCConversationNotificationStatus nStatus) {
                                                                  NSLog(@"设置消息免打扰成功");
-                                                                 self.messageDisturbbt.selected = !self.messageDisturbbt.selected;
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     if (nStatus == DO_NOT_DISTURB) {
+                                                                         NSLog(@"消息免打扰开启");
+                                                                         self.messageDisturbbt.selected = YES;
+                                                                     }else
+                                                                     {
+                                                                         NSLog(@"消息免打扰未开启");
+                                                                         self.messageDisturbbt.selected = NO;
+                                                                     }
+                                                                 });
+                                                                 
                                                              } error:^(RCErrorCode status) {
                                                                  NSLog(@"设置消息免打扰失败");
                                                              }];
@@ -204,6 +215,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex {
             }
         }
     }
+}
+
+- (void)tipalert
+{
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"状态修改失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alert show];
 }
 
 - (void)didReceiveMemoryWarning {

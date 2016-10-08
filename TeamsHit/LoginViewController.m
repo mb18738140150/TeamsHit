@@ -32,6 +32,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.accountNumber.returnKeyType = UIReturnKeyDone;
+    self.passwordTF.returnKeyType = UIReturnKeyDone;
     self.passwordTF.secureTextEntry = YES;
     
     [self.hiddenPasswordBT setImage:[[UIImage imageNamed:@"password_hide.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
@@ -73,36 +75,33 @@
 #pragma mark - 键盘监听事件
 - (void)keyboardWillShow:(NSNotification *)note
 {
-    NSDictionary * info = [note userInfo];
-//    NSLog(@"%@", info);
-    CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    CGFloat offY = (self.view.hd_height-keyboardSize.height)-self.myTextfiled.hd_y - self.myTextfiled.hd_height - 10;//屏幕总高度-键盘高度-UITextField高度
-//    NSLog(@"****%f", offY);
-    CGRect inputFieldRect = self.backGroundView.frame;
-    inputFieldRect.origin.y += offY;
-    
-    CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
-    
-    CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
-    
-    //因为第三方键盘或者是在键盘加个toolbar会导致回调三次，这个判断用来判断是否是第三次回调，原生只有一次
-//    NSLog(@"begin.size.height = %f *** end.size.height = %f", begin.size.height, end.size.height);
-    if(begin.size.height>0 && (begin.origin.y-end.origin.y>0)){
-        
-        //处理逻辑
-        [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
-        [UIView setAnimationDuration:0.3];//设置动画时间 秒为单位
-        self.backGroundView.frame = inputFieldRect;//UITextField位置的y坐标移动到offY
-        [UIView commitAnimations];//开始动画效果
-    }
+//    NSDictionary * info = [note userInfo];
+//    CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+//    CGFloat offY = (self.view.hd_height-keyboardSize.height)-self.myTextfiled.hd_y - self.myTextfiled.hd_height - 10;//屏幕总高度-键盘高度-UITextField高度
+//    CGRect inputFieldRect = self.backGroundView.frame;
+//    inputFieldRect.origin.y += offY;
+//    
+//    CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
+//    
+//    CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+//    
+//    //因为第三方键盘或者是在键盘加个toolbar会导致回调三次，这个判断用来判断是否是第三次回调，原生只有一次
+//    if(begin.size.height>0 && (begin.origin.y-end.origin.y>0)){
+//        
+//        //处理逻辑
+//        [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
+//        [UIView setAnimationDuration:0.3];//设置动画时间 秒为单位
+//        self.backGroundView.frame = inputFieldRect;//UITextField位置的y坐标移动到offY
+//        [UIView commitAnimations];//开始动画效果
+//    }
     
 }
 -(void)keyboardWillHide:(NSNotification *)note{
-    [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
-    [UIView setAnimationDuration:0.3];
-    self.backGroundView.frame = CGRectMake(0, 0, self.view.hd_width, self.view.hd_height);//UITextField位置复原
-    
-    [UIView commitAnimations];
+//    [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
+//    [UIView setAnimationDuration:0.3];
+//    self.backGroundView.frame = CGRectMake(0, 0, self.view.hd_width, self.view.hd_height);//UITextField位置复原
+//    
+//    [UIView commitAnimations];
 }
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
@@ -114,6 +113,13 @@
 {
     [textField resignFirstResponder];
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];//关闭键盘
+    return YES;
+}
+
 - (void)tapGestureAction
 {
     [self.accountNumber resignFirstResponder];

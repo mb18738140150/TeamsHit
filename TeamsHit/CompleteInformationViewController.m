@@ -16,7 +16,7 @@
 
 #import "AFNetworking.h"
 
-@interface CompleteInformationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface CompleteInformationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (strong, nonatomic) IBOutlet UITextField *nickNameTF;
 @property (strong, nonatomic) IBOutlet UITextField *accountNameTF;
@@ -414,6 +414,12 @@
         NSLog(@"%@", error);
     }];
     
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 /*

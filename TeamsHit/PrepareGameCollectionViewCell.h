@@ -12,5 +12,5 @@
 
 @property (nonatomic, strong)UIImageView * iconImageView;
 @property (nonatomic, strong)UIImageView * prepareImageView;
-
+- (void)prepareUI;
 @end

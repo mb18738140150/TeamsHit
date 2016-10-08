@@ -18,7 +18,7 @@
 
 #import "CreatGroupViewController.h"
 
-@interface CreatGroupChatRoomViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface CreatGroupChatRoomViewController ()<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (nonatomic, strong)NSMutableArray * tempOtherArr;// 首字母不是A~Z的好友列表
 @property (nonatomic, strong)NSMutableArray * friends;// 数据库获取的所有好友信息列表
@@ -67,6 +67,8 @@
 - (void)prepareUI
 {
     self.searchBarView = [[SearchBarView alloc]initWithFrame:CGRectMake( 15, 5, self.view.hd_width - 30, 40)];
+    self.searchBarView.searchTextView.returnKeyType = UIReturnKeyDone;
+    self.searchBarView.searchTextView.delegate = self;
     [self.view addSubview:self.searchBarView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:_searchBarView.searchTextView];
     
@@ -82,6 +84,12 @@
     self.friendsTabelView.backgroundColor = [[UIColor alloc] initWithRed:colorFloat green:colorFloat blue:colorFloat alpha:1];
     
     [self.view addSubview:self.friendsTabelView];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 #pragma mark - 确认创建

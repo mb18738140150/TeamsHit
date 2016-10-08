@@ -25,8 +25,10 @@
 }
 - (void)prepareUI
 {
+    [self.contentView removeAllSubviews];
+    
     self.numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_height - 1)];
-    self.numberLabel.font = [UIFont systemFontOfSize:15];
+    self.numberLabel.font = [UIFont systemFontOfSize:(int)self.hd_height - 2];
     self.numberLabel.textColor = UIColorFromRGB(0x38BBF8);
     self.numberLabel.backgroundColor = [UIColor whiteColor];
     self.numberLabel.textAlignment = 1;
@@ -51,32 +53,24 @@
 
 - (void)drawRect:(CGRect)rect
 {
-//    if (win) {
+    if (win) {
 //        NSLog(@"赢了");
-//        [self drawRedLin];
-//    }else
-//    {
-//        [self drawWhiteLine];
-//    }
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
-    CGContextSetLineCap(context, kCGLineCapSquare);
-    CGContextSetLineWidth(context, 1);
-    CGContextBeginPath(context);
-    CGContextMoveToPoint(context, 0, 15.5);
-    CGContextAddLineToPoint(context, 33, 15.5);
-    CGContextStrokePath(context);
+        [self drawRedLin];
+    }else
+    {
+        [self drawWhiteLine];
+    }
 }
 
 - (void)drawWhiteLine
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
+    CGContextSetRGBStrokeColor(context, 1, 1, 1, 1);
     CGContextSetLineCap(context, kCGLineCapSquare);
     CGContextSetLineWidth(context, 1);
     CGContextBeginPath(context);
-    CGContextMoveToPoint(context, 0, 15.5);
-    CGContextAddLineToPoint(context, 33, 15.5);
+    CGContextMoveToPoint(context, 0, .5);
+    CGContextAddLineToPoint(context, 33, .5);
     CGContextStrokePath(context);
 
 }
@@ -88,8 +82,8 @@
     CGContextSetLineCap(context, kCGLineCapSquare);
     CGContextSetLineWidth(context, 1);
     CGContextBeginPath(context);
-    CGContextMoveToPoint(context, 0, 15.5);
-    CGContextAddLineToPoint(context, 33, 15.5);
+    CGContextMoveToPoint(context, 0, .5);
+    CGContextAddLineToPoint(context, 33, .5);
     CGContextStrokePath(context);
 }
 

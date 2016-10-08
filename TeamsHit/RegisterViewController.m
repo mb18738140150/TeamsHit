@@ -9,7 +9,7 @@
 #import "RegisterViewController.h"
 #import "CompleteInformationViewController.h"
 #import "RCDUtilities.h"
-@interface RegisterViewController ()
+@interface RegisterViewController ()<UITextFieldDelegate>
 {
     int _t;
 }
@@ -243,6 +243,13 @@
         NSLog(@"error = %@", error);
     }];
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
 //- (void)pushComPleteVC
 //{
 //    CompleteInformationViewController * completeVc = [[CompleteInformationViewController alloc]initWithNibName:@"CompleteInformationViewController" bundle:nil];

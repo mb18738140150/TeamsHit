@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^MoveConversationViewBlockResignFirstResponse)();
 typedef void(^MoveConversationViewBlock)(CGPoint point);
 
 @interface SlideBlockView : UIView
@@ -16,7 +17,9 @@ typedef void(^MoveConversationViewBlock)(CGPoint point);
 @property (nonatomic , assign) CGPoint beginPoint;
 @property (nonatomic, strong)UIImageView * backImageView;
 @property (nonatomic, copy)MoveConversationViewBlock myBlock;
+@property (nonatomic, copy)MoveConversationViewBlockResignFirstResponse myresignBlock;
 
 - (void)moveSlideBlock:(MoveConversationViewBlock)block;
+- (void)resignBlock:(MoveConversationViewBlockResignFirstResponse)block;
 
 @end

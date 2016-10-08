@@ -17,6 +17,8 @@
 #import "FriendListViewController.h"
 #import "CreatGroupChatRoomViewController.h"
 
+#import "BragGameChatViewController.h"
+
 @interface ChatListViewController ()
 
 @property (nonatomic,strong) RCConversationModel *tempModel;
@@ -56,6 +58,13 @@
     
     //聚合会话类型
 //    [self setCollectionConversationType:@[@(ConversationType_SYSTEM)]];
+    
+    
+    self.conversationListTableView.frame = CGRectMake(self.conversationListTableView.hd_x, self.conversationListTableView.hd_y + 50, self.conversationListTableView.hd_width, self.conversationListTableView.hd_height - 50);
+    UIView * view333 = [[UIView alloc]initWithFrame:CGRectMake(0, 64, self.view.hd_width, 50)];
+    view333.backgroundColor = [UIColor cyanColor];
+    [self.view addSubview:view333];
+    [self.view insertSubview:view333 aboveSubview:self.conversationListTableView];
     
     self.conversationListTableView.separatorColor = [UIColor colorWithHexString:@"dfdfdf" alpha:1.0f];
     self.conversationListTableView.tableFooterView = [UIView new];
@@ -207,7 +216,7 @@
         if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
             
             if (model.conversationType == 3) {
-                GameChatViewController * _conversationVC = [[GameChatViewController alloc]init];
+                BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
                 _conversationVC.conversationType = model.conversationType;
                 _conversationVC.targetId = model.targetId;
                 _conversationVC.userName = model.conversationTitle;
@@ -218,7 +227,6 @@
                 _conversationVC.enableUnreadMessageIcon=YES;
                 _conversationVC.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:_conversationVC animated:YES];
-//                [self presentViewController:_conversationVC animated:NO completion:nil];
             }else
             {
                 
