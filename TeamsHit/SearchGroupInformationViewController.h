@@ -10,7 +10,7 @@
 
 @interface SearchGroupInformationViewController : UIViewController
 
-@property (nonatomic, copy)NSString * groupName;
+@property (nonatomic, copy)NSString * groupid;
 
 
 

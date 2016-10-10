@@ -147,7 +147,7 @@
                                         <outletCollection property="gestureRecognizers" destination="JPE-ok-4mY" appends="YES" id="ifk-G0-xvO"/>
                                     </connections>
                                 </view>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f8I-Tp-1du">
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f8I-Tp-1du" userLabel="gameUserCount">
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="游戏人数" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1sN-YC-Vxa">
                                             <constraints>
@@ -179,6 +179,7 @@
                                         </label>
                                     </subviews>
                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <gestureRecognizers/>
                                     <constraints>
                                         <constraint firstItem="geE-pp-iQM" firstAttribute="leading" secondItem="EvK-bU-xZ7" secondAttribute="trailing" constant="10" id="5QB-R2-99C"/>
                                         <constraint firstItem="EvK-bU-xZ7" firstAttribute="top" secondItem="f8I-Tp-1du" secondAttribute="top" constant="17" id="AA9-uv-mWv"/>
@@ -188,6 +189,9 @@
                                         <constraint firstAttribute="height" constant="45" id="qAq-NF-bgT"/>
                                         <constraint firstAttribute="trailing" secondItem="geE-pp-iQM" secondAttribute="trailing" constant="20" id="vy9-CH-a4d"/>
                                     </constraints>
+                                    <connections>
+                                        <outletCollection property="gestureRecognizers" destination="5is-RP-e0f" appends="YES" id="VrE-Pw-eAr"/>
+                                    </connections>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wdd-yc-732" userLabel="rulesView">
                                     <subviews>
@@ -494,6 +498,11 @@
         <tapGestureRecognizer id="z74-aU-0yR">
             <connections>
                 <action selector="groupVerifyAction:" destination="-1" id="Ylm-fx-lbu"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="5is-RP-e0f">
+            <connections>
+                <action selector="changeGameUserCountAction:" destination="-1" id="QDs-tf-GyV"/>
             </connections>
         </tapGestureRecognizer>
     </objects>

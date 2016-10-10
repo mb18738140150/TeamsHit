@@ -31,8 +31,8 @@
     self.tabBar.tintColor = UIColorFromRGB(0x12B7F5);
     self.tabBar.translucent = NO;
     
-    self.chatListVC = [[ChatListViewController alloc]initWithDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_GROUP),@(ConversationType_SYSTEM)] collectionConversationType:@[@(ConversationType_SYSTEM)]];
-    
+//    self.chatListVC = [[ChatListViewController alloc]initWithDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_GROUP),@(ConversationType_SYSTEM)] collectionConversationType:@[@(ConversationType_SYSTEM)]];
+    self.chatListVC = [[ChatListViewController alloc]init];
     _chatListVC.tabBarItem.title = @"对对碰";
     _chatListVC.tabBarItem.image = [UIImage imageNamed:@"chat-1"] ;
     _chatListVC.tabBarItem.selectedImage = [UIImage imageNamed:@"chat-2"] ;

@@ -136,6 +136,20 @@ HDSingletonH(HDNetworking) // 单例声明
 // 获取个人详细资料getDetailInfor
 - (void)getDetailInfor:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
 
+// 修改群组名称
+- (void)modifyGroupName:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 修改群组类型
+- (void)modifyGroupType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 修改最低碰碰币
+- (void)modifyGroupLeastCoins:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 退出群组
+- (void)quitGroup:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 修改游戏人数
+- (void)modifyGamePeople:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 修改群组验证类型
+- (void)modifyGroupVerifition:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

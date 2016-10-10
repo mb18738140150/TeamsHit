@@ -243,6 +243,7 @@
 {
     MyTabBarController * myTabbrVc = [[MyTabBarController alloc]init];
     [ShareApplicationDelegate window].rootViewController = myTabbrVc;
+//    [ShareApplicationDelegate window].rootViewController = [[UINavigationController alloc]initWithRootViewController:myTabbrVc];
 }
 
 /*

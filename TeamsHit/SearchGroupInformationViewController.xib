@@ -8,6 +8,14 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchGroupInformationViewController">
             <connections>
+                <outlet property="applyJoinIngroupBT" destination="NcD-Qp-W86" id="wt6-Yf-oYH"/>
+                <outlet property="colectionViewBackView" destination="0Vy-GT-eHY" id="06A-ir-GMh"/>
+                <outlet property="groupIconImageView" destination="fB4-ZP-Pol" id="w2k-Bb-hJS"/>
+                <outlet property="groupIntroLabel" destination="hHH-Xc-5gG" id="tSS-ic-DUq"/>
+                <outlet property="groupLabel" destination="s9r-N0-Pnu" id="K3c-kL-pm0"/>
+                <outlet property="groupNumber" destination="u9U-ws-Kej" id="fVg-Na-Je2"/>
+                <outlet property="groupTypeLabel" destination="s4i-pb-6gu" id="wvu-jG-ue7"/>
+                <outlet property="groupmembers" destination="9nB-6h-oEm" id="ERB-0c-9am"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -80,6 +88,10 @@
                                                 <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                                 <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             </collectionViewFlowLayout>
+                                            <connections>
+                                                <outlet property="dataSource" destination="-1" id="oSQ-mU-18d"/>
+                                                <outlet property="delegate" destination="-1" id="gFb-Sf-u4G"/>
+                                            </connections>
                                         </collectionView>
                                     </subviews>
                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -112,7 +124,6 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1000人" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u9U-ws-Kej">
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="14" id="8dq-e0-RF6"/>
-                                                <constraint firstAttribute="width" constant="100" id="tup-vc-fYJ"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -142,6 +153,9 @@
                                             <integer key="value" value="2"/>
                                         </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="applyJoinInBT:" destination="-1" eventType="touchUpInside" id="LIl-ak-8Tg"/>
+                                    </connections>
                                 </button>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gj6-QX-lJ7">
                                     <subviews>

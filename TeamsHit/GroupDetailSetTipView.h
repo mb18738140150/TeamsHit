@@ -10,7 +10,7 @@
 
 typedef void(^GroupDetailPickerBlock)(NSString * string);
 
-@interface GroupDetailSetTipView : UIView<UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource>
+@interface GroupDetailSetTipView : UIView<UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content;
 

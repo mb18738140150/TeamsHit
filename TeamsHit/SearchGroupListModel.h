@@ -11,7 +11,7 @@
 @interface SearchGroupListModel : NSObject
 
 @property (nonatomic, copy)NSString * groupIconUrl;
-@property (nonatomic, copy)NSString * groupNumber;
+@property (nonatomic, strong)NSNumber * GroupId;
 @property (nonatomic, strong)NSNumber * GroupPeople;
 @property (nonatomic, copy)NSString * groupIntro;
 @property (nonatomic, copy)NSString * GroupName;

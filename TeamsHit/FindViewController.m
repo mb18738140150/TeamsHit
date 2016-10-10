@@ -9,13 +9,19 @@
 #import "FindViewController.h"
 #import "WXViewController.h"
 #import "TypeofGameTableViewCell.h"
-
+#import "TypeofGameModel.h"
+#import "GroupDetailSetTipView.h"
 #define TYPEOFGAMECELLIDENTIFIRE @"TypeofGameCell"
 
 @interface FindViewController ()<UITableViewDelegate, UITableViewDataSource>
+{
+    MBProgressHUD* hud ;
+}
 @property (strong, nonatomic) IBOutlet UIView *friendCircle;
 @property (strong, nonatomic) IBOutlet UILabel *noreadMassageNumberLabel;
 @property (strong, nonatomic) IBOutlet UITableView *gameTypelist;
+
+@property (nonatomic, strong)NSMutableArray * typedDatesourceArr;
 
 @end
 
@@ -40,6 +46,31 @@
 //    self.gameTypelist.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateFriendCircleMessageCount:) name:@"UpdateFriendCircleMessageCount" object:nil];
+    
+    self.typedDatesourceArr = [NSMutableArray array];
+    for (int i = 0; i<2; i++) {
+        TypeofGameModel * model = [[TypeofGameModel alloc]init];
+        
+        switch (i) {
+            case 0:
+                model.backGroundImageViewtext = @"bragBackgroundcolorView";
+                model.typeOfGameImageViewtext = @"BragSign";
+                model.titlelabeltext = @"吹牛";
+                [self.typedDatesourceArr addObject:model];
+                break;
+            case 1:
+                model.backGroundImageViewtext = @"21pointBackgroundcolorView";
+                model.typeOfGameImageViewtext = @"21pointSign";
+                model.titlelabeltext = @"21点";
+                [self.typedDatesourceArr addObject:model];
+                break;
+                
+            default:
+                break;
+        }
+        
+        
+    }
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -84,15 +115,52 @@
 - (IBAction)addGroupAction:(id)sender {
     
     NSLog(@"加入群");
+    
+    
+    NSArray * typeArr = [NSArray array];
+    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"请输入房间号" content:typeArr];
+    [setTipView show];
+    [setTipView getPickerData:^(NSString *string) {
+        NSLog(@"%@", string);
+        
+//        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        [hud show:YES];
+        NSDictionary * jsonDic = @{
+//                                   @"GroupId":@(self.groupID.intValue),
+//                                   @"GroupName":string
+                                   };
+        
+//        [[HDNetworking sharedHDNetworking]modifyGroupName:jsonDic success:^(id  _Nonnull responseObject) {
+//            NSLog(@"responseObject = %@", responseObject);
+//            [hud hide:YES];
+//            
+//        } failure:^(NSError * _Nonnull error) {
+//            [hud hide:YES];
+//            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+//                ;
+//            }else
+//            {
+//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//                [alert show];
+//                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+//                NSLog(@"%@", error);
+//            }
+//        }];
+        
+    }];
 }
 - (IBAction)creatGroupAction:(id)sender {
     
     NSLog(@"creat a group");
+    
+//    PlayMusicModel * playmusic = [PlayMusicModel share];
+//    [playmusic playMusicWithName:@"摇色子"];
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    return self.typedDatesourceArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -100,6 +168,10 @@
     TypeofGameTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:TYPEOFGAMECELLIDENTIFIRE forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSeparatorStyleNone;
     
+    TypeofGameModel * model = self.typedDatesourceArr[indexPath.row];
+    cell.backGroundImageView.image = [UIImage imageNamed:model.backGroundImageViewtext];
+    cell.typeOfGameImageView.image = [UIImage imageNamed:model.typeOfGameImageViewtext];
+    cell.titlelabel.text = model.titlelabeltext;
     return cell;
 }
 

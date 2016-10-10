@@ -75,9 +75,10 @@
     self.imageView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height)];
     self.imageView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
-    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.hd_width - 70) / 2, 61, 70, 14)];
+    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.hd_width - 70) / 2, 61, 90, 14)];
     tipLabel.text = @"你可以搜索";
     tipLabel.font = [UIFont systemFontOfSize:14];
+    tipLabel.textAlignment = 1;
     tipLabel.backgroundColor = [UIColor clearColor];
     tipLabel.textColor = UIColorFromRGB(0xB3B3B3);
     [self.imageView addSubview:tipLabel];
@@ -86,10 +87,11 @@
     accountImageView.image = [UIImage imageNamed:@"icon_serach_account"];
     [self.imageView addSubview:accountImageView];
     
-    UILabel * accountLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 28, 14)];
+    UILabel * accountLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 50, 14)];
     accountLabel.textColor = TEXTCOLOR;
     accountLabel.font = TEXTFONT;
     accountLabel.text = @"账号";
+    accountLabel.textAlignment = 1;
     accountLabel.hd_centerX = accountImageView.center.x;
     [self.imageView addSubview:accountLabel];
     
@@ -97,9 +99,10 @@
     nickImageView.image = [UIImage imageNamed:@"icon_search_nickname"];
     [self.imageView addSubview:nickImageView];
     
-    UILabel * nickLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 28, 14)];
+    UILabel * nickLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 50, 14)];
     nickLabel.textColor = TEXTCOLOR;
     nickLabel.font = TEXTFONT;
+    nickLabel.textAlignment = 1;
     nickLabel.text = @"昵称";
     nickLabel.hd_centerX = nickImageView.center.x;
     [self.imageView addSubview:nickLabel];
@@ -108,10 +111,11 @@
     groupImageView.image = [UIImage imageNamed:@"icon_search_group"];
     [self.imageView addSubview:groupImageView];
     
-    UILabel * groupLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 28, 14)];
+    UILabel * groupLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 50, 14)];
     groupLabel.textColor = TEXTCOLOR;
     groupLabel.font = TEXTFONT;
     groupLabel.text = @"群组";
+    groupLabel.textAlignment = 1;
     groupLabel.hd_centerX = groupImageView.center.x;
     [self.imageView addSubview:groupLabel];
     
@@ -215,8 +219,8 @@
 
 - (void)groupAction
 {
-    SearchGrouplistViewController * groupListVc = [[SearchGrouplistViewController alloc]init];
-    [self.navigationController pushViewController:groupListVc animated:YES];
+//    SearchGrouplistViewController * groupListVc = [[SearchGrouplistViewController alloc]init];
+//    [self.navigationController pushViewController:groupListVc animated:YES];
     
     [self.searchBarView.searchTextView resignFirstResponder];
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];

@@ -609,6 +609,208 @@ HDSingletonM(HDNetworking) // 单例实现
     }];
 }
 
+// 修改群组名称
+- (void)modifyGroupName:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/modifyGroupName?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+       
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+// 修改群组类型
+- (void)modifyGroupType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/modifyGroupType?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+// 修改最低碰碰币
+- (void)modifyGroupLeastCoins:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/modifyGroupLeastCoins?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+// 退出群组
+- (void)quitGroup:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/quitGroup?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+// 修改游戏人数
+- (void)modifyGamePeople:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/setGamePeople?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+// 修改群组验证类型
+- (void)modifyGroupVerifition:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/setGroupVerifition?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+    
+}
+
+
+
 
 
 @end

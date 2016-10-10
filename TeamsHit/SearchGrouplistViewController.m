@@ -10,7 +10,7 @@
 #import "SearcgGroupListCell.h"
 #import "SearchGroupListModel.h"
 #import "SearchGroupInformationViewController.h"
-
+#import "GroupDetailViewController.h"
 #define CELL_IDENTIFIRE @"searchGroupCellIdentifire"
 
 @interface SearchGrouplistViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -61,8 +61,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-//    return self.groupInfoArr.count;
-    return 8;
+    return self.groupInfoArr.count;
+//    return 8;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -71,8 +71,13 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.iconImageView.layer.masksToBounds = YES;
     
-//    SearchGroupListModel * model = self.groupInfoArr[indexPath.row];
-//    cell.model = model;
+    SearchGroupListModel * model = self.groupInfoArr[indexPath.row];
+    RCDGroupInfo * groupModel = [[RCDGroupInfo alloc]init];
+    groupModel.portraitUri = model.groupIconUrl;
+    groupModel.groupName = model.GroupName;
+    groupModel.groupId = [NSString stringWithFormat:@"%@", model.GroupId];
+    groupModel.introduce = model.groupIntro;
+    cell.model = groupModel;
     return cell;
 }
 
@@ -83,10 +88,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+        SearchGroupListModel * model = self.groupInfoArr[indexPath.row];
     SearcgGroupListCell * cell = [tableView cellForRowAtIndexPath:indexPath];
     SearchGroupInformationViewController * groupinfoVC = [[SearchGroupInformationViewController alloc]initWithNibName:@"SearchGroupInformationViewController" bundle:nil];
-    groupinfoVC.groupName = cell.groupNamelabel.text;
+    groupinfoVC.groupid = [NSString stringWithFormat:@"%@", model.GroupId];
     [self.navigationController pushViewController:groupinfoVC animated:YES];
+    
+    
+//    GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
+//    groupDetailVC.groupID = [NSString stringWithFormat:@"%@", model.GroupId];
+//    [self.navigationController pushViewController:groupDetailVC animated:YES];
+    
 }
 
 - (void)didReceiveMemoryWarning {

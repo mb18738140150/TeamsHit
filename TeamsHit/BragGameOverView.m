@@ -45,6 +45,8 @@
         [self.winGameUserIconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"WinUserIcon"]] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
         [self.loseGameuserIconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"LoseUserIcon"]] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
         
+        [self playMusicWithName:@"游戏赢了"];
+        
     }else if ([RCIM sharedRCIM].currentUserInfo.userId.intValue == [[dic objectForKey:@"LoseUserId"] intValue])
     {
         // 输家
@@ -54,6 +56,8 @@
         [self.gameUserIconImageView sd_setImageWithURL:[NSURL URLWithString:[RCIM sharedRCIM].currentUserInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
         [self.winGameUserIconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"WinUserIcon"]] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
         [self.loseGameuserIconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"LoseUserIcon"]] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
+        
+         [self playMusicWithName:@"游戏失败"];
     }else
     {
         self.gameResultBackView.backgroundColor = UIColorFromRGB(0xA551E7);
@@ -63,7 +67,16 @@
         [self.gameUserIconImageView sd_setImageWithURL:[NSURL URLWithString:[RCIM sharedRCIM].currentUserInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
         [self.winGameUserIconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"WinUserIcon"]] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
         [self.loseGameuserIconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"LoseUserIcon"]] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon.png"]];
+        
+//         [self playMusicWithName:@"gameover"];
     }
+    
+}
+
+- (void)playMusicWithName:(NSString *)name
+{
+    
+    [[PlayMusicModel share] playMusicWithName:name];
     
 }
 

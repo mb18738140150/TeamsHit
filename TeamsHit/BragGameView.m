@@ -160,13 +160,19 @@
             {
                 self.chooseDiceNumberView.hidden = NO;
                 self.chooseDiceNumberView.leaveTime = self.timeoutNumber;
-                if (model.dicePoint.intValue >= 6) {
-                    NSLog(@"***** 上家交了6点");
-                    self.chooseDiceNumberView.isSixPoint = YES;
-                    [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue + 1 andDicePoint:1];
-                }else
+                if (model.dicePoint.intValue == 1) {
+                    NSLog(@"***** 上家叫了1点");
+                    self.chooseDiceNumberView.isOnePoint = YES;
+                    [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue + 1 andDicePoint:2];
+                }else if (model.dicePoint.intValue == 6)
                 {
-                    self.chooseDiceNumberView.isSixPoint = NO;
+                    NSLog(@"***** 上家叫了6点");
+                    self.chooseDiceNumberView.isOnePoint = NO;
+                    [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue andDicePoint:1];
+                }
+                else
+                {
+                    self.chooseDiceNumberView.isOnePoint = NO;
                     [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue andDicePoint:model.dicePoint.intValue + 1];
                 }
                 [self.chooseDiceNumberView show];
@@ -463,7 +469,7 @@
             if ([model.gameUserInfo.userId isEqualToString:firstuserId]) {
                 model.calledDicePointState = CalledDicePoint_Wait;
                 model.diceCount = @1;
-                model.dicePoint = @1;
+                model.dicePoint = @2;
                 // 是自己就显示叫点按钮，并添加超时定时器
                 if ([model.gameUserInfo.userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
                     model.choosecallOrOpenType = ChooseCallOrOpen_Call;
@@ -579,7 +585,7 @@
         NSString * imageStr = [NSString stringWithFormat:@"骰子%@", point];
         [self.diceCupView.dataSourceArr addObject:imageStr];
     }
-    [self.diceCupView showResult];
+//    [self.diceCupView showResult];
     
 //    for (BragGameModel * model in self.gameUserInformationArr) {
 //        if ([model.gameUserInfo.userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
@@ -702,6 +708,8 @@
         }
     }
     [self showResultView:self.actualDiceCount];
+    PlayMusicModel * playmusic = [PlayMusicModel share];
+    [playmusic playMusicWithName:@"统计点数"];
     self.refreshNUmber++;
 }
 
@@ -718,7 +726,8 @@
         }
     }
     [self.gametableView reloadData];
-    
+    PlayMusicModel * playmusic = [PlayMusicModel share];
+    [playmusic playMusicWithName:@"统计完点数的声音"];
     [self performSelector:@selector(getGameResultSource) withObject:nil afterDelay:2];
     
 }

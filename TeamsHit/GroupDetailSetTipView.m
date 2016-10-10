@@ -190,7 +190,8 @@
                 self.textFiled.layer.cornerRadius = 5;
                 self.textFiled.layer.masksToBounds = YES;
                 self.textFiled.borderStyle = UITextBorderStyleNone;
-                
+                self.textFiled.delegate = self;
+                self.textFiled.returnKeyType = UIReturnKeyDone;
                 [backWhiteView addSubview:self.textFiled];
             }
             
@@ -382,6 +383,13 @@
     {
         return model.height + 10;
     }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    
+    [textField resignFirstResponder];
+    return YES;
 }
 
 /*

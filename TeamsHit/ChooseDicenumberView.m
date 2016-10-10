@@ -302,7 +302,7 @@
         count = model.contentStr.intValue;
     }
     
-    if (self.isSixPoint) {
+    if (self.isOnePoint) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(chooseCompleteWithnumber:point:)]) {
             [self.delegate chooseCompleteWithnumber:count point:self.dicepointIndex + 1];
         }
@@ -310,9 +310,18 @@
         [self dismiss];
     }else
     {
-        if (count < self.begainDiceCount || (count == self.begainDiceCount && self.dicepointIndex + 1 < self.begainDicePoint) ) {
-            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"所选择的骰子数量必须大于上家所选数量" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
+        if (self.dicepointIndex + 1 != 1) {
+            if (count < self.begainDiceCount || (count == self.begainDiceCount && self.dicepointIndex + 1 < self.begainDicePoint) ) {
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"所选择的骰子数量必须大于上家所选数量" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+            }else
+            {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(chooseCompleteWithnumber:point:)]) {
+                    [self.delegate chooseCompleteWithnumber:count point:self.dicepointIndex + 1];
+                }
+                
+                [self dismiss];
+            }
         }else
         {
             if (self.delegate && [self.delegate respondsToSelector:@selector(chooseCompleteWithnumber:point:)]) {
@@ -321,6 +330,7 @@
             
             [self dismiss];
         }
+        
     }
 }
 

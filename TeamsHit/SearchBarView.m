@@ -8,7 +8,7 @@
 
 #import "SearchBarView.h"
 
-@interface SearchBarView ()
+@interface SearchBarView ()<UITextFieldDelegate>
 
 @property (nonatomic, strong)UIImageView * searchImageView;
 @property (nonatomic, strong)UIView * bottomLineView;
@@ -36,6 +36,8 @@
     self.searchTextView.font = [UIFont systemFontOfSize:16];
     self.searchTextView.textColor = [UIColor colorWithWhite:.2 alpha:1];
     self.searchTextView.placeholder = @"搜索";
+    self.searchTextView.returnKeyType = UIReturnKeyDone;
+    self.searchTextView.delegate = self;
     [self addSubview:self.searchTextView];
     
     self.placeholdLabel = [[UILabel alloc]initWithFrame:CGRectMake(32, 14, 33, 16)];
@@ -55,6 +57,12 @@
 - (void)setBottomColor:(UIColor *)bottomColor
 {
     self.bottomLineView.backgroundColor = bottomColor;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];//关闭键盘
+    return YES;
 }
 
 /*

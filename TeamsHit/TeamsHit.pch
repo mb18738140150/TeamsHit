@@ -48,6 +48,7 @@
 #import "WFMessageBody.h"
 
 #import "TipView.h"
+#import "PlayMusicModel.h"
 
 // 图片最多显示张数，超过九张取消单击事件
 static NSInteger const kPhotoShowMaxCount = 9;

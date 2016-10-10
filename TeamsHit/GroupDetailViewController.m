@@ -30,7 +30,9 @@
 @property (nonatomic, strong)TeamHitCollectionView * teamCollectionView;
 
 @property (nonatomic, assign)int GroupType;
+@property (nonatomic, assign)int VerificationType;
 @property (nonatomic, assign)int minCoin;
+@property (nonatomic, assign)int minGameUserCount;
 
 @property (nonatomic, copy)NSString * groupManagerID;
 
@@ -162,9 +164,9 @@
     }
     if ([[dic objectForKey:@"GroupType"] intValue] == 1) {
         userInfo.GroupType = 1;
-    }else
+    }else if ([[dic objectForKey:@"GroupType"] intValue] == 2)
     {
-        userInfo.isJoin = 2;
+        userInfo.GroupType = 2;
     }
     if ([[dic objectForKey:@"IsDismiss"] intValue] == 1) {
         userInfo.isDismiss = @"1";
@@ -216,12 +218,38 @@
     }
     
     NSLog(@"改变群名称");
+    
+    
     NSArray * typeArr = [NSArray array];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"修改房间名称" content:typeArr];
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
-        self.groupNameLabel.text = string;
+        
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   @"GroupName":string
+                                   };;
+        
+        [[HDNetworking sharedHDNetworking]modifyGroupName:jsonDic success:^(id  _Nonnull responseObject) {
+            NSLog(@"responseObject = %@", responseObject);
+            [hud hide:YES];
+            self.groupNameLabel.text = string;
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+        
     }];
     
 }
@@ -240,12 +268,41 @@
         NSLog(@"%@", string);
         if ([string isEqualToString:@"21点"]) {
             self.GroupType = 2;
-            self.groupTypeLabel.text = @"21点";
         }else
         {
             self.GroupType = 1;
-            self.groupTypeLabel.text = @"吹牛";
         }
+        
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   @"GroupType":@(self.GroupType)
+                                   };;
+        
+        [[HDNetworking sharedHDNetworking]modifyGroupType:jsonDic success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            if (self.GroupType == 2) {
+                self.groupTypeLabel.text = @"21点";
+            }else
+            {
+                self.groupTypeLabel.text = @"吹牛";
+            }
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+        
     }];
 }
 - (IBAction)lookRuleAction:(id)sender {
@@ -275,7 +332,33 @@
             string = @"50";
         }
         NSLog(@"%@", string);
-        self.minCoinNumberLabel.text = string;
+        
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   @"LeastCoins":@(self.minCoin)
+                                   };;
+        
+        [[HDNetworking sharedHDNetworking]modifyGroupLeastCoins:jsonDic success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            self.minCoinNumberLabel.text = string;
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+        
+        
     }];
 }
 - (IBAction)noticeAction:(id)sender {
@@ -312,6 +395,31 @@
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
         
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   };
+        
+        [[HDNetworking sharedHDNetworking]quitGroup:jsonDic success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+        
+        
     }];
 }
 - (IBAction)groupVerifyAction:(id)sender {
@@ -324,16 +432,99 @@
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
-        if ([string isEqualToString:@"允许任何人加入"] && string == nil) {
-            self.GroupType = 1;
-            self.groupVerifyLabel.text = @"允许任何人加入";
+        if ([string isEqualToString:@"允许任何人加入"] || string == nil) {
+            self.VerificationType = 1;
         }else if([string isEqualToString:@"不允许任何人加入"])
         {
-            self.GroupType = 2;
-            self.groupVerifyLabel.text = @"不允许任何人加入";
+            self.VerificationType = 2;
         }
+        
+        
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   @"VerificationType":@(self.VerificationType)
+                                   };
+        
+        [[HDNetworking sharedHDNetworking]modifyGroupVerifition:jsonDic success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            if (self.VerificationType == 1) {
+                self.groupVerifyLabel.text = @"允许任何人加入";
+            }else if(self.VerificationType == 2)
+            {
+                self.groupVerifyLabel.text = @"不允许任何人加入";
+            }
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+        
+        
     }];
 }
+
+- (IBAction)changeGameUserCountAction:(id)sender {
+    
+    if (![self isGroupManager]) {
+        [self showNotManagerTip];
+        return;
+    }
+    NSLog(@"改变碰碰币");
+    NSArray * typeArr = @[@"3", @"4", @"5", @"6"];
+    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"最大游戏人数" content:typeArr];
+    [setTipView show];
+    [setTipView getPickerData:^(NSString *string) {
+        if (string) {
+            self.minGameUserCount = string.intValue;
+        }else
+        {
+            self.minGameUserCount = 3;
+            string = @"3";
+        }
+        NSLog(@"%@", string);
+        
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   @"GamePeople":@(self.minGameUserCount)
+                                   };;
+        
+        [[HDNetworking sharedHDNetworking]modifyGroupLeastCoins:jsonDic success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            self.groupMumberlabel.text = string;
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+        
+        
+    }];
+    
+}
+
+
 
 - (BOOL)isGroupManager
 {

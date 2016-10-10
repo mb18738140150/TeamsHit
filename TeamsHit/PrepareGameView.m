@@ -105,12 +105,12 @@
     PrepareGameCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CELL_IDENTIFIRE forIndexPath:indexPath];
     [cell prepareUI];
     if (indexPath.row >= self.dataSourceArray.count) {
-        cell.iconImageView.image = [UIImage imageNamed:@"preparePlaceholdIcon"];
+        cell.iconImageView.image = [UIImage imageNamed:@"preparePlaceholdIcon1"];
         cell.prepareImageView.hidden = YES;
     }else
     {
         RCUserInfo * userInfo = [self.dataSourceArray objectAtIndex:indexPath.row];
-        [cell.iconImageView sd_setImageWithURL:[NSURL URLWithString:userInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon"]];
+        [cell.iconImageView sd_setImageWithURL:[NSURL URLWithString:userInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"preparePlaceholdIcon1"]];
         cell.prepareImageView.hidden = NO;
     }
     return cell;

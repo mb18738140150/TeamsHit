@@ -37,6 +37,7 @@
 		730CD9EA1D742B0200183ED8 /* YMTapGestureRecongnizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 730CD9D81D742B0200183ED8 /* YMTapGestureRecongnizer.m */; };
 		730CD9EB1D742B0200183ED8 /* WXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730CD9DA1D742B0200183ED8 /* WXViewController.m */; };
 		730CD9ED1D74363B00183ED8 /* suolong.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 730CD9EC1D74363B00183ED8 /* suolong.jpg */; };
+		730E0F801DA9D15E001A5CD8 /* preparePlaceholdIcon1.png in Resources */ = {isa = PBXBuildFile; fileRef = 730E0F7F1DA9D15E001A5CD8 /* preparePlaceholdIcon1.png */; };
 		730E80841D81036800D5EE2E /* GroupListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730E80831D81036800D5EE2E /* GroupListViewController.m */; };
 		730E80871D814F7B00D5EE2E /* GameChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730E80861D814F7B00D5EE2E /* GameChatViewController.m */; };
 		730E808B1D816E6400D5EE2E /* gameBackGroundViewDown.png in Resources */ = {isa = PBXBuildFile; fileRef = 730E80891D816E6400D5EE2E /* gameBackGroundViewDown.png */; };
@@ -353,6 +354,7 @@
 		73644C541D3624500060DA9F /* TimeSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73644C531D3624500060DA9F /* TimeSelectView.m */; };
 		73644C571D3635830060DA9F /* camera_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73644C551D3635830060DA9F /* camera_icon.png */; };
 		73644C581D3635830060DA9F /* logo(1).png in Resources */ = {isa = PBXBuildFile; fileRef = 73644C561D3635830060DA9F /* logo(1).png */; };
+		736484B91DAA155600E1C95A /* TypeofGameModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 736484B81DAA155600E1C95A /* TypeofGameModel.m */; };
 		73671A5A1D4C4B6E00C07823 /* EquipmentManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73671A581D4C4B6E00C07823 /* EquipmentManagerViewController.m */; };
 		73671A5B1D4C4B6E00C07823 /* EquipmentManagerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73671A591D4C4B6E00C07823 /* EquipmentManagerViewController.xib */; };
 		7370D58F1D5091ED00E61318 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7370D58E1D5091ED00E61318 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -452,6 +454,14 @@
 		73E666071D4C98AF005B11A4 /* equipicon4-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E665FB1D4C98AF005B11A4 /* equipicon4-2@2x.png */; };
 		73E6660B1D4C9A50005B11A4 /* ConfigurationWiFiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E666091D4C9A50005B11A4 /* ConfigurationWiFiViewController.m */; };
 		73E6660C1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73E6660A1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib */; };
+		73F21BDA1DAB31EC00424693 /* 统计点数.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD51DAB31EC00424693 /* 统计点数.wav */; };
+		73F21BDB1DAB31EC00424693 /* 统计完点数的声音.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */; };
+		73F21BDC1DAB31EC00424693 /* 摇色子.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD71DAB31EC00424693 /* 摇色子.wav */; };
+		73F21BDD1DAB31EC00424693 /* 游戏失败.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD81DAB31EC00424693 /* 游戏失败.wav */; };
+		73F21BDE1DAB31EC00424693 /* 游戏赢了.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD91DAB31EC00424693 /* 游戏赢了.wav */; };
+		73F21BE11DAB339800424693 /* PlayMusicModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F21BE01DAB339800424693 /* PlayMusicModel.m */; };
+		73F21BE31DAB365000424693 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21BE21DAB365000424693 /* AVFoundation.framework */; };
+		73F21BE51DAB386200424693 /* dice_m_11.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BE41DAB386200424693 /* dice_m_11.mp3 */; };
 		73F5AA4A1D9270AD00EC04D4 /* bragRuleImg.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F5AA491D9270AD00EC04D4 /* bragRuleImg.png */; };
 		73F5AA4C1D9276BB00EC04D4 /* 111.gif in Resources */ = {isa = PBXBuildFile; fileRef = 73F5AA4B1D9276BB00EC04D4 /* 111.gif */; };
 		73F5AA4E1D928BB200EC04D4 /* quitGameImg.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F5AA4D1D928BB200EC04D4 /* quitGameImg.png */; };
@@ -529,6 +539,7 @@
 		730CD9D91D742B0200183ED8 /* WXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXViewController.h; sourceTree = "<group>"; };
 		730CD9DA1D742B0200183ED8 /* WXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXViewController.m; sourceTree = "<group>"; };
 		730CD9EC1D74363B00183ED8 /* suolong.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = suolong.jpg; sourceTree = "<group>"; };
+		730E0F7F1DA9D15E001A5CD8 /* preparePlaceholdIcon1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preparePlaceholdIcon1.png; sourceTree = "<group>"; };
 		730E80821D81036800D5EE2E /* GroupListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupListViewController.h; sourceTree = "<group>"; };
 		730E80831D81036800D5EE2E /* GroupListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupListViewController.m; sourceTree = "<group>"; };
 		730E80851D814F7B00D5EE2E /* GameChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameChatViewController.h; sourceTree = "<group>"; };
@@ -999,6 +1010,8 @@
 		73644C531D3624500060DA9F /* TimeSelectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeSelectView.m; sourceTree = "<group>"; };
 		73644C551D3635830060DA9F /* camera_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_icon.png; sourceTree = "<group>"; };
 		73644C561D3635830060DA9F /* logo(1).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo(1).png"; sourceTree = "<group>"; };
+		736484B71DAA155600E1C95A /* TypeofGameModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeofGameModel.h; sourceTree = "<group>"; };
+		736484B81DAA155600E1C95A /* TypeofGameModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeofGameModel.m; sourceTree = "<group>"; };
 		73671A571D4C4B6E00C07823 /* EquipmentManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquipmentManagerViewController.h; sourceTree = "<group>"; };
 		73671A581D4C4B6E00C07823 /* EquipmentManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquipmentManagerViewController.m; sourceTree = "<group>"; };
 		73671A591D4C4B6E00C07823 /* EquipmentManagerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EquipmentManagerViewController.xib; sourceTree = "<group>"; };
@@ -1146,6 +1159,15 @@
 		73E666081D4C9A50005B11A4 /* ConfigurationWiFiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigurationWiFiViewController.h; sourceTree = "<group>"; };
 		73E666091D4C9A50005B11A4 /* ConfigurationWiFiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigurationWiFiViewController.m; sourceTree = "<group>"; };
 		73E6660A1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfigurationWiFiViewController.xib; sourceTree = "<group>"; };
+		73F21BD51DAB31EC00424693 /* 统计点数.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "统计点数.wav"; sourceTree = "<group>"; };
+		73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "统计完点数的声音.wav"; sourceTree = "<group>"; };
+		73F21BD71DAB31EC00424693 /* 摇色子.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "摇色子.wav"; sourceTree = "<group>"; };
+		73F21BD81DAB31EC00424693 /* 游戏失败.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "游戏失败.wav"; sourceTree = "<group>"; };
+		73F21BD91DAB31EC00424693 /* 游戏赢了.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "游戏赢了.wav"; sourceTree = "<group>"; };
+		73F21BDF1DAB339800424693 /* PlayMusicModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayMusicModel.h; sourceTree = "<group>"; };
+		73F21BE01DAB339800424693 /* PlayMusicModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayMusicModel.m; sourceTree = "<group>"; };
+		73F21BE21DAB365000424693 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		73F21BE41DAB386200424693 /* dice_m_11.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = dice_m_11.mp3; sourceTree = "<group>"; };
 		73F5AA491D9270AD00EC04D4 /* bragRuleImg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bragRuleImg.png; sourceTree = "<group>"; };
 		73F5AA4B1D9276BB00EC04D4 /* 111.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 111.gif; sourceTree = "<group>"; };
 		73F5AA4D1D928BB200EC04D4 /* quitGameImg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quitGameImg.png; sourceTree = "<group>"; };
@@ -1164,6 +1186,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73F21BE31DAB365000424693 /* AVFoundation.framework in Frameworks */,
 				73362E0A1D85670D005DE81F /* libicucore.tbd in Frameworks */,
 				7370D5911D50BBBE00E61318 /* SystemConfiguration.framework in Frameworks */,
 				733C15071D4B5314008502B8 /* CFNetwork.framework in Frameworks */,
@@ -1288,6 +1311,7 @@
 		730E80881D816E5A00D5EE2E /* game */ = {
 			isa = PBXGroup;
 			children = (
+				73F21BD41DAB31DA00424693 /* 音频文件 */,
 				73FAEBA31D9BBA0D006BA437 /* TeamHitCoin.png */,
 				73FAEBA11D9BA06D006BA437 /* bragGameOverSign.png */,
 				73199DDF1D84069E00D5015E /* 展开1.png */,
@@ -1297,6 +1321,7 @@
 				73199DAE1D83AEBC00D5015E /* prepareBT.png */,
 				73199DAF1D83AEBC00D5015E /* PreparedButton.png */,
 				73199DB01D83AEBC00D5015E /* quieGameButton.png */,
+				730E0F7F1DA9D15E001A5CD8 /* preparePlaceholdIcon1.png */,
 				73199DAC1D83AA4900D5015E /* preparePlaceholdIcon.png */,
 				73199DAA1D83AA2200D5015E /* preparegameSign.png */,
 				733FA1401D82504D009A1689 /* 设置@2x.png */,
@@ -1381,6 +1406,7 @@
 		73199DA31D83A32200D5015E /* gameView */ = {
 			isa = PBXGroup;
 			children = (
+				7364D0191DA8C339003D7B5D /* 21PointGameView */,
 				73199DD21D83E3AA00D5015E /* bragGameView */,
 				73199DA41D83A38B00D5015E /* PrepareGameView.h */,
 				73199DA51D83A38B00D5015E /* PrepareGameView.m */,
@@ -1704,6 +1730,8 @@
 				737118041D388B8500B590CB /* TeamHitBarButtonItem.m */,
 				732BABB91D37B06E00D480B0 /* UserInfo.h */,
 				732BABBA1D37B06E00D480B0 /* UserInfo.m */,
+				73F21BDF1DAB339800424693 /* PlayMusicModel.h */,
+				73F21BE01DAB339800424693 /* PlayMusicModel.m */,
 				73644C4A1D36199A0060DA9F /* 选择器 */,
 				732B93221D2E36530095DD62 /* Category */,
 				732B931E1D2E35890095DD62 /* ImageModel */,
@@ -2305,6 +2333,13 @@
 			name = TimeSelectView;
 			sourceTree = "<group>";
 		};
+		7364D0191DA8C339003D7B5D /* 21PointGameView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = 21PointGameView;
+			sourceTree = "<group>";
+		};
 		73671A561D4C4B4300C07823 /* controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -2362,6 +2397,8 @@
 				731449C21D98FAC900512E64 /* TypeofGameTableViewCell.h */,
 				731449C31D98FAC900512E64 /* TypeofGameTableViewCell.m */,
 				731449C41D98FAC900512E64 /* TypeofGameTableViewCell.xib */,
+				736484B71DAA155600E1C95A /* TypeofGameModel.h */,
+				736484B81DAA155600E1C95A /* TypeofGameModel.m */,
 				730CD9B61D742B0200183ED8 /* friendCircle */,
 				737339EA1D33364A00E9A18C /* PhotoChoceTool */,
 				732BABAC1D3765AC00D480B0 /* PublishCircleOfFriendViewController.h */,
@@ -2677,9 +2714,23 @@
 			name = equipmentResource;
 			sourceTree = "<group>";
 		};
+		73F21BD41DAB31DA00424693 /* 音频文件 */ = {
+			isa = PBXGroup;
+			children = (
+				73F21BE41DAB386200424693 /* dice_m_11.mp3 */,
+				73F21BD51DAB31EC00424693 /* 统计点数.wav */,
+				73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */,
+				73F21BD71DAB31EC00424693 /* 摇色子.wav */,
+				73F21BD81DAB31EC00424693 /* 游戏失败.wav */,
+				73F21BD91DAB31EC00424693 /* 游戏赢了.wav */,
+			);
+			name = "音频文件";
+			sourceTree = "<group>";
+		};
 		CDBCAD4034AC9575BD8FD84B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73F21BE21DAB365000424693 /* AVFoundation.framework */,
 				73362E091D85670D005DE81F /* libicucore.tbd */,
 				7370D5901D50BBBE00E61318 /* SystemConfiguration.framework */,
 				733C15061D4B5314008502B8 /* CFNetwork.framework */,
@@ -2885,6 +2936,7 @@
 				733FA13A1D82457C009A1689 /* tm.png in Resources */,
 				73362FD51D59B82C00331BFB /* wifi_paring_02.png in Resources */,
 				733412D81D5AC0EF00196F4E /* FriendInformationViewController.xib in Resources */,
+				73F21BE51DAB386200424693 /* dice_m_11.mp3 in Resources */,
 				73DEBC1D1D863E3700395FD0 /* 船.png in Resources */,
 				730CD9ED1D74363B00183ED8 /* suolong.jpg in Resources */,
 				73199DB31D83AEBC00D5015E /* quieGameButton.png in Resources */,
@@ -2912,6 +2964,7 @@
 				732E04B11D41FE3400BED0ED /* dot_01.png in Resources */,
 				73E666051D4C98AF005B11A4 /* equipicon4-1@2x.png in Resources */,
 				732B92EB1D2DE2F70095DD62 /* Assets.xcassets in Resources */,
+				73F21BDD1DAB31EC00424693 /* 游戏失败.wav in Resources */,
 				73199DC11D83E30800D5015E /* 骰子1-1.png in Resources */,
 				73362FD81D59B82C00331BFB /* wifi_paring_05.png in Resources */,
 				7326C2721D64201C00F114C4 /* quest_4.bmp in Resources */,
@@ -2967,6 +3020,7 @@
 				737117FD1D388B2C00B590CB /* find-1@2x.png in Resources */,
 				7326C2591D64201C00F114C4 /* im14.bmp in Resources */,
 				732E04B31D41FE3400BED0ED /* dot_03.png in Resources */,
+				73F21BDB1DAB31EC00424693 /* 统计完点数的声音.wav in Resources */,
 				7326C2651D64201C00F114C4 /* line_1.bmp in Resources */,
 				732E045F1D41B2F100BED0ED /* 1@2x.png in Resources */,
 				732E04A21D41CAA400BED0ED /* box_degree.png in Resources */,
@@ -2996,8 +3050,10 @@
 				73199DE01D84069E00D5015E /* 展开1.png in Resources */,
 				730CD9AF1D7428FA00183ED8 /* 03@2x.png in Resources */,
 				7371181F1D38BFFF00B590CB /* price1.png in Resources */,
+				73F21BDE1DAB31EC00424693 /* 游戏赢了.wav in Resources */,
 				733DFFCF1D655C0300A6DBDF /* ChatSettingViewController.xib in Resources */,
 				73362FEE1D59DE7400331BFB /* icon_find_friend.png in Resources */,
+				73F21BDA1DAB31EC00424693 /* 统计点数.wav in Resources */,
 				7371181D1D38BFFF00B590CB /* equipment.png in Resources */,
 				737118181D38BE7200B590CB /* next_icon.png in Resources */,
 				737118231D38C60D00B590CB /* RoronoaZoro.jpg in Resources */,
@@ -3005,11 +3061,13 @@
 				73644C4F1D3619EC0060DA9F /* Address.plist in Resources */,
 				73DEBC1E1D863E3700395FD0 /* 赢.png in Resources */,
 				733FA1411D82504D009A1689 /* 设置@2x.png in Resources */,
+				73F21BDC1DAB31EC00424693 /* 摇色子.wav in Resources */,
 				73199DC91D83E30800D5015E /* 骰子5-1.png in Resources */,
 				73362DC01D8506AB005DE81F /* 小骰盅-1.png in Resources */,
 				7390BC151D34985100F5EA01 /* RegisterViewController.xib in Resources */,
 				7326C24C1D64201C00F114C4 /* bubble_graph_3.bmp in Resources */,
 				730E808C1D816E6400D5EE2E /* gameBackGroundViewUp.png in Resources */,
+				730E0F801DA9D15E001A5CD8 /* preparePlaceholdIcon1.png in Resources */,
 				737117FB1D388B2C00B590CB /* chat-1@2x.png in Resources */,
 				73CD8F571D4851C600BC7EAC /* imgErro@2x.png in Resources */,
 				73644C491D35DE5F0060DA9F /* photo.png in Resources */,
@@ -3286,6 +3344,7 @@
 				732BABAA1D374D0400D480B0 /* MLSelectPhotoPickerGroupViewController.m in Sources */,
 				73644C461D35DA5A0060DA9F /* CompleteInformationViewController.m in Sources */,
 				730CD9E21D742B0200183ED8 /* WFActionSheet.m in Sources */,
+				736484B91DAA155600E1C95A /* TypeofGameModel.m in Sources */,
 				7332A7351D5C5A06008D9EC3 /* RCDChatListCell.m in Sources */,
 				733716621D3F679D000F8628 /* TailorImageView.m in Sources */,
 				732C50E21D3C66720072F709 /* RCDLoginInfo.m in Sources */,
@@ -3317,6 +3376,7 @@
 				73BB215C1D5321B6000CBC9A /* ScannerMaskView.m in Sources */,
 				732B933D1D2E36530095DD62 /* UITextField+HDExtension.m in Sources */,
 				73ACFC931D3E21E10024F0D3 /* ImageUtil.m in Sources */,
+				73F21BE11DAB339800424693 /* PlayMusicModel.m in Sources */,
 				73199DD51D83E3F000D5015E /* BragGameView.m in Sources */,
 				733412E01D5AD88C00196F4E /* VirifyFriendViewController.m in Sources */,
 			);

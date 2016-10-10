@@ -171,7 +171,8 @@
     
     // 摇骰子动画
     [self startTipDiceCup];
-    
+    PlayMusicModel * playmusic = [PlayMusicModel share];
+    [playmusic playMusicWithName:@"摇色子"];
     [self performSelector:@selector(showResult) withObject:nil afterDelay:1.5];
     
 }
@@ -224,6 +225,8 @@
     self.gifImageView.hidden = YES;
     self.diceResultCollectionView.hidden = YES;
     [self startreshakeAnimation];
+    PlayMusicModel * playmusic = [PlayMusicModel share];
+    [playmusic playMusicWithName:@"摇色子"];
     [self performSelector:@selector(endReshakeAnimation) withObject:nil afterDelay:1.5];
     
 }

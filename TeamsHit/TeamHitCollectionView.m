@@ -46,7 +46,7 @@
     // item最小行间距
     layout.minimumLineSpacing = 10;
     // 集合视图滑动方向
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
     // 注册item
     self.collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_height) collectionViewLayout:layout];

@@ -51,6 +51,9 @@
     
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"addicon"]];
     [rightBarItem addTarget:self action:@selector(showMenu:) forControlEvents:UIControlEventTouchUpInside];
+    
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"addicon"] style:UIBarButtonItemStyleDone target:self action:@selector(showMenu:)];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     
     
@@ -120,7 +123,11 @@
     targetFrame.origin.y = targetFrame.origin.y + 7;
     [KxMenu setTintColor:HEXCOLOR(0x000000)];
     [KxMenu setTitleFont:[UIFont systemFontOfSize:17]];
-    NSLog(@"class = %@, classtow = %@, **%@", [self.tabBarController class], [self.navigationItem.rightBarButtonItem.customView class], [self.navigationItem.rightBarButtonItem.customView.superview.superview class]);
+    NSLog(@"class = %@, classtow = %@, **%@", [self.tabBarController class], [self.tabBarController.navigationController class], [self.tabBarController.navigationController.navigationBar class]);
+    
+//    [KxMenu showMenuInView:self.tabBarController.navigationController.navigationBar.superview
+//                  fromRect:targetFrame
+//                 menuItems:menuItems];
     
     [KxMenu showMenuInView:self.navigationItem.rightBarButtonItem.customView.superview.superview
                   fromRect:targetFrame
