@@ -809,7 +809,142 @@ HDSingletonM(HDNetworking) // 单例实现
     
 }
 
+// 根据群号快速进群
+- (void)quickJoinWithGroupid:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/quickJoinWithGroupid?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
 
+// 根据群组类型随机分配房间
+- (void)randomAssignWithGroupType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@groups/randomAssignWithGroupType?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+
+
+// 获取素材分类
+- (void)getMaterialType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@material/getMaterialType?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+
+// 获取素材
+- (void)getMaterialWithType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure
+{
+    NSString * url = [NSString stringWithFormat:@"%@material/getMaterialWithType?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [self POSTwithToken:url parameters:parameters progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            if (success) {
+                success(responseObject);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+            NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"miss":@"请求失败"}];
+            if (failure) {
+                failure(error);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
 
 
 

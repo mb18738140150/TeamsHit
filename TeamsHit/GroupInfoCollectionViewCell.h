@@ -14,5 +14,6 @@
 @property (nonatomic, strong)UILabel * titleLabel;
 @property (nonatomic, strong)UILabel * tipLabel;
 @property (nonatomic, strong)UIView * tipView;
+- (void)creatUI;
 
 @end

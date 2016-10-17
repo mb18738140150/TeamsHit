@@ -12,7 +12,7 @@
 #import "ChangeEquipmentNameView.h"
 #import "HDPicModle.h"
 
-@interface MeDetailInfomationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface MeDetailInfomationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate>
 {
     MBProgressHUD* hud ;
 }
@@ -226,6 +226,7 @@
         self.changeNameView = [nibarr objectAtIndex:0];
         CGRect tmpFrame = [[UIScreen mainScreen] bounds];
         self.changeNameView.frame = tmpFrame;
+        self.changeNameView.equipmentNameTF.delegate = self.changeNameView;
         self.changeNameView.title = @"昵称";
         self.changeNameView.titleLabel.text = @"修改昵称";
         self.changeNameView.equipmentNameTF.placeholder = @"请输入昵称";
@@ -244,7 +245,11 @@
         }];
     }
 }
-
+//- (BOOL)textFieldShouldReturn:(UITextField *)textField
+//{
+//    [textField resignFirstResponder];
+//    return YES;
+//}
 - (void)cityAction
 {
         TWSelectCityView *city = [[TWSelectCityView alloc] initWithTWFrame:self.view.bounds TWselectCityTitle:@"选择地区"];

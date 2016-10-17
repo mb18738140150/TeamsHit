@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^AddGroupMumberBlock)();
+
 @interface CreatGroupChatRoomViewController : UIViewController
 
+@property (nonatomic, copy)AddGroupMumberBlock myBlock;
 @property (nonatomic, copy)NSString * targetId;
-
+@property (nonatomic, copy)NSString * groupID;
+- (void)addgroupMumberAction:(AddGroupMumberBlock)block;
 @end

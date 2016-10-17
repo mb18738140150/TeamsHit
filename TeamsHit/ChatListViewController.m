@@ -16,6 +16,7 @@
 #import "GameChatViewController.h"
 #import "FriendListViewController.h"
 #import "CreatGroupChatRoomViewController.h"
+#import "AddEquipmentViewController.h"
 
 #import "BragGameChatViewController.h"
 
@@ -47,14 +48,16 @@
     
     self.view.backgroundColor = [UIColor grayColor];
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"navigationlogo"]];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
+    self.tabBarController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"addicon"]];
-    [rightBarItem addTarget:self action:@selector(showMenu:) forControlEvents:UIControlEventTouchUpInside];
+    UIButton * barButtonItem = [UIButton buttonWithType:UIButtonTypeCustom];
+    barButtonItem.frame = CGRectMake(0, 0, 30, 30);
+    [barButtonItem setImage:[[UIImage imageNamed:@"addicon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [barButtonItem addTarget:self action:@selector(showMenu:) forControlEvents:UIControlEventTouchUpInside];
     
 //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"addicon"] style:UIBarButtonItemStyleDone target:self action:@selector(showMenu:)];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
+    self.tabBarController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:barButtonItem];
     
     
 //    [self setDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_GROUP),@(ConversationType_SYSTEM)]];
@@ -88,7 +91,7 @@
     NSArray *menuItems =
     @[
       
-      [KxMenuItem menuItem:@"发起聊天"
+      [KxMenuItem menuItem:@"绑定设备"
                      image:[UIImage imageNamed:@"startchat_icon"]
                     target:self
                     action:@selector(pushChat:)],
@@ -119,23 +122,25 @@
       //                    action:@selector(pushAddPublicService:)],
       ];
     
-    CGRect targetFrame = self.navigationItem.rightBarButtonItem.customView.frame;
+    CGRect targetFrame = self.tabBarController.navigationItem.rightBarButtonItem.customView.frame;
     targetFrame.origin.y = targetFrame.origin.y + 7;
     [KxMenu setTintColor:HEXCOLOR(0x000000)];
     [KxMenu setTitleFont:[UIFont systemFontOfSize:17]];
     NSLog(@"class = %@, classtow = %@, **%@", [self.tabBarController class], [self.tabBarController.navigationController class], [self.tabBarController.navigationController.navigationBar class]);
     
-//    [KxMenu showMenuInView:self.tabBarController.navigationController.navigationBar.superview
-//                  fromRect:targetFrame
-//                 menuItems:menuItems];
-    
-    [KxMenu showMenuInView:self.navigationItem.rightBarButtonItem.customView.superview.superview
+    [KxMenu showMenuInView:self.tabBarController.navigationController.navigationBar.superview
                   fromRect:targetFrame
                  menuItems:menuItems];
+    
+//    [KxMenu showMenuInView:self.navigationItem.rightBarButtonItem.customView.superview.superview
+//                  fromRect:targetFrame
+//                 menuItems:menuItems];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
+    self.tabBarController.navigationController.navigationBar.hidden = NO;
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     _isClick = YES;
     [self notifyUpdateUnreadMessageCount];
@@ -167,18 +172,21 @@
                 
             }
         }
-        [self refreshConversationTableViewIfNeeded];
     }
+    [self refreshConversationTableViewIfNeeded];
     
 //    [self.conversationListTableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    self.tabBarController.navigationController.navigationBar.hidden = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:@"kRCNeedReloadDiscussionListNotification"
                                                   object:nil];
 }
+
+
 - (void)updateBadgeValueForTabBarItem
 {
     __weak typeof(self) __weakSelf = self;
@@ -652,7 +660,15 @@
 
 - (void)pushChat:(id)sender
 {
-    NSLog(@"好友列表哇哇哇");
+    NSLog(@"绑定设备");
+    AddEquipmentViewController * addVC = [[AddEquipmentViewController alloc]init];
+    addVC.hidesBottomBarWhenPushed = YES;
+//    __weak EquipmentManagerViewController * equipmentVC = self;
+//    [addVC refreshDeviceData:^{
+//        [equipmentVC getDeviceData];
+//    }];
+    [self.navigationController pushViewController:addVC animated:YES];
+    
 }
 - (void) pushContactSelected:(id) sender
 {

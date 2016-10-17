@@ -149,6 +149,17 @@ HDSingletonH(HDNetworking) // 单例声明
 // 修改群组验证类型
 - (void)modifyGroupVerifition:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
 
+// 根据群号快速进群
+- (void)quickJoinWithGroupid:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+
+// 根据群组类型随机分配房间
+- (void)randomAssignWithGroupType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+
+
+// 获取素材分类
+- (void)getMaterialType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
+// 获取素材
+- (void)getMaterialWithType:(NSDictionary *)parameters success:(Success)success failure:(Failure)failure;
 
 @end
 

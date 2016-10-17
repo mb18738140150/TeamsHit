@@ -228,6 +228,13 @@
 
 - (void)quitGameAction
 {
+    if (self.IsViewer) {
+        if (self.myblock) {
+            self.myblock(@"quit");
+            return;
+        }
+    }
+    
     UIView * quitTipView = [[UIView alloc]initWithFrame:CGRectMake((self.hd_width - 275) / 2, backWhiteView.hd_y + 50, 275 , 138)];
     quitTipView.backgroundColor = [UIColor whiteColor];
     quitTipView.layer.cornerRadius = 3;

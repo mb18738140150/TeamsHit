@@ -13,6 +13,7 @@ typedef enum:NSInteger {
     TextEditImageModel = 0,
     ProcessImageMOdel,
     expressionModel,
+    MateriaModel,
     QRCodeModel,
     GraffitiModel,
 }ImageModel;

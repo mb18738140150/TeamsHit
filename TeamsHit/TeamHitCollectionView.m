@@ -14,7 +14,7 @@
 @interface TeamHitCollectionView ()<UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, strong)UICollectionView * collectionView;
-
+@property (nonatomic, copy)AddNewGroupMumberBlock myblock;
 @end
 
 @implementation TeamHitCollectionView
@@ -74,6 +74,7 @@
 {
     // 直接重用cell，不用创建，因为仓库里没有cell的话，collectionView会自己创建该wifeCell,不用我们管（更深层次的原因是，我们已经把wifeCell注册给collectionView了，所以collectionView会自己完成cell的创建工作）
     GroupInfoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kGroupInfoCellID forIndexPath:indexPath];
+    [cell creatUI];
     if (indexPath.row == self.dateSourceArray.count) {
         cell.iconImageView.image = [UIImage imageNamed:@"upload.png"];
     }else
@@ -90,7 +91,16 @@
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    if (indexPath.row == self.dateSourceArray.count) {
+        if (self.myblock) {
+            _myblock();
+        }
+    }
+}
+
+- (void)addNewGroupMumber:(AddNewGroupMumberBlock)block
+{
+    self.myblock = [block copy];
 }
 
 - (void)reloadDataAction

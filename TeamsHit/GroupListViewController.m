@@ -43,14 +43,22 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
-    
+
     self.dataSource = [NSMutableArray array];
     self.bragArray = [NSMutableArray array];
     self.twentyoneArray = [NSMutableArray array];
     self.keyArray = [NSMutableArray array];
     
     [self getAllData];
+//    [RCDHTTPTOOL getMyGroupsWithBlock:^(NSMutableArray *result) {
+//        
+//    }];
     
+}
+
+- (void)dismissRefresh
+{
+    [self.tableView.mj_header endRefreshing];
 }
 - (void)backAction:(UIButton *)button
 {

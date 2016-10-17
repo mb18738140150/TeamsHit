@@ -10,7 +10,7 @@
 #import "GroupDetailSetTipView.h"
 #import "HDPicModle.h"
 #import "ChatViewController.h"
-
+#import "BragGameChatViewController.h"
 @interface CreatGroupViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate>
 {
     MBProgressHUD* hud ;
@@ -174,7 +174,7 @@
     imageModel.pic = self.groupIconimageview.image;
     imageModel.picName = [self imageName];
     imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
-    NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"1"];
+    NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"3"];
     NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
@@ -259,7 +259,7 @@
             [[RCIM sharedRCIM]refreshGroupInfoCache:groupInfo withGroupId:groupInfo.groupId];
             
             
-            ChatViewController * chatVc = [[ChatViewController alloc]init];
+            BragGameChatViewController * chatVc = [[BragGameChatViewController alloc]init];
             chatVc.hidesBottomBarWhenPushed = YES;
             chatVc.conversationType = ConversationType_GROUP;
             chatVc.displayUserNameInCell = NO;

@@ -60,7 +60,7 @@
 #define QUITGAME 1011
 #define GAMEOVERREQUEST 1012
 
-@interface BragGameChatViewController ()< PrepareGameProtocol, BragGameViewProtocol>
+@interface BragGameChatViewController ()< PrepareGameProtocol, BragGameViewProtocol, UIAlertViewDelegate>
 {
     GroupDetailSetTipView * quitTipView;
 }
@@ -74,6 +74,9 @@
 
 @property (nonatomic, assign)BOOL isStartGame;
 @property (nonatomic, assign)BOOL isFinishGame;
+@property (nonatomic, assign)BOOL IsViewer;
+// 剩余等待时间定时器
+@property (nonatomic, strong)NSTimer * leaveTime;
 
 @end
 
@@ -105,6 +108,7 @@
     if (self.isStartGame) {
         NSLog(@"开始游戏");
         quitTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:[NSString stringWithFormat:@"%@房间", self.targetId] quit:YES];
+        quitTipView.IsViewer = self.IsViewer;
         [quitTipView getPickerData:^(NSString *string) {
             if ([string isEqualToString:@"lookRuler"]) {
                 [self lookRuler];
@@ -124,6 +128,14 @@
         [self.navigationController pushViewController:groupDetailVC animated:YES];
     }
     
+}
+
+// 倒计时
+- (void)leaveTimeAction
+{
+    int leavetime = self.headerView.timeLabel.text.intValue;
+    leavetime--;
+    self.headerView.timeLabel.text = [NSString stringWithFormat:@"%d", leavetime];
 }
 
 #pragma mark set up in the game
@@ -149,7 +161,7 @@
     [quitTipView dismiss];
     [_webSocket close];
     NSLog(@"callDicePOint %@", [dictionary JSONString]);
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 }
 
 #pragma mark - SRWebSocketDelegate 写上具体聊天逻辑
@@ -169,7 +181,27 @@
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
 {
     NSLog(@"连接失败");
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器连接失败，是否重新连接" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alert.tag = 10000;
+    [alert show];
+    
 }
+
+#warning *** socket connect question
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        if (alertView.tag == 10000) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }else
+    {
+        if (alertView.tag == 10000) {
+            [_webSocket open];
+        }
+    }
+}
+
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message//监控消息
 {
     NSError *errpr = nil;
@@ -315,6 +347,8 @@
         [dictionary setValue:@(QUITGAME) forKey:@"GameCommand"];
         [dictionary setValue:@0 forKey:@"GameId"];
         
+        NSLog(@"%@", [dictionary description]);
+        
         [_webSocket send:[dictionary JSONString]];
         NSLog(@"callDicePOint %@", [dictionary JSONString]);
         NSLog(@"请求后退出");
@@ -331,13 +365,13 @@
 //        [self.navigationController popViewControllerAnimated:YES];
     }
     [_webSocket close];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 }
 
 - (void)quitgame
 {
     [_webSocket close];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 }
 
 #pragma mark - 人准备或者有人离开的时候收到Push消息
@@ -354,6 +388,19 @@
         [self.prepareGameView.dataSourceArray addObject:user];
         [self.GameUserInfoArr addObject:user];
     }
+    
+    if (self.prepareGameView.dataSourceArray.count >=2 && self.prepareGameView.dataSourceArray.count < 6) {
+        self.headerView.timeLabel.text = @"25";
+        if (self.leaveTime) {
+            [self.leaveTime invalidate];
+            self.leaveTime = nil;
+        }
+        self.leaveTime  = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(leaveTimeAction) userInfo:nil repeats:YES];
+    }else
+    {
+       self.headerView.timeLabel.text = @"0";
+    }
+    
     [self.prepareGameView reloadDataAction];
 }
 
@@ -480,6 +527,13 @@
     self.gameId = [dic objectForKey:@"GameId"];
     [[NSUserDefaults standardUserDefaults] setObject:[dic objectForKey:@"GameId"] forKey:@"GameId"];
     
+    if ([[dic objectForKey:@"IsViewer"] intValue] == 1) {
+        self.IsViewer = YES;
+    }else
+    {
+        self.IsViewer = NO;
+    }
+    
     NSArray * gameUserArr = [dic objectForKey:@"UserList"];
     [self.GameUserInfoArr removeAllObjects];
     [self.prepareGameView.dataSourceArray removeAllObjects];
@@ -499,7 +553,12 @@
     self.bragGameView.hidden = NO;
     [self.bragGameView cratGameUserInformation:self.GameUserInfoArr  withDic:dic];
     
-    
+    self.headerView.timeLabel.text = @"25";
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+    }
+    self.leaveTime  = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(leaveTimeAction) userInfo:nil repeats:YES];
 }
 
 // 第一个叫点的人
@@ -524,12 +583,24 @@
 - (void)callDicePoint:(NSDictionary *)dic
 {
     [self.bragGameView callDicePoint:dic];
+    self.headerView.timeLabel.text = @"30";
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+    }
+    self.leaveTime  = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(leaveTimeAction) userInfo:nil repeats:YES];
 }
 
 // 有人开点
 - (void)openDIcePoint:(NSDictionary *)dic
 {
     [self.bragGameView openDIcePoint:dic];
+    self.headerView.timeLabel.text = @"0";
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+    }
+    
 }
 
 // 游戏结束

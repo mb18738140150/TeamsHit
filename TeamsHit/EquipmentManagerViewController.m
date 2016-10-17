@@ -149,6 +149,7 @@
                     equipmentVC.changeNameView = [nibarr objectAtIndex:0];
                     CGRect tmpFrame = [[UIScreen mainScreen] bounds];
                     equipmentVC.changeNameView.frame = tmpFrame;
+                    self.changeNameView.equipmentNameTF.delegate = self.changeNameView;
                     equipmentVC.changeNameView.equipmentNameTF.text = model.deviceName;
                     AppDelegate * delegate = [[UIApplication sharedApplication] delegate];
                     [delegate.window addSubview:self.changeNameView];

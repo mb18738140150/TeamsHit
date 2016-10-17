@@ -50,8 +50,8 @@
     NSData * data = [dic objectForKey:@"SSIDDATA"];
     NSLog(@"%@  ** SSIDDATA = %@", [[dic objectForKey:@"SSIDDATA"] class], [data description]);
     
-    NSDictionary * ssiddic = [self getSCdata:str];
-    NSLog(@"ssiddic = %@", ssiddic);
+//    NSDictionary * ssiddic = [self getSCdata:str];
+//    NSLog(@"ssiddic = %@", ssiddic);
     
     NSMutableArray * imageArr = [NSMutableArray array];
     for (int i = 1; i < 14; i++) {
@@ -124,104 +124,104 @@
 
 #define kMachPortConfigd "com.apple.SystemConfiguration.configd"
 //@«Setup:/Network/Interface/en0/AirPort»
--(NSDictionary *)getSCdata:(NSString *)key
-{
-    key = @"State:/Network/Global/DNS";// ServerAddresses
-    key = @"Setup:/Network/Interface/en0/AirPort"; // JoinModel
-    key = @"State:/Network/Interface/en0/CaptiveNetwork";
-    key = @"State:/IOKit/PowerManagement/CurrentSettings";
-    key = @"State:/IOKit/PowerManagement/SystemLoad/Detailed";/*{
-                                                               BatteryLevel = 3,
-                                                               UserLevel = 3,
-                                                               ThermalLevel = 3,
-                                                               CombinedLevel = 3
-                                                               }*/
-    key = @"State:/Network/Global/Proxies";/*{
-                                            __SCOPED__ = {
-                                            en0 = {
-                                            FTPPassive = 1,
-                                            ExceptionsList = [
-                                            *.local,
-                                            169.254/16
-                                            ]
-                                            }
-                                            },
-                                            FTPPassive = 1,
-                                            ExceptionsList = [
-                                            *.local,
-                                            169.254/16
-                                            ]
-                                            }*/
-    key = @"Setup:/Network/Interface/en0/AirPort";
-    
-    struct send_body {mach_msg_header_t header; int count; UInt8 *addr; CFIndex size0; int flags; NDR_record_t ndr; CFIndex size; int retB; int rcB; int f24; int f28;};
-    
-    mach_port_t bootstrapport = MACH_PORT_NULL;
-    mach_port_t configport = MACH_PORT_NULL;
-    mach_msg_header_t *msg;
-    mach_msg_return_t msg_return;
-    struct send_body send_msg;
-    // Make request
-    CFDataRef  extRepr;
-    extRepr = CFStringCreateExternalRepresentation(NULL, (__bridge CFStringRef)(key), kCFStringEncodingUTF8, 0);
-    
-    // Connect to Mach MIG port of configd
-    task_get_bootstrap_port(mach_task_self(), &bootstrapport);
-    bootstrap_look_up2(bootstrapport, kMachPortConfigd, &configport, 0, 8LL);
-    // Make request
-    
-    send_msg.count = 1;
-    send_msg.addr = (UInt8*)CFDataGetBytePtr(extRepr);
-    send_msg.size0 = CFDataGetLength(extRepr);
-    send_msg.size = CFDataGetLength(extRepr);
-    send_msg.flags = 0x1000100u;
-    send_msg.ndr = NDR_record;
-    
-    // Make message header
-    
-    msg = &(send_msg.header);
-    msg->msgh_bits = 0x80001513u;
-    msg->msgh_remote_port = configport;
-    msg->msgh_local_port = mig_get_reply_port();
-    msg->msgh_id = 20010;
-    // Request server
-    msg_return = mach_msg(msg, 3, 0x34u, 0x44u, msg->msgh_local_port, 0, 0);
-    if(msg_return)
-    {
-        if (msg_return - 0x10000002u >= 2 && msg_return != 0x10000010 )
-        {
-            mig_dealloc_reply_port(msg->msgh_local_port);
-        }
-        else
-        {
-            mig_put_reply_port(msg->msgh_local_port);
-        }
-    }
-    else if ( msg->msgh_id != 71 && msg->msgh_id == 20110 && msg->msgh_bits <= -1 )
-    {
-        if ((send_msg.flags & 0xFF000000) == 0x1000000)
-        {
-            CFDataRef deserializedData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, send_msg.addr,send_msg.size0, kCFAllocatorNull);
-            CFPropertyListRef proplist = CFPropertyListCreateWithData(kCFAllocatorDefault, deserializedData, kCFPropertyListImmutable, NULL, NULL);
-            mig_dealloc_reply_port(msg->msgh_local_port);
-            mach_port_deallocate(mach_task_self(), bootstrapport);
-            mach_port_deallocate(mach_task_self(), configport);
-            mach_msg_destroy(msg);
-            NSDictionary *property_list = (__bridge NSDictionary*)proplist;
-            if(proplist)
-                CFRelease(proplist);
-            CFRelease(deserializedData);
-            CFRelease(extRepr);
-            return property_list;
-        }
-    }
-    mig_dealloc_reply_port(msg->msgh_local_port);
-    mach_port_deallocate(mach_task_self(), bootstrapport);
-    mach_port_deallocate(mach_task_self(), configport);
-    mach_msg_destroy(msg);
-    CFRelease(extRepr);
-    return nil;
-}
+//-(NSDictionary *)getSCdata:(NSString *)key
+//{
+//    key = @"State:/Network/Global/DNS";// ServerAddresses
+//    key = @"Setup:/Network/Interface/en0/AirPort"; // JoinModel
+//    key = @"State:/Network/Interface/en0/CaptiveNetwork";
+//    key = @"State:/IOKit/PowerManagement/CurrentSettings";
+//    key = @"State:/IOKit/PowerManagement/SystemLoad/Detailed";/*{
+//                                                               BatteryLevel = 3,
+//                                                               UserLevel = 3,
+//                                                               ThermalLevel = 3,
+//                                                               CombinedLevel = 3
+//                                                               }*/
+//    key = @"State:/Network/Global/Proxies";/*{
+//                                            __SCOPED__ = {
+//                                            en0 = {
+//                                            FTPPassive = 1,
+//                                            ExceptionsList = [
+//                                            *.local,
+//                                            169.254/16
+//                                            ]
+//                                            }
+//                                            },
+//                                            FTPPassive = 1,
+//                                            ExceptionsList = [
+//                                            *.local,
+//                                            169.254/16
+//                                            ]
+//                                            }*/
+//    key = @"Setup:/Network/Interface/en0/AirPort";
+//    
+//    struct send_body {mach_msg_header_t header; int count; UInt8 *addr; CFIndex size0; int flags; NDR_record_t ndr; CFIndex size; int retB; int rcB; int f24; int f28;};
+//    
+//    mach_port_t bootstrapport = MACH_PORT_NULL;
+//    mach_port_t configport = MACH_PORT_NULL;
+//    mach_msg_header_t *msg;
+//    mach_msg_return_t msg_return;
+//    struct send_body send_msg;
+//    // Make request
+//    CFDataRef  extRepr;
+//    extRepr = CFStringCreateExternalRepresentation(NULL, (__bridge CFStringRef)(key), kCFStringEncodingUTF8, 0);
+//    
+//    // Connect to Mach MIG port of configd
+//    task_get_bootstrap_port(mach_task_self(), &bootstrapport);
+//    bootstrap_look_up2(bootstrapport, kMachPortConfigd, &configport, 0, 8LL);
+//    // Make request
+//    
+//    send_msg.count = 1;
+//    send_msg.addr = (UInt8*)CFDataGetBytePtr(extRepr);
+//    send_msg.size0 = CFDataGetLength(extRepr);
+//    send_msg.size = CFDataGetLength(extRepr);
+//    send_msg.flags = 0x1000100u;
+//    send_msg.ndr = NDR_record;
+//    
+//    // Make message header
+//    
+//    msg = &(send_msg.header);
+//    msg->msgh_bits = 0x80001513u;
+//    msg->msgh_remote_port = configport;
+//    msg->msgh_local_port = mig_get_reply_port();
+//    msg->msgh_id = 20010;
+//    // Request server
+//    msg_return = mach_msg(msg, 3, 0x34u, 0x44u, msg->msgh_local_port, 0, 0);
+//    if(msg_return)
+//    {
+//        if (msg_return - 0x10000002u >= 2 && msg_return != 0x10000010 )
+//        {
+//            mig_dealloc_reply_port(msg->msgh_local_port);
+//        }
+//        else
+//        {
+//            mig_put_reply_port(msg->msgh_local_port);
+//        }
+//    }
+//    else if ( msg->msgh_id != 71 && msg->msgh_id == 20110 && msg->msgh_bits <= -1 )
+//    {
+//        if ((send_msg.flags & 0xFF000000) == 0x1000000)
+//        {
+//            CFDataRef deserializedData = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, send_msg.addr,send_msg.size0, kCFAllocatorNull);
+//            CFPropertyListRef proplist = CFPropertyListCreateWithData(kCFAllocatorDefault, deserializedData, kCFPropertyListImmutable, NULL, NULL);
+//            mig_dealloc_reply_port(msg->msgh_local_port);
+//            mach_port_deallocate(mach_task_self(), bootstrapport);
+//            mach_port_deallocate(mach_task_self(), configport);
+//            mach_msg_destroy(msg);
+//            NSDictionary *property_list = (__bridge NSDictionary*)proplist;
+//            if(proplist)
+//                CFRelease(proplist);
+//            CFRelease(deserializedData);
+//            CFRelease(extRepr);
+//            return property_list;
+//        }
+//    }
+//    mig_dealloc_reply_port(msg->msgh_local_port);
+//    mach_port_deallocate(mach_task_self(), bootstrapport);
+//    mach_port_deallocate(mach_task_self(), configport);
+//    mach_msg_destroy(msg);
+//    CFRelease(extRepr);
+//    return nil;
+//}
 
 
 /*

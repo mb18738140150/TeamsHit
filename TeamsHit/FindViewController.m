@@ -11,6 +11,8 @@
 #import "TypeofGameTableViewCell.h"
 #import "TypeofGameModel.h"
 #import "GroupDetailSetTipView.h"
+#import "CreatGroupChatRoomViewController.h"
+#import "BragGameChatViewController.h"
 #define TYPEOFGAMECELLIDENTIFIRE @"TypeofGameCell"
 
 @interface FindViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -48,7 +50,7 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateFriendCircleMessageCount:) name:@"UpdateFriendCircleMessageCount" object:nil];
     
     self.typedDatesourceArr = [NSMutableArray array];
-    for (int i = 0; i<2; i++) {
+    for (int i = 0; i<1; i++) {
         TypeofGameModel * model = [[TypeofGameModel alloc]init];
         
         switch (i) {
@@ -68,7 +70,6 @@
             default:
                 break;
         }
-        
         
     }
     
@@ -123,29 +124,32 @@
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
         
-//        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        [hud show:YES];
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
         NSDictionary * jsonDic = @{
-//                                   @"GroupId":@(self.groupID.intValue),
-//                                   @"GroupName":string
+                                   @"GroupId":@(string.intValue)
                                    };
-        
-//        [[HDNetworking sharedHDNetworking]modifyGroupName:jsonDic success:^(id  _Nonnull responseObject) {
-//            NSLog(@"responseObject = %@", responseObject);
-//            [hud hide:YES];
-//            
-//        } failure:^(NSError * _Nonnull error) {
-//            [hud hide:YES];
-//            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
-//                ;
-//            }else
-//            {
-//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-//                [alert show];
-//                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
-//                NSLog(@"%@", error);
-//            }
-//        }];
+        __weak FindViewController * weakSelf = self;
+        [[HDNetworking sharedHDNetworking]quickJoinWithGroupid:jsonDic success:^(id  _Nonnull responseObject) {
+            NSLog(@"responseObject = %@", responseObject);
+            [hud hide:YES];
+            
+            [weakSelf pushgameViewWith:string];
+            
+            
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
         
     }];
 }
@@ -153,8 +157,9 @@
     
     NSLog(@"creat a group");
     
-//    PlayMusicModel * playmusic = [PlayMusicModel share];
-//    [playmusic playMusicWithName:@"摇色子"];
+    CreatGroupChatRoomViewController * crearGroupVc = [[CreatGroupChatRoomViewController alloc]init];
+    crearGroupVc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:crearGroupVc animated:YES];
     
 }
 
@@ -183,7 +188,54 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"select");
+    
+    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
+    NSDictionary * jsonDic = @{
+                               @"GroupType":@(indexPath.row + 1)
+                               };
+    __weak FindViewController * weakSelf = self;
+    [[HDNetworking sharedHDNetworking]randomAssignWithGroupType:jsonDic success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        [hud hide:YES];
+        
+        [weakSelf pushgameViewWith:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"GroupId"]]];
+        
+        
+        
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+            ;
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            NSLog(@"%@", error);
+        }
+    }];
+    
+
 }
+
+- (void)pushgameViewWith:(NSString *)typeid
+{
+    BragGameChatViewController * conversationVC = [[BragGameChatViewController alloc]init];
+    conversationVC.conversationType = ConversationType_GROUP;
+    conversationVC.targetId = typeid;
+    //    _conversationVC.userName = group.groupName;
+//    conversationVC.title = group.groupName;
+    //    _conversationVC.conversation = model;
+    //    _conversationVC.unReadMessage = model.unreadMessageCount;
+    conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+    conversationVC.enableUnreadMessageIcon=YES;
+    conversationVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:conversationVC animated:YES];
+    // 同步组群
+    [RCDDataSource syncGroups];
+}
+
 
 /*
 #pragma mark - Navigation

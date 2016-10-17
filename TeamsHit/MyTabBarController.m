@@ -13,7 +13,7 @@
 #import "FindViewController.h"
 #import "MeViewController.h"
 
-@interface MyTabBarController ()
+@interface MyTabBarController ()<UITabBarControllerDelegate>
 
 @property (nonatomic, strong)ChatListViewController *chatListVC;
 @property (nonatomic, strong)FriendListViewController *friendListVC;

@@ -16,8 +16,10 @@
 #define BRAGEGAMECELLIDENTIFIRE @"BRAGEGAMECELL"
 #define BRAGEGAMESCORECELLIDENTIFIRE @"bragGameScoreCell"
 
-@interface BragGameView()<UITableViewDelegate, UITableViewDataSource, TipDiceCupProtocol, ChooseDiceNumberProtocol>
-
+@interface BragGameView()<UITableViewDelegate, UITableViewDataSource, TipDiceCupProtocol, ChooseDiceNumberProtocol, IFlySpeechSynthesizerDelegate>
+{
+    IFlySpeechSynthesizer * _iFlySpeechSynthesizer;
+}
 @property (nonatomic, strong)DiceCupView * diceCupView;
 @property (nonatomic, strong)ChooseDicenumberView * chooseDiceNumberView;
 
@@ -163,6 +165,8 @@
                 if (model.dicePoint.intValue == 1) {
                     NSLog(@"***** 上家叫了1点");
                     self.chooseDiceNumberView.isOnePoint = YES;
+                    
+                    
                     [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue + 1 andDicePoint:2];
                 }else if (model.dicePoint.intValue == 6)
                 {
@@ -262,6 +266,21 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(bragChooseCompleteWithnumber:point:)]) {
         [self.delegate bragChooseCompleteWithnumber:number point:point];
     }
+    
+    _iFlySpeechSynthesizer = [IFlySpeechSynthesizer sharedInstance]; _iFlySpeechSynthesizer.delegate = self;
+//    int a = arc4random() % 10;
+//    NSLog(@"%d", a);
+//    
+//    if (a % 2 == 0) {
+//        [_iFlySpeechSynthesizer setParameter:@"xiaoyan" forKey: [IFlySpeechConstant VOICE_NAME]];
+//    }else
+//    {
+//        [_iFlySpeechSynthesizer setParameter:@"vixf" forKey: [IFlySpeechConstant VOICE_NAME]];
+//    }
+    
+    //启动合成会话
+    [_iFlySpeechSynthesizer startSpeaking: [NSString stringWithFormat:@"%d个%d", number, point]];
+    
 }
 
 - (void)begainState
@@ -468,8 +487,8 @@
         for (BragGameModel * model in self.gameUserInformationArr) {
             if ([model.gameUserInfo.userId isEqualToString:firstuserId]) {
                 model.calledDicePointState = CalledDicePoint_Wait;
-                model.diceCount = @1;
-                model.dicePoint = @2;
+                model.diceCount = @0;
+                model.dicePoint = @1;
                 // 是自己就显示叫点按钮，并添加超时定时器
                 if ([model.gameUserInfo.userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
                     model.choosecallOrOpenType = ChooseCallOrOpen_Call;
@@ -556,6 +575,21 @@
     }
     
     [self.gametableView reloadData];
+    
+    _iFlySpeechSynthesizer = [IFlySpeechSynthesizer sharedInstance]; _iFlySpeechSynthesizer.delegate = self;
+    //    int a = arc4random() % 10;
+    //    NSLog(@"%d", a);
+    //
+    //    if (a % 2 == 0) {
+    //        [_iFlySpeechSynthesizer setParameter:@"xiaoyan" forKey: [IFlySpeechConstant VOICE_NAME]];
+    //    }else
+    //    {
+    //        [_iFlySpeechSynthesizer setParameter:@"vixf" forKey: [IFlySpeechConstant VOICE_NAME]];
+    //    }
+    
+    //启动合成会话
+    [_iFlySpeechSynthesizer startSpeaking: [NSString stringWithFormat:@"%@个%@", [dic objectForKey:@"DiceCount"], [dic objectForKey:@"DicePoint"]]];
+    
 }
 
 // 超时不叫
@@ -738,6 +772,19 @@
         [self.delegate getGameResultSourceRequest];
     }
 }
+
+#pragma mark - IFlySpeechSynthesizerDelegate
+//合成结束，此代理必须要实现
+- (void) onCompleted:(IFlySpeechError *) error{
+    NSLog(@"合成结束");
+}
+//合成开始
+- (void) onSpeakBegin{}
+//合成缓冲进度
+- (void) onBufferProgress:(int) progress message:(NSString *)msg{}
+//合成播放进度
+- (void) onSpeakProgress:(int) progress{}
+
 
 - (void)dealloc
 {

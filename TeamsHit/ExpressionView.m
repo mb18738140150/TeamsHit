@@ -81,8 +81,8 @@
     
     // 注册item
     [self.imageCollectionView registerClass:[ExpressionImageCollectionViewCell class] forCellWithReuseIdentifier:kExpressionImageCellID];
-    self.titleArr = @[@"表情", @"美食", @"气泡", @"花边", @"邮戳", @"探索"];
-    for (int i = 0; i<6; i++) {
+    self.titleArr = @[@"表情", @"美食", @"气泡", @"花边", @"邮戳", @"探索", @"印章"];
+    for (int i = 0; i<7; i++) {
         ProcessImageTypeModel * model = [[ProcessImageTypeModel alloc]init];
         model.titleName = _titleArr[i];
         model.isBallColor = NO;
@@ -119,26 +119,40 @@
     NSMutableArray * lineSourceArr = [NSMutableArray array];
     NSMutableArray * postmarkSourceArr = [NSMutableArray array];
     NSMutableArray * questSourceArr = [NSMutableArray array];
+    NSMutableArray * sealSourceArr = [NSMutableArray array];
     
-    for (int i = 1; i < 18; i++) {
-        [imageSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"im%d.bmp", i]]];
-    }
-    for (int i = 1; i < 6; i++) {
-        [foodSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"food_%d.bmp", i]]];
-    }
-    for (int i = 1; i < 6; i++) {
-        [bubbleSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"bubble_graph_%d.bmp", i]]];
+    NSString * bundlePath = [[ NSBundle mainBundle] pathForResource: @"MateriaExpression" ofType :@"bundle"];
+    
+    for (int i = 1; i < 22; i++) {
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"im%d.bmp", i]];
+        [imageSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
     }
     for (int i = 1; i < 7; i++) {
-        [lineSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"line_%d.bmp", i]]];
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"food_%d.bmp", i]];
+        [foodSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
     }
-    for (int i = 1; i < 5; i++) {
-        [postmarkSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"postmark_%d.bmp", i]]];
+    for (int i = 1; i < 15; i++) {
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"bubble_graph_%d.bmp", i]];
+        [bubbleSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
     }
-    for (int i = 1; i < 8; i++) {
-        [questSourceArr addObject:[UIImage imageNamed:[NSString stringWithFormat:@"quest_%d.bmp", i]]];
+    for (int i = 1; i < 21; i++) {
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"line_%d.bmp", i]];
+        [lineSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
     }
-    self.allImageArr = [NSMutableArray arrayWithObjects:imageSourceArr, foodSourceArr, bubbleSourceArr, lineSourceArr, postmarkSourceArr, questSourceArr, nil];
+    for (int i = 1; i < 13; i++) {
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"postmark_%d.bmp", i]];
+        [postmarkSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
+    }
+    for (int i = 1; i < 9; i++) {
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"quest_%d.bmp", i]];
+        [questSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
+    }
+    for (int i = 1; i < 26; i++) {
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"seal_%d.bmp", i]];
+        [sealSourceArr addObject:[UIImage imageWithContentsOfFile:imgPath]];
+    }
+    
+    self.allImageArr = [NSMutableArray arrayWithObjects:imageSourceArr, foodSourceArr, bubbleSourceArr, lineSourceArr, postmarkSourceArr, questSourceArr, sealSourceArr, nil];
     self.currentImageArr = [NSArray arrayWithArray:self.allImageArr.firstObject];
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import <RongIMKit/RongIMKit.h>
+#import "BrageGameViewHeaderView.h"
 
 @interface GameChatViewController : RCConversationViewController
 {
@@ -18,6 +19,6 @@
  *  会话数据模型
  */
 @property (strong,nonatomic) RCConversationModel *conversation;
-
+@property (nonatomic, strong)BrageGameViewHeaderView * headerView;
 @property BOOL needPopToRootView;
 @end

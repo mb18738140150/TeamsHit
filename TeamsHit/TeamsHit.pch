@@ -50,6 +50,12 @@
 #import "TipView.h"
 #import "PlayMusicModel.h"
 
+// 语音合成
+#import "iflyMSC/IFlySpeechSynthesizerDelegate.h"
+#import "iflyMSC/IFlySpeechSynthesizer.h"
+#import "iflyMSC/IFlySpeechUtility.h"
+#import "iflyMSC/IFlySpeechConstant.h"
+
 // 图片最多显示张数，超过九张取消单击事件
 static NSInteger const kPhotoShowMaxCount = 9;
 // 是否开启拍照自动保存图片

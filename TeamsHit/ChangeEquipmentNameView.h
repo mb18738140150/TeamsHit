@@ -10,7 +10,7 @@
 
 typedef void(^EquipmentNameBlock)(NSString * name);
 
-@interface ChangeEquipmentNameView : UIView
+@interface ChangeEquipmentNameView : UIView<UITextFieldDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UITextField *equipmentNameTF;
 @property (strong, nonatomic) IBOutlet UIButton *changeBT;

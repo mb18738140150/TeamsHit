@@ -38,6 +38,12 @@
     }
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
 - (void)getEquipmentOption:(EquipmentNameBlock)equipmentBlock
 {
     self.equipmentBlock = [equipmentBlock copy];

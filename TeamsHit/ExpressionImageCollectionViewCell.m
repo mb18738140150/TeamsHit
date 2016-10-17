@@ -8,14 +8,14 @@
 
 #import "ExpressionImageCollectionViewCell.h"
 
-static CGSize minSize = {10, 10};
+static CGSize minSize = {4, 4};
 
 @implementation ExpressionImageCollectionViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
-        UIImageView * imageView = [[UIImageView alloc]initWithFrame:self.bounds];
+        UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(2, 5, frame.size.width - 4, frame.size.height - 10)];
         imageView.tag = 1000;
         [self.contentView addSubview:imageView];
     }
@@ -27,13 +27,13 @@ static CGSize minSize = {10, 10};
     UIImageView * imageView = [self.contentView viewWithTag:1000];
     imageView.image = expressionImage;
     CGSize size = [self getImageSizeForPreview:expressionImage];
-    imageView.frame = CGRectMake(0, 0, size.width, size.height);
+    imageView.frame = CGRectMake(2, 5, size.width, size.height);
     imageView.center = self.contentView.center;
 }
 
 - (CGSize)getImageSizeForPreview:(UIImage *)image
 {
-    CGFloat maxWidth = self.frame.size.width,maxHeight = self.frame.size.height;
+    CGFloat maxWidth = self.frame.size.width - 4,maxHeight = self.frame.size.height - 10;
     
     CGSize size = image.size;
     

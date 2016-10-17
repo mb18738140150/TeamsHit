@@ -10,7 +10,7 @@
 
 #import "GroupDetailSetTipView.h"
 #import "TeamHitCollectionView.h"
-
+#import "CreatGroupChatRoomViewController.h"
 @interface GroupDetailViewController ()
 {
     MBProgressHUD* hud ;
@@ -36,6 +36,8 @@
 
 @property (nonatomic, copy)NSString * groupManagerID;
 
+@property (nonatomic, copy)NSString * groupMumberIDs;
+
 @end
 
 @implementation GroupDetailViewController
@@ -57,6 +59,11 @@
     self.teamCollectionView = [[TeamHitCollectionView alloc]initWithFrame:CGRectMake(0, 9, screenWidth, (screenWidth - 64) / 5 + 16)];
     [self.groupMenberInfo addSubview:_teamCollectionView];
     self.groupManagerID = rcGroupInfo.creatorId;
+    __weak GroupDetailViewController * weakSelf = self;
+    [self.teamCollectionView addNewGroupMumber:^{
+        [weakSelf addNewGroupMumber];
+    }];
+    
     self.groupNumberLabel.text = [NSString stringWithFormat:@"全部群成员（%@）", rcGroupInfo.number];
     self.groupRoomNumberLabel.text = rcGroupInfo.groupId;
     self.groupNameLabel.text = rcGroupInfo.groupName;
@@ -81,6 +88,19 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)addNewGroupMumber
+{
+    __weak GroupDetailViewController * vc = self;
+    CreatGroupChatRoomViewController * crearGroupVc = [[CreatGroupChatRoomViewController alloc]init];
+    crearGroupVc.targetId = self.groupMumberIDs;
+    crearGroupVc.groupID = self.groupID;
+    [crearGroupVc addgroupMumberAction:^{
+        [vc loadGroupData];
+    }];
+    
+    crearGroupVc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:crearGroupVc animated:YES];
+}
 
 -(void)startLoadView
 {
@@ -116,7 +136,7 @@
                                };
     
     NSString * url = [NSString stringWithFormat:@"%@groups/getGroupDetail?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
-    
+    __weak GroupDetailViewController * weakSelf = self;
     [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
@@ -125,7 +145,7 @@
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
             
-            [self refreshUIWith:responseObject];
+            [weakSelf refreshUIWith:responseObject];
             
         }else
         {
@@ -146,6 +166,7 @@
 
 - (void)refreshUIWith:(NSDictionary *)dic
 {
+    
     RCDGroupInfo * userInfo = [[RCDGroupInfo alloc]init];
     userInfo.groupId = [NSString stringWithFormat:@"%@", [dic objectForKey:@"GroupId"]];
     userInfo.groupName = [dic objectForKey:@"GroupName"];
@@ -193,6 +214,8 @@
     self.minCoinNumberLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"LeastCoins"]];
     NSArray * groupMenberInfoarr = [dic objectForKey:@"FriendList"];
     
+    
+    [self.teamCollectionView.dateSourceArray removeAllObjects];
     for (int i = 0; i < groupMenberInfoarr.count; i++) {
         NSDictionary * userDic = [groupMenberInfoarr objectAtIndex:i];
         RCUserInfo * user = [[RCUserInfo alloc]init];
@@ -202,6 +225,13 @@
         
         if (i < 4) {
             [self.teamCollectionView.dateSourceArray addObject:user];
+        }
+        
+        if (i == 0) {
+            self.groupMumberIDs = user.userId;
+        }else
+        {
+            self.groupMumberIDs = [self.groupMumberIDs stringByAppendingFormat:@",%@", user.userId];
         }
         
     }
@@ -223,6 +253,9 @@
     NSArray * typeArr = [NSArray array];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"修改房间名称" content:typeArr];
     [setTipView show];
+    
+    
+    __weak GroupDetailViewController * weakself = self;
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
         
@@ -236,7 +269,18 @@
         [[HDNetworking sharedHDNetworking]modifyGroupName:jsonDic success:^(id  _Nonnull responseObject) {
             NSLog(@"responseObject = %@", responseObject);
             [hud hide:YES];
-            self.groupNameLabel.text = string;
+            weakself.groupNameLabel.text = string;
+            RCDGroupInfo * rcGroupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:weakself.groupID];
+            rcGroupInfo.groupName = string;
+            [weakself refresfGroupInfo:rcGroupInfo];
+            RCGroup * group = [RCGroup new];
+            group.groupName = rcGroupInfo.groupName;
+            group.groupId = rcGroupInfo.groupId;
+            group.portraitUri = rcGroupInfo.portraitUri;
+            NSLog(@"%@, %@", group.portraitUri, rcGroupInfo.portraitUri);
+            [[RCIM sharedRCIM] refreshGroupInfoCache:group
+                                         withGroupId:weakself.groupID];
+            
         } failure:^(NSError * _Nonnull error) {
             [hud hide:YES];
             if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
@@ -264,6 +308,7 @@
     NSArray * typeArr = @[@"吹牛", @"21点"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"游戏模式" content:typeArr];
     [setTipView show];
+    __weak GroupDetailViewController * weakself = self;
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
         if ([string isEqualToString:@"21点"]) {
@@ -289,6 +334,10 @@
             {
                 self.groupTypeLabel.text = @"吹牛";
             }
+            
+            RCDGroupInfo * rcGroupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:weakself.groupID];
+            rcGroupInfo.GroupType = self.GroupType;
+            [weakself refresfGroupInfo:rcGroupInfo];
             
         } failure:^(NSError * _Nonnull error) {
             [hud hide:YES];
@@ -404,6 +453,15 @@
         [[HDNetworking sharedHDNetworking]quitGroup:jsonDic success:^(id  _Nonnull responseObject) {
             [hud hide:YES];
             NSLog(@"responseObject = %@", responseObject);
+            // 删除聊天记录并从聊天列表中删除
+            [[RCIMClient sharedRCIMClient]deleteMessages:ConversationType_GROUP targetId:[NSString stringWithFormat:@"%@", self.groupID] success:^{
+                ;
+            } error:^(RCErrorCode status) {
+                ;
+            }];
+            
+            [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_GROUP targetId:[NSString stringWithFormat:@"%@", self.groupID]];
+            [[RCDataBaseManager shareInstance] deleteGroupToDB:self.groupID];
             [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
             
         } failure:^(NSError * _Nonnull error) {
@@ -542,6 +600,15 @@
     [alert show];
     [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.2];
 }
+
+- (void)refresfGroupInfo:(RCDGroupInfo *)userInfo
+{
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        [[RCDataBaseManager shareInstance] insertGroupToDB:userInfo];
+    });
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

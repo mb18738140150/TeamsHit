@@ -54,7 +54,7 @@
     [leftBarItem addTarget:self action:@selector(leftBarButtonItemPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"backImage.jpg"] title:@"素材" tag:10006];
+    [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"backImage.jpg"] title:@"传纸条" tag:10006];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification

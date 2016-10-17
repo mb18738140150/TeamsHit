@@ -15,28 +15,29 @@
 #import "QRCode.h"
 #import "MaterialDataModel.h"
 #import "MaterialTableViewCell.h"
-
+#import "materiaCollectionView.h"
 #import "ExpressionView.h"
-
+#import "MaterialDetailViewController.h"
 #define CELL_IDENTIFIER @"MaterialTableViewCell"
 
 #define SELF_WIDTH self.view.frame.size.width
 #define SELF_HEIGHT self.view.frame.size.height
 #define TOOLBAR_HEIGHT 45
-
+#define MateriaCollectionView_height 100
 @interface MaterialViewController ()<DragCellTableViewDataSource, RTDragCellTableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate>
 
 {
     UIBarButtonItem * _textEditItem;
     UIBarButtonItem * _pictureItem;
     UIBarButtonItem * _expressionItem;
+    UIBarButtonItem * _materiaItem;
     UIBarButtonItem * _qrCodeItem;
     UIBarButtonItem * _graffitiItem;
     UIBarButtonItem * _historyItem;
 }
 
 @property (nonatomic, strong)ExpressionView * expressionView;//表情view
-
+@property (nonatomic, strong)materiaCollectionView * materiaView;// 素材view
 @property (nonatomic, strong)DragCellTableView * tableView;
 @property (nonatomic, strong)UIToolbar * toolBar;
 
@@ -79,7 +80,6 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印预览" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
-    
     self.tableView = [[DragCellTableView alloc]init];
     self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 64 - 45 - 10);
     self.tableView.delegate = self;
@@ -90,31 +90,13 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[MaterialTableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     [self.view addSubview:self.tableView];
-    
-    self.imagePic = [[UIImagePickerController alloc] init];
-    _imagePic.delegate = self;
-    
-    
-    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(20, 100, self.view.hd_width - 40, self.view.hd_width - 40)];
-    self.scrollView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
-//    [self.view addSubview:self.scrollView];
-    
-    self.iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width - 40, self.view.hd_width - 40)];
-    self.iconImageView.backgroundColor = [UIColor redColor];
-//    [self.scrollView addSubview:self.iconImageView];
-    
-    self.qrCodeView = [[UIView alloc]initWithFrame:self.view.bounds];
-    _qrCodeView.backgroundColor = [UIColor clearColor];
-    
     [self.view addSubview:self.toolBar];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    
-    self.expressionView = [[ExpressionView alloc]initWithFrame:CGRectMake(0, self.view.hd_height - 120 - 64, self.view.hd_width, 120)];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self prepareUI];
+        });
+    });
     
     // Do any additional setup after loading the view.
 }
@@ -134,6 +116,38 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)prepareUI
+{
+    
+    
+    self.imagePic = [[UIImagePickerController alloc] init];
+    _imagePic.delegate = self;
+    
+    
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(20, 100, self.view.hd_width - 40, self.view.hd_width - 40)];
+    self.scrollView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    //    [self.view addSubview:self.scrollView];
+    
+    self.iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width - 40, self.view.hd_width - 40)];
+    self.iconImageView.backgroundColor = [UIColor redColor];
+    //    [self.scrollView addSubview:self.iconImageView];
+    
+    self.qrCodeView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    _qrCodeView.backgroundColor = [UIColor clearColor];
+    
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    self.expressionView = [[ExpressionView alloc]initWithFrame:CGRectMake(0, self.view.hd_height - 120, self.view.hd_width, 120)];
+    
+    self.materiaView = [[materiaCollectionView alloc] initWithFrame:CGRectMake(0, self.view.hd_height - MateriaCollectionView_height, self.view.hd_width, MateriaCollectionView_height)];
+}
+
 - (UIToolbar *)toolBar {
     if (!_toolBar) {
         _toolBar = [[UIToolbar alloc] init];
@@ -144,24 +158,26 @@
         _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT - 64, SELF_WIDTH, TOOLBAR_HEIGHT);
         
         
-         _textEditItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"1"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(textEdit)];
+         _textEditItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-1"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(textEdit)];
         
-        _pictureItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"2"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(picture)];
+        _pictureItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-2"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(picture)];
         
-        _expressionItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(expression)];
+        _expressionItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(expression)];
         
-        _qrCodeItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(qrCode)];
+        _materiaItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(materiadetail)];
         
-        _graffitiItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"5"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(graffiti)];
+        _qrCodeItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-5"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(qrCode)];
         
-        _historyItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"6"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(history)];
+        _graffitiItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-6"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(graffiti)];
+        
+        _historyItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-7"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(history)];
         
         
         
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         
         
-        _toolBar.items = @[_textEditItem,space,_pictureItem,space,_expressionItem,space,_qrCodeItem,space,_graffitiItem, space, _historyItem];
+        _toolBar.items = @[_textEditItem,space,_pictureItem,space,_expressionItem,space, _materiaItem, space,_qrCodeItem,space,_graffitiItem, space, _historyItem];
     }
     return _toolBar;
 }
@@ -236,6 +252,7 @@
 #pragma msrk - 图片选择处理
 - (void)picture
 {
+    [self recoverUI];
     UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
@@ -297,17 +314,27 @@
 {
     NSLog(@"表情弹窗");
     
+//    NSData * data3 = UIImagePNGRepresentation(_materiaItem.image);
+//    NSData * data4 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-4"]);
+//    if (![data3 isEqual:data4]) {
+//        
+//        [self.materiaView removeFromSuperview];
+//        [_materiaItem setImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+//        _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
+//        self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
+//    }
+    
     NSData * data1 = UIImagePNGRepresentation(_expressionItem.image);
-    NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"3"]);
+    NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-3"]);
     if ([data1 isEqual:data2]) {
-        [_expressionItem setImage:[[UIImage imageNamed:@"3_1"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        [_expressionItem setImage:[[UIImage imageNamed:@"素材-表情-选中"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         [self.view addSubview:_expressionView];
         self.tableView.hd_height = self.tableView.hd_height - 120;
         self.toolBar.hd_y = self.toolBar.hd_y - 120;
         
     }else
     {
-        [_expressionItem setImage:[[UIImage imageNamed:@"3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        [_expressionItem setImage:[[UIImage imageNamed:@"materia-3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         [_expressionView removeFromSuperview];
         self.tableView.hd_height = self.tableView.hd_height + 120;
         self.toolBar.hd_y = self.toolBar.hd_y + 120;
@@ -332,9 +359,63 @@
     }];
 }
 
+- (void)materiadetail
+{
+    
+//    NSData * data11 = UIImagePNGRepresentation(_expressionItem.image);
+//    NSData * data12 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-3"]);
+//    if (![data11 isEqual:data12]) {
+//        [self.expressionView removeFromSuperview];
+//        [_expressionItem setImage:[[UIImage imageNamed:@"materia-3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+//        _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
+//        self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
+//    }
+//    
+//    NSData * data1 = UIImagePNGRepresentation(_materiaItem.image);
+//    NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-4"]);
+//    if ([data1 isEqual:data2]) {
+//        [_materiaItem setImage:[[UIImage imageNamed:@"素材-素材-选中"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+//        [self.view addSubview:_materiaView];
+//        self.tableView.hd_height = self.tableView.hd_height - MateriaCollectionView_height;
+//        self.toolBar.hd_y = self.toolBar.hd_y - MateriaCollectionView_height;
+//        
+//    }else
+//    {
+//        [_materiaItem setImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+//        [_materiaView removeFromSuperview];
+//        self.tableView.hd_height = self.tableView.hd_height + MateriaCollectionView_height;
+//        self.toolBar.hd_y = self.toolBar.hd_y + MateriaCollectionView_height;
+//        
+//    }
+//    
+//    __weak MaterialViewController * matervc = self;
+//    [_materiaView getMateriaImage:^(NSString * namestring, UIImage * materiaimage) {
+//        UIImage * image = materiaimage;
+//        if (image) {
+//            matervc.iconImageView.image = image;
+//            NSLog(@"获取到了");
+//            MaterialDataModel * model = [[MaterialDataModel alloc]init];
+//            model.image = image;
+//            model.imageModel = MateriaModel;
+//            [matervc.dataArr addObject:model];
+//            
+//            NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
+//            [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
+//            [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+//        }
+//    }];
+    
+    MaterialDetailViewController * materiadetailVc = [[MaterialDetailViewController alloc]init];
+    
+    [self.navigationController pushViewController:materiadetailVc animated:YES];
+    
+    NSLog(@"素材");
+}
+
 #pragma mark - 二维码
 - (void)qrCode
 {
+    [self recoverUI];
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
     [delegate.window addSubview:_qrCodeView];
     
@@ -503,6 +584,25 @@
     [UIView commitAnimations];
 }
 
+// 回复状态
+- (void)recoverUI
+{
+    NSData * data1 = UIImagePNGRepresentation(_expressionItem.image);
+    NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-3"]);
+    if (![data1 isEqual:data2]) {
+        [self.expressionView removeFromSuperview];
+        [_expressionItem setImage:[[UIImage imageNamed:@"materia-3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+    }
+//    NSData * data3 = UIImagePNGRepresentation(_materiaItem.image);
+//    NSData * data4 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-4"]);
+//    if (![data3 isEqual:data4]) {
+//        
+//        [self.materiaView removeFromSuperview];
+//        [_materiaItem setImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+//    }
+//    _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
+//    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
+}
 
 - (void)moveToBottom
 {

@@ -553,6 +553,7 @@
     CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
     
     self.toolBar.frame = CGRectMake(0, end.origin.y - 40 - 64, self.toolBar.hd_width, 40);//UITextField位置的y坐标移动到offY
+    self.ideaTextView.hd_height = self.toolBar.hd_y;
     if (self.sizeDropList) {
         self.sizeDropList.frame = CGRectMake(SELF_WIDTH / 2 - SELF_WIDTH / 5 - 15, _toolBar.hd_y - 154, 30, 160);
     }
@@ -580,7 +581,10 @@
 -(void)keyboardWillHide:(NSNotification *)note{
     [UIView beginAnimations:nil context:NULL];//此处添加动画，使之变化平滑一点
     [UIView setAnimationDuration:0.3];
+    CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+    
     self.toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT , self.toolBar.hd_width, 40);
+    self.ideaTextView.hd_height = self.toolBar.hd_y;
     if (self.sizeDropList) {
         self.sizeDropList.frame = CGRectMake(SELF_WIDTH / 2 - SELF_WIDTH / 5 - 15, _toolBar.hd_y - 154, 30, 160);
     }

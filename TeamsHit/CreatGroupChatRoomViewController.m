@@ -19,7 +19,9 @@
 #import "CreatGroupViewController.h"
 
 @interface CreatGroupChatRoomViewController ()<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
-
+{
+    MBProgressHUD* hud ;
+}
 @property (nonatomic, strong)NSMutableArray * tempOtherArr;// 首字母不是A~Z的好友列表
 @property (nonatomic, strong)NSMutableArray * friends;// 数据库获取的所有好友信息列表
 @property (nonatomic, strong)NSArray * arrayForKey;// 首字母对应的好友列表
@@ -32,7 +34,7 @@
 @property (nonatomic, strong)NSMutableDictionary * allFriends;// 按照字母分配的好友字典信息
 @property (nonatomic, strong)NSArray * allKeys;// 好友列表首字母数组
 @property (nonatomic, strong)NSMutableArray * seleteUsers;// 选中的好友数组
-
+@property (nonatomic, strong)NSArray * groupMumberIDsArr; // 添加群成员是存储原群成员id
 @property (nonatomic, strong)SearchBarView * searchBarView;
 
 @property (nonatomic, assign)BOOL isCreatGroupVC;
@@ -56,6 +58,8 @@
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithTitle:@"确定" backgroundcolor:UIColorFromRGB(0x12B7F5) cornerRadio:3];
     [rightBarItem addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
+    
+    self.groupMumberIDsArr = [self.targetId componentsSeparatedByString:@","];
     
     [self prepareUI];
     
@@ -92,31 +96,96 @@
     return YES;
 }
 
+- (void)addgroupMumberAction:(AddGroupMumberBlock)block
+{
+    self.myBlock = [block copy];
+}
+
 #pragma mark - 确认创建
 - (void)sureAction:(UIButton *)button
 {
-    
-    if (self.seleteUsers.count > 1) {
+    if (self.groupMumberIDsArr.count > 1) {
+         RCDGroupInfo * rcGroupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.groupID];
+        
         NSString * userIdStr = @"";
         for (int i = 0; i < self.seleteUsers.count; i++) {
             RCDUserInfo * userInfo = [self.seleteUsers objectAtIndex:i];
             if (i == 0) {
-                userIdStr = [[RCIM sharedRCIM].currentUserInfo.userId stringByAppendingFormat:@",%@", userInfo.userId];
+                userIdStr = userInfo.userId;
             }else
             {
                 userIdStr = [userIdStr stringByAppendingFormat:@",%@", userInfo.userId];
             }
         }
         
-        CreatGroupViewController * crearVC = [[CreatGroupViewController alloc]init];
-        crearVC.userIdArrayStr = userIdStr;
-        self.isCreatGroupVC = YES;
-        [self.navigationController pushViewController:crearVC animated:YES];
+        if (userIdStr.length == 0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先选择好友" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+            return;
+        }
+        
+        hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"发送请求中...";
+        [hud show:YES];
+        NSString * url = [NSString stringWithFormat:@"%@groups/inviteFriendIntoGroup?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+        NSDictionary * jsonDic = @{
+                                   @"GroupId":@(self.groupID.intValue),
+                                   @"GroupName":rcGroupInfo.groupName,
+                                   @"MembersId":userIdStr
+                                   };
+        
+        __weak CreatGroupChatRoomViewController * verifyVC = self;
+        [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+            ;
+        } success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            int code = [[responseObject objectForKey:@"Code"] intValue];
+            if (code == 200) {
+                
+                if (self.myBlock) {
+                    _myBlock();
+                }
+                [verifyVC.navigationController popViewControllerAnimated:YES];
+                
+            }else
+            {
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            NSLog(@"%@", error);
+        }];
         
     }else
     {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"至少添加两个好友才能创建群组" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-        [alert show];
+        
+        if (self.seleteUsers.count > 1) {
+            NSString * userIdStr = @"";
+            for (int i = 0; i < self.seleteUsers.count; i++) {
+                RCDUserInfo * userInfo = [self.seleteUsers objectAtIndex:i];
+                if (i == 0) {
+                    userIdStr = [[RCIM sharedRCIM].currentUserInfo.userId stringByAppendingFormat:@",%@", userInfo.userId];
+                }else
+                {
+                    userIdStr = [userIdStr stringByAppendingFormat:@",%@", userInfo.userId];
+                }
+            }
+            
+            CreatGroupViewController * crearVC = [[CreatGroupViewController alloc]init];
+            crearVC.userIdArrayStr = userIdStr;
+            self.isCreatGroupVC = YES;
+            [self.navigationController pushViewController:crearVC animated:YES];
+            
+        }else
+        {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"至少添加两个好友才能创建群组" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
     }
     
 }
@@ -230,29 +299,61 @@
     cell.nicknameLabel.font = [UIFont systemFontOfSize:15.f];
     
     
-    if (self.targetId && [self.targetId isEqualToString:user.userId]) {
-        cell.selectStateBT.userInteractionEnabled = NO;
-    }else
-    {
-        [cell getSelectState:^(BOOL isSelect) {
-            if (!isSelect) {
-                user.isSelect = NO;
-                for (int i = 0; i < self.seleteUsers.count; i++) {
-                    RCDUserInfo *selectUser = _seleteUsers[i];
-                    if ([selectUser.userId isEqualToString:user.userId]) {
-                        [_seleteUsers removeObject:selectUser];
-                        break;
-                    }
-                }
-            }else
-            {
-                user.isSelect = YES;
-                [self.seleteUsers addObject:user];
-            }
-            [self.friendsTabelView reloadData];
-            [self refreshRihgtBaritem];
-        }];
+    BOOL isHave = NO;
+    for (NSString * mumberID in self.groupMumberIDsArr) {
+        if ( [user.userId isEqualToString:mumberID]) {
+            isHave = YES;
+        }
     }
+    
+        if (isHave) {
+            cell.selectStateBT.userInteractionEnabled = NO;
+        }else
+        {
+            [cell getSelectState:^(BOOL isSelect) {
+                if (!isSelect) {
+                    user.isSelect = NO;
+                    for (int i = 0; i < self.seleteUsers.count; i++) {
+                        RCDUserInfo *selectUser = _seleteUsers[i];
+                        if ([selectUser.userId isEqualToString:user.userId]) {
+                            [_seleteUsers removeObject:selectUser];
+                            break;
+                        }
+                    }
+                }else
+                {
+                    user.isSelect = YES;
+                    [self.seleteUsers addObject:user];
+                }
+                [self.friendsTabelView reloadData];
+                [self refreshRihgtBaritem];
+            }];
+        }
+    
+    
+//    if (self.targetId && [self.targetId isEqualToString:user.userId]) {
+//        cell.selectStateBT.userInteractionEnabled = NO;
+//    }else
+//    {
+//        [cell getSelectState:^(BOOL isSelect) {
+//            if (!isSelect) {
+//                user.isSelect = NO;
+//                for (int i = 0; i < self.seleteUsers.count; i++) {
+//                    RCDUserInfo *selectUser = _seleteUsers[i];
+//                    if ([selectUser.userId isEqualToString:user.userId]) {
+//                        [_seleteUsers removeObject:selectUser];
+//                        break;
+//                    }
+//                }
+//            }else
+//            {
+//                user.isSelect = YES;
+//                [self.seleteUsers addObject:user];
+//            }
+//            [self.friendsTabelView reloadData];
+//            [self refreshRihgtBaritem];
+//        }];
+//    }
     
     return cell;
 }
@@ -274,28 +375,38 @@
     userInfo.portraitUri = user.portraitUri;
     userInfo.name = user.displayName;
     
-    if (self.targetId && [user.userId isEqualToString:self.targetId]) {
-        ;
-    }else
-    {
-        if (user.isSelect) {
-            user.isSelect = NO;
-            for (int i = 0; i < self.seleteUsers.count; i++) {
-                RCDUserInfo *selectUser = _seleteUsers[i];
-                if ([selectUser.userId isEqualToString:user.userId]) {
-                    [_seleteUsers removeObject:selectUser];
-                    break;
-                }
-            }
-        }else
-        {
-            user.isSelect = YES;
-            [self.seleteUsers addObject:user];
+    
+    BOOL isHave = NO;
+    for (NSString * mumberID in self.groupMumberIDsArr) {
+        if ( [user.userId isEqualToString:mumberID]) {
+            isHave = YES;
         }
-        
-        [self.friendsTabelView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        [self refreshRihgtBaritem];
     }
+    
+            if ( isHave) {
+                ;
+            }else
+            {
+                if (user.isSelect) {
+                    user.isSelect = NO;
+                    for (int i = 0; i < self.seleteUsers.count; i++) {
+                        RCDUserInfo *selectUser = _seleteUsers[i];
+                        if ([selectUser.userId isEqualToString:user.userId]) {
+                            [_seleteUsers removeObject:selectUser];
+                            break;
+                        }
+                    }
+                }else
+                {
+                    user.isSelect = YES;
+                    [self.seleteUsers addObject:user];
+                }
+                
+                [self.friendsTabelView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                [self refreshRihgtBaritem];
+            }
+    
+    
 }
 
 -(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView{
@@ -339,6 +450,13 @@
                         user.isSelect = YES;
                         [_seleteUsers addObject:user];
                         [self refreshRihgtBaritem];
+                    }else
+                    {
+                        for (NSString * userID in self.groupMumberIDsArr) {
+                            if ([user.userId isEqualToString:userID]) {
+                                user.isSelect = YES;
+                            }
+                        }
                     }
                 }
                 if ([user.status isEqualToString:@"1"]) {

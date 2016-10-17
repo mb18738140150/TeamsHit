@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^AddNewGroupMumberBlock)();
+
 @interface TeamHitCollectionView : UIView
 
 @property (nonatomic, strong)NSMutableArray * dateSourceArray;
 
+- (void)addNewGroupMumber:(AddNewGroupMumberBlock)block;
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)reloadDataAction;
 

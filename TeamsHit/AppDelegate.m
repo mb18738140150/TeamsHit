@@ -68,6 +68,9 @@
     [self.window makeKeyAndVisible];
     
     
+    // 初始化语音包
+    [self configIFlySpeech];
+    
     [NSDictionary jr_swizzleMethod:@selector(description) withMethod:@selector(my_description) error:nil];
     
     // 重定向log到本地
@@ -615,5 +618,25 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     }
 }
 
+#pragma mark - 初始化语音包
+- (void)configIFlySpeech
+{
+    NSString *initString = [[NSString alloc] initWithFormat:@"appid=%@",@"12345678"];
+    [IFlySpeechUtility createUtility:initString];
+    
+    // 设置语音合成的参数
+    [[IFlySpeechSynthesizer sharedInstance] setParameter:@"50" forKey:[IFlySpeechConstant SPEED]];//合成的语速,取值范围 0~100
+    [[IFlySpeechSynthesizer sharedInstance] setParameter:@"50" forKey:[IFlySpeechConstant VOLUME]];//合成的音量;取值范围 0~100
+    
+    // 发音人,默认为”xiaoyan”;可以设置的参数列表可参考个 性化发音人列表;
+    [[IFlySpeechSynthesizer sharedInstance] setParameter:@"xiaoyan" forKey:[IFlySpeechConstant VOICE_NAME]];
+    
+    // 音频采样率,目前支持的采样率有 16000 和 8000;
+    [[IFlySpeechSynthesizer sharedInstance] setParameter:@"8000" forKey:[IFlySpeechConstant SAMPLE_RATE]];
+    
+    // 当你再不需要保存音频时，请在必要的地方加上这行。
+    [[IFlySpeechSynthesizer sharedInstance] setParameter:nil forKey:[IFlySpeechConstant TTS_AUDIO_PATH]];
+    
+}
 
 @end

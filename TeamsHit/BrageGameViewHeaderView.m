@@ -28,22 +28,24 @@
     self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 32 - TOP_SPACE, 40, 16)];
     self.timeLB.textColor = MAINCOLOR;
     self.timeLB.font = [UIFont systemFontOfSize:15];
+    self.timeLB.textAlignment = 1;
     self.timeLB.text = @"时间";
     [self addSubview:self.timeLB];
     
-    self.timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 50 - TOP_SPACE, 30, 9)];
+    self.timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 50 - TOP_SPACE, 40, 20)];
     self.timeLabel.textColor = MAINCOLOR;
-    self.timeLabel.font = [UIFont systemFontOfSize:9];
-    self.timeLabel.text = @"00:30";
+    self.timeLabel.font = [UIFont systemFontOfSize:19];
+    self.timeLabel.textAlignment = 1;
+    self.timeLabel.text = @"30";
     [self addSubview:self.timeLabel];
     
-    self.view1 = [[UILabel alloc]initWithFrame:CGRectMake(12 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
-    self.view1.backgroundColor = MAINCOLOR;
-    [self addSubview:self.view1];
-    
-    self.view2 = [[UILabel alloc]initWithFrame:CGRectMake(29 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
-    self.view2.backgroundColor = MAINCOLOR;
-    [self addSubview:self.view2];
+//    self.view1 = [[UILabel alloc]initWithFrame:CGRectMake(12 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
+//    self.view1.backgroundColor = MAINCOLOR;
+//    [self addSubview:self.view1];
+//    
+//    self.view2 = [[UILabel alloc]initWithFrame:CGRectMake(29 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
+//    self.view2.backgroundColor = MAINCOLOR;
+//    [self addSubview:self.view2];
     
     self.typeLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 32 - TOP_SPACE, 100, 16)];
     self.typeLabel.textColor = MAINCOLOR;

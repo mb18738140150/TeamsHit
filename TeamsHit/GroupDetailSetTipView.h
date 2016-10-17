@@ -32,6 +32,8 @@ typedef void(^GroupDetailPickerBlock)(NSString * string);
 @property (nonatomic, strong)UITextField * textFiled;
 @property (nonatomic, strong)UITableView * tableView;
 
+@property (nonatomic, assign)BOOL IsViewer;
+
 @property (nonatomic, assign)BOOL ishaveQuit;
 
 @end

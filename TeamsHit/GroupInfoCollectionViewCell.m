@@ -21,6 +21,7 @@
 
 - (void)creatUI
 {
+    [self.contentView removeAllSubviews];
     self.iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_width)];
     [self.contentView addSubview:self.iconImageView];
     

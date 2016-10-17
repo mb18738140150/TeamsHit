@@ -21,7 +21,7 @@
 #import "FriendInformationModel.h"
 
 #import "MeDetailInfomationViewController.h"
-#import "BrageGameViewHeaderView.h"
+//#import "BrageGameViewHeaderView.h"
 #import "GroupDetailViewController.h"
 #import "SlideBlockView.h"
 
@@ -193,9 +193,9 @@
         type = @"21点";
     }
     NSString * title = [NSString stringWithFormat:@"%@房间", self.targetId];
-    BrageGameViewHeaderView * headerView = [[BrageGameViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, 64) type:type title:title];
-    headerView.delegete = self;
-    self.navigationItem.titleView = headerView;
+    self.headerView = [[BrageGameViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, 64) type:type title:title];
+    _headerView.delegete = self;
+    self.navigationItem.titleView = _headerView;
     
 }
 
