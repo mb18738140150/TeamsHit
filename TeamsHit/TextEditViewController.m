@@ -122,6 +122,7 @@
 
 - (void)done
 {
+    [self.ideaTextView resignFirstResponder];
     if (self.rotateInmage) {
         self.rotateInmage = [self getcuttingImage1];
         

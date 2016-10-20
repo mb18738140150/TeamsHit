@@ -82,48 +82,130 @@
 //根据id获取单个群组
 -(void)getGroupByID:(NSString *) groupID
    successCompletion:(void (^)(RCDGroupInfo *group))completion {
-        [AFHttpTool getGroupByID:groupID success:^(id response) {
-            NSString *code = [NSString stringWithFormat:@"%@",response[@"code"]];
-            NSDictionary *result = response[@"result"];
-            if (result && [code isEqualToString:@"200"]) {
-                RCDGroupInfo *group = [[RCDGroupInfo alloc] init];
-                group.groupId = [result objectForKey:@"id"];
-                group.groupName = [result objectForKey:@"name"];
-                group.portraitUri = [result objectForKey:@"portraitUri"];
-                if (!group.portraitUri || group.portraitUri.length <= 0) {
-                    group.portraitUri = [RCDUtilities defaultGroupPortrait:group];
-                }
-                group.creatorId = [result objectForKey:@"creatorId"];
-                group.introduce = [result objectForKey:@"introduce"];
-                if (!group.introduce) {
-                    group.introduce=@"";
-                }
-                group.number = [result objectForKey:@"memberCount"];
-                group.maxNumber = [result objectForKey:@"max_number"];
-                group.creatorTime = [result objectForKey:@"creat_datetime"];
-                if (![[result objectForKey:@"deletedAt"] isKindOfClass:[NSNull class]]) {
-                    group.isDismiss = @"YES";
-                } else {
-                    group.isDismiss = @"NO";
-                }
-                [[RCDataBaseManager shareInstance] insertGroupToDB:group];
-                if ([group.groupId isEqualToString:groupID] && completion) {
-                    completion(group);
-                } else if (completion) {
-                    completion(nil);
-                }
-            } else {
-                if (completion) {
-                    completion(nil);
-                }
-            }
-        } failure:^(NSError* err){
-            RCDGroupInfo *group = [[RCDataBaseManager shareInstance] getGroupByGroupId:groupID];
-            if (!group.portraitUri || group.portraitUri.length <= 0) {
+    
+    
+    
+    NSString * url = [NSString stringWithFormat:@"%@groups/getGroupDetail?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    NSDictionary * jsonDic = @{
+                               @"GroupId":@(groupID.intValue)
+                               };
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSDictionary *groupInfo = responseObject;
+        
+        if ([[responseObject objectForKey:@"code"] intValue] == 200) {
+            
+            NSLog(@"groupInfo = %@", groupInfo);
+            RCDGroupInfo *group = [[RCDGroupInfo alloc] init];
+            group.groupId = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"GroupId"]];
+            group.groupName = [groupInfo objectForKey:@"GroupName"];
+            group.portraitUri = [groupInfo objectForKey:@"PortraitUri"];
+            if (!group.portraitUri || group.portraitUri.length == 0) {
                 group.portraitUri = [RCDUtilities defaultGroupPortrait:group];
             }
-            completion(group);
-        }];
+            group.creatorId = [groupInfo objectForKey:@"CreatorId"];
+            group.introduce = [groupInfo objectForKey:@"Introduce"];
+            if (!group.introduce) {
+                group.introduce=@"";
+            }
+            group.number = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"Number"]];
+            group.maxNumber = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"MaxNumber"]];
+            if (!group.number) {
+                group.number=@"0";
+            }
+            if (!group.maxNumber) {
+                group.maxNumber=@"1000";
+            }
+            
+            if ([[groupInfo objectForKey:@"Role"] intValue] == 1) {
+                group.isJoin = YES;
+            }else
+            {
+                group.isJoin = NO;
+            }
+            if ([[groupInfo objectForKey:@"GroupType"] intValue] == 1) {
+                group.GroupType = 1;
+            }else
+            {
+                group.isJoin = 2;
+            }
+            if ([[groupInfo objectForKey:@"IsDismiss"] intValue] == 1) {
+                group.isDismiss = @"1";
+            }else
+            {
+                group.isDismiss = @"0";
+            }
+            group.creatorTime = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"CreatorTime"]];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [[RCDataBaseManager shareInstance] insertGroupToDB:group];
+            });
+            if ([group.groupId isEqualToString:groupID] && completion) {
+                completion(group);
+            } else if (completion) {
+                completion(nil);
+            }
+            
+        }else
+        {
+            if (completion) {
+                completion(nil);
+            }
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        RCDGroupInfo *group = [[RCDataBaseManager shareInstance] getGroupByGroupId:groupID];
+        if (!group.portraitUri || group.portraitUri.length <= 0) {
+            group.portraitUri = [RCDUtilities defaultGroupPortrait:group];
+        }
+        completion(group);
+    }];
+    
+    
+    
+//        [AFHttpTool getGroupByID:groupID success:^(id response) {
+//            NSString *code = [NSString stringWithFormat:@"%@",response[@"code"]];
+//            NSDictionary *result = response[@"result"];
+//            if (result && [code isEqualToString:@"200"]) {
+//                RCDGroupInfo *group = [[RCDGroupInfo alloc] init];
+//                group.groupId = [result objectForKey:@"id"];
+//                group.groupName = [result objectForKey:@"name"];
+//                group.portraitUri = [result objectForKey:@"portraitUri"];
+//                if (!group.portraitUri || group.portraitUri.length <= 0) {
+//                    group.portraitUri = [RCDUtilities defaultGroupPortrait:group];
+//                }
+//                group.creatorId = [result objectForKey:@"creatorId"];
+//                group.introduce = [result objectForKey:@"introduce"];
+//                if (!group.introduce) {
+//                    group.introduce=@"";
+//                }
+//                group.number = [result objectForKey:@"memberCount"];
+//                group.maxNumber = [result objectForKey:@"max_number"];
+//                group.creatorTime = [result objectForKey:@"creat_datetime"];
+//                if (![[result objectForKey:@"deletedAt"] isKindOfClass:[NSNull class]]) {
+//                    group.isDismiss = @"YES";
+//                } else {
+//                    group.isDismiss = @"NO";
+//                }
+//                [[RCDataBaseManager shareInstance] insertGroupToDB:group];
+//                if ([group.groupId isEqualToString:groupID] && completion) {
+//                    completion(group);
+//                } else if (completion) {
+//                    completion(nil);
+//                }
+//            } else {
+//                if (completion) {
+//                    completion(nil);
+//                }
+//            }
+//        } failure:^(NSError* err){
+//            RCDGroupInfo *group = [[RCDataBaseManager shareInstance] getGroupByGroupId:groupID];
+//            if (!group.portraitUri || group.portraitUri.length <= 0) {
+//                group.portraitUri = [RCDUtilities defaultGroupPortrait:group];
+//            }
+//            completion(group);
+//        }];
 }
 
 -(void)getUserInfoByUserID:(NSString *) userID
@@ -355,7 +437,7 @@
             for (NSDictionary *groupInfo in allGroups) {
                 NSLog(@"groupInfo = %@", groupInfo);
                 RCDGroupInfo *group = [[RCDGroupInfo alloc] init];
-                group.groupId = [groupInfo objectForKey:@"GroupId"];
+                group.groupId = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"GroupId"]];
                 group.groupName = [groupInfo objectForKey:@"GroupName"];
                 group.portraitUri = [groupInfo objectForKey:@"PortraitUri"];
                 if (!group.portraitUri || group.portraitUri.length == 0) {

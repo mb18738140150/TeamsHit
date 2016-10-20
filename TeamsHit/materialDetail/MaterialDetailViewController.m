@@ -10,11 +10,15 @@
 #import "global.h"
 //#import "BGTopSilderBarCell.h"
 #import "BGTopSilderBar.h"
-
+#import "MaterialdetailBigView.h"
 #import "MaterialDetaileListCell.h"
+#import "MaterialDetailCell.h"
+#define maxCount 5
+
 static NSString* ALCELLID = @"MaterialDetaileListCell";
 
 @interface MateriaTypeModel : NSObject
+
 
 @property (nonatomic, assign)int item;
 @property (nonatomic, copy)NSString * materialTypeName;
@@ -24,6 +28,8 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 
 @property (nonatomic, strong)NSMutableArray * OriginalArr;
 @property (nonatomic, strong)NSMutableArray * ThumbnailArr;
+
+
 
 @end
 
@@ -47,17 +53,18 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 
 @end
 
-@interface MaterialDetailViewController()<UICollectionViewDataSource,UICollectionViewDelegate, TopsliderBarSelectDelegate, CilckDetailMaterialDelegate>
+@interface MaterialDetailViewController()<UICollectionViewDataSource,UICollectionViewDelegate, TopsliderBarSelectDelegate, CilckDetailMaterialDelegate, MaterialDetailBigViewDelegate>
 {
     MBProgressHUD* hud ;
 }
+@property (nonatomic, copy)MaterialDetailBlock myBlock;
 @property(nonatomic,weak)BGTopSilderBar* silderBar;
 @property(nonatomic,weak)UICollectionView* collectView;
 @property(nonatomic,assign)int currentBarIndex;
 
 @property (nonatomic, strong)NSMutableArray * materialTyprArr;
 @property (nonatomic, strong)NSMutableArray * materiaTypeTitleArr;
-
+@property (nonatomic, strong)MaterialdetailBigView * bigView;
 //@property (nonatomic, strong)NSMutableArray * materialDetailArr;// 存放素材详情数组的总数据源
 
 @end
@@ -87,9 +94,16 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     self.materialTyprArr = [NSMutableArray array];
     self.materiaTypeTitleArr = [NSMutableArray array];
     
-    [self reloadmateriaType];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadmateriaType];
+            
+            [self initCollectView];//初始化底部滑动的collectionView
+        });
+    });
     
-    [self initCollectView];//初始化底部滑动的collectionView
+    
 //    [self initSilderBar];//初始化顶部BGTopSilderBar
 }
 - (void)backAction:(UIButton *)button
@@ -151,7 +165,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     [hud show:YES];
     NSDictionary * jsonDic = @{
                                @"Page":@(model.page),
-                               @"Count":@9,
+                               @"Count":@maxCount,
                                @"MaterialTypeId":model.materiaTypeId
                                };
     
@@ -202,7 +216,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 -(void)initCollectView{
     CGFloat Margin = 0;
     CGFloat W = self.view.hd_width;
-    CGFloat H = self.view.hd_height-60 - 64;
+    CGFloat H = self.view.hd_height-60;
     CGRect rect = CGRectMake(Margin,60, W,H);
     //初始化布局类(UICollectionViewLayout的子类)
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
@@ -260,6 +274,15 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 - (void)cilckWithclickItem:(int)clickitem andListItem:(int)listItem
 {
     NSLog(@"点击了 %d %d", listItem, clickitem);
+    
+    MateriaTypeModel * model = self.materialTyprArr[listItem];
+    
+    self.bigView = [[MaterialdetailBigView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    _bigView.delegate = self;
+    _bigView.listItem = listItem;
+    [_bigView refreshImageDateSourceWithImageArr:model.OriginalArr];
+    [_bigView show:clickitem];
+    
 }
 
 - (void)headRefreshWith:(int)item andTarget:(id )collectionView
@@ -269,7 +292,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     model.page = 1;
     NSDictionary * jsonDic = @{
                                @"Page":@(model.page),
-                               @"Count":@9,
+                               @"Count":@maxCount,
                                @"MaterialTypeId":model.materiaTypeId
                                };
     
@@ -288,6 +311,15 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
             [model.ThumbnailArr addObject:[dic objectForKey:@"Thumbnail"]];
         }
         
+        NSArray * visiblecellindex = [_collectView visibleCells];
+        for (MaterialDetaileListCell * cell in visiblecellindex) {
+            NSIndexPath *path1 = (NSIndexPath *)[_collectView indexPathForCell:cell];
+            if (path1.row == item) {
+                cell.materialDetailsArrar = model.ThumbnailArr;
+                break;
+            }
+            
+        }
 //        [weakSelf.collectView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:item inSection:0]]];
         [collection reloadData];
     } failure:^(NSError * _Nonnull error) {
@@ -307,13 +339,12 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 - (void)footRefreshWith:(int)item andTarget:(id )collectionView
 {
     MateriaTypeModel * model = self.materialTyprArr[item];
-    model.page++;
     UICollectionView * collection = (UICollectionView *)collectionView;
     if (model.ThumbnailArr.count < model.allCount) {
-        MateriaTypeModel * model = self.materialTyprArr[item];
+        model.page++;
         NSDictionary * jsonDic = @{
                                    @"Page":@(model.page),
-                                   @"Count":@9,
+                                   @"Count":@maxCount,
                                    @"MaterialTypeId":model.materiaTypeId
                                    };
         
@@ -329,6 +360,15 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
                 [model.ThumbnailArr addObject:[dic objectForKey:@"Thumbnail"]];
             }
             
+            NSArray * visiblecellindex = [_collectView visibleCells];
+            for (MaterialDetaileListCell * cell in visiblecellindex) {
+                NSIndexPath *path1 = (NSIndexPath *)[_collectView indexPathForCell:cell];
+                if (path1.row == item) {
+                    cell.materialDetailsArrar = model.ThumbnailArr;
+                    break;
+                }
+                
+            }
 //            [weakSelf.collectView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:item inSection:0]]];
             [collection reloadData];
         } failure:^(NSError * _Nonnull error) {
@@ -349,6 +389,125 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
         [self.collectView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:item + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
     }
     
+}
+
+- (void)materaildetailListAdd:(UIImage *)image
+{
+    if (self.myBlock) {
+        self.myBlock(image);
+    }
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)materaildetailListPrint:(UIImage *)image
+{
+#warning print ***** 
+    NSLog(@"print");
+}
+
+
+- (void)getMaterialDetailImage:(MaterialDetailBlock)materialDetailImage
+{
+    self.myBlock = [materialDetailImage copy];
+}
+
+
+#pragma mark - MaterialDetailBigViewDelegate
+- (void)beforeClick
+{
+    
+}
+- (void)nextClick
+{
+    NSLog(@"next");
+    
+    MateriaTypeModel * model = self.materialTyprArr[self.bigView.listItem];
+    
+    if (model.ThumbnailArr.count < model.allCount) {
+        model.page++;
+        NSDictionary * jsonDic = @{
+                                   @"Page":@(model.page),
+                                   @"Count":@maxCount,
+                                   @"MaterialTypeId":model.materiaTypeId
+                                   };
+        
+        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [hud show:YES];
+        __weak MaterialDetailViewController * weakSelf = self;
+        [[HDNetworking sharedHDNetworking]getMaterialWithType:jsonDic success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            model.allCount = [[responseObject objectForKey:@"AllCount"] intValue];
+            NSArray * Materials = [responseObject objectForKey:@"Materials"];
+            
+            for (NSDictionary * dic in Materials) {
+                [model.OriginalArr addObject:[dic objectForKey:@"Original"]];
+                [model.ThumbnailArr addObject:[dic objectForKey:@"Thumbnail"]];
+            }
+            
+            //            [weakSelf.collectView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:item inSection:0]]];
+            
+            [_bigView refreshImageDateSourceWithImageArr:model.OriginalArr];
+            [_bigView moveToindex:_bigView.item + 1];
+            
+            [weakSelf.collectView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:weakSelf.bigView.listItem inSection:0]]];
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            if ([[error.userInfo objectForKey:@"miss"] isEqualToString:@"请求失败"]) {
+                ;
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }
+        }];
+    }else
+    {
+        [self.bigView haoveNomore];
+    }
+    
+}
+- (void)addClick:(int )listItem andItem:(int )item
+{
+    NSLog(@"++++");
+    
+    UIImage * image;
+    NSArray * visiblecellindex = [_collectView visibleCells];
+    for (MaterialDetaileListCell * cell in visiblecellindex) {
+        NSIndexPath *path1 = (NSIndexPath *)[_collectView indexPathForCell:cell];
+        if (path1.row == listItem) {
+            BOOL ishave = NO;
+            NSArray * visebArr = [cell.materialDetailCollectionView visibleCells];
+            for (MaterialDetailCell * cell2 in visebArr) {
+                NSIndexPath *path2 = (NSIndexPath *)[cell.materialDetailCollectionView indexPathForCell:cell2];
+                if (path2.row == item) {
+                    
+                    image = cell2.detailImageView.image;
+                    ishave = YES;
+                    break;
+                    
+                }
+                
+            }
+            
+            if (ishave) {
+                break;
+            }
+        }
+        
+    }
+    
+    if (self.myBlock) {
+        self.myBlock(image);
+    }
+    [self.bigView closeView];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)printClick:(int )listItem andItem:(int )item
+{
+#warning print *****
+    NSLog(@"print");
 }
 
 

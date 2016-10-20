@@ -13,6 +13,8 @@
 
 typedef void(^DeleteTakeBlock)();
 
+typedef void(^LookUserShuoshuoBlock)() ;
+
 @protocol cellDelegate <NSObject>
 
 - (void)changeFoldState:(YMTextData *)ymD onCellRow:(NSInteger) cellStamp;
@@ -36,6 +38,7 @@ typedef void(^DeleteTakeBlock)();
 @property (nonatomic,strong) UIImageView *favourImage;//点赞的图
 
 - (void)deleteTake:(DeleteTakeBlock)block;
+- (void)lookUserShuoshuo:(LookUserShuoshuoBlock)block;
 
 /**
  *  用户头像imageview

@@ -13,16 +13,28 @@
 
 #import "EquipmentManagerViewController.h"
 
+#import "LoginViewController.h"
+#import "AppDelegate.h"
+
 @interface MeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+{
+    MBProgressHUD* hud ;
+}
 @property (strong, nonatomic) IBOutlet UIView *infoView;
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
 // 图片选择器
 @property (nonatomic, strong)UIImagePickerController * imagePic;
+@property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *coinCountLB;
+@property (strong, nonatomic) IBOutlet UILabel *counCountLabel;
 
+@property (strong, nonatomic) IBOutlet UIButton *exitLoginBT;
 
 @property (strong, nonatomic) IBOutlet UIView *equipmentmanagerView;
 @property (strong, nonatomic) IBOutlet UIImageView *equipmentImage;
 @property (strong, nonatomic) IBOutlet UILabel *equipmentLB;
+
+@property (nonatomic, copy)NSString * iconImageStr;
 
 @end
 
@@ -53,7 +65,53 @@
     UITapGestureRecognizer * equipmentTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(equipmentAction:)];
     [self.equipmentmanagerView addGestureRecognizer:equipmentTap];
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self getUserInfo];
+        });
+    });
+    
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)getUserInfo
+{
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"加载中...";
+    [hud show:YES];
+    
+    __weak MeViewController * infoVC = self;
+    [[HDNetworking sharedHDNetworking]getDetailInfor:nil success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            NSDictionary * dic = [responseObject objectForKey:@"DetailInfor"];
+            
+            [infoVC refreshUIWithDic:dic];
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        NSLog(@"%@", error);
+    }];
+    
+}
+
+- (void)refreshUIWithDic:(NSDictionary *)dic
+{
+    self.iconImageStr = [dic objectForKey:@"PortraitUri"];
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"PortraitUri"]] placeholderImage:[UIImage imageNamed:@"camera_icon.png"]];
+    self.userNameLabel.text = [dic objectForKey:@"UserName"];
+    self.coinCountLB.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]];
+    self.counCountLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -61,6 +119,36 @@
     UINavigationBar * bar = self.navigationController.navigationBar;
 //    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+    
+    
+    [self getUserInfo1];
+}
+
+- (void)getUserInfo1
+{
+    
+    __weak MeViewController * infoVC = self;
+    [[HDNetworking sharedHDNetworking]getDetailInfor:nil success:^(id  _Nonnull responseObject) {
+    
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            NSDictionary * dic = [responseObject objectForKey:@"DetailInfor"];
+            
+            if ([infoVC.iconImageStr isEqualToString:[dic objectForKey:@"PortraitUri"]] && [[NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]] isEqualToString:infoVC.coinCountLB.text]) {
+                ;
+            }else
+            {
+                [infoVC refreshUIWithDic:dic];
+            }
+            
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        
+        NSLog(@"%@", error);
+    }];
+    
 }
 
 #pragma mark - 选择图片
@@ -100,6 +188,19 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (IBAction)exitAction:(id)sender {
+    
+    LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+    loginVC.notAutoLogin = YES;
+    // [loginVC defaultLogin];
+    // RCDLoginViewController* loginVC = [storyboard
+    // instantiateViewControllerWithIdentifier:@"loginVC"];
+    UINavigationController *_navi =
+    [[UINavigationController alloc] initWithRootViewController:loginVC];
+    AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    delegate.window.rootViewController = _navi;
+    
 }
 
 /*

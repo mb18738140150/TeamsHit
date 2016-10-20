@@ -10,4 +10,6 @@
 
 @interface PrintPreviewController : UIViewController
 
+@property (nonatomic, strong)NSMutableArray * printDataSourceArr;
+
 @end

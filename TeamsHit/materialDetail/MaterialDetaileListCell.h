@@ -16,10 +16,13 @@
 
 - (void)footRefreshWith:(int )item andTarget:(id )collectionview;
 
+- (void)materaildetailListAdd:(UIImage *)image;
+- (void)materaildetailListPrint:(UIImage *)image;
+
 @end
 
 @interface MaterialDetaileListCell : UICollectionViewCell
-
+@property (nonatomic, strong)NSMutableArray * materialDetailsArrar;// 素材数据源
 @property (nonatomic, assign)BOOL isHavenotAddBT;
 @property (nonatomic, strong)UICollectionView * materialDetailCollectionView;
 @property (nonatomic, assign)int  item;

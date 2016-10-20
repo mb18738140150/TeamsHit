@@ -428,6 +428,7 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
                               otherButtonTitles:nil, nil];
         [alert show];
         LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+        loginVC.notAutoLogin = YES;
         // [loginVC defaultLogin];
         // RCDLoginViewController* loginVC = [storyboard
         // instantiateViewControllerWithIdentifier:@"loginVC"];
@@ -500,6 +501,9 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
             [[RCIMClient sharedRCIMClient] clearMessages:ConversationType_GROUP targetId:message.targetId];
             [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_GROUP targetId:message.targetId];
         } else if ([msg.operation isEqualToString:@"Rename"]) {
+            
+            NSLog(@"修改群名称  %@", msg.message);
+            
             [RCDHTTPTOOL getGroupByID:message.targetId
                     successCompletion:^(RCDGroupInfo *group) {
                         [[RCDataBaseManager shareInstance] insertGroupToDB:group];

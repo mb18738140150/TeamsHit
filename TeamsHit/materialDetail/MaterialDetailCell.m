@@ -10,8 +10,6 @@
 
 @implementation MaterialDetailCell
 
-
-
 - (void)initialize
 {
     self.backgroundColor = [UIColor whiteColor];
@@ -35,8 +33,10 @@
     self.addBT.layer.cornerRadius = 3;
     self.addBT.layer.masksToBounds = YES;
     [self.addBT setTitle:@"添加" forState:UIControlStateNormal];
-    self.addBT.titleLabel.adjustsFontSizeToFitWidth = YES;
+//    self.addBT.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.addBT.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.addBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.addBT addTarget:self action:@selector(addAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.addBT];
     
     self.printBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -45,7 +45,9 @@
     self.printBT.layer.cornerRadius = 3;
     self.printBT.layer.masksToBounds = YES;
     [self.printBT setTitle:@"打印" forState:UIControlStateNormal];
-    self.printBT.titleLabel.adjustsFontSizeToFitWidth = YES;
+//    self.printBT.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.printBT.titleLabel.font = [UIFont systemFontOfSize:15];
+    [self.printBT addTarget:self action:@selector(printAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.printBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.contentView addSubview:self.printBT];
     
@@ -54,6 +56,25 @@
         self.printBT.hd_centerX = self.hd_centerX;
     }
     
+}
+
+- (void)getMaterialDetailImage:(MaterialDetailcellBlock)materialDetailcellImage
+{
+    self.myBlock = [materialDetailcellImage copy];
+}
+
+- (void)addAction:(UIButton *)button
+{
+    if (self.myBlock) {
+        self.myBlock(self.detailImageView.image, @"add");
+    }
+}
+
+- (void)printAction:(UIButton *)button
+{
+    if (self.myBlock) {
+        self.myBlock(self.detailImageView.image, @"print");
+    }
 }
 
 - (void)awakeFromNib {

@@ -22,5 +22,10 @@ typedef enum:NSInteger {
 @property (nonatomic, strong)UIImage * image;
 @property (nonatomic, copy)NSString * title;
 @property (nonatomic, assign)ImageModel imageModel;
+@property (nonatomic, assign)CGFloat  height;
+
+@property (nonatomic, strong)UIImage * dealImage;
+
+@property (nonatomic, assign)BOOL isprocessImage;
 
 @end

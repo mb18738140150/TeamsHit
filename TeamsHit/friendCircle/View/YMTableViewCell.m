@@ -13,6 +13,7 @@
 
 #define kImageTag 9999
 #define IMAGE_SPACE 5
+#define bottomSpace 10
 
 @implementation YMTableViewCell
 {
@@ -21,6 +22,7 @@
     UIImageView *replyImageView;
     UILabel * publishTimeLabel;
     DeleteTakeBlock myBlock;
+    LookUserShuoshuoBlock lookBlock;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -39,6 +41,9 @@
 //        [layer setBorderWidth:1];
 //        [layer setBorderColor:[[UIColor colorWithRed:63/255.0 green:107/255.0 blue:252/255.0 alpha:1.0] CGColor]];
         [self.contentView addSubview:_userHeaderImage];
+        _userHeaderImage.userInteractionEnabled = YES;
+        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(lookUserShuoshuoAction)];
+        [_userHeaderImage addGestureRecognizer:tap];
         
         _userNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(15 + TableHeader + 9, 5, screenWidth - 120, TableHeader/2)];
         _userNameLbl.textAlignment = NSTextAlignmentLeft;
@@ -209,7 +214,7 @@
             image.tag = kImageTag + i;
             //        image.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[ymData.showImageArray objectAtIndex:i]]];
             
-            [image sd_setImageWithURL:[NSURL URLWithString:[ymData.thumbnailShowImageArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"1"]];
+            [image sd_setImageWithURL:[NSURL URLWithString:[ymData.thumbnailShowImageArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
             
             [self.contentView addSubview:image];
             [_imageArray addObject:image];
@@ -226,7 +231,7 @@
         image.backgroundColor = [UIColor clearColor];
         image.tag = kImageTag;
         
-        [image sd_setImageWithURL:[NSURL URLWithString:[ymData.thumbnailShowImageArray firstObject]] placeholderImage:[UIImage imageNamed:@"1"]];
+        [image sd_setImageWithURL:[NSURL URLWithString:[ymData.thumbnailShowImageArray firstObject]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
         
         [self.contentView addSubview:image];
         [_imageArray addObject:image];
@@ -351,9 +356,9 @@
     if (ymData.replyDataSource.count == 0 && ymData.favourArray.count == 0) {//没回复的时候
         
         replyImageView.frame = CGRectMake(offSet_X, TableHeader + 10 + ymData.showImageHeight + origin_Y + hhhh + kDistance + (ymData.islessLimit?0:30) + balanceHeight + kReplyBtnDistance - 24, 0, 0);
-        _replyBtn.frame = CGRectMake(screenWidth - offSet_X_right - 40 + 6,TableHeader + 10 + ymData.showImageHeight + origin_Y + hhhh + kDistance + (ymData.islessLimit?0:30) + balanceHeight + kReplyBtnDistance - 24 - 30, 40, 18);
-        publishTimeLabel.frame = CGRectMake(offSet_X , replyImageView.frame.origin.y - 24, publishSize.width, publishSize.height);
-        _deleteBtn.frame = CGRectMake(offSet_X + publishSize.width + 20 , replyImageView.frame.origin.y - 24, 30, publishSize.height);
+        _replyBtn.frame = CGRectMake(screenWidth - offSet_X_right - 40 + 6,TableHeader + 10 + ymData.showImageHeight + origin_Y + hhhh + kDistance + (ymData.islessLimit?0:30) + balanceHeight + kReplyBtnDistance - 24 - 30 - bottomSpace + 3, 40, 18);
+        publishTimeLabel.frame = CGRectMake(offSet_X , replyImageView.frame.origin.y - 24 - bottomSpace, publishSize.width, publishSize.height);
+        _deleteBtn.frame = CGRectMake(offSet_X + publishSize.width + 20 , replyImageView.frame.origin.y - 24 - bottomSpace, 30, publishSize.height);
     }else{
         
         replyImageView.frame = CGRectMake(offSet_X, backView_Y - 10 + balanceHeight + 5 + kReplyBtnDistance - 30, screenWidth - offSet_X - offSet_X_right, backView_H + 20 - 8);//微调
@@ -385,7 +390,6 @@
         
         
     });
-    
     
 }
 
@@ -431,17 +435,28 @@
     }
 }
 
+- (void)lookUserShuoshuo:(LookUserShuoshuoBlock)block
+{
+    lookBlock = [block copy];
+}
+
+- (void)lookUserShuoshuoAction
+{
+    if (lookBlock) {
+        lookBlock();
+    }
+}
+
 #pragma mark - 点击action
 - (void)tapImageView:(YMTapGestureRecongnizer *)tapGes{
     
     [_delegate showImageViewWithImageViews:tapGes.appendArray byClickWhich:tapGes.view.tag];
-    
 }
 
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetRGBStrokeColor(context, 0.7, 0.7, 0.7, 1);
+    CGContextSetRGBStrokeColor(context, 0.7, 0.7, 0.7, .5);
     CGContextSetLineCap(context, kCGLineCapSquare);
     CGContextSetLineWidth(context, .7);
     CGContextBeginPath(context);

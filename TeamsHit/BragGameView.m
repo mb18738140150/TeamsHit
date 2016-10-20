@@ -615,6 +615,7 @@
 {
     NSArray * dicePointArr = [[dic objectForKey:@"DiceNumber"] componentsSeparatedByString:@","];
     self.diceCupView.dicePointArr = [dicePointArr mutableCopy];
+    [self.diceCupView.dataSourceArr removeAllObjects];
     for (NSString * point in dicePointArr) {
         NSString * imageStr = [NSString stringWithFormat:@"骰子%@", point];
         [self.diceCupView.dataSourceArr addObject:imageStr];

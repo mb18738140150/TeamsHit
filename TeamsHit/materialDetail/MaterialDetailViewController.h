@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+typedef void (^ MaterialDetailBlock)(UIImage * image);
 @interface MaterialDetailViewController : UIViewController
 
 
 @property (nonatomic, assign)BOOL isOtnerVc;
+- (void)getMaterialDetailImage:(MaterialDetailBlock)materialDetailImage;
 
 @end

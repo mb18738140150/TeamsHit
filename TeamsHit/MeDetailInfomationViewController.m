@@ -327,7 +327,7 @@
     [backView addSubview:self.genderSegment];
     
     UIButton * doneBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    doneBT.frame = CGRectMake(backView.hd_x + backView.hd_width - 60, self.genderSegment.hd_y + self.genderSegment.hd_height + 43, 30, 30);
+    doneBT.frame = CGRectMake(backView.hd_x + backView.hd_width - 70, self.genderSegment.hd_y + self.genderSegment.hd_height + 43, 40, 30);
     [doneBT setTitle:@"确定" forState:UIControlStateNormal];
     doneBT.titleLabel.font = [UIFont systemFontOfSize:15];
     [doneBT setTitleColor:UIColorFromRGB(0x0A96CD) forState:UIControlStateNormal];
@@ -335,7 +335,7 @@
     [backView addSubview:doneBT];
     
     UIButton * calcleBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    calcleBT.frame = CGRectMake(doneBT.hd_x  - 64, self.genderSegment.hd_y + self.genderSegment.hd_height + 43, 30, 30);
+    calcleBT.frame = CGRectMake(doneBT.hd_x  - 74, self.genderSegment.hd_y + self.genderSegment.hd_height + 43, 40, 30);
     [calcleBT setTitle:@"取消" forState:UIControlStateNormal];
     [calcleBT setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
     [backView addSubview:calcleBT];

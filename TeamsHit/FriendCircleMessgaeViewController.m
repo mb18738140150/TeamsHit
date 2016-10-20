@@ -24,6 +24,14 @@
 
 @implementation FriendCircleMessgaeViewController
 
+- (NSMutableArray *)dataArray
+{
+    if (!_dataArray) {
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -58,6 +66,7 @@
     if (self.myBlock) {
         self.myBlock();
     }
+    self.allMessage = NO;
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)publishAction:(UIButton *)button
@@ -92,12 +101,25 @@
 
 - (void)loadData
 {
-    NSDictionary * jsonDic = @{
-                               @"CurPage":@0,
-                               @"CurCount":@10,
-                               @"MessageId":@0
-                               };
+    NSNumber * curpage;
+    NSNumber * isgetall;
+    if (self.allMessage) {
+        _page++;
+        curpage = @(_page);
+        isgetall = @1;
+    }else
+    {
+        isgetall = @0;
+        curpage = @0;
+    }
     
+    NSDictionary * jsonDic = @{
+                               @"CurPage":curpage,
+                               @"CurCount":@10,
+                               @"MessageId":@0,
+                               @"IsGetAll":isgetall
+                               };
+     NSLog(@"%@", [jsonDic description]);
     NSString * url = [NSString stringWithFormat:@"%@news/getFriendCircleMessage?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     
     __weak FriendCircleMessgaeViewController * wxVC = self;
@@ -107,10 +129,11 @@
         NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
             if (code == 200) {
-                wxVC.allCount = [responseObject objectForKey:@"CurCount"];
+                wxVC.allCount = [responseObject objectForKey:@"AllCount"];
                 wxVC.MessageId = [responseObject objectForKey:@"MessageId"];
                 NSArray * FirendCircleList = [NSArray array];
                 FirendCircleList = [responseObject objectForKey:@"FriendCircleMessageList"];
+                [wxVC getdataWithArray:FirendCircleList];
             }else
             {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -152,21 +175,29 @@
 
 - (void)loadMoreData
 {
-    _page++;
     
     if (_dataArray.count >= _allCount.intValue) {
         [_tableView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
     
+    NSNumber * isgetall;
+    if (self.allMessage) {
+        isgetall = @1;
+    }else
+    {
+        isgetall = @0;
+    }
+    _page++;
     NSNumber * page = @(_page);
     
     NSDictionary * jsonDic = @{
                                @"CurPage":page,
                                @"CurCount":@10,
-                               @"MessageId":self.MessageId
+                               @"MessageId":self.MessageId,
+                               @"IsGetAll":isgetall
                                };
-    
+    NSLog(@"%@", [jsonDic description]);
     NSString * url = [NSString stringWithFormat:@"%@news/getFriendCircleMessage?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     
     __weak FriendCircleMessgaeViewController * wxVC = self;

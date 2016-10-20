@@ -19,9 +19,10 @@ NSString * const KNoreadFriendCircleMessgaeCellIdentifire = @"NoreadFriendCircle
 
 - (void)creatCellWithFrame:(CGRect)rect
 {
+    [self.contentView removeAllSubviews];
     self.backgroundColor = [UIColor whiteColor];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.backView = [[UIView alloc]initWithFrame:CGRectMake((self.hd_width - 160) / 2, 10, 160, 40)];
+    self.backView = [[UIView alloc]initWithFrame:CGRectMake((screenWidth - 160) / 2, 10, 160, 40)];
     _backView.backgroundColor = [UIColor colorWithWhite:.4 alpha:1];
     CALayer * layer = _backView.layer;
     layer.cornerRadius = 3;

@@ -25,6 +25,7 @@
     UIBarButtonItem * _print;
     UIBarButtonItem * _graffiti;
     UIBarButtonItem * _rotate;
+    MBProgressHUD* hud ;
 }
 
 @property (nonatomic, copy)ProcessImage processImage;
@@ -36,6 +37,10 @@
 @property (nonatomic, strong)ProcessImageTypeView * processImageTypeView;
 @property (nonatomic, strong)UIImage * defaultImage;
 @property (nonatomic, strong)UIImage * finalImage;
+
+@property (nonatomic, strong)UIImage * contraryImage;
+@property (nonatomic, strong)UIImage * inkjetImage;
+
 
 @property (nonatomic, assign)int rotateNumber;//记录旋转方向
 
@@ -58,6 +63,17 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
     self.rotateNumber = 1;
     [self creatSubviews];
+    
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dealImage];
+            [self refreshUI];
+        });
+    });
     
 }
 - (void)backAction:(UIButton *)button
@@ -84,13 +100,6 @@
         [processVC processImageWithType:type];
     }];
     
-    self.scrollView.contentSize = CGSizeMake(_scrollView.hd_width, _imageView.hd_height );
-    
-    self.initailRect = self.imageView.frame;
-    
-    if (_imageView.hd_height < _scrollView.hd_height) {
-        _imageView.center = _scrollView.center;
-    }
     
 }
 
@@ -140,13 +149,21 @@
 {
     if (!_imageView) {
         _imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SELF_WIDTH, SELF_WIDTH)];
-        UIImage * newImage = [self zoomImageScale:self.image];
-        _imageView.image = [ImageUtil grayImage:newImage];
-        self.defaultImage = [ImageUtil grayImage:newImage];
-        self.finalImage = [ImageUtil grayImage:newImage];
-        _imageView.hd_height = SELF_WIDTH *_imageView.image.size.height / _imageView.image.size.width;
     }
     return _imageView;
+}
+
+- (void)dealImage
+{
+    
+    UIImage * newImage = [self zoomImageScale:self.image];
+    _imageView.image = [ImageUtil ditherImage:newImage];
+    self.defaultImage = _imageView.image;
+    self.finalImage = _imageView.image;
+    self.contraryImage = [ImageUtil imageBlackToTransparent:self.defaultImage];
+    self.inkjetImage = [ImageUtil splashInk:newImage];
+    _imageView.hd_height = SELF_WIDTH *_imageView.image.size.height / _imageView.image.size.width;
+    [hud hide:YES];
 }
 
 - (UIImage *)zoomImageScale:(UIImage *)image
@@ -161,6 +178,17 @@
     
     return newImage;
     
+}
+
+- (void)refreshUI
+{
+    self.scrollView.contentSize = CGSizeMake(_scrollView.hd_width, _imageView.hd_height );
+    
+    self.initailRect = self.imageView.frame;
+    
+    if (_imageView.hd_height < _scrollView.hd_height) {
+        _imageView.center = _scrollView.center;
+    }
 }
 
 #pragma mark - toolBar点击事件
@@ -272,13 +300,20 @@
     switch (type) {
         case 0:
         {
-            _imageView.image = [ImageUtil grayImage:self.defaultImage];
-            self.finalImage = [ImageUtil grayImage:self.defaultImage];
+            _imageView.image = self.defaultImage;
+            self.finalImage = self.defaultImage;
+            
         }
             break;
         case 1:
-            self.imageView.image = [ImageUtil imageBlackToTransparent:self.defaultImage];
-            self.finalImage = [ImageUtil imageBlackToTransparent:self.defaultImage];
+            if (self.contraryImage) {
+                self.imageView.image = self.contraryImage;
+                self.finalImage = self.contraryImage;
+            }else
+            {
+                self.imageView.image = [ImageUtil imageBlackToTransparent:self.defaultImage];
+                self.finalImage = [ImageUtil imageBlackToTransparent:self.defaultImage];
+            }
             break;
         case 2:
             NSLog(@"素描");
@@ -290,8 +325,15 @@
             break;
         case 4:
              NSLog(@"喷墨");
-            self.imageView.image = [ImageUtil splashInk:self.defaultImage];
-            self.finalImage = [ImageUtil splashInk:self.defaultImage];
+            if (self.inkjetImage) {
+                self.imageView.image = self.inkjetImage;
+                self.finalImage = self.inkjetImage;
+            }else
+            {
+                self.imageView.image = [ImageUtil splashInk:self.defaultImage];
+                self.finalImage = self.imageView.image;
+                self.inkjetImage = self.imageView.image;
+            }
             break;
             
         default:

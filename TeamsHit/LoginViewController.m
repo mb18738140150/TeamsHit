@@ -58,14 +58,18 @@
     [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     
-#warning autoLogin - waitingComplete - - - - - - - - - - -
     // 自动登录
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"]) {
-        self.accountNumber.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
-        self.passwordTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"];
-        
-        [self login];
-        
+    if (self.notAutoLogin) {
+        self.notAutoLogin = NO;
+    }else
+    {
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"]) {
+            self.accountNumber.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
+            self.passwordTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"];
+            
+            [self login];
+            
+        }
     }
     
 }

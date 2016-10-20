@@ -18,6 +18,7 @@
 #import "materiaCollectionView.h"
 #import "ExpressionView.h"
 #import "MaterialDetailViewController.h"
+#import "PrintPreviewController.h"
 #define CELL_IDENTIFIER @"MaterialTableViewCell"
 
 #define SELF_WIDTH self.view.frame.size.width
@@ -79,7 +80,7 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印预览" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印预览" style:UIBarButtonItemStylePlain target:self action:@selector(printPreviewAction)];
     self.tableView = [[DragCellTableView alloc]init];
     self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 64 - 45 - 10);
     self.tableView.delegate = self;
@@ -111,14 +112,16 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)done
+- (void)printPreviewAction
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    PrintPreviewController * printVC = [[PrintPreviewController alloc]init];
+    printVC.printDataSourceArr = self.dataArr;
+    
+    [self.navigationController pushViewController:printVC animated:YES];
 }
 
 - (void)prepareUI
 {
-    
     
     self.imagePic = [[UIImagePickerController alloc] init];
     _imagePic.delegate = self;
@@ -173,11 +176,10 @@
         _historyItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-7"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(history)];
         
         
-        
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         
         
-        _toolBar.items = @[_textEditItem,space,_pictureItem,space,_expressionItem,space, _materiaItem, space,_qrCodeItem,space,_graffitiItem, space, _historyItem];
+        _toolBar.items = @[_textEditItem,space,_pictureItem,space,_expressionItem,space, _materiaItem, space,_qrCodeItem,space,_graffitiItem];
     }
     return _toolBar;
 }
@@ -230,6 +232,7 @@
 #pragma mark - 文字编辑
 - (void)textEdit
 {
+    [self recoverUI];
     NSLog(@"文字编辑");
     TextEditViewController * textVC = [[TextEditViewController alloc]init];
     __weak MaterialViewController * matervc = self;
@@ -291,12 +294,14 @@
     
     ProcessingImagesViewController * processVC = [[ProcessingImagesViewController alloc]init];
     processVC.image = self.iconImageView.image;
+    
     processVC.hidesBottomBarWhenPushed = YES;
     
     __weak MaterialViewController * meVc = self;
     [processVC processImage:^(UIImage *image) {
         meVc.iconImageView.image = image;
         MaterialDataModel * model = [[MaterialDataModel alloc]init];
+//        model.isprocessImage = YES;
         model.image = image;
         model.imageModel = ProcessImageMOdel;
         [meVc.dataArr addObject:model];
@@ -404,8 +409,24 @@
 //            [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
 //        }
 //    }];
-    
+    [self recoverUI];
     MaterialDetailViewController * materiadetailVc = [[MaterialDetailViewController alloc]init];
+    __weak MaterialViewController * matervc = self;
+    [materiadetailVc getMaterialDetailImage:^(UIImage *image) {
+        if (image) {
+            matervc.iconImageView.image = image;
+            NSLog(@"获取到了");
+            MaterialDataModel * model = [[MaterialDataModel alloc]init];
+            model.isprocessImage = YES;
+            model.image = image;
+            model.imageModel = MateriaModel;
+            [matervc.dataArr addObject:model];
+            
+            NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
+            [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
+            [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+        }
+    }];
     
     [self.navigationController pushViewController:materiadetailVc animated:YES];
     
@@ -513,6 +534,7 @@
 // 涂鸦板
 - (void)graffiti
 {
+    [self recoverUI];
     GraffitiViewController * graffitiVC = [[GraffitiViewController alloc]init];
     
     __weak MaterialViewController * matervc = self;
@@ -521,6 +543,7 @@
             matervc.iconImageView.image = image;
             NSLog(@"获取到了");
             MaterialDataModel * model = [[MaterialDataModel alloc]init];
+             model.isprocessImage = YES;
             model.image = image;
             model.imageModel = GraffitiModel;
             [matervc.dataArr addObject:model];
@@ -600,8 +623,8 @@
 //        [self.materiaView removeFromSuperview];
 //        [_materiaItem setImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 //    }
-//    _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
-//    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
+    _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
+    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
 }
 
 - (void)moveToBottom

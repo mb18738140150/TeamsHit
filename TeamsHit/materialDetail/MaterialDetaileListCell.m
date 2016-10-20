@@ -13,9 +13,6 @@
 
 @interface MaterialDetaileListCell ()<UICollectionViewDelegate, UICollectionViewDataSource>
 
-
-@property (nonatomic, strong)NSMutableArray * materialDetailsArrar;// 素材数据源
-
 @end
 
 @implementation MaterialDetaileListCell
@@ -79,6 +76,19 @@
     cell.isHavenotAddBt = self.isHavenotAddBT;
     [cell initialize];
     [cell.detailImageView sd_setImageWithURL:[NSURL URLWithString:self.materialDetailsArrar[indexPath.row]] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+    __weak MaterialDetaileListCell * weakSelf = self;
+    [cell getMaterialDetailImage:^(UIImage *image, NSString *type) {
+        if ([type isEqualToString:@"add"]) {
+            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(materaildetailListAdd:)]) {
+                [weakSelf.delegate materaildetailListAdd:image];
+            }
+        }else if ([type isEqualToString:@"print"])
+        {
+            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(materaildetailListPrint:)]) {
+                [weakSelf.delegate materaildetailListPrint:image];
+            }
+        }
+    }];
     
     return cell;
 }

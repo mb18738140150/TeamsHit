@@ -11,6 +11,9 @@
 typedef void(^NoreadBlock)();
 @interface FriendCircleMessgaeViewController : UIViewController
 
+@property (nonatomic, assign)BOOL allMessage;
+
 - (void)noreadAction:(NoreadBlock)block;
+
 
 @end

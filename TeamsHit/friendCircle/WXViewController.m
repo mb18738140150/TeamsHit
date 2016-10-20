@@ -20,17 +20,19 @@
 #import <MJRefresh.h>
 
 #import "PublishCircleOfFriendViewController.h"
-
+#import "ExchangeBackwallImageViewController.h"
 #import "FriendCircleMessgaeViewController.h"
 #import "NoreadMessageCell.h"
 #import "RCFriendCircleUserInfo.h"
+
+#import "UserFriendCircleViewController.h"
 
 #define dataCount 10
 #define kLocationToBottom 20
 #define kAdmin [RCIM sharedRCIM].currentUserInfo.name
 
 
-@interface WXViewController ()<UITableViewDataSource,UITableViewDelegate,cellDelegate,InputDelegate,UIActionSheetDelegate>
+@interface WXViewController ()<UITableViewDataSource,UITableViewDelegate,cellDelegate,InputDelegate,UIActionSheetDelegate, UIAlertViewDelegate>
 {
     NSMutableArray *_imageDataSource;
     
@@ -43,7 +45,8 @@
     UITableView *mainTable;
     
     UIView *popView;
-    
+    UIView * backwallView;
+    UIImageView * backImageView;
     YMReplyInputView *replyView ;
     
     NSInteger _replyIndex;
@@ -60,6 +63,9 @@
 @property (nonatomic, strong)UIView * noReadMessageView;
 
 @property (nonatomic, assign)BOOL isHaveNoreadMessage;
+
+
+@property (nonatomic, strong)YMTextData * deleteYMTextdata;
 
 @end
 
@@ -418,12 +424,11 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"朋友圈"];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
    
-    TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"01"]];
+    TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[[UIImage imageNamed:@"publishshuoshuoCamera"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     [rightBarItem addTarget:self action:@selector(cameraAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     _page = 1;
@@ -560,7 +565,7 @@
             if (code == 200) {
                 
                 _AllCount = [responseObject objectForKey:@"AllCount"];
-                
+                [backImageView sd_setImageWithURL:[NSURL URLWithString:[responseObject objectForKey:@"CoverUrl"]] placeholderImage:[UIImage imageNamed:@"defaultBackimge"]];
                 if (_contentDataSource.count > 0) {
                     [_contentDataSource removeAllObjects];
                 }
@@ -695,9 +700,18 @@
         cell.replyBtn.appendIndexPath = indexPath;
         [cell.replyBtn addTarget:self action:@selector(replyAction:) forControlEvents:UIControlEventTouchUpInside];
         cell.deleteBtn.appendIndexPath = indexPath;
+        
+        __weak WXViewController * weakSelf = self;
         [cell deleteTake:^{
             NSLog(@"删除说说");
-            [self deleteTake:[_tableDataSource objectAtIndex:indexPath.row]];
+            [weakSelf deleteTake:[_tableDataSource objectAtIndex:indexPath.row]];
+        }];
+        
+        [cell lookUserShuoshuo:^{
+            NSLog(@"查看说说详情");
+            YMTextData * data = [_tableDataSource objectAtIndex:indexPath.row];
+            
+            [weakSelf lookUserFriendCircle:[NSString stringWithFormat:@"%@", data.messageBody.posterUserId]];
         }];
         
         cell.delegate = self;
@@ -727,13 +741,24 @@
 {
     UIView * headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_width - 40)];
     
-    UIImageView * backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headView.hd_width, headView.hd_height - 30)];
-    backImageView.image = [UIImage imageNamed:@"suolong.jpg"];
+    backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headView.hd_width, headView.hd_height - 30)];
+    backImageView.image = [UIImage imageNamed:@"defaultBackimge"];
+    [backImageView setContentMode:UIViewContentModeScaleAspectFill];
+    backImageView.clipsToBounds = YES;
     [headView addSubview:backImageView];
+    headView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer * walltap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(exchangeBackWallImage)];
+    backImageView.userInteractionEnabled = YES;
+    [backImageView addGestureRecognizer:walltap];
     
     UIImageView * iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headView.hd_width - 95, headView.hd_height - 80, 80, 80)];
     [iconImageView sd_setImageWithURL:[NSURL URLWithString:[RCIM sharedRCIM].currentUserInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
     [headView addSubview:iconImageView];
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(lookselfFriendCirclr)];
+    iconImageView.userInteractionEnabled = YES;
+    [iconImageView addGestureRecognizer:tap];
     
     UILabel * nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, iconImageView.hd_y + 15, headView.hd_width - 15 * 3 - iconImageView.hd_width, 20)];
     nameLabel.text = [RCIM sharedRCIM].currentUserInfo.name;
@@ -742,6 +767,19 @@
     [headView addSubview:nameLabel];
     
     return headView;
+}
+
+#pragma mark - 查看个人说说详情
+- (void)lookselfFriendCirclr
+{
+    [self lookUserFriendCircle:[RCIM sharedRCIM].currentUserInfo.userId];
+}
+
+- (void)lookUserFriendCircle:(NSString *)userId
+{
+    UserFriendCircleViewController * vc = [[UserFriendCircleViewController alloc]init];
+    vc.userId = @(userId.intValue);
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -788,33 +826,50 @@
 
 - (void)deleteTake:(YMTextData *)ymData
 {
-    NSDictionary * jsonDic = @{
-                               @"TakeId":ymData.messageBody.posterId,
-                               @"UserId":@([RCIM sharedRCIM].currentUserInfo.userId.intValue)
-                               };
     
-    NSString * url = [NSString stringWithFormat:@"%@news/deleteTake?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"确定删除此说说？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alert.tag = 10000;
+    [alert show];
+    self.deleteYMTextdata = ymData;
     
-    __weak WXViewController * wxVC = self;
-    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
         ;
-    } success:^(id  _Nonnull responseObject) {
-        NSLog(@"responseObject = %@", responseObject);
-        int code = [[responseObject objectForKey:@"Code"] intValue];
-        if (code == 200) {
-            NSLog(@"删除成功");
-            [_tableDataSource removeObject:ymData];
-            [mainTable reloadData];
-        }else
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+    }else
+    {
+        if (alertView.tag == 10000) {
+            NSDictionary * jsonDic = @{
+                                       @"TakeId":self.deleteYMTextdata.messageBody.posterId,
+                                       @"UserId":@([RCIM sharedRCIM].currentUserInfo.userId.intValue)
+                                       };
+            
+            NSString * url = [NSString stringWithFormat:@"%@news/deleteTake?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+            
+            __weak WXViewController * wxVC = self;
+            [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+                ;
+            } success:^(id  _Nonnull responseObject) {
+                NSLog(@"responseObject = %@", responseObject);
+                int code = [[responseObject objectForKey:@"Code"] intValue];
+                if (code == 200) {
+                    NSLog(@"删除成功");
+                    [_tableDataSource removeObject:self.deleteYMTextdata];
+                    [mainTable reloadData];
+                }else
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                    [alert show];
+                    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                }
+                
+            } failure:^(NSError * _Nonnull error) {
+                NSLog(@"%@", error);
+            }];
         }
-        
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
+    }
 }
 
 #pragma mark - 赞
@@ -1189,6 +1244,53 @@
         [mainTable reloadData];
     }];
     [self.navigationController pushViewController:messageVc animated:YES];
+}
+
+
+#pragma mark - 修改背景墙
+- (void)exchangeBackWallImage
+{
+    backwallView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    backwallView.backgroundColor = [UIColor clearColor];
+    
+    UIView * clearView = [[UIView alloc]initWithFrame:backwallView.bounds];
+    clearView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
+    [backwallView addSubview:clearView];
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissexchangeView)];
+    [clearView addGestureRecognizer:tap];
+    
+    UIButton * exchangeBackWallImageBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    exchangeBackWallImageBT.frame = CGRectMake((screenWidth - 218) / 2, 64 + screenWidth - 75, 218, 38);
+    exchangeBackWallImageBT.layer.cornerRadius = 3;
+    exchangeBackWallImageBT.layer.masksToBounds = YES;
+    exchangeBackWallImageBT.backgroundColor = [UIColor whiteColor];
+    [exchangeBackWallImageBT setTitle:@"更换背景封面" forState:UIControlStateNormal];
+     [exchangeBackWallImageBT setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    exchangeBackWallImageBT.titleLabel.font = [UIFont systemFontOfSize:18];
+    [backwallView addSubview:exchangeBackWallImageBT];
+    
+    [exchangeBackWallImageBT addTarget:self action:@selector(exchangeImageAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    [delegate.window addSubview:backwallView];
+    
+}
+- (void)dismissexchangeView
+{
+    [backwallView removeFromSuperview];
+}
+- (void)exchangeImageAction
+{
+    [backwallView removeFromSuperview];
+    ExchangeBackwallImageViewController * exchangeVC = [[ExchangeBackwallImageViewController alloc]initWithNibName:@"ExchangeBackwallImageViewController" bundle:nil];
+    [exchangeVC getBackWallImage:^(UIImage *image) {
+        if (image) {
+            backImageView.image = image;
+        }
+    }];
+    [self.navigationController pushViewController:exchangeVC animated:YES];
+    
 }
 
 - (void)dealloc{

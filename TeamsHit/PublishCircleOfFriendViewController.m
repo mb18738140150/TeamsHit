@@ -27,6 +27,7 @@
 
 @property (nonatomic, strong)UIView * informationView;
 @property (nonatomic, strong)UITextView * ideaTextView;
+@property (nonatomic, strong)UILabel * ideaLabel;
 @property (nonatomic, strong)UICollectionView * phoneCollectionView;
 @property (nonatomic , strong) NSMutableArray *assets;
 @property (nonatomic, strong) NSMutableArray * imageUrlArr;
@@ -77,9 +78,9 @@
 {
     NSLog(@"发表");
     
-    if (self.ideaTextView.text.length == 0 && self.imageUrlArr.count == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"内容与图片不能全部为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
+    if (self.ideaTextView.text.length == 0 ) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"内容不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
     }else
     {
         [self uploadImage];
@@ -97,9 +98,16 @@
     
     self.ideaTextView = [[UITextView alloc]initWithFrame:CGRectMake(15, 12, self.informationView.hd_width, 135)];
     self.ideaTextView.textColor = UIColorFromRGB(0xBBBBBB);
-    self.ideaTextView.text = @"这一刻的想法...";
+//    self.ideaTextView.text = @"这一刻的想法...";
     self.ideaTextView.delegate = self;
+    [self.ideaTextView becomeFirstResponder];
     [self.informationView addSubview:self.ideaTextView];
+    
+    self.ideaLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 20, 100, 13)];
+    self.ideaLabel.textColor = UIColorFromRGB(0xBBBBBB);
+    self.ideaLabel.font = [UIFont systemFontOfSize:12];
+    self.ideaLabel.text = @"这一刻的想法...";
+    [self.informationView addSubview:self.ideaLabel];
     
     // uicollectionViewFlowLayout继承于 UICollectionViewLayout
     // 是专门用来处理UICollectionView 的布局问题
@@ -133,7 +141,7 @@
     
     self.permissionView = [[UIView alloc]initWithFrame:CGRectMake(0, self.informationView.hd_y + self.informationView.hd_height + 30, self.publishScrollView.hd_width, 50)];
     self.permissionView.backgroundColor = [UIColor cyanColor];
-    [self.publishScrollView addSubview:self.permissionView];
+//    [self.publishScrollView addSubview:self.permissionView];
     
     self.phoneCollectionView.contentSize = CGSizeMake(self.phoneCollectionView.hd_width, self.permissionView.hd_height + self.permissionView.hd_y + 30);
 }
@@ -220,16 +228,18 @@
 - (void)textViewDidChange:(UITextView *)textView
 {
     NSLog(@"内容改变了");
-    if ([textView.text containsString:@"这一刻的想法..."]) {
-        NSMutableString * str = [[NSMutableString alloc]initWithString:textView.text];
-        NSRange range = [str rangeOfString:@"这一刻的想法..."];
-        [str deleteCharactersInRange:range];
-        textView.text = str;
-        textView.textColor = UIColorFromRGB(0x323232);
+    if (textView.text.length != 0) {
+        self.ideaLabel.hidden = YES;
+//        NSMutableString * str = [[NSMutableString alloc]initWithString:textView.text];
+//        NSRange range = [str rangeOfString:@"这一刻的想法..."];
+//        [str deleteCharactersInRange:range];
+//        textView.text = str;
+//        textView.textColor = UIColorFromRGB(0x323232);
     }else if (textView.text.length == 0)
     {
-        textView.text = @"这一刻的想法...";
-        textView.textColor = UIColorFromRGB(0xBBBBBB);
+        self.ideaLabel.hidden = NO;
+//        textView.text = @"这一刻的想法...";
+//        textView.textColor = UIColorFromRGB(0xBBBBBB);
     }
     
 }
@@ -237,6 +247,8 @@
 #pragma mark - 上传图片
 - (void)uploadImage
 {
+    [self.ideaTextView resignFirstResponder];
+    
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"图片上传中...";
     NSLog(@"***** 上传图片");
@@ -375,6 +387,7 @@
 - (void)publishShuoshuo
 {
     NSString * imageUrlStr = @"";
+    
     for (int i = 0; i < self.imageUrlArr.count; i++) {
         if (i == 0) {
             imageUrlStr = self.imageUrlArr.firstObject;
@@ -389,8 +402,16 @@
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"发布中...";
     [hud show:YES];
+    
+    NSString * ideaStr = @"";
+    if (self.ideaTextView.text && self.ideaTextView.text.length== 0) {
+        
+    }else
+    {
+        ideaStr = self.ideaTextView.text;
+    }
     NSDictionary * jsonDic = @{
-                               @"TakeContent":self.ideaTextView.text,
+                               @"TakeContent":ideaStr,
                                @"PhotoLists":imageUrlStr
                                };
     
@@ -420,13 +441,7 @@
                     messageBody.publishTime = [self getTimeStr:[responseObject objectForKey:@"CreateTime"]];
                     
                     NSString * photoLists = imageUrlStr;
-                    if (![photoLists isEqual:[NSNull null]]) {
-//                        if ([photoLists containsString:@","]) {
-//                            messageBody.posterPostImage = [photoLists componentsSeparatedByString:@","];
-//                        }else
-//                        {
-//                            messageBody.posterPostImage = @[imageUrlStr];
-//                        }
+                    if (![photoLists isEqual:[NSNull null]] && photoLists && photoLists.length != 0) {
                         
                         if ([photoLists containsString:@","]) {
                             NSArray * imageArr = [photoLists componentsSeparatedByString:@","];

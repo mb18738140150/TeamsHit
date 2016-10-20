@@ -48,7 +48,7 @@
                                     <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="用户名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m6b-HH-7rS">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="对对号" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m6b-HH-7rS">
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="RHG-89-EcY"/>
                                         <constraint firstAttribute="height" constant="15" id="w4I-kz-V4V"/>
@@ -240,7 +240,7 @@
                 <constraint firstItem="Reg-Xs-cLI" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="C8k-sq-kTo"/>
                 <constraint firstAttribute="trailing" secondItem="Reg-Xs-cLI" secondAttribute="trailing" id="Z6C-9i-wvm"/>
             </constraints>
-            <point key="canvasLocation" x="470" y="240"/>
+            <point key="canvasLocation" x="469.5" y="239.5"/>
         </view>
     </objects>
     <resources>

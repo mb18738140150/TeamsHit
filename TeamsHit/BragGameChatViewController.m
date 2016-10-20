@@ -136,6 +136,10 @@
     int leavetime = self.headerView.timeLabel.text.intValue;
     leavetime--;
     self.headerView.timeLabel.text = [NSString stringWithFormat:@"%d", leavetime];
+    if (leavetime <= 0) {
+        self.headerView.timeLabel.text = @"0";
+        leavetime = 0;
+    }
 }
 
 #pragma mark set up in the game
@@ -159,9 +163,23 @@
     
     [_webSocket send:[dictionary JSONString]];
     [quitTipView dismiss];
-    [_webSocket close];
+//    [_webSocket close];
     NSLog(@"callDicePOint %@", [dictionary JSONString]);
-    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+    
+    
+    
+//    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+}
+
+- (void)removeAllsubViews
+{
+    self.prepareGameView = nil;
+    self.bragGameView = nil;
+    self.gameOverView = nil;
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+    }
 }
 
 #pragma mark - SRWebSocketDelegate 写上具体聊天逻辑
@@ -197,7 +215,8 @@
     }else
     {
         if (alertView.tag == 10000) {
-            [_webSocket open];
+            [_webSocket close];
+            [self connectSocket];
         }
     }
 }
@@ -417,6 +436,9 @@
     
     [self.GameUserInfoArr removeObject:user];
     [self.prepareGameView reloadDataAction];
+    [self removeAllsubViews];
+    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+
 }
 
 #pragma mark - BragGameViewProtocol
@@ -565,6 +587,12 @@
 - (void)setFirstCallDicePointUser:(NSDictionary *)dic
 {
     [self.bragGameView FirstCallDicePointUser:[NSString stringWithFormat:@"%@", [dic objectForKey:@"UserId"]]];
+    self.headerView.timeLabel.text = @"30";
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+    }
+    self.leaveTime  = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(leaveTimeAction) userInfo:nil repeats:YES];
 }
 
 // 自己摇点
@@ -665,6 +693,10 @@
 - (void)dealloc
 {
     [_webSocket close];
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+    }
     NSLog(@"关闭socket连接");
 }
 

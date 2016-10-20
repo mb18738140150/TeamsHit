@@ -55,7 +55,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.enableInteractivePopGestureRecognizer = YES;
+//    self.enableInteractivePopGestureRecognizer = YES;
     self.enableSaveNewPhotoToLocalSystem = YES;
     self.isRightBarItem = NO;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStyleDone target:self action:nil];;
@@ -87,8 +87,8 @@
     
     // 滑块view
     self.slideBlockView = [[SlideBlockView alloc]initWithFrame:CGRectMake(self.view.hd_width / 2 - 24, self.conversationMessageCollectionView.hd_y - 30, 48, 30)];
-    [self.view addSubview:self.slideBlockView];
-    [self.view insertSubview:_slideBlockView belowSubview:self.conversationMessageCollectionView];
+//    [self.view addSubview:self.slideBlockView];
+//    [self.view insertSubview:_slideBlockView belowSubview:self.conversationMessageCollectionView];
     [self.slideBlockView resignBlock:^{
         [self.chatSessionInputBarControl.inputTextView resignFirstResponder];
     }];
@@ -106,18 +106,25 @@
         
     }];
     
+    
+
+//    [[NSNotificationCenter defaultCenter]addObserver:self forKeyPath:@"self.chatSessionInputBarControl.frame" options:NSKeyValueObservingOptionNew context:nil];
+    
     [self creatHeaderView];
     
     [self.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillshow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(keyboardWillHide:)
+//                                                 name:UIKeyboardWillHideNotification
+//                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(keyboardWillshow:)
+//                                                 name:UIKeyboardWillShowNotification
+//                                               object:nil];
+    
+    
+    
     
     [self.chatSessionInputBarControl addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     
@@ -199,34 +206,41 @@
     
 }
 
-#pragma mark - 键盘回收监听
--(void)keyboardWillHide:(NSNotification *)note{
-    
-    self.conversationMessageCollectionView.hd_y = self.conversationMessageCollectionView_y;
-    self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
-    [self setChatSessionInputBarStatus:KBottomBarDefaultStatus animated:YES];
-    
+- (void)connectSocket
+{
+    _webSocket = [[SRWebSocket alloc]initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:Web_Socket]]];
+    _webSocket.delegate =self;
+    [_webSocket open];
 }
 
-- (void)keyboardWillshow:(NSNotification *)note
-{
-//    CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
+#pragma mark - 键盘回收监听
+//-(void)keyboardWillHide:(NSNotification *)note{
 //    
-//    CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
-    
-    // 键盘的frame
-//    CGRect keyboardF = [ [note.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    
-//    self.conversationMessageCollectionView.hd_y = end.origin.y - self.conversationMessageCollectionViewHeight - 50;
+//    self.conversationMessageCollectionView.hd_y = self.conversationMessageCollectionView_y;
+//    self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
+//    [self setChatSessionInputBarStatus:KBottomBarDefaultStatus animated:YES];
+//    
+//}
+//
+//- (void)keyboardWillshow:(NSNotification *)note
+//{
+//
+//    self.conversationMessageCollectionView.hd_y = self.chatSessionInputBarControl.hd_y - self.conversationMessageCollectionViewHeight;
+//    self.conversationMessageCollectionView.hd_height = self.conversationMessageCollectionViewHeight;
+//
+//    self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
+//    if (self.conversationMessageCollectionView.hd_y < 64) {
+//        self.conversationMessageCollectionView.hd_y = 64;
+//        self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
+//    }
+//}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
     self.conversationMessageCollectionView.hd_y = self.chatSessionInputBarControl.hd_y - self.conversationMessageCollectionViewHeight;
     self.conversationMessageCollectionView.hd_height = self.conversationMessageCollectionViewHeight;
-//    NSLog(@"%f  * %f * %f", self.chatSessionInputBarControl.hd_y , self.conversationMessageCollectionView.hd_y, self.conversationMessageCollectionViewHeight);
-    self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
-    if (self.conversationMessageCollectionView.hd_y < 64) {
-        self.conversationMessageCollectionView.hd_y = 64;
-        self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
-    }
 }
+
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -799,15 +813,6 @@
     }
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
-{
-    NSLog(@"%f = %f",self.chatSessionInputBarControl.hd_y, self.conversationMessageCollectionViewHeight);
-    
-//    self.conversationMessageCollectionView.hd_y = self.chatSessionInputBarControl.hd_y - self.conversationMessageCollectionViewHeight;
-//    if (self.conversationMessageCollectionView.hd_y < 0) {
-//        self.conversationMessageCollectionView.hd_y = 0;
-//    }
-}
 
 - (void)dealloc
 {
@@ -860,6 +865,16 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+//- (void)emojiView:(RCEmojiBoardView *)emojiView didTouchedEmoji:(NSString *)touchedEmoji
+//{
+//    
+//}
+//- (void)emojiView:(RCEmojiBoardView *)emojiView didTouchSendButton:(UIButton *)sendButton
+//{
+//    
+//}
 
 /*
 #pragma mark - Navigation

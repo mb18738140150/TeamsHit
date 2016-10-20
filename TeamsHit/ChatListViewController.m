@@ -92,17 +92,17 @@
     @[
       
       [KxMenuItem menuItem:@"绑定设备"
-                     image:[UIImage imageNamed:@"startchat_icon"]
+                     image:[UIImage imageNamed:@"bangdingshebei"]
                     target:self
                     action:@selector(pushChat:)],
       
       [KxMenuItem menuItem:@"创建群组"
-                     image:[UIImage imageNamed:@"creategroup_icon"]
+                     image:[UIImage imageNamed:@"creatGroupImage"]
                     target:self
                     action:@selector(pushContactSelected:)],
       
       [KxMenuItem menuItem:@"添加好友"
-                     image:[UIImage imageNamed:@"addfriend_icon"]
+                     image:[UIImage imageNamed:@"addFriendImage"]
                     target:self
                     action:@selector(pushAddFriend:)],
       

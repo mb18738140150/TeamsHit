@@ -20,6 +20,8 @@ NSString * const KFriendCircleMessgaeCellIdentifire = @"FriendCircleMessgaeCellI
 
 - (void)creatcellUIwith:(CGRect *)rect
 {
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     if (!self.commentUserIcon) {
         self.commentUserIcon = [[UIImageView alloc]initWithFrame:CGRectMake(15, 17, 63, 63)];
         [self.contentView addSubview:self.commentUserIcon];

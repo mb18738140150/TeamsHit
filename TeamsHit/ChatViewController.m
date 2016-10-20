@@ -45,7 +45,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.enableInteractivePopGestureRecognizer = YES;
+//    self.enableInteractivePopGestureRecognizer = YES;
     self.enableSaveNewPhotoToLocalSystem = YES;
     self.isRightBarItem = NO;
     

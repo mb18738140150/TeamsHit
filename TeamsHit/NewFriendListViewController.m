@@ -9,7 +9,7 @@
 #import "NewFriendListViewController.h"
 #import "NewFriendListTableViewCell.h"
 #import "NewFriendModel.h"
-#import "NewFriendVerifyViewController.h"
+//#import "NewFriendVerifyViewController.h"
 
 #define CELL_IDENTIFIRE @"cellId"
 
@@ -119,8 +119,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NewFriendVerifyViewController * newfriendVerifyVC = [[NewFriendVerifyViewController alloc]initWithNibName:@"NewFriendVerifyViewController" bundle:nil];
-    [self.navigationController pushViewController:newfriendVerifyVC animated:YES];
+//    NewFriendVerifyViewController * newfriendVerifyVC = [[NewFriendVerifyViewController alloc]initWithNibName:@"NewFriendVerifyViewController" bundle:nil];
+//    [self.navigationController pushViewController:newfriendVerifyVC animated:YES];
 }
 
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath

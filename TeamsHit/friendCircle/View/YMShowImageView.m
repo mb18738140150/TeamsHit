@@ -71,7 +71,7 @@
         imageScrollView.minimumZoomScale = 1;
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:[appendArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"1"]];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:[appendArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
 //        UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[appendArray objectAtIndex:i]]];
 //        imageView.image = img;
         imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -84,7 +84,6 @@
     }
     [_scrollView setContentOffset:CGPointMake(W * (clickTag - 9999), 0) animated:YES];
     page = clickTag - 9999;
-
 }
 
 - (void)disappear{

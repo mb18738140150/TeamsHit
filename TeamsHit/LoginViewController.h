@@ -10,4 +10,6 @@
 
 @interface LoginViewController : UIViewController
 
+@property (nonatomic, assign)BOOL notAutoLogin;
+
 @end

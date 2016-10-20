@@ -59,20 +59,10 @@ install_resource()
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "MJRefresh/MJRefresh/MJRefresh.bundle"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/RongCloud.bundle"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/en.lproj"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/zh-Hans.lproj"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/Emoji.plist"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/RCConfig.plist"
   install_resource "SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "MJRefresh/MJRefresh/MJRefresh.bundle"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/RongCloud.bundle"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/en.lproj"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/zh-Hans.lproj"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/Emoji.plist"
-  install_resource "RongCloudIMKit/Rong_Cloud_iOS_IMKit_SDK_v2_6_5_stable/RCConfig.plist"
   install_resource "SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle"
 fi
 

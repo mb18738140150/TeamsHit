@@ -259,5 +259,159 @@ void ProviderReleaseData (void *info, const void *data, size_t size)
     return my_Image;
 }
 
++ (UIImage *)ditherImage:(UIImage *)image
+{
+    ImageUtil * imageU = [[ImageUtil alloc]init];
+    
+    return  [imageU ditherBlackWhite:image];
+}
+
+- (UIImage *)ditherBlackWhite:(UIImage *)image
+{
+    
+    _pixelsArray      = [[NSMutableArray alloc]init];
+    int red,green,blue,alpha,pixelInfo;
+    KSPixel *currentPixel;
+
+    unsigned char *imgPixel = RequestImagePixelData(image);
+    CGImageRef inImageRef = [image CGImage];
+    GLuint w = CGImageGetWidth(inImageRef);
+    GLuint h = CGImageGetHeight(inImageRef);
+    CFDataRef pixelData = CGDataProviderCopyData(CGImageGetDataProvider(image.CGImage));
+    const UInt8* data = CFDataGetBytePtr(pixelData);
+    
+    _width = image.size.width;
+    _height = image.size.height;
+    
+    UIGraphicsBeginImageContext(CGSizeMake(_width, _height));
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextFillRect(context, CGRectMake(0, 0, _width, _height));
+    
+    int pixelsArray[_width][_height];
+    int wOff = 0;
+    int pixOff = 0;
+    for(GLuint y = 1;y< h;y++)
+    {
+        pixOff = wOff;
+        for (GLuint x = 1; x<w; x++)
+        {
+            int red = (unsigned char)imgPixel[pixOff];
+            int green = (unsigned char)imgPixel[pixOff+1];
+            int blue = (unsigned char)imgPixel[pixOff+2];
+            int alpha = (unsigned char)imgPixel[pixOff+3];
+            
+            pixOff += 4;
+            
+           int  Y  =  0.299*red + 0.587*green + 0.114*blue;
+            
+            pixelsArray[x][y] = Y;
+            
+            currentPixel = [[KSPixel alloc]initWithX:x Y:y Red:red Green:green Blue:blue];
+            [_pixelsArray addObject:[[KSPixel alloc]initWithX:x Y:y Red:red Green:green Blue:blue]];
+        }
+        wOff += w * 4;
+    }
+    
+//    UIImage * endImage = [self endImage];
+    
+    int x,y;
+    int error,displayed;
+    
+    for (y=1; y<_height; y++) {
+        for (x=1; x<_width; x++) {
+            if (pixelsArray[x][y] > 128) displayed = 255;
+            else                         displayed = 0;
+            
+            error = pixelsArray[x][y] - displayed;
+            pixelsArray[x][y] = displayed;
+            
+            if (x + 1 < _width)     pixelsArray[x+1][y]   += 7 * error / 16 ;
+            if (y + 1 < _height) {
+                if (x - 1 > 0)      pixelsArray[x-1][y+1] += 3 * error / 16 ;
+                pixelsArray[x]  [y+1] += 5 * error / 16 ;
+                if (x + 1 < _width) pixelsArray[x+1][y+1] += 1 * error / 16 ;
+            }
+            
+            KSPixel *pixel = [[KSPixel alloc]
+                              initWithX:x Y:y Red:pixelsArray[x][y] Green:pixelsArray[x][y] Blue:pixelsArray[x][y]];
+            [_pixelsArray addObject:pixel];
+        }
+    }
+    
+    UIImage * endimage = [self getendImageWith:_pixelsArray];
+    
+    
+    return endimage;
+}
+
+- (UIImage *)endImage
+{
+    int pixelsArray[_width][_height];
+    int x,y,Y;
+    
+    // Change image to gray scale
+    for (KSPixel *pixel in _pixelsArray) {
+        x = pixel.x;
+        y = pixel.y;
+        
+        Y  =  0.299*pixel.red + 0.587*pixel.green + 0.114*pixel.blue;
+        
+        pixelsArray[x][y] = Y;
+    }
+    
+    [_pixelsArray removeAllObjects];
+    
+    int error,displayed;
+    
+    for (y=1; y<_height; y++) {
+        for (x=1; x<_width; x++) {
+            if (pixelsArray[x][y] > 128) displayed = 255;
+            else                         displayed = 0;
+            
+            error = pixelsArray[x][y] - displayed;
+            pixelsArray[x][y] = displayed;
+            
+            if (x + 1 < _width)     pixelsArray[x+1][y]   += 7 * error / 16 ;
+            if (y + 1 < _height) {
+                if (x - 1 > 0)      pixelsArray[x-1][y+1] += 3 * error / 16 ;
+                pixelsArray[x]  [y+1] += 5 * error / 16 ;
+                if (x + 1 < _width) pixelsArray[x+1][y+1] += 1 * error / 16 ;
+            }
+            
+            KSPixel *pixel = [[KSPixel alloc]
+                              initWithX:x Y:y Red:pixelsArray[x][y] Green:pixelsArray[x][y] Blue:pixelsArray[x][y]];
+            [_pixelsArray addObject:pixel];
+        }
+    }
+    
+    UIImage * endimage = [self getendImageWith:_pixelsArray];
+    return endimage;
+}
+
+- (UIImage *)getendImageWith:(NSArray *)pixelArray
+{
+    UIColor *currentColor;
+    KSPixel *pixel;
+    
+    UIGraphicsBeginImageContext(CGSizeMake(_width, _height));
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextFillRect(context, CGRectMake(0, 0, _width, _height));
+    
+    for (int i=0; i<[pixelArray count]; i++) {
+        pixel = [pixelArray objectAtIndex:i];
+        
+        // Draw this pixel
+        currentColor = [UIColor colorWithRed:pixel.red/255.0 green:pixel.green/255.0 blue:pixel.blue/255.0 alpha:1];
+        CGContextSetFillColorWithColor(context, [currentColor CGColor]);
+        CGContextFillRect(context, CGRectMake(pixel.x, pixel.y, 1.0, 1.0));
+    }
+    
+    // Write context to UIImage
+    UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    
+    return image;
+}
 
 @end
