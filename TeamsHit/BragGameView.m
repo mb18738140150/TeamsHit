@@ -339,7 +339,7 @@
     if ([[dic objectForKey:@"IsViewer"] intValue] == 1) {
         self.diceCupView.hidden = YES;
     }
-    
+    [self.gameUserInformationArr removeAllObjects];
     for (int i = 0; i < userInfoArr.count; i++) {
         
         NSDictionary * userDic = [gameUserInfoArr objectAtIndex:i];

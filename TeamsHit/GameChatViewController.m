@@ -71,9 +71,9 @@
     
     // 设置聊天界面frame
     self.chatSessionInputBarControl.delegate = self;
-    self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 50);
+    self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 30);
     self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_y - self.chatSessionInputBarControl.hd_y;
-    self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 50;
+    self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 30;
     self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
     self.title = @"";
     

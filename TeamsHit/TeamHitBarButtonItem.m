@@ -94,7 +94,7 @@
     [barButtonItem setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [barButtonItem setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
     //按钮字体颜色默认为白色
-    [barButtonItem setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal]  ;
+    [barButtonItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateNormal]  ;
     barButtonItem.titleLabel.font = [UIFont systemFontOfSize:17.0f];
     
     return barButtonItem;

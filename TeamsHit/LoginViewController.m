@@ -163,7 +163,6 @@
         
         [self login];
         
-        
     }
     
 }
@@ -219,6 +218,19 @@
             // 账号密码保存到本地
             [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
             [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
+            [[NSUserDefaults standardUserDefaults] setObject:[responseObject objectForKey:@"IosChecked"] forKey:@"IosChecked"];
+            int i = 1;
+            while (i) {
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"IosChecked"]) {
+                    i = 0;
+                }else
+                {
+                    [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
+                    [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
+                    [[NSUserDefaults standardUserDefaults] setObject:[responseObject objectForKey:@"IosChecked"] forKey:@"IosChecked"];
+                }
+            }
+            
             if ([[responseObject objectForKey:@"IsCompleteInfor"] intValue ] == 1) {
                 [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
                 [self pushMyTabbarViewController];

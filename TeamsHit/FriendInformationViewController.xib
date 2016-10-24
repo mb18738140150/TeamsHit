@@ -29,7 +29,7 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gq3-6g-edJ">
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoronoaZoro.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Gcc-Qn-hGF">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gcc-Qn-hGF">
                             <constraints>
                                 <constraint firstAttribute="width" constant="65" id="a7J-v8-q2V"/>
                                 <constraint firstAttribute="height" constant="65" id="ohf-kg-ETK"/>
@@ -164,22 +164,22 @@
                             <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoronoaZoro.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="zxX-O3-QfE">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="zxX-O3-QfE">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="x28-EX-EO0"/>
                             </constraints>
                         </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoronoaZoro.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="PGK-0D-Kwl">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="PGK-0D-Kwl">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="V5F-n7-KAk"/>
                             </constraints>
                         </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoronoaZoro.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="FgJ-Et-1SO">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="FgJ-Et-1SO">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="Kug-Xa-apo"/>
                             </constraints>
                         </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoronoaZoro.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="rli-Vd-mnx">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="rli-Vd-mnx">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="aVz-mZ-nkg"/>
                             </constraints>
@@ -241,6 +241,6 @@
         </view>
     </objects>
     <resources>
-        <image name="RoronoaZoro.jpg" width="480" height="480"/>
+        <image name="meIcon_default.png" width="72" height="72"/>
     </resources>
 </document>

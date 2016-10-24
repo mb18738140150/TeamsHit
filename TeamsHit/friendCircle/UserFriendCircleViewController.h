@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^ExchangeWallImageBlock)(UIImage * image);
+
 @interface UserFriendCircleViewController : UIViewController
 
 @property (nonatomic, strong)NSNumber *userId;
 
-
+- (void)exchangeWallImage:(ExchangeWallImageBlock)block;
 @end

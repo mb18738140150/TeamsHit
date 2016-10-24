@@ -169,7 +169,8 @@
 
 - (void)uploadImage
 {
-    
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
     HDPicModle * imageModel = [[HDPicModle alloc]init];
     imageModel.pic = self.groupIconimageview.image;
     imageModel.picName = [self imageName];
@@ -188,6 +189,7 @@
         self.iconImageStr = [dic objectForKey:@"ImgPath"];
         [self completeInformation1];
     } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
         NSLog(@"error = %@", error);
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"图片上传失败，请重新提交" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];

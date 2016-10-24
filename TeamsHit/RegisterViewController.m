@@ -152,7 +152,7 @@
 #pragma mark = 注册
 - (void)registerAction:(UIButton *)button
 {
-    [self pushCompleteVC];
+    [self registerAccount];
     
     if (self.verifyCodeTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入验证码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

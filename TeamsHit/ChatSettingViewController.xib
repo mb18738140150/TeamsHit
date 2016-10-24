@@ -27,7 +27,7 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F7D-xv-YUI">
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoronoaZoro.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="otr-0a-RSF">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="otr-0a-RSF">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="62" id="CXL-wS-OsM"/>
                                         <constraint firstAttribute="width" constant="62" id="KGe-f1-KIE"/>
@@ -213,7 +213,7 @@
         </view>
     </objects>
     <resources>
-        <image name="RoronoaZoro.jpg" width="480" height="480"/>
+        <image name="meIcon_default.png" width="72" height="72"/>
         <image name="noForbid.png" width="125" height="45"/>
         <image name="upload.png" width="45" height="45"/>
     </resources>

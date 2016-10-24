@@ -11,14 +11,17 @@
 #import "MaterialViewController.h"
 #import "MeDetailInfomationViewController.h"
 
+#import "StoreViewController.h"
+#import "CoindetailViewController.h"
 #import "EquipmentManagerViewController.h"
 
-#import "LoginViewController.h"
+#import "SetUpViewController.h"
 #import "AppDelegate.h"
 
 @interface MeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
     MBProgressHUD* hud ;
+    UIView * backView;
 }
 @property (strong, nonatomic) IBOutlet UIView *infoView;
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
@@ -28,7 +31,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *coinCountLB;
 @property (strong, nonatomic) IBOutlet UILabel *counCountLabel;
 
-@property (strong, nonatomic) IBOutlet UIButton *exitLoginBT;
 
 @property (strong, nonatomic) IBOutlet UIView *equipmentmanagerView;
 @property (strong, nonatomic) IBOutlet UIImageView *equipmentImage;
@@ -189,18 +191,95 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (IBAction)exitAction:(id)sender {
+
+- (IBAction)buyCoinAction:(id)sender {
+    CoindetailViewController * coinVC = [[CoindetailViewController alloc]initWithNibName:@"CoindetailViewController" bundle:nil];
+    coinVC.cointCount = self.coinCountLB.text;
+    coinVC.hidesBottomBarWhenPushed = YES;
     
-    LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
-    loginVC.notAutoLogin = YES;
-    // [loginVC defaultLogin];
-    // RCDLoginViewController* loginVC = [storyboard
-    // instantiateViewControllerWithIdentifier:@"loginVC"];
-    UINavigationController *_navi =
-    [[UINavigationController alloc] initWithRootViewController:loginVC];
+    [self.navigationController pushViewController:coinVC animated:YES];
+    
+}
+- (IBAction)storeAction:(id)sender {
+    StoreViewController * storeVC = [[StoreViewController alloc]init];
+    
+    storeVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:storeVC animated:YES];
+    
+}
+- (IBAction)share:(id)sender {
+    
+    backView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    backView.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
+    
+    UIView * whiteView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.hd_height - 224, backView.hd_width, 224)];
+    whiteView.backgroundColor = [UIColor whiteColor];
+    [backView addSubview:whiteView];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(14, 12, 90, 18)];
+    titleLabel.font = [UIFont systemFontOfSize:18];
+    titleLabel.textColor = UIColorFromRGB(0x010101);
+    titleLabel.text = @"分享好友";
+    [whiteView addSubview:titleLabel];
+    
+    UIButton * closeBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    closeBT.frame = CGRectMake(whiteView.hd_width - 34, 14, 20, 20);
+    [closeBT setImage:[[UIImage imageNamed:@"share_close"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [whiteView addSubview:closeBT];
+    [closeBT addTarget:self action:@selector(closeShare) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton * friendBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    friendBT.frame = CGRectMake(49, 53, 38, 38);
+    [friendBT setImage:[[UIImage imageNamed:@"share_friend"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [whiteView addSubview:friendBT];
+    [friendBT addTarget:self action:@selector(shareFriend) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton * circleBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    circleBT.frame = CGRectMake(132, 53, 38, 38);
+    [circleBT setImage:[[UIImage imageNamed:@"share_circle"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [whiteView addSubview:circleBT];
+    [circleBT addTarget:self action:@selector(shareCircle) forControlEvents:UIControlEventTouchUpInside];
+    
+    UILabel * friendLabel = [[UILabel alloc]initWithFrame:CGRectMake(38, 105, 80, 15)];
+    friendLabel.hd_centerX = friendBT.hd_centerX;
+    friendLabel.font = [UIFont systemFontOfSize:15];
+    friendLabel.textColor = UIColorFromRGB(0x010101);
+    friendLabel.textAlignment = 1;
+    friendLabel.text = @"微信好友";
+    [whiteView addSubview:friendLabel];
+    
+    UILabel * circleLabel = [[UILabel alloc]initWithFrame:CGRectMake(38, 105, 80, 15)];
+    circleLabel.hd_centerX = circleBT.hd_centerX;
+    circleLabel.font = [UIFont systemFontOfSize:15];
+    circleLabel.textColor = UIColorFromRGB(0x010101);
+    circleLabel.textAlignment = 1;
+    circleLabel.text = @"朋友圈";
+    [whiteView addSubview:circleLabel];
+    
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
-    delegate.window.rootViewController = _navi;
+    [delegate.window addSubview:backView];
     
+}
+
+- (void)closeShare
+{
+    [backView removeFromSuperview];
+}
+
+- (void)shareFriend
+{
+    NSLog(@"分享给好友");
+}
+
+- (void)shareCircle
+{
+    NSLog(@"分享朋友圈");
+}
+
+- (IBAction)setup:(id)sender {
+    SetUpViewController * setVc = [[SetUpViewController alloc]initWithNibName:@"SetUpViewController" bundle:nil];
+    setVc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:setVc animated:YES];
 }
 
 /*

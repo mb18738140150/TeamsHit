@@ -85,12 +85,13 @@
 
 - (IBAction)configurationWLAN:(id)sender {
     
+    [self.wifiPasswordTF resignFirstResponder];
+    
     if (!self.myPassword || self.myPassword.length == 0) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"密码不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
         [alert show];
     }else
     {
-        
         ConfigurationWiFiSecondViewController * secondVC = [[ConfigurationWiFiSecondViewController alloc]initWithNibName:@"ConfigurationWiFiSecondViewController" bundle:nil];
         secondVC.myssid = self.myssid;
         secondVC.myPassword = self.myPassword;

@@ -121,12 +121,11 @@
 - (void)completeInformation1
 {
     
-    
     NSDictionary * jsonDic = @{
                                @"CoverUrl":self.wallImageUrl
                                };
     
-    NSString * url = [NSString stringWithFormat:@"%@new/changeFriendCircleCover?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    NSString * url = [NSString stringWithFormat:@"%@news/changeFriendCircleCover?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     
     [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
         ;

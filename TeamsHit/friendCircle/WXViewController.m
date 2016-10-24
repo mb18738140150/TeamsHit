@@ -245,6 +245,7 @@
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (command == 10024) {
             if (code == 200) {
+                 [backImageView sd_setImageWithURL:[NSURL URLWithString:[responseObject objectForKey:@"CoverUrl"]] placeholderImage:[UIImage imageNamed:@"defaultBackimge"]];
                 _AllCount = [responseObject objectForKey:@"AllCount"];
                 NSArray * FirendCircleList = [NSArray array];
                 FirendCircleList = [responseObject objectForKey:@"FriendCircleList"];
@@ -779,6 +780,11 @@
 {
     UserFriendCircleViewController * vc = [[UserFriendCircleViewController alloc]init];
     vc.userId = @(userId.intValue);
+    [vc exchangeWallImage:^(UIImage *image) {
+        if (image) {
+            backImageView.image = image;
+        }
+    }];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -53,8 +53,8 @@
     if (self.model == nil) {
         [self getfriendInformation];
     }
-    
     [self refreshData];
+    
     [self updataDataSource];
     // Do any additional setup after loading the view from its nib.
 }
@@ -114,6 +114,7 @@
     for (int i = 0; i < self.model.galleriesList.count; i++) {
         if (i<=4) {
             UIImageView * imageView = [self.imageview viewWithTag:1001 + i];
+            imageView.hidden = NO;
             [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.galleriesList[i]] placeholderImage:[UIImage imageNamed:@"logo(1)"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 if (image) {
                     imageView.image = image;
@@ -121,6 +122,12 @@
             }];
         }
     }
+    
+    for (int i = self.model.galleriesList.count; i < 4; i++) {
+         UIImageView * imageView = [self.imageview viewWithTag:1001 + i];
+        imageView.hidden = YES;
+    }
+    
 }
 - (IBAction)addfriendAction:(id)sender {
     

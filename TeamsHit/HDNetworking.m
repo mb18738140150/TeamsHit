@@ -285,7 +285,9 @@ HDSingletonM(HDNetworking) // 单例实现
      appsecret : aQmo3zbxT6bhsmaZweCd
      url : http://www.api.mstching.com/api/user/gettoken
      */
-
+    
+    
+    
     NSDictionary * getdic = @{
                               @"appsecret":@"aQmo3zbxT6bhsmaZweCd",
                               @"timestamp":@(timeSp.integerValue),
@@ -295,7 +297,7 @@ HDSingletonM(HDNetworking) // 单例实现
     NSArray * sortArr = [values sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSString * obj1Str = [NSString stringWithFormat:@"%@", obj1];
         NSString * obj2Str = [NSString stringWithFormat:@"%@", obj2];
-        NSComparisonResult result = [obj1Str compare:obj2Str options:NSNumericSearch];
+        NSComparisonResult result = [obj1Str compare:obj2Str options:NSCaseInsensitiveSearch];
         return result;
     }];
 //    NSArray * sortArr = [values sortedArrayUsingSelector:@selector(compare:)];
@@ -304,6 +306,8 @@ HDSingletonM(HDNetworking) // 单例实现
         NSString * secStr = [NSString stringWithFormat:@"%@",[sortArr objectAtIndex:i]];
         signatureStr = [signatureStr stringByAppendingString:secStr];
     }
+    
+    NSLog(@"%@", [getdic description]);
     NSLog(@"加密前*** %@", signatureStr);
     signatureStr = [signatureStr sha1];
     NSLog(@"加密后*** %@", signatureStr);

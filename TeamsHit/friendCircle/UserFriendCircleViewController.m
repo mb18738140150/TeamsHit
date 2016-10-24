@@ -27,7 +27,8 @@
 @property (nonatomic, strong)NSNumber * AllCount;
 
 @property (nonatomic, copy)NSString * coverUrl;// 背景墙连接
-
+@property (nonatomic, copy)ExchangeWallImageBlock myBlock;
+@property (nonatomic, assign)BOOL isExchangeWallImage;
 @end
 
 @implementation UserFriendCircleViewController
@@ -111,6 +112,12 @@
 }
 - (void)backAction:(UIButton *)button
 {
+    if (self.isExchangeWallImage) {
+        if (self.myBlock) {
+            _myBlock(backImageView.image);
+        }
+    }
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -322,13 +329,20 @@
 {
     [backwallView removeFromSuperview];
     ExchangeBackwallImageViewController * exchangeVC = [[ExchangeBackwallImageViewController alloc]initWithNibName:@"ExchangeBackwallImageViewController" bundle:nil];
+    __weak UserFriendCircleViewController * weakSelf = self;
     [exchangeVC getBackWallImage:^(UIImage *image) {
         if (image) {
             backImageView.image = image;
+            weakSelf.isExchangeWallImage = YES;
         }
     }];
     [self.navigationController pushViewController:exchangeVC animated:YES];
     
+}
+
+- (void)exchangeWallImage:(ExchangeWallImageBlock)block
+{
+    self.myBlock = [block copy];
 }
 
 - (void)didReceiveMemoryWarning {
