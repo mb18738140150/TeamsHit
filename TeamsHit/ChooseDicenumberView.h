@@ -17,7 +17,7 @@
 @interface ChooseDicenumberView : UIView
 
 @property (nonatomic, assign)id<ChooseDiceNumberProtocol>delegate;
-
+@property (nonatomic, assign)int maxPointCount;
 @property (nonatomic, assign)BOOL isOnePoint;
 @property (nonatomic, assign)int leaveTime;
 

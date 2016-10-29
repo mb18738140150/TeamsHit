@@ -18,11 +18,21 @@
 #import "SetUpViewController.h"
 #import "AppDelegate.h"
 
-@interface MeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+#import "WXApiRequestHandler.h"
+#import "WXApiManager.h"
+#import "TelephoneRechargeViewController.h"
+
+static NSString *kLinkURL = @"http://download.www.mstching.com";
+static NSString *kLinkTagName = @"WECHAT_TAG_JUMP_SHOWRANK";
+static NSString *kLinkTitle = @"当下最火的游戏娱乐APP";
+static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻游戏，等你哦。";
+
+@interface MeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, WXApiManagerDelegate>
 {
     MBProgressHUD* hud ;
     UIView * backView;
 }
+@property (strong, nonatomic) IBOutlet UILabel *shareGetCoinLabel;
 @property (strong, nonatomic) IBOutlet UIView *infoView;
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
 // 图片选择器
@@ -30,7 +40,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *coinCountLB;
 @property (strong, nonatomic) IBOutlet UILabel *counCountLabel;
-
+@property (nonatomic) enum WXScene currentScene;
 
 @property (strong, nonatomic) IBOutlet UIView *equipmentmanagerView;
 @property (strong, nonatomic) IBOutlet UIImageView *equipmentImage;
@@ -41,6 +51,8 @@
 @end
 
 @implementation MeViewController
+
+@synthesize currentScene = _currentScene;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -73,6 +85,8 @@
             [self getUserInfo];
         });
     });
+    
+    [WXApiManager sharedManager].delegate = self;
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -111,8 +125,8 @@
 {
     self.iconImageStr = [dic objectForKey:@"PortraitUri"];
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"PortraitUri"]] placeholderImage:[UIImage imageNamed:@"camera_icon.png"]];
-    self.userNameLabel.text = [dic objectForKey:@"UserName"];
-    self.coinCountLB.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]];
+    self.userNameLabel.text = [dic objectForKey:@"NickName"];
+    self.coinCountLB.text = [NSString stringWithFormat:@"对对号:%@", [dic objectForKey:@"UserName"]];
     self.counCountLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]];
 }
 
@@ -167,7 +181,7 @@
         
 //        [self.navigationController pushViewController:processVC animated:YES];
     }
-
+    
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
@@ -192,11 +206,17 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark- 购买碰碰币
 - (IBAction)buyCoinAction:(id)sender {
     CoindetailViewController * coinVC = [[CoindetailViewController alloc]initWithNibName:@"CoindetailViewController" bundle:nil];
-    coinVC.cointCount = self.coinCountLB.text;
+    coinVC.cointCount = self.counCountLabel.text;
     coinVC.hidesBottomBarWhenPushed = YES;
-    
+    [coinVC BuyCoins:^(NSString *coinCount) {
+        if (coinCount.length != 0) {
+            self.coinCountLB.text = coinCount;
+            self.counCountLabel.text = coinCount;
+        }
+    }];
     [self.navigationController pushViewController:coinVC animated:YES];
     
 }
@@ -207,13 +227,15 @@
     [self.navigationController pushViewController:storeVC animated:YES];
     
 }
+
+#pragma mark - 分享
 - (IBAction)share:(id)sender {
     
     backView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     backView.backgroundColor = [UIColor colorWithWhite:.5 alpha:.5];
     
     UIView * whiteView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.hd_height - 224, backView.hd_width, 224)];
-    whiteView.backgroundColor = [UIColor whiteColor];
+    whiteView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     [backView addSubview:whiteView];
     
     UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(14, 12, 90, 18)];
@@ -229,13 +251,13 @@
     [closeBT addTarget:self action:@selector(closeShare) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton * friendBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    friendBT.frame = CGRectMake(49, 53, 38, 38);
+    friendBT.frame = CGRectMake(132, 53, 38, 38);
     [friendBT setImage:[[UIImage imageNamed:@"share_friend"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [whiteView addSubview:friendBT];
     [friendBT addTarget:self action:@selector(shareFriend) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton * circleBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    circleBT.frame = CGRectMake(132, 53, 38, 38);
+    circleBT.frame = CGRectMake(49, 53, 38, 38);
     [circleBT setImage:[[UIImage imageNamed:@"share_circle"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [whiteView addSubview:circleBT];
     [circleBT addTarget:self action:@selector(shareCircle) forControlEvents:UIControlEventTouchUpInside];
@@ -268,18 +290,155 @@
 
 - (void)shareFriend
 {
+    if (![self ishaveWechat]) {
+        return;
+    }
     NSLog(@"分享给好友");
+    _currentScene = WXSceneSession;
+    UIImage *thumbImage = [UIImage imageNamed:@"logo(1)"];
+    [WXApiRequestHandler sendLinkURL:kLinkURL
+                             TagName:kLinkTagName
+                               Title:kLinkTitle
+                         Description:kLinkDescription
+                          ThumbImage:thumbImage
+                             InScene:_currentScene];
 }
 
 - (void)shareCircle
 {
+    if (![self ishaveWechat]) {
+        return;
+    }
+    
     NSLog(@"分享朋友圈");
+    _currentScene = WXSceneTimeline;
+    UIImage *thumbImage = [UIImage imageNamed:@"logo(1)"];
+    [WXApiRequestHandler sendLinkURL:kLinkURL
+                             TagName:kLinkTagName
+                               Title:kLinkDescription
+                         Description:kLinkDescription
+                          ThumbImage:thumbImage
+                             InScene:_currentScene];
+}
+
+- (BOOL)ishaveWechat
+{
+    if ([WXApi isWXAppInstalled]) {
+        if ([WXApi isWXAppSupportApi]) {
+            return YES;
+        }else
+        {
+            [backView removeFromSuperview];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                            message:@"您的微信版本不支持"
+                                                           delegate:self
+                                                  cancelButtonTitle:@"取消"
+                                                  otherButtonTitles:nil, nil];
+            [alert show];
+            return NO;
+        }
+    }else
+    {
+        [backView removeFromSuperview];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                        message:@"您尚未安装微信"
+                                                       delegate:self
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:nil, nil];
+        [alert show];
+        return NO;
+    }
 }
 
 - (IBAction)setup:(id)sender {
     SetUpViewController * setVc = [[SetUpViewController alloc]initWithNibName:@"SetUpViewController" bundle:nil];
     setVc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:setVc animated:YES];
+}
+
+#pragma mark - WXApiManagerDelegate
+- (void)managerDidRecvMessageResponse:(SendMessageToWXResp *)response {
+    
+    [backView removeFromSuperview];
+    
+    NSString *strTitle = [NSString stringWithFormat:@"发送媒体消息结果"];
+    NSString *strMsg = [NSString stringWithFormat:@"errcode:%d", response.errCode];
+    
+    
+    if (response.errCode == 0) {
+        self.shareGetCoinLabel.hidden = YES;
+        __weak MeViewController * infoVC = self;
+        NSString * url = [NSString stringWithFormat:@"%@userinfo/shareSuccess?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+        [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:nil progress:^(NSProgress * _Nullable progress) {
+            ;
+        } success:^(id  _Nonnull responseObject) {
+            NSLog(@"responseObject = %@", responseObject);
+            int code = [[responseObject objectForKey:@"Code"] intValue];
+            if (code == 200) {
+                
+                [infoVC getUserInfo];
+                
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            NSLog(@"%@", error);
+        }];
+    }
+    
+}
+
+- (IBAction)telePhoneCheck:(id)sender {
+    
+//    TelephoneRechargeViewController * rechargeVC = [[TelephoneRechargeViewController alloc]init];
+//    
+//    rechargeVC.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:rechargeVC animated:YES];
+    
+    
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
+    
+    NSDictionary *requestContents = @{
+                                      @"OrderId": @"p1610282115109151"
+                                      };
+    
+    __weak MeViewController * weakSelf = self;
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/WeChatPay?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:requestContents progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            
+            PayReq* req             = [[PayReq alloc] init];
+            req.openID              = [responseObject objectForKey:@"AppId"];
+            req.partnerId           = [responseObject objectForKey:@"PartnerId"];
+            req.prepayId            = [responseObject objectForKey:@"PrepayId"];
+            req.nonceStr            = [responseObject objectForKey:@"NonceStr"];
+            req.timeStamp           = [[responseObject objectForKey:@"TimeStamp"] intValue];
+            req.package             = [responseObject objectForKey:@"Package"];
+            req.sign                = [responseObject objectForKey:@"Sign"];
+            [WXApi sendReq:req];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        NSLog(@"%@", error);
+    }];
+    
 }
 
 /*

@@ -46,7 +46,7 @@
 {
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
     // 设置item大小
-    layout.itemSize = CGSizeMake((self.hd_width - 64) / 5, self.hd_height - 10);
+    layout.itemSize = CGSizeMake(50, self.hd_height - 10);
     // 设置边界缩进
     layout.sectionInset = UIEdgeInsetsMake(5, 10, 0, 10);
     
@@ -69,9 +69,9 @@
     
     // 注册item
     [self.typeCollection registerClass:[ProcessImageTypeCollectionViewCell class] forCellWithReuseIdentifier:kPublishCellID];
-    self.imageArr = @[@"chat", @"circle", @"mall", @"price1", @"equipment"];
-    NSArray * titleArr = @[@"默认", @"反色", @"素描", @"描边", @"喷墨"];
-    for (int i = 0; i<5; i++) {
+    self.imageArr = @[@"process_default", @"process_opposite", @"process_ink"];
+    NSArray * titleArr = @[@"默认", @"反色", @"喷墨"];
+    for (int i = 0; i<3; i++) {
         ProcessImageTypeModel * model = [[ProcessImageTypeModel alloc]init];
         model.imageName = self.imageArr[i];
         model.titleName = titleArr[i];

@@ -216,7 +216,7 @@
                         <outletCollection property="gestureRecognizers" destination="FqP-FW-65d" appends="YES" id="GwJ-9f-syi"/>
                     </connections>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="游戏禁止私人买卖对对币，碰碰币不得提现。" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mcb-gm-19l">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="游戏禁止私人买卖碰碰币，碰碰币不得提现。" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mcb-gm-19l">
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="iZ9-HQ-CLH"/>
                     </constraints>

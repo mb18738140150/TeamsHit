@@ -425,10 +425,10 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"朋友圈"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-   
+   self.title = @"朋友圈";
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[[UIImage imageNamed:@"publishshuoshuoCamera"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     [rightBarItem addTarget:self action:@selector(cameraAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
@@ -708,15 +708,24 @@
             [weakSelf deleteTake:[_tableDataSource objectAtIndex:indexPath.row]];
         }];
         
-        [cell lookUserShuoshuo:^{
-            NSLog(@"查看说说详情");
-            YMTextData * data = [_tableDataSource objectAtIndex:indexPath.row];
+        [cell lookUserShuoshuo:^(NSString * string){
+            if ([string isEqualToString:@"tap"]) {
+                NSLog(@"查看说说详情");
+                YMTextData * data = [_tableDataSource objectAtIndex:indexPath.row];
+                
+                [weakSelf lookUserFriendCircle:[NSString stringWithFormat:@"%@", data.messageBody.posterUserId]];
+            }else
+            {
+                [self showActionSheet:[_tableDataSource objectAtIndex:indexPath.row]];
+            }
             
-            [weakSelf lookUserFriendCircle:[NSString stringWithFormat:@"%@", data.messageBody.posterUserId]];
         }];
         
         cell.delegate = self;
         [cell setYMViewWith:[_tableDataSource objectAtIndex:indexPath.row]];
+        
+        UITapGestureRecognizer * removeOprationViewTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(removeOperationAction)];
+        [cell addGestureRecognizer:removeOprationViewTap];
         
         return cell;
     }else
@@ -737,6 +746,53 @@
     }
 }
 
+- (void)removeOperationAction
+{
+    [self.operationView dismiss];
+}
+
+- (void)showActionSheet:(YMTextData *)data
+{
+    UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction * payhistoryaction = [UIAlertAction actionWithTitle:@"投诉" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString * url = [NSString stringWithFormat:@"%@userinfo/report?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+        [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:[NSDictionary dictionary] progress:^(NSProgress * _Nullable progress) {
+            ;
+        } success:^(id  _Nonnull responseObject) {
+            [hud hide:YES];
+            NSLog(@"responseObject = %@", responseObject);
+            int code = [[responseObject objectForKey:@"Code"] intValue];
+            if (code == 200) {
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"感谢举报，我们会尽快查实并进行处理!" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+            
+        } failure:^(NSError * _Nonnull error) {
+            [hud hide:YES];
+            NSLog(@"%@", error);
+        }];
+        
+    }];
+    
+    UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        ;
+    }];
+    
+    [alertcontroller addAction:payhistoryaction];
+    [alertcontroller addAction:cancelAction];
+    
+    [self presentViewController:alertcontroller animated:YES completion:^{
+        ;
+    }];
+}
 
 - (UIView *)getMainTableHeadView
 {
@@ -778,6 +834,8 @@
 
 - (void)lookUserFriendCircle:(NSString *)userId
 {
+    [self.operationView dismiss];
+    
     UserFriendCircleViewController * vc = [[UserFriendCircleViewController alloc]init];
     vc.userId = @(userId.intValue);
     [vc exchangeWallImage:^(UIImage *image) {
@@ -975,7 +1033,7 @@
     [mainTable reloadData];
 }
 
-#pragma mark - 真の评论
+#pragma mark - 评论
 - (void)replyMessage:(YMButton *)sender{
     
     if (replyView) {
@@ -993,7 +1051,6 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
     [self.operationView dismiss];
-
 }
 
 #pragma mark -cellDelegate
@@ -1005,7 +1062,7 @@
 
 #pragma mark - 图片点击事件回调
 - (void)showImageViewWithImageViews:(NSArray *)imageViews byClickWhich:(NSInteger)clickTag{
-   
+   [self.operationView dismiss];
     UIView *maskview = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     maskview.backgroundColor = [UIColor blackColor];
     
@@ -1043,6 +1100,13 @@
 
 }
 
+#pragma mark - 点击赞或者评论的人
+- (void)clickUserName:(NSString *)userId
+{
+    [self.operationView dismiss];
+    [self lookUserFriendCircle:userId];
+}
+
 #pragma mark - 点评论整块区域的回调
 - (void)clickRichText:(NSInteger)index replyIndex:(NSInteger)replyIndex{
     
@@ -1072,7 +1136,7 @@
 
 #pragma mark - 评论说说回调
 - (void)YMReplyInputWithReply:(NSString *)replyText appendTag:(NSInteger)inputTag{
-    
+    [self.operationView dismiss];
     YMTextData *ymData = nil;
     if (_replyIndex == -1) {
 
@@ -1243,6 +1307,7 @@
 #pragma mark - 读取新评论
 - (void)readNewMessageComment
 {
+    [self.operationView dismiss];
     [[RCDataBaseManager shareInstance]clearFriendcircleMessage];
     _isHaveNoreadMessage = NO;
     FriendCircleMessgaeViewController * messageVc = [[FriendCircleMessgaeViewController alloc]init];
@@ -1256,6 +1321,8 @@
 #pragma mark - 修改背景墙
 - (void)exchangeBackWallImage
 {
+    [self.operationView dismiss];
+    
     backwallView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     backwallView.backgroundColor = [UIColor clearColor];
     

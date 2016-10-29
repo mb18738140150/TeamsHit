@@ -52,11 +52,13 @@
 @property (nonatomic, assign)BOOL isBold;// 是否加粗
 @property (nonatomic, strong)UIColor * fontColor;// 字体颜色
 @property (nonatomic, assign)CGFloat font;// 字体大小
+@property (nonatomic, assign)BOOL isChangeFont;
+@property (nonatomic, assign)BOOL isChangeBold;
 @property (nonatomic, assign)NSUInteger location;// 记录变化的起始位置
 @property (nonatomic, strong)NSMutableAttributedString * locationStr;
 @property (nonatomic, assign)CGFloat lineSpace;// 行间距
 @property (nonatomic, assign)BOOL isDelete;// 是否是回删
-
+@property (nonatomic, assign)int Alignment;
 @end
 
 @implementation TextEditViewController
@@ -65,8 +67,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"写字板"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"写字板";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -123,11 +125,17 @@
 - (void)done
 {
     [self.ideaTextView resignFirstResponder];
+    if (_ideaTextView.text.length == 0) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"插入文字不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
     if (self.rotateInmage) {
         self.rotateInmage = [self getcuttingImage1];
         
         if (self.textEditImage) {
-            _textEditImage(self.rotateInmage);
+            _textEditImage(self.rotateInmage, @"", 1);
+           
         }
     }else
     {
@@ -142,7 +150,11 @@
         
         if (self.textEditImage) {
             if (image) {
-                _textEditImage(image);
+                if (self.isChangeBold || self.isChangeFont) {
+                    _textEditImage(image, @"", 1);
+                }else{
+                    _textEditImage(image, _ideaTextView.text, self.Alignment);
+                }
             }else
             {
                 NSLog(@"没有图片");
@@ -203,6 +215,7 @@
     if ([data1 isEqual:data2]) {
         [_boldItem setImage:[[UIImage imageNamed:@"ico_bold_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         self.isBold = YES;
+        self.isChangeBold = YES;
     }else
     {
         [_boldItem setImage:[[UIImage imageNamed:@"ico_bold_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
@@ -240,6 +253,7 @@
 //                vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
                 [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
                 vc.font = textFont;
+                vc.isChangeFont = YES;
                 sizeImage = [UIImage imageNamed:@"ico_size_unchecked"];
             }];
             
@@ -260,7 +274,31 @@
 }
 - (void)print
 {
+    [_ideaTextView resignFirstResponder];
+    if (_ideaTextView.text.length == 0) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"打印文字不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+            }
+    
     NSLog(@"打印功能");
+    UIImage * printImage = nil;
+        if (self.rotateInmage) {
+            self.rotateInmage = [self getcuttingImage1];
+            printImage = self.rotateInmage;
+            
+        }else
+        {
+            printImage = [self getcuttingImage];
+        }
+        
+    if (self.isChangeBold || self.isChangeFont){
+        [[Print sharePrint] printImage:printImage taskType:@1 toUserId:self.userId];
+    }else
+    {
+        [[Print sharePrint] printText:_ideaTextView.text taskType:@1 toUserId:self.userId  Alignment:self.Alignment];
+    }
+    
 }
 - (void)changeAlin
 {
@@ -283,6 +321,7 @@
             
             __weak TextEditViewController * vc = self;
             [self.alinDropList getSelectRow:^(NSInteger number) {
+                self.Alignment = number;
                 vc.ideaTextView.textAlignment = number;
                 [_alinItem setImage:[[UIImage imageNamed:@"ico_align_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
                 alinImage = [UIImage imageNamed:@"ico_align_unchecked"];

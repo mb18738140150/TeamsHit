@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-typedef void (^ TextEditBlock)(UIImage * image);
+typedef void (^ TextEditBlock)(UIImage * image, NSString * content, int Alignment);
 @interface TextEditViewController : UIViewController
 
 - (void)getTextEditImage:(TextEditBlock)processImage;
-
+@property (nonatomic, strong)NSNumber * userId;
 @end

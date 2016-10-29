@@ -37,4 +37,13 @@
     player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     [player play];
 }
+
+- (void)playMusicWithName:(NSString *)name type:(NSString *)type
+{
+    NSString * filePath = [[NSBundle mainBundle]pathForResource:name ofType:type];
+    NSURL *url = [NSURL fileURLWithPath:filePath];
+    player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    [player play];
+}
+
 @end

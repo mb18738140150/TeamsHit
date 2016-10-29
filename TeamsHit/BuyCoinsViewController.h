@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^BuyCoinBlock)(BOOL haveBuy);
+
 @interface BuyCoinsViewController : UIViewController
+
+- (void)haveBuyCoins:(BuyCoinBlock)block;
 
 @end

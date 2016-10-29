@@ -80,12 +80,11 @@
     
 }
 
-
 - (instancetype)initWithFrame:(CGRect)frame Title:(NSString *)title message:(NSString *)message delete:(BOOL)isDelete
 {
     if (self = [super initWithFrame:frame]) {
-        [self creatWithMessage:message andTitle:title];
         self.isdelete = isDelete;
+        [self creatWithMessage:message andTitle:title];
     }
     return self;
 }

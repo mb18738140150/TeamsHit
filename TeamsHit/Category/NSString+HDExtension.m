@@ -74,7 +74,8 @@
 
 - (NSString *)hd_base64Encode
 {
-    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    NSStringEncoding  gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSData * data = [self dataUsingEncoding:gbkEncoding];
     
     return [data base64EncodedStringWithOptions:0];
 }

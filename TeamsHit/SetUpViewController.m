@@ -9,8 +9,8 @@
 #import "SetUpViewController.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
-
-
+#import "AboutUsViewController.h"
+#import "ModifyPasswordViewController.h"
 @interface SetUpViewController ()
 {
     MBProgressHUD* hud ;
@@ -25,10 +25,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"设置"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    
+    self.title = @"设置";
     [self.voiceBT setImage:[[UIImage imageNamed:@"forbid"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateSelected];
     [self.voiceBT setImage:[[UIImage imageNamed:@"noForbid"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
    
@@ -62,11 +62,9 @@
             _voiceBT.selected = NO;
         }
         
-        
     } error:^(RCErrorCode status) {
         ;
     }];
-
 }
 
 - (void)backAction:(UIButton *)button
@@ -76,9 +74,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
-    
 }
 - (IBAction)voiceAction:(id)sender {
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -133,17 +129,22 @@
 
 - (IBAction)loginOutAction:(id)sender {
     LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
-    loginVC.notAutoLogin = YES;
-    // [loginVC defaultLogin];
-    // RCDLoginViewController* loginVC = [storyboard
-    // instantiateViewControllerWithIdentifier:@"loginVC"];
+
     UINavigationController *_navi =
     [[UINavigationController alloc] initWithRootViewController:loginVC];
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
     delegate.window.rootViewController = _navi;
+    [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
 }
 - (IBAction)aboutUsAction:(id)sender {
+    AboutUsViewController * aboutVc = [[AboutUsViewController alloc]initWithNibName:@"AboutUsViewController" bundle:nil];
     
+    [self.navigationController pushViewController:aboutVc animated:YES];
+}
+- (IBAction)modifyPassword:(id)sender {
+    
+    ModifyPasswordViewController * modifyVC = [[ModifyPasswordViewController alloc]initWithNibName:@"ModifyPasswordViewController" bundle:nil];
+    [self.navigationController pushViewController:modifyVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

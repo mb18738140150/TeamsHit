@@ -184,11 +184,15 @@ static CGSize minSize1 = {40, 40};
 }
 - (void)print
 {
-    NSLog(@"打印");
     if (self.widthDropList) {
         [self.widthDropList dismiss];
         self.isdrop = !self.isdrop;
     }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(printGraffitiImage)]) {
+        [_delegate printGraffitiImage];
+    }
+    
 }
 - (void)lianeWidth
 {

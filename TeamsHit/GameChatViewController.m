@@ -71,10 +71,21 @@
     
     // 设置聊天界面frame
     self.chatSessionInputBarControl.delegate = self;
-    self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 30);
-    self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_y - self.chatSessionInputBarControl.hd_y;
-    self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 30;
-    self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
+    
+    if (screenWidth > 320) {
+        self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 40);
+        self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_y - self.chatSessionInputBarControl.hd_y;
+        self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 40;
+        self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
+        
+    }else
+    {
+        self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 20);
+        self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_y - self.chatSessionInputBarControl.hd_y;
+        self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64;
+        self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
+    }
+    
     self.title = @"";
     
     // 游戏
@@ -105,7 +116,6 @@
 //        NSLog(@"conversationMessageCollectionViewHeight = %f", self.conversationMessageCollectionViewHeight);
         
     }];
-    
     
 
 //    [[NSNotificationCenter defaultCenter]addObserver:self forKeyPath:@"self.chatSessionInputBarControl.frame" options:NSKeyValueObservingOptionNew context:nil];
@@ -203,7 +213,6 @@
     self.headerView = [[BrageGameViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, 64) type:type title:title];
     _headerView.delegete = self;
     self.navigationItem.titleView = _headerView;
-    
 }
 
 - (void)connectSocket
@@ -533,39 +542,19 @@
 }
 
 - (void)didTapCellPortrait:(NSString *)userId{
-    if (self.conversationType == ConversationType_GROUP || self.conversationType == ConversationType_DISCUSSION) {
-        [[RCDRCIMDataSource shareInstance]getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
-            [[RCDHttpTool shareInstance]updateUserInfo:userId success:^(RCUserInfo * user) {
-                if (![userInfo.name isEqualToString:user.name]) {
-                    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
-                    
-                }
-                NSArray *friendList = [[RCDataBaseManager shareInstance] getAllFriends];
-                BOOL isGotoDetailView = NO;
-                for (RCDUserInfo *USER in friendList) {
-                    if ([userId isEqualToString:USER.userId] && [USER.status isEqualToString:@"20"]) {
-                        isGotoDetailView = YES;
-                    }
-                    else if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]){
-                        isGotoDetailView = YES;
-                    }
-                }
-                if (isGotoDetailView == YES) {
-                    //                    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                    //                    RCDPersonDetailViewController *temp = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDPersonDetailViewController"];
-                    //                    temp.userInfo = user;
-                    //                    [self.navigationController pushViewController:temp animated:YES];
-                }
-                else{
-                    //                    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                    //                    RCDAddFriendViewController *addViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddFriendViewController"];
-                    //                    addViewController.targetUserInfo = userInfo;
-                    //                    [self.navigationController pushViewController:addViewController animated:YES];
-                }
-            } failure:^(NSError *err) {
-                
-            }];
-        }];
+    
+    if (self.conversationType == ConversationType_GROUP) {
+        
+        if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
+            MeDetailInfomationViewController * meinfoVC = [[MeDetailInfomationViewController alloc]initWithNibName:@"MeDetailInfomationViewController" bundle:nil];
+            [self.navigationController pushViewController:meinfoVC animated:YES];
+        }else
+        {
+            FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+            friend.targetId = userId;
+            [self.navigationController pushViewController:friend animated:YES];
+            
+        }
         
     }
     

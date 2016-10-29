@@ -59,6 +59,14 @@
             self.detailImage.center = self.contentView.center;
         }
     }
+    
+    if (materialmodel.imageModel == TextEditImageModel) {
+        if (materialmodel.title.length != 0) {
+            self.detailImage.frame = CGRectMake(0, 0, self.hd_width, self.hd_width *materialmodel.image.size.height / materialmodel.image.size.width );
+            self.detailImage.center = self.contentView.center;
+        }
+    }
+    
 }
 
 - (void)deletaItemAction:(UIButton *)button

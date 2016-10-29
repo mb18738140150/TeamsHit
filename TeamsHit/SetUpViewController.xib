@@ -142,17 +142,64 @@
                         <outletCollection property="gestureRecognizers" destination="dxf-tt-Wea" appends="YES" id="L6L-G5-k5n"/>
                     </connections>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U5E-qv-5hU" userLabel="modifyPasswprd">
+                    <subviews>
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="forgetPassword.png" translatesAutoresizingMaskIntoConstraints="NO" id="HZs-Hb-FGp">
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="E8J-ji-WSh"/>
+                                <constraint firstAttribute="width" constant="30" id="fVG-1l-qOn"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="修改密码" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oqi-10-X2J">
+                            <constraints>
+                                <constraint firstAttribute="height" constant="15" id="GOo-nM-gfn"/>
+                                <constraint firstAttribute="width" constant="60" id="sVR-NA-XaP"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="sVR-NA-XaP"/>
+                                </mask>
+                            </variation>
+                        </label>
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="next_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="aV3-YK-9Rx">
+                            <constraints>
+                                <constraint firstAttribute="width" constant="8" id="bMN-ZW-lrG"/>
+                                <constraint firstAttribute="height" constant="13" id="fYt-gX-LLK"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <gestureRecognizers/>
+                    <constraints>
+                        <constraint firstItem="HZs-Hb-FGp" firstAttribute="top" secondItem="U5E-qv-5hU" secondAttribute="top" constant="8" id="6ta-Mb-9Wt"/>
+                        <constraint firstAttribute="trailing" secondItem="aV3-YK-9Rx" secondAttribute="trailing" constant="16" id="7pE-ny-MQw"/>
+                        <constraint firstItem="oqi-10-X2J" firstAttribute="top" secondItem="U5E-qv-5hU" secondAttribute="top" constant="15" id="9Io-iI-WgH"/>
+                        <constraint firstItem="aV3-YK-9Rx" firstAttribute="top" secondItem="U5E-qv-5hU" secondAttribute="top" constant="16" id="UXh-wm-TVx"/>
+                        <constraint firstItem="oqi-10-X2J" firstAttribute="leading" secondItem="HZs-Hb-FGp" secondAttribute="trailing" constant="10" id="bAk-gv-SdK"/>
+                        <constraint firstItem="HZs-Hb-FGp" firstAttribute="leading" secondItem="U5E-qv-5hU" secondAttribute="leading" constant="15" id="dh2-J5-ZjD"/>
+                        <constraint firstAttribute="height" constant="45" id="mUo-Te-xTV"/>
+                    </constraints>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="P3r-sy-YQp" appends="YES" id="LMN-w0-2ev"/>
+                    </connections>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="U5E-qv-5hU" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8CA-yu-Vh9"/>
                 <constraint firstAttribute="trailing" secondItem="XhZ-yw-OIp" secondAttribute="trailing" id="DTa-7F-rGD"/>
                 <constraint firstAttribute="trailing" secondItem="teI-vb-s4W" secondAttribute="trailing" id="E09-NN-50e"/>
                 <constraint firstAttribute="trailing" secondItem="kC7-X3-fXL" secondAttribute="trailing" id="FqB-Y8-Uml"/>
                 <constraint firstItem="kC7-X3-fXL" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="GIv-Qp-R31"/>
+                <constraint firstItem="U5E-qv-5hU" firstAttribute="top" secondItem="XhZ-yw-OIp" secondAttribute="bottom" constant="1" id="LQQ-bf-whe"/>
                 <constraint firstItem="teI-vb-s4W" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="eiD-2C-WZQ"/>
                 <constraint firstItem="XhZ-yw-OIp" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="iYy-65-lA9"/>
+                <constraint firstAttribute="trailing" secondItem="U5E-qv-5hU" secondAttribute="trailing" id="kMx-2R-pcv"/>
                 <constraint firstItem="teI-vb-s4W" firstAttribute="top" secondItem="kC7-X3-fXL" secondAttribute="bottom" constant="1" id="utW-Gx-O5Q"/>
-                <constraint firstItem="kC7-X3-fXL" firstAttribute="top" secondItem="XhZ-yw-OIp" secondAttribute="bottom" constant="1" id="w2P-NH-IXW"/>
+                <constraint firstItem="kC7-X3-fXL" firstAttribute="top" secondItem="XhZ-yw-OIp" secondAttribute="bottom" constant="47" id="w2P-NH-IXW"/>
                 <constraint firstItem="XhZ-yw-OIp" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="17" id="xQ2-GN-7mO"/>
             </constraints>
         </view>
@@ -166,9 +213,15 @@
                 <action selector="aboutUsAction:" destination="-1" id="Onf-OZ-nGy"/>
             </connections>
         </tapGestureRecognizer>
+        <tapGestureRecognizer id="P3r-sy-YQp">
+            <connections>
+                <action selector="modifyPassword:" destination="-1" id="fLP-Sc-IlW"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="about.png" width="45" height="45"/>
+        <image name="forgetPassword.png" width="60" height="60"/>
         <image name="logout.png" width="45" height="45"/>
         <image name="next_icon.png" width="17" height="30"/>
         <image name="noForbid.png" width="125" height="45"/>

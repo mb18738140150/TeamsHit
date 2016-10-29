@@ -13,7 +13,7 @@ typedef void (^ ProcessImage)(UIImage * image);
 @interface ProcessingImagesViewController : UIViewController
 
 @property (nonatomic, strong)UIImage *image;
-
+@property (nonatomic, strong)NSNumber * userId;
 - (void)processImage:(ProcessImage)processImage;
 
 @end

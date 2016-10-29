@@ -39,11 +39,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"个人资料"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    
+    self.title = @"个人资料";
     self.imagePic = [[UIImagePickerController alloc] init];
     _imagePic.allowsEditing = YES;
     _imagePic.delegate = self;
@@ -469,9 +469,9 @@
         NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"修改成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"修改成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//            [alert show];
+//            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             [RCDHTTPTOOL refreshUserInfoByUserID:[RCIM sharedRCIM].currentUserInfo.userId];
         }else
         {

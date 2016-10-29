@@ -16,6 +16,8 @@
 
 #import "AFNetworking.h"
 
+#define kAlphaNum  @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
+
 @interface CompleteInformationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (strong, nonatomic) IBOutlet UITextField *nickNameTF;
@@ -60,10 +62,10 @@
     [_iconImageView addGestureRecognizer:imageTap];
     
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"完善信息"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    
+    self.title = @"完善信息";
     // Do any additional setup after loading the view from its nib.
 }
 - (void)backAction:(UIButton *)button
@@ -422,7 +424,22 @@
     [textField resignFirstResponder];
     return YES;
 }
-
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([textField isEqual:self.accountNameTF]) {
+        NSCharacterSet *cs;
+        cs = [[NSCharacterSet characterSetWithCharactersInString:kAlphaNum] invertedSet];
+        
+        NSString *filtered = [[string componentsSeparatedByCharactersInSet:cs] componentsJoinedByString:@""]; //按cs分离出数组,数组按@""分离出字符串
+        
+        BOOL canChange = [string isEqualToString:filtered];
+        
+        return canChange;
+    }else
+    {
+        return YES;
+    }
+}
 /*
 #pragma mark - Navigation
 

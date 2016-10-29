@@ -45,6 +45,10 @@
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(lookUserShuoshuoAction)];
         [_userHeaderImage addGestureRecognizer:tap];
         
+        UILongPressGestureRecognizer * longGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress)];
+        [_userHeaderImage addGestureRecognizer:longGesture];
+        
+        
         _userNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(15 + TableHeader + 9, 5, screenWidth - 120, TableHeader/2)];
         _userNameLbl.textAlignment = NSTextAlignmentLeft;
         _userNameLbl.font = [UIFont systemFontOfSize:15.0];
@@ -416,7 +420,10 @@
             //
         }else{
             NSLog(@"clickString id = %@", clickString);
-            [WFHudView showMsg:clickString inView:nil];
+//            [WFHudView showMsg:clickString inView:nil];
+            
+            [_delegate clickUserName:clickString];
+            
         }
     }
     
@@ -442,7 +449,13 @@
 - (void)lookUserShuoshuoAction
 {
     if (lookBlock) {
-        lookBlock();
+        lookBlock(@"tap");
+    }
+}
+- (void)longPress
+{
+    if (lookBlock) {
+        lookBlock(@"long");
     }
 }
 

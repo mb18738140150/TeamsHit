@@ -72,10 +72,9 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YFF-0t-Ekx" userLabel="addGroupView">
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="加入群" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXT-Wx-3Jh">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="加入指定群" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXT-Wx-3Jh">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="17" id="LQk-eg-M0N"/>
-                                        <constraint firstAttribute="width" constant="75" id="RJb-Th-Erb"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -83,8 +82,8 @@
                                 </label>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findaddgroup.png" translatesAutoresizingMaskIntoConstraints="NO" id="gJJ-61-vfD">
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="14" id="baX-sk-YWB"/>
-                                        <constraint firstAttribute="width" constant="14" id="cmi-5W-ek9"/>
+                                        <constraint firstAttribute="height" constant="21" id="baX-sk-YWB"/>
+                                        <constraint firstAttribute="width" constant="21" id="cmi-5W-ek9"/>
                                     </constraints>
                                 </imageView>
                             </subviews>
@@ -92,8 +91,8 @@
                             <gestureRecognizers/>
                             <constraints>
                                 <constraint firstItem="gJJ-61-vfD" firstAttribute="leading" secondItem="dXT-Wx-3Jh" secondAttribute="trailing" constant="9" id="HIM-Az-MGt"/>
-                                <constraint firstItem="gJJ-61-vfD" firstAttribute="top" secondItem="YFF-0t-Ekx" secondAttribute="top" constant="10" id="NK0-gg-mGq"/>
-                                <constraint firstItem="dXT-Wx-3Jh" firstAttribute="top" secondItem="YFF-0t-Ekx" secondAttribute="top" constant="8" id="U2C-pW-lKM"/>
+                                <constraint firstItem="gJJ-61-vfD" firstAttribute="top" secondItem="YFF-0t-Ekx" secondAttribute="top" constant="13" id="NK0-gg-mGq"/>
+                                <constraint firstItem="dXT-Wx-3Jh" firstAttribute="top" secondItem="YFF-0t-Ekx" secondAttribute="top" constant="15" id="U2C-pW-lKM"/>
                                 <constraint firstAttribute="width" constant="117" id="Zcl-D4-gxh"/>
                                 <constraint firstItem="dXT-Wx-3Jh" firstAttribute="leading" secondItem="YFF-0t-Ekx" secondAttribute="leading" id="rqj-Pm-YGr"/>
                                 <constraint firstAttribute="height" constant="32" id="uq8-f8-ikj"/>
@@ -108,10 +107,10 @@
                             </connections>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.070588235289999995" green="0.71764705880000002" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="YFF-0t-Ekx" firstAttribute="top" secondItem="JYa-nU-ZBb" secondAttribute="top" id="aNm-Lp-7TN"/>
-                        <constraint firstAttribute="height" constant="32" id="ds9-9D-IE8"/>
+                        <constraint firstAttribute="height" constant="46" id="ds9-9D-IE8"/>
                         <constraint firstItem="YFF-0t-Ekx" firstAttribute="centerX" secondItem="JYa-nU-ZBb" secondAttribute="centerX" id="m6q-Rc-JBo"/>
                     </constraints>
                 </view>
@@ -130,8 +129,8 @@
                                 </label>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findCreatgroup.png" translatesAutoresizingMaskIntoConstraints="NO" id="g73-Qt-A2Y">
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="14" id="FOS-5k-7uV"/>
-                                        <constraint firstAttribute="width" constant="14" id="a3C-p4-Kib"/>
+                                        <constraint firstAttribute="height" constant="21" id="FOS-5k-7uV"/>
+                                        <constraint firstAttribute="width" constant="21" id="a3C-p4-Kib"/>
                                     </constraints>
                                 </imageView>
                             </subviews>
@@ -139,8 +138,8 @@
                             <gestureRecognizers/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="117" id="B3k-ke-1FT"/>
-                                <constraint firstItem="19N-nd-2VT" firstAttribute="top" secondItem="rNc-mo-GzN" secondAttribute="top" constant="8" id="Bpe-Oy-lOC"/>
-                                <constraint firstItem="g73-Qt-A2Y" firstAttribute="top" secondItem="rNc-mo-GzN" secondAttribute="top" constant="10" id="SDx-5h-pLe"/>
+                                <constraint firstItem="19N-nd-2VT" firstAttribute="top" secondItem="rNc-mo-GzN" secondAttribute="top" constant="15" id="Bpe-Oy-lOC"/>
+                                <constraint firstItem="g73-Qt-A2Y" firstAttribute="top" secondItem="rNc-mo-GzN" secondAttribute="top" constant="13" id="SDx-5h-pLe"/>
                                 <constraint firstAttribute="height" constant="32" id="dVY-Zq-ZMM"/>
                                 <constraint firstItem="g73-Qt-A2Y" firstAttribute="leading" secondItem="19N-nd-2VT" secondAttribute="trailing" constant="9" id="e93-Xq-d0B"/>
                                 <constraint firstItem="19N-nd-2VT" firstAttribute="leading" secondItem="rNc-mo-GzN" secondAttribute="leading" id="ziA-dl-3yw"/>
@@ -155,15 +154,15 @@
                             </connections>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.070588235289999995" green="0.71764705880000002" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="rNc-mo-GzN" firstAttribute="top" secondItem="2Z9-pg-v4y" secondAttribute="top" id="U1H-Oj-iTf"/>
                         <constraint firstItem="rNc-mo-GzN" firstAttribute="centerX" secondItem="2Z9-pg-v4y" secondAttribute="centerX" id="aQL-WO-DPF"/>
-                        <constraint firstAttribute="height" constant="32" id="bJu-Ez-DK0"/>
+                        <constraint firstAttribute="height" constant="46" id="bJu-Ez-DK0"/>
                     </constraints>
                 </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="s4I-VR-9yY">
-                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="Y22-tl-Ks5"/>
                         <outlet property="delegate" destination="-1" id="HA6-ro-VVn"/>
@@ -176,16 +175,17 @@
                 <constraint firstAttribute="bottom" secondItem="s4I-VR-9yY" secondAttribute="bottom" id="5qa-Sn-gmt"/>
                 <constraint firstItem="QsF-42-lgT" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="6AO-4g-bTD"/>
                 <constraint firstItem="2Z9-pg-v4y" firstAttribute="leading" secondItem="JYa-nU-ZBb" secondAttribute="trailing" id="6bH-hf-UMO"/>
-                <constraint firstItem="s4I-VR-9yY" firstAttribute="top" secondItem="2Z9-pg-v4y" secondAttribute="bottom" constant="29" id="EXK-Pj-Fdh"/>
+                <constraint firstItem="s4I-VR-9yY" firstAttribute="top" secondItem="2Z9-pg-v4y" secondAttribute="bottom" id="EXK-Pj-Fdh"/>
                 <constraint firstAttribute="trailing" secondItem="QsF-42-lgT" secondAttribute="trailing" id="Iil-4t-ccI"/>
                 <constraint firstAttribute="trailing" secondItem="s4I-VR-9yY" secondAttribute="trailing" id="Q0Y-91-VnT"/>
-                <constraint firstItem="JYa-nU-ZBb" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="bottom" constant="25" id="avE-o2-mgy"/>
-                <constraint firstItem="2Z9-pg-v4y" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="bottom" constant="25" id="hg8-hy-D74"/>
+                <constraint firstItem="JYa-nU-ZBb" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="bottom" constant="11" id="avE-o2-mgy"/>
+                <constraint firstItem="2Z9-pg-v4y" firstAttribute="top" secondItem="QsF-42-lgT" secondAttribute="bottom" constant="11" id="hg8-hy-D74"/>
                 <constraint firstItem="JYa-nU-ZBb" firstAttribute="width" secondItem="2Z9-pg-v4y" secondAttribute="width" id="jfJ-9d-c7l"/>
                 <constraint firstItem="s4I-VR-9yY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="mWI-4T-1Z5"/>
                 <constraint firstItem="JYa-nU-ZBb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="yNh-hx-eNq"/>
                 <constraint firstItem="QsF-42-lgT" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="z01-bz-Lp6"/>
             </constraints>
+            <point key="canvasLocation" x="35.5" y="53.5"/>
         </view>
         <tapGestureRecognizer id="FIg-7Q-NwU">
             <connections>
@@ -200,7 +200,7 @@
     </objects>
     <resources>
         <image name="circle.png" width="72" height="72"/>
-        <image name="findCreatgroup.png" width="27" height="24"/>
-        <image name="findaddgroup.png" width="26" height="30"/>
+        <image name="findCreatgroup.png" width="42" height="42"/>
+        <image name="findaddgroup.png" width="42" height="42"/>
     </resources>
 </document>

@@ -12,8 +12,10 @@
 
 @property (nonatomic, copy)NSString * iconUrl;
 @property (nonatomic, strong)NSNumber * userId;
+@property (nonatomic, copy)NSString * UserName; // 对对号
 @property (nonatomic, copy)NSString * nickName;// 好友昵称
 @property (nonatomic, copy)NSString * displayName;// 备注名
+@property (nonatomic, copy)NSString * gender;
 @property (nonatomic, copy)NSString * phone;
 @property (nonatomic, copy)NSString * address;
 @property (nonatomic, strong)NSNumber * isFriend;

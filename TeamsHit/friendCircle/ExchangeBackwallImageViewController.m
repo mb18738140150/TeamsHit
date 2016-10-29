@@ -27,10 +27,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"更换背景封面"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    
+    self.title = @"更换背景封面";
     self.imagePic = [[UIImagePickerController alloc] init];
     _imagePic.allowsEditing = YES;
     _imagePic.delegate = self;

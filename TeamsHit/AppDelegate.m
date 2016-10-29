@@ -29,6 +29,9 @@
 #import "RCDTestMessage.h"
 #import "MobClick.h"
 #import "RCFriendCircleUserInfo.h"
+#import "WXApiManager.h"
+
+#import "WelcomeViewController.h"
 
 #define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // online key
 
@@ -60,13 +63,31 @@
         NSLog(@"remoteNotification = %@", remoteNotification);
     }
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *lastVersions = [defaults stringForKey:@"lastVersions"];
+    NSString *newVersions = [[NSBundle mainBundle].infoDictionary objectForKey:@"CFBundleVersion"];
     
-    LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
-    TeamsHitNavigationViewController * teamsNav = [[TeamsHitNavigationViewController alloc]initWithRootViewController:loginVC];
-    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
-    self.window.rootViewController = nav;
-    [self.window makeKeyAndVisible];
+    if ([newVersions isEqualToString:lastVersions]) {//版本相同
+        //设置跟视图控制器(密码锁界面)
+        LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+        TeamsHitNavigationViewController * teamsNav = [[TeamsHitNavigationViewController alloc]initWithRootViewController:loginVC];
+        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
+        self.window.rootViewController = nav;
+        [self.window makeKeyAndVisible];
+        
+    } else {
+        //设置介绍APP界面为跟视图()
+        
+        WelcomeViewController * welcomeVC = [[WelcomeViewController alloc]init];
+        self.window.rootViewController = welcomeVC;
+        
+        //并储存新版本号
+        [defaults setObject:newVersions forKey:@"lastVersions"];
+        [defaults synchronize];
+    }
     
+    
+    [WXApi registerApp:@"wxac84b8b5d1acbad9"];
     
     // 初始化语音包
     [self configIFlySpeech];
@@ -292,6 +313,18 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     application.applicationIconBadgeNumber = unreadMsgCount;
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
+}
+
+
+
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
@@ -429,6 +462,7 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         [alert show];
         LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
         loginVC.notAutoLogin = YES;
+        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
         // [loginVC defaultLogin];
         // RCDLoginViewController* loginVC = [storyboard
         // instantiateViewControllerWithIdentifier:@"loginVC"];

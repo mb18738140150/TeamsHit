@@ -20,8 +20,8 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
     [super viewDidLoad];
     
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"配置WiFi第二步"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"配置WiFi第二步";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -43,7 +43,7 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
     self.myssid = str;
     NSData * data = [dic objectForKey:@"SSIDDATA"];
     NSLog(@"%@  ** SSIDDATA = %@", [[dic objectForKey:@"SSIDDATA"] class], [data description]);
-    if ([self.WiFiNameLabel.text containsString:@"memobird"]) {
+    if ([self.WiFiNameLabel.text containsString:@"YunPrinter"]) {
         [self.configurationBT setTitle:@"开始配置" forState:UIControlStateNormal];
     }
 }
@@ -55,7 +55,7 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
 //    NSDictionary * dic = [NSString SSIDInfo];
     
     self.WiFiNameLabel.text = [NSString stringWithFormat:@"当前WLAN:%@", str];
-    if ([self.WiFiNameLabel.text containsString:@"memobird"]) {
+    if ([self.WiFiNameLabel.text containsString:@"YunPrinter"]) {
         [self.configurationBT setTitle:@"开始配置" forState:UIControlStateNormal];
     }
 }
@@ -67,11 +67,13 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
 - (IBAction)configurationWiFiAction:(id)sender {
     
     if ([self.configurationBT.titleLabel.text isEqualToString:@"去配置WLAN"]) {
-        NSURL * url = [NSURL URLWithString:@"prefs:root=WIFI"];
         
-        if ([[UIApplication sharedApplication]canOpenURL:url]) {
-            [[UIApplication sharedApplication] openURL:url];
-        }
+        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        
+//        NSURL * url = [NSURL URLWithString:@"prefs:root=WIFIINTERNET_TETHERING"];
+//        if ([[UIApplication sharedApplication]canOpenURL:url]) {
+//            [[UIApplication sharedApplication] openURL:url];
+//        }
         
     }else
     {

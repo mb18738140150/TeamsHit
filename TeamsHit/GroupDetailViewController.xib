@@ -36,7 +36,7 @@
                                         <constraint firstAttribute="height" constant="97" id="ie8-CO-Vfq"/>
                                     </constraints>
                                 </view>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yrs-YD-IeQ">
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yrs-YD-IeQ" userLabel="groupMember">
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="全部群成员（32）" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ne9-1y-3Ov">
                                             <constraints>
@@ -47,13 +47,25 @@
                                             <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="next_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="NdM-ip-AWv">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="8" id="35a-HQ-Gwz"/>
+                                                <constraint firstAttribute="height" constant="18" id="uvN-Ko-UPQ"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <gestureRecognizers/>
                                     <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="NdM-ip-AWv" secondAttribute="trailing" constant="20" id="FHX-Fo-xed"/>
+                                        <constraint firstItem="NdM-ip-AWv" firstAttribute="top" secondItem="yrs-YD-IeQ" secondAttribute="top" constant="14" id="GIY-v7-g6w"/>
                                         <constraint firstAttribute="height" constant="45" id="MFY-8s-htD"/>
                                         <constraint firstItem="Ne9-1y-3Ov" firstAttribute="leading" secondItem="yrs-YD-IeQ" secondAttribute="leading" constant="15" id="kZZ-e3-nx3"/>
                                         <constraint firstItem="Ne9-1y-3Ov" firstAttribute="top" secondItem="yrs-YD-IeQ" secondAttribute="top" constant="16" id="oYt-Ew-d8N"/>
                                     </constraints>
+                                    <connections>
+                                        <outletCollection property="gestureRecognizers" destination="F2I-yL-bCY" appends="YES" id="7Yg-hi-j5b"/>
+                                    </connections>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C2p-3P-34z" userLabel="nameView">
                                     <subviews>
@@ -123,7 +135,7 @@
                                                 <constraint firstAttribute="width" constant="8" id="n0v-Op-0hl"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="21点" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qe4-Vq-TMZ">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="吹牛" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qe4-Vq-TMZ">
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="13" id="aBX-9b-WP9"/>
                                             </constraints>
@@ -143,9 +155,6 @@
                                         <constraint firstItem="Qe4-Vq-TMZ" firstAttribute="top" secondItem="Kyu-2Z-Q3g" secondAttribute="top" constant="17" id="omL-Ik-0Xz"/>
                                         <constraint firstAttribute="height" constant="45" id="vsa-Kr-iXq"/>
                                     </constraints>
-                                    <connections>
-                                        <outletCollection property="gestureRecognizers" destination="JPE-ok-4mY" appends="YES" id="ifk-G0-xvO"/>
-                                    </connections>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f8I-Tp-1du" userLabel="gameUserCount">
                                     <subviews>
@@ -189,9 +198,6 @@
                                         <constraint firstAttribute="height" constant="45" id="qAq-NF-bgT"/>
                                         <constraint firstAttribute="trailing" secondItem="geE-pp-iQM" secondAttribute="trailing" constant="20" id="vy9-CH-a4d"/>
                                     </constraints>
-                                    <connections>
-                                        <outletCollection property="gestureRecognizers" destination="5is-RP-e0f" appends="YES" id="VrE-Pw-eAr"/>
-                                    </connections>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wdd-yc-732" userLabel="rulesView">
                                     <subviews>
@@ -467,13 +473,14 @@
                     </constraints>
                 </scrollView>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Fz9-qH-vS7" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="1t3-Uh-JjS"/>
                 <constraint firstAttribute="trailing" secondItem="Fz9-qH-vS7" secondAttribute="trailing" id="DIG-MK-8fq"/>
                 <constraint firstAttribute="bottom" secondItem="Fz9-qH-vS7" secondAttribute="bottom" id="Iga-1x-Lxs"/>
                 <constraint firstItem="Fz9-qH-vS7" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Yx2-cg-Fwy"/>
             </constraints>
+            <point key="canvasLocation" x="33.5" y="53.5"/>
         </view>
         <tapGestureRecognizer id="osa-TV-USJ">
             <connections>
@@ -503,6 +510,11 @@
         <tapGestureRecognizer id="5is-RP-e0f">
             <connections>
                 <action selector="changeGameUserCountAction:" destination="-1" id="QDs-tf-GyV"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="F2I-yL-bCY">
+            <connections>
+                <action selector="lookGroupMember:" destination="-1" id="vs9-PG-FdY"/>
             </connections>
         </tapGestureRecognizer>
     </objects>

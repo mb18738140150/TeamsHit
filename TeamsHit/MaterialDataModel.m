@@ -45,19 +45,16 @@
         NSLog(@"图片大小是%.3f M 格式是%@  " , mm , image ? @"PNG" : @"JPEG");
     }
     
-    
-    
     _dealImage = image;
     _image = image;
-    if (self.isprocessImage) {
-        dispatch_queue_t urls_queue = dispatch_queue_create("blog.devtang.com", NULL);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            _dealImage = [ImageUtil ditherImage:image];
-        });
-    }
+//    if (self.isprocessImage) {
+//        dispatch_queue_t urls_queue = dispatch_queue_create("blog.devtang.com", NULL);
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            
+//            _dealImage = [ImageUtil ditherImage:image];
+//        });
+//    }
     self.height = [self getImageHeight:_dealImage.size];
-    
     
 }
 

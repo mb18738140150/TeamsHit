@@ -78,6 +78,16 @@
     
     [[PlayMusicModel share] playMusicWithName:name];
     
+    [self performSelector:@selector(dismiss) withObject:nil afterDelay:5];
+}
+
+- (void)dismiss
+{
+    if (self) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self removeFromSuperview];
+        });
+    }
 }
 
 /*

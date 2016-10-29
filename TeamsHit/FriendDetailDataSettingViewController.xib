@@ -8,7 +8,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FriendDetailDataSettingViewController">
             <connections>
-                <outlet property="blackListBT" destination="NhG-FT-mdJ" id="ocr-7d-8iq"/>
                 <outlet property="displaNameLabel" destination="5ua-aY-7qN" id="C1U-pO-gJb"/>
                 <outlet property="displayNameLabel" destination="Nw0-z3-U0k" id="7V0-h5-cSV"/>
                 <outlet property="forbidLookFriendCircleBT" destination="pyC-E9-jPL" id="cic-m8-ex2"/>
@@ -19,7 +18,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dJf-K5-GQk">
@@ -141,9 +140,9 @@
                                 <constraint firstItem="pyC-E9-jPL" firstAttribute="top" secondItem="hNr-2L-sZF" secondAttribute="top" constant="13" id="x2g-5P-Dzk"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o1I-gK-gID">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o1I-gK-gID" userLabel="tousu">
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="加入黑名单" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8WW-AB-If2">
+                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="投诉" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8WW-AB-If2">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="15" id="Hoa-94-Bob"/>
                                         <constraint firstAttribute="width" constant="85" id="s9M-kx-QGi"/>
@@ -157,25 +156,17 @@
                                         </mask>
                                     </variation>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NhG-FT-mdJ">
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="21" id="2kT-By-Bum"/>
-                                        <constraint firstAttribute="width" constant="72" id="uKG-vm-z9e"/>
-                                    </constraints>
-                                    <state key="normal" title="Button" image="noForbid.png"/>
-                                    <connections>
-                                        <action selector="blacklistAction:" destination="-1" eventType="touchUpInside" id="SOE-45-EOd"/>
-                                    </connections>
-                                </button>
                             </subviews>
                             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <gestureRecognizers/>
                             <constraints>
-                                <constraint firstAttribute="trailing" secondItem="NhG-FT-mdJ" secondAttribute="trailing" constant="15" id="MMm-TL-NqL"/>
-                                <constraint firstItem="8WW-AB-If2" firstAttribute="leading" secondItem="o1I-gK-gID" secondAttribute="leading" constant="15" id="REw-Hg-Zdd"/>
+                                <constraint firstItem="8WW-AB-If2" firstAttribute="centerX" secondItem="o1I-gK-gID" secondAttribute="centerX" id="JAz-NS-WGU"/>
                                 <constraint firstItem="8WW-AB-If2" firstAttribute="top" secondItem="o1I-gK-gID" secondAttribute="top" constant="16" id="Spp-TW-wXe"/>
                                 <constraint firstAttribute="height" constant="47" id="ikl-Bc-9ZM"/>
-                                <constraint firstItem="NhG-FT-mdJ" firstAttribute="top" secondItem="o1I-gK-gID" secondAttribute="top" constant="13" id="kMI-ks-ci7"/>
                             </constraints>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="com-K4-de8" appends="YES" id="U6C-DK-Ji4"/>
+                            </connections>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K6i-lx-SVh">
                             <color key="backgroundColor" red="0.9137254901960784" green="0.30980392156862746" blue="0.30980392156862746" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -221,15 +212,11 @@
             </constraints>
             <point key="canvasLocation" x="413" y="345"/>
         </view>
-        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设置备注及标签" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="COd-3H-jQe">
-            <constraints>
-                <constraint firstAttribute="height" constant="15" id="0IL-8p-5Sv"/>
-                <constraint firstAttribute="width" constant="105" id="d0d-IK-zVX"/>
-            </constraints>
-            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-            <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-            <nil key="highlightedColor"/>
-        </label>
+        <tapGestureRecognizer id="com-K4-de8">
+            <connections>
+                <action selector="tousu:" destination="-1" id="u9q-Iy-bDf"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="next_icon.png" width="17" height="30"/>

@@ -64,13 +64,13 @@
     self.titleLabel.hd_centerX = self.hd_centerX- LEFTSPACE;
     
     self.setUpBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.setUpBT.frame = CGRectMake(self.hd_width - 65 - LEFTSPACE, 32 - TOP_SPACE, 54, 20);
+    self.setUpBT.frame = CGRectMake(self.hd_width - 30 - LEFTSPACE, 32 - TOP_SPACE, 25, 25);
     [self.setUpBT setTitleColor:MAINCOLOR forState:UIControlStateNormal];
-    [self.setUpBT setTitle:@"设置" forState:UIControlStateNormal];
+//    [self.setUpBT setTitle:@"设置" forState:UIControlStateNormal];
     self.setUpBT.titleLabel.font = [UIFont systemFontOfSize:14];
-    [self.setUpBT setImage:[UIImage imageNamed:@"设置"] forState:UIControlStateNormal];
-    _setUpBT.titleEdgeInsets = UIEdgeInsetsMake(0, -35, 0, 0);
-    _setUpBT.imageEdgeInsets = UIEdgeInsetsMake(0, 35, 0, 0);
+    [self.setUpBT setImage:[UIImage imageNamed:@"groupSetup"] forState:UIControlStateNormal];
+//    _setUpBT.titleEdgeInsets = UIEdgeInsetsMake(0, -35, 0, 0);
+//    _setUpBT.imageEdgeInsets = UIEdgeInsetsMake(0, 35, 0, 0);
     
     [self addSubview:self.setUpBT];
     [_setUpBT addTarget:self action:@selector(setupAction) forControlEvents:UIControlEventTouchUpInside];

@@ -35,9 +35,11 @@
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"查找结果"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
+    
+    self.title = @"查找结果";
     
     self.groupTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 17, self.view.hd_width, self.view.hd_height - 64 - 17) style:UITableViewStylePlain];
     self.groupTableView.delegate = self;

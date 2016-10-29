@@ -104,21 +104,28 @@
 #pragma mark - BrageGameViewHeaderViewProtocol
 - (void)setUpGameChatGroup
 {
-    
     if (self.isStartGame) {
-        NSLog(@"开始游戏");
-        quitTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:[NSString stringWithFormat:@"%@房间", self.targetId] quit:YES];
-        quitTipView.IsViewer = self.IsViewer;
-        [quitTipView getPickerData:^(NSString *string) {
-            if ([string isEqualToString:@"lookRuler"]) {
-                [self lookRuler];
-            }else
-            {
-                [self forceOut];
-            }
-            
-        }];
-        [quitTipView show];
+        
+        if (self.IsViewer) {
+            GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
+            groupDetailVC.groupID = self.targetId;
+            [self.navigationController pushViewController:groupDetailVC animated:YES];
+        }else
+        {
+            NSLog(@"开始游戏");
+            quitTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:[NSString stringWithFormat:@"%@房间", self.targetId] quit:YES];
+            quitTipView.IsViewer = self.IsViewer;
+            [quitTipView getPickerData:^(NSString *string) {
+                if ([string isEqualToString:@"lookRuler"]) {
+                    [self lookRuler];
+                }else
+                {
+                    [self forceOut];
+                }
+                
+            }];
+            [quitTipView show];
+        }
         
     }else
     {
@@ -155,16 +162,21 @@
 {
     NSLog(@"退出");
     
-    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-    [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
-    [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
-    [dictionary setValue:@(QUITGAME) forKey:@"GameCommand"];
-    [dictionary setValue:self.gameId forKey:@"GameId"];
-    
-    [_webSocket send:[dictionary JSONString]];
-    [quitTipView dismiss];
-//    [_webSocket close];
-    NSLog(@"callDicePOint %@", [dictionary JSONString]);
+    if (_webSocket.readyState == SR_CLOSED) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else
+    {
+        NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+        [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
+        [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
+        [dictionary setValue:@(QUITGAME) forKey:@"GameCommand"];
+        [dictionary setValue:self.gameId forKey:@"GameId"];
+        
+        [_webSocket send:[dictionary JSONString]];
+        [quitTipView dismiss];
+        //    [_webSocket close];
+        NSLog(@"callDicePOint %@", [dictionary JSONString]);
+    }
     
     
     
@@ -198,27 +210,8 @@
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
 {
-    NSLog(@"连接失败");
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器连接失败，是否重新连接" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-    alert.tag = 10000;
-    [alert show];
-    
-}
-
-#warning *** socket connect question
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        if (alertView.tag == 10000) {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-    }else
-    {
-        if (alertView.tag == 10000) {
-            [_webSocket close];
-            [self connectSocket];
-        }
-    }
+    [_webSocket close];
+    [self connectSocket];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message//监控消息
@@ -390,6 +383,7 @@
 - (void)quitgame
 {
     [_webSocket close];
+    [self removeAllsubViews];
     [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 }
 
@@ -436,8 +430,8 @@
     
     [self.GameUserInfoArr removeObject:user];
     [self.prepareGameView reloadDataAction];
-    [self removeAllsubViews];
-    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+//    [self removeAllsubViews];
+//    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 
 }
 
@@ -527,6 +521,9 @@
     
     [_webSocket send:[dictionary JSONString]];
     NSLog(@"callDicePOint %@", [dictionary JSONString]);
+    
+    PlayMusicModel * playmusic = [PlayMusicModel share];
+    [playmusic playMusicWithName:@"我开你" type:@"mp3"];
 }
 
 // 游戏结束，获取最后结果
@@ -634,6 +631,11 @@
 // 游戏结束
 - (void)gameOver
 {
+    if (self.leaveTime) {
+        [self.leaveTime invalidate];
+        self.leaveTime = nil;
+        self.headerView.timeLabel.text = @"0";
+    }
     // 网络没问题的话，结束响应肯定在push之前
     if (self.isFinishGame) {
         // 已经收到结束响应，就不用再处理push了

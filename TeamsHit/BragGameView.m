@@ -289,7 +289,7 @@
     self.diceCupView.tipDiceCupView.hidden = NO;
     self.diceCupView.diceCuptipResultView.hidden = YES;
     self.chooseDiceNumberView.hidden = YES;
-    
+    self.chooseDiceNumberView.maxPointCount = 0;
     if (self.timeout) {
         [self.timeout invalidate];
         self.timeout = nil;
@@ -327,6 +327,14 @@
         NSString * str = [NSString stringWithFormat:@"%d", i];
         [self.resultDataSource addObject:str];
     }
+    
+    if (bigger <= 15) {
+        self.scoreTableView.hd_height = 300;
+    }else
+    {
+        self.scoreTableView.hd_height = 360;
+    }
+    
     [self.scoreTableView reloadData];
 //    NSLog(@"callDiceCount = %d ** actualDiceCount = %d", self.callDiceCount, self.actualDiceCount);
 }
@@ -478,6 +486,9 @@
 //    }
     self.isStartGame = YES;
     [self.gametableView reloadData];
+    
+    self.chooseDiceNumberView.maxPointCount = self.gameUserInformationArr.count * 5;
+    
 }
 
 // 第一个人叫点
@@ -750,6 +761,7 @@
 
 - (void)showWinOrLose
 {
+    
     for (int i = 0; i < self.gameUserInformationArr.count; i++) {
         BragGameModel * model = [self.gameUserInformationArr objectAtIndex:i];
         model.isFinish = YES;

@@ -14,7 +14,7 @@
 @interface CoindetailViewController ()
 @property (strong, nonatomic) IBOutlet UILabel *coinCountLabel;
 @property (strong, nonatomic) IBOutlet UIButton *buyCoinBT;
-
+@property (nonatomic, copy)BuyCoinsBlock myBlock;
 
 
 @end
@@ -25,10 +25,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"碰碰币"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    
+    self.title = @"碰碰币";
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"点点"]];
     [rightBarItem addTarget:self action:@selector(buyCoinhistoryAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
@@ -37,6 +37,9 @@
 }
 - (void)backAction:(UIButton *)button
 {
+    if (self.myBlock) {
+        _myBlock(self.coinCountLabel.text);
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -89,9 +92,43 @@
 - (IBAction)buycoinAction:(id)sender {
     NSLog(@"充值");
     BuyCoinsViewController * buyVC = [[BuyCoinsViewController alloc]initWithNibName:@"BuyCoinsViewController" bundle:nil];
-    
+    __weak CoindetailViewController * weakSelf = self;
+    [buyVC haveBuyCoins:^(BOOL haveBuy) {
+        if (haveBuy) {
+            [weakSelf reloadData];
+        }
+    }];
     [self.navigationController pushViewController:buyVC animated:YES];
 }
+
+- (void)reloadData
+{
+        
+        __weak CoindetailViewController * weakSelf = self;
+        [[HDNetworking sharedHDNetworking]getDetailInfor:nil success:^(id  _Nonnull responseObject) {
+            NSLog(@"responseObject = %@", responseObject);
+            int code = [[responseObject objectForKey:@"Code"] intValue];
+            if (code == 200) {
+                NSDictionary * dic = [responseObject objectForKey:@"DetailInfor"];
+                
+                 weakSelf.coinCountLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]];
+            }else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
+            
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"%@", error);
+        }];
+}
+
+- (void)BuyCoins:(BuyCoinsBlock)block
+{
+    self.myBlock = [block copy];
+}
+
 
 /*
 #pragma mark - Navigation

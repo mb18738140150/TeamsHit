@@ -55,7 +55,7 @@
         _replyButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _replyButton.tag = 0;
         [_replyButton addTarget:self action:@selector(operationDidClicked:) forControlEvents:UIControlEventTouchUpInside];
-        _replyButton.frame = CGRectMake(0, 0, kXHALbumOperationViewSize.width / 2.0, kXHALbumOperationViewSize.height);
+        _replyButton.frame = CGRectMake(kXHALbumOperationViewSize.width / 2.0, 0, kXHALbumOperationViewSize.width / 2.0, kXHALbumOperationViewSize.height);
         [_replyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _replyButton.titleLabel.font = [UIFont systemFontOfSize:14];
     }
@@ -67,7 +67,7 @@
         _likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _likeButton.tag = 1;
         [_likeButton addTarget:self action:@selector(operationDidClicked:) forControlEvents:UIControlEventTouchUpInside];
-        _likeButton.frame = CGRectMake(CGRectGetMaxX(_replyButton.frame), 0, CGRectGetWidth(_replyButton.bounds), CGRectGetHeight(_replyButton.bounds));
+        _likeButton.frame = CGRectMake(0, 0, CGRectGetWidth(_replyButton.bounds), CGRectGetHeight(_replyButton.bounds));
         [_likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _likeButton.titleLabel.font = [UIFont systemFontOfSize:14];
     }

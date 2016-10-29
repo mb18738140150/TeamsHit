@@ -196,6 +196,9 @@
     
     for (int i = 0; i < 6; i++) {
         NSString * str = [NSString stringWithFormat:@"%d", i + diceNumber];
+//        if (diceNumber + i > self.maxPointCount) {
+//            break;
+//        }
         if (i == 5) {
             str = @"+1";
         }
@@ -280,7 +283,15 @@
         
         if (indexPath.row == self.diceCountDataArray.count - 1) {
             NSLog(@"self.diceCountlabel.text = %@", self.diceCountlabel.text);
-            self.diceCountlabel.text = [NSString stringWithFormat:@"%d", self.diceCountlabel.text.intValue + 1];
+            
+            if (self.diceCountlabel.text.intValue >= self.maxPointCount) {
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"不能叫更大点数了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alert show];
+            }else
+            {
+                self.diceCountlabel.text = [NSString stringWithFormat:@"%d", self.diceCountlabel.text.intValue + 1];
+            }
+            
         }else
         {
             self.diceCountlabel.text = model.contentStr;

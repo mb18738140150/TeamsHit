@@ -28,12 +28,11 @@
     self.tradeCountLabel.attributedText = [self getCount:model.tradeCoinCount];
 }
 
-
 - (NSMutableAttributedString *)gettimeText:(NSNumber *)number
 {
     double lastactivityInterval = [number doubleValue];
     NSDateFormatter * fomatter = [[NSDateFormatter alloc]init];
-    fomatter.dateFormat = @"YYYY-MM-dd";
+    fomatter.dateFormat = @"YYYY-MM-dd HH:mm:ss";
     
     NSDate * date = [NSDate dateWithTimeIntervalSince1970:lastactivityInterval];
     
@@ -59,12 +58,12 @@
 {
     NSString * str = @"";
     if (count.intValue > 0) {
-        str = [NSString stringWithFormat:@"+%@个", count];
-        NSAttributedString * attStr = [[NSAttributedString alloc]initWithString:str attributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0xD9524E)}];
+        str = [NSString stringWithFormat:@"+%@", count];
+        NSAttributedString * attStr = [[NSAttributedString alloc]initWithString:str attributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0x5CB95C)}];
         return attStr;
     }else{
-        str = [NSString stringWithFormat:@"%@个", count];
-        NSAttributedString * attStr = [[NSAttributedString alloc]initWithString:str attributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0x5CB95C)}];
+        str = [NSString stringWithFormat:@"%@", count];
+        NSAttributedString * attStr = [[NSAttributedString alloc]initWithString:str attributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0xD9524E)}];
         return attStr;
     }
     

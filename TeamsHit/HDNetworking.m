@@ -274,8 +274,8 @@ HDSingletonM(HDNetworking) // 单例实现
 {
     // 拼接请求url
     // 随机数
-    NSInteger nonce = arc4random() % ( NSIntegerMax);
-    NSString * nonceStr = [NSString stringWithFormat:@"%d", nonce];
+    NSInteger nonce = arc4random() % ( NSIntegerMax - 1);
+    NSString * nonceStr = [NSString stringWithFormat:@"%ld", (long)nonce];
     // 时间戳
     NSDate *datenow = [NSDate date];
     NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
@@ -823,7 +823,7 @@ HDSingletonM(HDNetworking) // 单例实现
     } success:^(id  _Nonnull responseObject) {
         
         int code = [[responseObject objectForKey:@"Code"] intValue];
-        if (code == 200) {
+        if (code == 200 || code == 1000) {
             if (success) {
                 success(responseObject);
             }

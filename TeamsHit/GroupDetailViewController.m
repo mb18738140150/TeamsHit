@@ -7,11 +7,14 @@
 //
 
 #import "GroupDetailViewController.h"
+#import "FriendListViewController.h"
 
 #import "GroupDetailSetTipView.h"
 #import "TeamHitCollectionView.h"
 #import "CreatGroupChatRoomViewController.h"
-@interface GroupDetailViewController ()
+#import "GroupNumberDetailsViewController.h"
+#import "FriendInformationViewController.h"
+@interface GroupDetailViewController ()<LookUserDetailDelegate>
 {
     MBProgressHUD* hud ;
 }
@@ -28,7 +31,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *quitBT;
 
 @property (nonatomic, strong)TeamHitCollectionView * teamCollectionView;
-
+@property (nonatomic, strong)NSMutableArray * groupMemberArr;
 @property (nonatomic, assign)int GroupType;
 @property (nonatomic, assign)int VerificationType;
 @property (nonatomic, assign)int minCoin;
@@ -42,15 +45,25 @@
 
 @implementation GroupDetailViewController
 
+- (NSMutableArray *)groupMemberArr
+{
+    if (!_groupMemberArr) {
+        _groupMemberArr = [NSMutableArray array];
+    }
+    return _groupMemberArr;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
     RCDGroupInfo * rcGroupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.groupID];;
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:rcGroupInfo.groupName];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
+    
+    self.title = rcGroupInfo.groupName;
     
     [self.noticeBT setImage:[UIImage imageNamed:@"noForbid"] forState:UIControlStateNormal];
     [self.noticeBT setImage:[UIImage imageNamed:@"forbid"] forState:UIControlStateSelected];
@@ -58,6 +71,7 @@
     
     self.teamCollectionView = [[TeamHitCollectionView alloc]initWithFrame:CGRectMake(0, 9, screenWidth, (screenWidth - 64) / 5 + 16)];
     [self.groupMenberInfo addSubview:_teamCollectionView];
+    _teamCollectionView.delegate = self;
     self.groupManagerID = rcGroupInfo.creatorId;
     __weak GroupDetailViewController * weakSelf = self;
     [self.teamCollectionView addNewGroupMumber:^{
@@ -101,6 +115,13 @@
     crearGroupVc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:crearGroupVc animated:YES];
 }
+#pragma mark - LookUserDetailDelegate
+- (void)lookUserDetailWithUserid:(NSString *)userId
+{
+    FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+    friend.targetId = userId;
+    [self.navigationController pushViewController:friend animated:YES];
+}
 
 -(void)startLoadView
 {
@@ -141,6 +162,7 @@
         ;
     } success:^(id  _Nonnull responseObject) {
         [hud hide:YES];
+        NSLog(@"PortraitUri = %@", [responseObject objectForKey:@"PortraitUri"]);
         NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
@@ -216,13 +238,14 @@
     
     
     [self.teamCollectionView.dateSourceArray removeAllObjects];
+    [self.groupMemberArr removeAllObjects];
     for (int i = 0; i < groupMenberInfoarr.count; i++) {
         NSDictionary * userDic = [groupMenberInfoarr objectAtIndex:i];
         RCUserInfo * user = [[RCUserInfo alloc]init];
         user.userId = [NSString stringWithFormat:@"%@", [userDic objectForKey:@"UserId"]];
         user.name = [userDic objectForKey:@"DisplayName"];
         user.portraitUri = [userDic objectForKey:@"PortraitUri"];
-        
+        [self.groupMemberArr addObject:user];
         if (i < 4) {
             [self.teamCollectionView.dateSourceArray addObject:user];
         }
@@ -249,11 +272,9 @@
     
     NSLog(@"改变群名称");
     
-    
     NSArray * typeArr = [NSArray array];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"修改房间名称" content:typeArr];
     [setTipView show];
-    
     
     __weak GroupDetailViewController * weakself = self;
     [setTipView getPickerData:^(NSString *string) {
@@ -462,7 +483,15 @@
             
             [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_GROUP targetId:[NSString stringWithFormat:@"%@", self.groupID]];
             [[RCDataBaseManager shareInstance] deleteGroupToDB:self.groupID];
-            [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+            
+            
+            UIViewController * viewController = [self.navigationController.viewControllers objectAtIndex:0];
+            if ([viewController isKindOfClass:[FriendListViewController class]]) {
+                [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
+            }else
+            {
+                [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+            }
             
         } failure:^(NSError * _Nonnull error) {
             [hud hide:YES];
@@ -559,7 +588,7 @@
                                    @"GamePeople":@(self.minGameUserCount)
                                    };;
         
-        [[HDNetworking sharedHDNetworking]modifyGroupLeastCoins:jsonDic success:^(id  _Nonnull responseObject) {
+        [[HDNetworking sharedHDNetworking]modifyGamePeople:jsonDic success:^(id  _Nonnull responseObject) {
             [hud hide:YES];
             NSLog(@"responseObject = %@", responseObject);
             self.groupMumberlabel.text = string;
@@ -607,6 +636,11 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         [[RCDataBaseManager shareInstance] insertGroupToDB:userInfo];
     });
+}
+- (IBAction)lookGroupMember:(id)sender {
+    GroupNumberDetailsViewController * groupMemVC = [[GroupNumberDetailsViewController alloc]init];
+    groupMemVC.dataArr = self.groupMemberArr;
+    [self.navigationController pushViewController:groupMemVC animated:YES];
 }
 
 

@@ -10,7 +10,7 @@
 typedef void (^ MaterialDetailBlock)(UIImage * image);
 @interface MaterialDetailViewController : UIViewController
 
-
+@property (nonatomic, strong)NSNumber * userId;
 @property (nonatomic, assign)BOOL isOtnerVc;
 - (void)getMaterialDetailImage:(MaterialDetailBlock)materialDetailImage;
 

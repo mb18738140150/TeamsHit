@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol PrintGraffitiDelegate <NSObject>
+
+- (void)printGraffitiImage;
+
+@end
+
 @interface GraffitiView : UIView
 
 @property (nonatomic, strong)UIImage * image;
-
+@property (nonatomic, assign)id<PrintGraffitiDelegate>delegate;
 - (instancetype)initWithFrame:(CGRect)frame image:(UIImage *)image;
 - (UIImage *)getGraffitiImage;
 

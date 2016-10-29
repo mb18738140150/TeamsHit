@@ -10,7 +10,6 @@
             <connections>
                 <outlet property="addGroupmenberView" destination="WOG-3S-Zxl" id="Fg3-CL-nOD"/>
                 <outlet property="clearChatContentbt" destination="7ab-Gj-hzz" id="i9s-Le-SwQ"/>
-                <outlet property="findChatcontent" destination="Xrx-bn-3Oj" id="RAc-Lx-MWP"/>
                 <outlet property="iconImageView" destination="otr-0a-RSF" id="d0u-dI-jhS"/>
                 <outlet property="messageDisturbbt" destination="r7W-tA-g7j" id="5MG-Xf-gPx"/>
                 <outlet property="remarkLabel" destination="4ZX-VI-QN8" id="vFF-3o-V24"/>
@@ -27,7 +26,7 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F7D-xv-YUI">
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="otr-0a-RSF">
+                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="otr-0a-RSF">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="62" id="CXL-wS-OsM"/>
                                         <constraint firstAttribute="width" constant="62" id="KGe-f1-KIE"/>
@@ -79,12 +78,6 @@
                                         <constraint firstAttribute="height" constant="1" id="3xO-cy-dVt"/>
                                     </constraints>
                                 </view>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LkI-qW-qa8">
-                                    <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="1" id="vNG-Im-BHu"/>
-                                    </constraints>
-                                </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="置顶聊天" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxR-uo-LRT">
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="3hj-Kk-oKm"/>
@@ -117,19 +110,6 @@
                                         </mask>
                                     </variation>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xrx-bn-3Oj">
-                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="30" id="HxO-Vq-qx5"/>
-                                    </constraints>
-                                    <state key="normal" title="查找聊天记录">
-                                        <color key="titleColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </state>
-                                    <connections>
-                                        <action selector="findChatContentAction:" destination="-1" eventType="touchUpInside" id="cLX-fI-FgN"/>
-                                    </connections>
-                                </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ab-Gj-hzz">
                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
@@ -167,24 +147,18 @@
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="fAw-mt-Yy7" secondAttribute="trailing" constant="15" id="0Pf-CX-PUs"/>
                                 <constraint firstItem="Xai-qS-JCB" firstAttribute="top" secondItem="fAw-mt-Yy7" secondAttribute="bottom" constant="16" id="4Zq-TZ-uMD"/>
-                                <constraint firstAttribute="trailing" secondItem="Xrx-bn-3Oj" secondAttribute="trailing" constant="15" id="5eN-TK-w9i"/>
                                 <constraint firstAttribute="trailing" secondItem="ven-Ub-wbc" secondAttribute="trailing" constant="15" id="62Z-21-uRK"/>
                                 <constraint firstItem="ven-Ub-wbc" firstAttribute="leading" secondItem="uUB-3A-6oP" secondAttribute="leading" constant="15" id="9uF-te-iOr"/>
                                 <constraint firstItem="fAw-mt-Yy7" firstAttribute="top" secondItem="uUB-3A-6oP" secondAttribute="top" constant="45" id="BcN-Z9-nyl"/>
-                                <constraint firstItem="7ab-Gj-hzz" firstAttribute="top" secondItem="LkI-qW-qa8" secondAttribute="bottom" constant="7" id="C3x-jI-20Z"/>
                                 <constraint firstItem="fAw-mt-Yy7" firstAttribute="leading" secondItem="uUB-3A-6oP" secondAttribute="leading" constant="15" id="CXe-Kr-wRn"/>
                                 <constraint firstItem="Dyb-QM-md6" firstAttribute="top" secondItem="uUB-3A-6oP" secondAttribute="top" constant="13" id="Cbo-fB-rJR"/>
-                                <constraint firstItem="LkI-qW-qa8" firstAttribute="top" secondItem="ven-Ub-wbc" secondAttribute="bottom" constant="45" id="DA2-aZ-oeR"/>
-                                <constraint firstItem="LkI-qW-qa8" firstAttribute="leading" secondItem="uUB-3A-6oP" secondAttribute="leading" constant="15" id="KF9-jX-Voe"/>
                                 <constraint firstItem="wxR-uo-LRT" firstAttribute="top" secondItem="uUB-3A-6oP" secondAttribute="top" constant="16" id="NEu-Ye-S4j"/>
                                 <constraint firstItem="ven-Ub-wbc" firstAttribute="top" secondItem="fAw-mt-Yy7" secondAttribute="bottom" constant="45" id="Qjp-Eh-o5i"/>
                                 <constraint firstAttribute="trailing" secondItem="7ab-Gj-hzz" secondAttribute="trailing" constant="15" id="Rki-id-t8r"/>
                                 <constraint firstAttribute="trailing" secondItem="r7W-tA-g7j" secondAttribute="trailing" constant="16" id="X3N-lC-BBB"/>
-                                <constraint firstAttribute="height" constant="181" id="aYB-cT-tmz"/>
+                                <constraint firstAttribute="height" constant="140" id="aYB-cT-tmz"/>
                                 <constraint firstItem="r7W-tA-g7j" firstAttribute="top" secondItem="fAw-mt-Yy7" secondAttribute="bottom" constant="13" id="bcp-fT-yyr"/>
-                                <constraint firstAttribute="trailing" secondItem="LkI-qW-qa8" secondAttribute="trailing" constant="15" id="gL1-Vx-kO9"/>
-                                <constraint firstItem="Xrx-bn-3Oj" firstAttribute="top" secondItem="ven-Ub-wbc" secondAttribute="bottom" constant="7" id="lTd-NM-eag"/>
-                                <constraint firstItem="Xrx-bn-3Oj" firstAttribute="leading" secondItem="uUB-3A-6oP" secondAttribute="leading" constant="15" id="lrv-uc-lYL"/>
+                                <constraint firstItem="7ab-Gj-hzz" firstAttribute="top" secondItem="ven-Ub-wbc" secondAttribute="bottom" constant="10" id="buC-iK-85r"/>
                                 <constraint firstItem="Xai-qS-JCB" firstAttribute="leading" secondItem="uUB-3A-6oP" secondAttribute="leading" constant="15" id="tVH-OK-OuX"/>
                                 <constraint firstAttribute="trailing" secondItem="Dyb-QM-md6" secondAttribute="trailing" constant="16" id="tdN-Jf-u8q"/>
                                 <constraint firstItem="wxR-uo-LRT" firstAttribute="leading" secondItem="uUB-3A-6oP" secondAttribute="leading" constant="15" id="wyq-GP-Uw3"/>

@@ -11,7 +11,7 @@
 typedef void (^ GraffitiImageBlock)(UIImage * image);
 
 @interface GraffitiViewController : UIViewController
-
+@property (nonatomic, strong)NSNumber * userId;
 @property (nonatomic, strong)UIImage *sourceimage;
 - (void)graffitiImage:(GraffitiImageBlock)processImage;
 @end

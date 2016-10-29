@@ -34,7 +34,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"详细资料"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -192,9 +192,9 @@
         [hud hide:YES];
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"设置成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"设置成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//            [alert show];
+//            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             self.displayNameLabel.text = name;
             
             RCDUserInfo *user = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
@@ -296,9 +296,6 @@
         NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"删除好友成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             
             // 删除聊天记录并从聊天列表中删除
             [[RCIMClient sharedRCIMClient]deleteMessages:ConversationType_PRIVATE targetId:[NSString stringWithFormat:@"%@", self.model.userId] success:^{
@@ -408,6 +405,34 @@
         [alert show];
         [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
     }];
+}
+
+- (IBAction)tousu:(id)sender {
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/report?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:[NSDictionary dictionary] progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"感谢举报，我们会尽快查实并进行处理!" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        NSLog(@"%@", error);
+    }];
+    
 }
 
 - (void)didReceiveMemoryWarning {

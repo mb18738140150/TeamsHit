@@ -11,12 +11,21 @@
 #import "MLSelectPhotoPickerAssetsViewController.h"
 #import "MLSelectPhotoBrowserViewController.h"
 #import "PublishCollectionViewCell.h"
-
+#import "PublishBigImageViewController.h"
 #import "HDPicModle.h"
 
 #define kPublishCellID @"PublishCellID"
 
-@interface PublishCircleOfFriendViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate>
+@interface ImageModel :NSObject
+@property (nonatomic, strong)UIImage * oriImage;
+@end
+
+@implementation ImageModel
+
+
+@end
+
+@interface PublishCircleOfFriendViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
     MBProgressHUD* hud ;
 }
@@ -33,10 +42,23 @@
 @property (nonatomic, strong) NSMutableArray * imageUrlArr;
 
 @property (nonatomic, strong)UIView * permissionView;
+// 图片选择器
+@property (nonatomic, strong)UIImagePickerController * imagePic;
+
+@property (nonatomic, strong)NSMutableArray * imageArrays;
 
 @end
 
+
 @implementation PublishCircleOfFriendViewController
+
+- (NSMutableArray *)imageArrays
+{
+    if (!_imageArrays) {
+        _imageArrays = [NSMutableArray array];
+    }
+    return _imageArrays;
+}
 
 - (NSMutableArray *)imageUrlArr
 {
@@ -58,15 +80,18 @@
     
     self.view.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"发布朋友圈"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    
+    self.title = @"发布朋友圈";
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"title_right_icon"] title:@"发表"];
     [rightBarItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateNormal];
     [rightBarItem addTarget:self action:@selector(publishAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     
+    self.imagePic = [[UIImagePickerController alloc] init];
+    _imagePic.allowsEditing = YES;
+    _imagePic.delegate = self;
     
     [self creatSubViews];
 }
@@ -74,18 +99,7 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-- (void)publishAction:(UIButton *)button
-{
-    NSLog(@"发表");
-    
-    if (self.ideaTextView.text.length == 0 ) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"内容不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-    }else
-    {
-        [self uploadImage];
-    }
-}
+
 - (void)creatSubViews
 {
     self.publishScrollView = [[UIScrollView alloc]initWithFrame:self.view.bounds];
@@ -97,7 +111,8 @@
     [self.publishScrollView addSubview:self.informationView];
     
     self.ideaTextView = [[UITextView alloc]initWithFrame:CGRectMake(15, 12, self.informationView.hd_width, 135)];
-    self.ideaTextView.textColor = UIColorFromRGB(0xBBBBBB);
+    self.ideaTextView.textColor =[UIColor blackColor];
+    _ideaTextView.font = [UIFont systemFontOfSize:15];
 //    self.ideaTextView.text = @"这一刻的想法...";
     self.ideaTextView.delegate = self;
     [self.ideaTextView becomeFirstResponder];
@@ -105,7 +120,7 @@
     
     self.ideaLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 20, 100, 13)];
     self.ideaLabel.textColor = UIColorFromRGB(0xBBBBBB);
-    self.ideaLabel.font = [UIFont systemFontOfSize:12];
+    self.ideaLabel.font = [UIFont systemFontOfSize:15];
     self.ideaLabel.text = @"这一刻的想法...";
     [self.informationView addSubview:self.ideaLabel];
     
@@ -170,50 +185,127 @@
         cell.photoImageView.image = [UIImage imageNamed:@"upload"];
     }else
     {
-        MLSelectPhotoAssets *asset = self.assets[indexPath.row];
-        cell.photoImageView.image = [MLSelectPhotoPickerViewController getImageWithImageObj:asset];
+        id model = self.assets[indexPath.row];
+        if ([model isKindOfClass:[MLSelectPhotoAssets class]]) {
+            MLSelectPhotoAssets *asset = self.assets[indexPath.row];
+            cell.photoImageView.image = [MLSelectPhotoPickerViewController getImageWithImageObj:asset];
+        }else
+        {
+            ImageModel * model = self.assets[indexPath.row];
+            cell.photoImageView.image = model.oriImage;
+        }
     }
-    
     
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.assets.count == 0 || (self.assets.count < 9 && indexPath.row == self.assets.count)) {
-        // 创建控制器
-        MLSelectPhotoPickerViewController *pickerVc = [[MLSelectPhotoPickerViewController alloc] init];
-        // 默认显示相册里面的内容SavePhotos
-        pickerVc.status = PickerViewShowStatusCameraRoll;
-        pickerVc.maxCount = kPhotoShowMaxCount - self.assets.count;
-        [pickerVc showPickerVc:self];
-        __weak typeof(self) weakSelf = self;
-        pickerVc.callBack = ^(NSArray *assets){
-            [weakSelf.assets addObjectsFromArray:assets];
-            
-            if (weakSelf.assets.count > 3 && weakSelf.assets.count < 8) {
-                weakSelf.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 2 + 30;
-                weakSelf.informationView.hd_height = weakSelf.phoneCollectionView.hd_height + weakSelf.phoneCollectionView.hd_y;
-                
-                weakSelf.permissionView.hd_y = weakSelf.informationView.hd_y + weakSelf.informationView.hd_height + 30;
-                
-            }else if (weakSelf.assets.count >= 8)
+        
+        
+        UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                self.imagePic.sourceType = UIImagePickerControllerSourceTypeCamera;
+                [self presentViewController:self.imagePic animated:YES completion:nil];
+            }else
             {
-                weakSelf.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 3 + 40;
-                weakSelf.informationView.hd_height = weakSelf.phoneCollectionView.hd_height + weakSelf.phoneCollectionView.hd_y;
-                weakSelf.permissionView.hd_y = weakSelf.informationView.hd_y + weakSelf.informationView.hd_height + 30;
+                UIAlertController * tipControl = [UIAlertController alertControllerWithTitle:@"提示" message:@"没有相机,请选择图库" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction * sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    ;
+                }];
+                [tipControl addAction:sureAction];
+                [self presentViewController:tipControl animated:YES completion:nil];
+                
             }
-            weakSelf.phoneCollectionView.contentSize = CGSizeMake(weakSelf.phoneCollectionView.hd_width, self.permissionView.hd_height + weakSelf.permissionView.hd_y + 30);
-            [weakSelf.phoneCollectionView reloadData];
-        };
+        }];
+        UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"从相册获取" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            // 创建控制器
+            MLSelectPhotoPickerViewController *pickerVc = [[MLSelectPhotoPickerViewController alloc] init];
+            // 默认显示相册里面的内容SavePhotos
+            pickerVc.status = PickerViewShowStatusCameraRoll;
+            pickerVc.maxCount = kPhotoShowMaxCount - self.assets.count;
+            [pickerVc showPickerVc:self];
+            __weak typeof(self) weakSelf = self;
+            pickerVc.callBack = ^(NSArray *assets){
+                [weakSelf.assets addObjectsFromArray:assets];
+                
+                if (weakSelf.assets.count > 3 && weakSelf.assets.count < 8) {
+                    weakSelf.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 2 + 30;
+                    weakSelf.informationView.hd_height = weakSelf.phoneCollectionView.hd_height + weakSelf.phoneCollectionView.hd_y;
+                    
+                    weakSelf.permissionView.hd_y = weakSelf.informationView.hd_y + weakSelf.informationView.hd_height + 30;
+                    
+                }else if (weakSelf.assets.count >= 8)
+                {
+                    weakSelf.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 3 + 40;
+                    weakSelf.informationView.hd_height = weakSelf.phoneCollectionView.hd_height + weakSelf.phoneCollectionView.hd_y;
+                    weakSelf.permissionView.hd_y = weakSelf.informationView.hd_y + weakSelf.informationView.hd_height + 30;
+                }
+                weakSelf.phoneCollectionView.contentSize = CGSizeMake(weakSelf.phoneCollectionView.hd_width, self.permissionView.hd_height + weakSelf.permissionView.hd_y + 30);
+                [weakSelf.phoneCollectionView reloadData];
+            };
+        }];
+        
+        [alertcontroller addAction:cancleAction];
+        [alertcontroller addAction:cameraAction];
+        [alertcontroller addAction:libraryAction];
+        
+        [self presentViewController:alertcontroller animated:YES completion:nil];
+       
     }else
     {
-        MLSelectPhotoBrowserViewController *browserVc = [[MLSelectPhotoBrowserViewController alloc] init];
-        browserVc.currentPage = indexPath.row;
-        browserVc.photos = self.assets;
-        [self.navigationController pushViewController:browserVc animated:YES];
+        [self.imageArrays removeAllObjects];
+        for (int i = 0; i < self.assets.count; i++) {
+            id model = self.assets[i];
+            if ([model isKindOfClass:[MLSelectPhotoAssets class]]) {
+                MLSelectPhotoAssets *asset = self.assets[i];
+                [self.imageArrays addObject:[MLSelectPhotoPickerViewController getImageWithImageObj:asset]];
+            }else
+            {
+                ImageModel * model = self.assets[i];
+                [self.imageArrays addObject:model.oriImage];
+            }
+        }
+        
+        PublishBigImageViewController * bigVC = [[PublishBigImageViewController alloc]init];
+        bigVC.item = indexPath.row + 1;
+        [bigVC creatWithImageArr:self.imageArrays];
+        [self.navigationController pushViewController:bigVC animated:YES];
+//        MLSelectPhotoBrowserViewController *browserVc = [[MLSelectPhotoBrowserViewController alloc] init];
+//        browserVc.currentPage = indexPath.row;
+//        browserVc.photos = self.assets;
+//        [self.navigationController pushViewController:browserVc animated:YES];
     }
 }
-
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    UIImage * image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    
+    ImageModel * model = [[ImageModel alloc]init];
+    model.oriImage = image;
+    [self.assets addObject:model];
+    [self.phoneCollectionView reloadData];
+    
+    
+    if (self.assets.count > 3 && self.assets.count < 8) {
+        self.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 2 + 30;
+        self.informationView.hd_height = self.phoneCollectionView.hd_height + self.phoneCollectionView.hd_y;
+        
+        self.permissionView.hd_y = self.informationView.hd_y + self.informationView.hd_height + 30;
+        
+    }else if (self.assets.count >= 8)
+    {
+        self.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 3 + 40;
+        self.informationView.hd_height = self.phoneCollectionView.hd_height + self.phoneCollectionView.hd_y;
+        self.permissionView.hd_y = self.informationView.hd_y + self.informationView.hd_height + 30;
+    }
+    self.phoneCollectionView.contentSize = CGSizeMake(self.phoneCollectionView.hd_width, self.permissionView.hd_height + self.permissionView.hd_y + 30);
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 #pragma mark - uitextviewDelegate
 - (void)textViewDidChangeSelection:(UITextView *)textView
 {
@@ -223,6 +315,19 @@
         range.length = 0;
         textView.selectedRange = range;
     }
+}
+
+- (void)publishAction:(UIButton *)button
+{
+    if (self.ideaTextView.text.length == 0) {
+        if (self.assets.count == 0) {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"说说内容不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+            return;
+        }
+    }
+    
+    [self uploadImage];
 }
 
 - (void)textViewDidChange:(UITextView *)textView
@@ -260,14 +365,30 @@
         
         
         for (int i = 0; i < self.assets.count; i++) {
-            MLSelectPhotoAssets *asset = self.assets[i];
             
-            HDPicModle * imageModel = [[HDPicModle alloc]init];
-            imageModel.pic = asset.originImage;
-            imageModel.picName = [self imageName];
-            imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
-            
-            [imageArr addObject:imageModel];
+            id model = self.assets[i];
+            if ([model isKindOfClass:[MLSelectPhotoAssets class]]) {
+                MLSelectPhotoAssets *asset = self.assets[i];
+                [self.imageArrays addObject:[MLSelectPhotoPickerViewController getImageWithImageObj:asset]];
+                
+                HDPicModle * imageModel = [[HDPicModle alloc]init];
+                imageModel.pic = asset.originImage;
+                imageModel.picName = [self imageName];
+                imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+                
+                [imageArr addObject:imageModel];
+            }else
+            {
+                ImageModel * model = self.assets[i];
+                [self.imageArrays addObject:model.oriImage];
+                
+                HDPicModle * imageModel = [[HDPicModle alloc]init];
+                imageModel.pic = model.oriImage;
+                imageModel.picName = [self imageName];
+                imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+                
+                [imageArr addObject:imageModel];
+            }
             
             
         }
@@ -429,9 +550,6 @@
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (command == 10029) {
             if (code == 200) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"发布成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-                [alert show];
-                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
                 
                 if (self.myPublishBlock) {
                     

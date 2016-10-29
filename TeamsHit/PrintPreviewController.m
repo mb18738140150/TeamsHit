@@ -21,7 +21,7 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 @property (nonatomic, strong)UIImageView * importantImageView;
 @property (nonatomic, strong)UILabel * timeLabel;
 @property (nonatomic, strong)UIImageView * imaginariView;
-
+@property (nonatomic, assign)BOOL isImportantInformation;
 @end
 
 @implementation PrintPreviewController
@@ -37,12 +37,12 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"打印预览"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"打印预览";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印预览" style:UIBarButtonItemStylePlain target:self action:@selector(printAction)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印" style:UIBarButtonItemStylePlain target:self action:@selector(printAction)];
     
     [self prepareUI];
     
@@ -57,6 +57,15 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 - (void)printAction
 {
     NSLog(@"print");
+    NSNumber * type = @1;
+    if (self.isImportantInformation) {
+        type = @2;
+    }else
+    {
+        type = @1;
+    }
+    [[Print sharePrint] printWithArr:self.printDataSourceArr taskType:type toUserId:self.userId];
+    
 }
 
 - (void)prepareUI
@@ -185,7 +194,12 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 - (void)importantAction:(UIButton *)button
 {
     button.selected = !button.selected;
-    
+    if (button.selected) {
+        self.isImportantInformation = YES;
+    }else
+    {
+        self.isImportantInformation = NO;
+    }
     [self calculateTableviewHeight];
     [self.printTableView reloadData];
 }

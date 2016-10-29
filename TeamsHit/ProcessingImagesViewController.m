@@ -53,12 +53,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"图片处理"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"图片处理";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     self.view.backgroundColor = [UIColor whiteColor];
+//    self.image = [UIImage imageNamed:@"1(1).jpg"];
+    
+    NSData * imageData = UIImageJPEGRepresentation(self.image, 1.0);
+    self.image = [UIImage imageWithData:imageData];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
     self.rotateNumber = 1;
@@ -106,20 +110,25 @@
 - (UIToolbar *)toolBar
 {
     if (!_toolBar) {
+        
+//        _toolBar = [[UIToolbar alloc] init];
         _toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT - 64, SELF_WIDTH, TOOLBAR_HEIGHT)];
-        _toolBar.backgroundColor = [UIColor cyanColor];
+        [self.toolBar setBackgroundImage:[UIImage new]forToolbarPosition:UIBarPositionAny                      barMetrics:UIBarMetricsDefault];
+        [self.toolBar setShadowImage:[UIImage new]
+                  forToolbarPosition:UIToolbarPositionAny];
+        _toolBar.backgroundColor = UIColorFromRGB(0x12B7F5);
 //        _toolBar.frame = CGRectMake(0, 164, SELF_WIDTH, TOOLBAR_HEIGHT);
         
         // 图片样式
-        _imageType = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"chat-2"] style:UIBarButtonItemStylePlain target:self action:@selector(changeType)];
+        _imageType = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"ico_effects_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(changeType)];
         // 剪裁
-        _tailor = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"chat-2"] style:UIBarButtonItemStylePlain target:self action:@selector(tailor)];
+        _tailor = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"imageTailor"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(tailor)];
         // 打印
-        _print = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"chat-2"] style:UIBarButtonItemStylePlain target:self action:@selector(print)];
+        _print = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"ico_print_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(print)];
         // 涂鸦
-        _graffiti = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"chat-2"] style:UIBarButtonItemStylePlain target:self action:@selector(graffiti)];
+        _graffiti = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"ico_scrawl_02_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(graffiti)];
         // 旋转
-        _rotate = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"chat-2"] style:UIBarButtonItemStylePlain target:self action:@selector(rotate)];
+        _rotate = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"ico_imagerotato_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(rotate)];
         
         UIBarButtonItem * space = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         
@@ -194,7 +203,20 @@
 #pragma mark - toolBar点击事件
 - (void)changeType
 {
-    self.processImageTypeView.hidden = !(self.processImageTypeView.hidden);
+    
+    NSData * data1 = UIImagePNGRepresentation(_imageType.image);
+    NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"ico_effects_unchecked"]);
+    if ([data1 isEqual:data2]) {
+        [_imageType setImage:[[UIImage imageNamed:@"ico_effects_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        self.processImageTypeView.hidden = NO;
+    }else
+    {
+        [_imageType setImage:[[UIImage imageNamed:@"ico_effects_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+
+        self.processImageTypeView.hidden = YES;
+    }
+    
+//    self.processImageTypeView.hidden = !(self.processImageTypeView.hidden);
 }
 - (void)tailor
 {
@@ -209,11 +231,15 @@
 - (void)print
 {
     NSLog(@"打印功能");
+    
+    [[Print sharePrint] printImage:self.finalImage taskType:@1 toUserId:self.userId];
+    
 }
 - (void)graffiti
 {
     GraffitiViewController * graffitiVC = [[GraffitiViewController alloc]init];
     graffitiVC.sourceimage = self.finalImage;
+    graffitiVC.userId = self.userId;
     [graffitiVC graffitiImage:^(UIImage *image) {
         if (image) {
             self.imageView.image = image;
@@ -277,7 +303,6 @@
         self.finalImage = [self imageWithUIView:self.imageView];
         NSLog(@"**** width = %f, height = %f", self.finalImage.size.width, self.finalImage.size.height);
     }];
-    
 }
 -(UIImage *)imageWithUIView:(UIView *)view
 {
@@ -316,15 +341,7 @@
             }
             break;
         case 2:
-            NSLog(@"素描");
-            break;
-        case 3:
-             NSLog(@"描边");
-            self.imageView.image = [ImageUtil memory:self.defaultImage];
-            self.finalImage = [ImageUtil memory:self.defaultImage];
-            break;
-        case 4:
-             NSLog(@"喷墨");
+            NSLog(@"喷墨");
             if (self.inkjetImage) {
                 self.imageView.image = self.inkjetImage;
                 self.finalImage = self.inkjetImage;
@@ -334,6 +351,15 @@
                 self.finalImage = self.imageView.image;
                 self.inkjetImage = self.imageView.image;
             }
+            break;
+        case 3:
+             NSLog(@"描边");
+            self.imageView.image = [ImageUtil memory:self.defaultImage];
+            self.finalImage = [ImageUtil memory:self.defaultImage];
+            break;
+        case 4:
+             NSLog(@"素描");
+            
             break;
             
         default:

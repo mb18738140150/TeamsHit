@@ -56,6 +56,8 @@
 @property (nonatomic, strong)UITextView * qrTextView;
 @property (nonatomic, strong)UILabel * titleLabel;// 二维码字数控制框
 
+@property (nonatomic, assign)int imageCount;
+
 @end
 
 @implementation MaterialViewController
@@ -75,8 +77,8 @@
     
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"素材"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"素材";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -98,7 +100,7 @@
             [self prepareUI];
         });
     });
-    
+    self.imageCount = 0;
     // Do any additional setup after loading the view.
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -111,12 +113,18 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
+#pragma mark - 打印预览
 - (void)printPreviewAction
 {
+    if (self.dataArr.count == 0) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"您还没有输入任何内容" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+    
     PrintPreviewController * printVC = [[PrintPreviewController alloc]init];
     printVC.printDataSourceArr = self.dataArr;
-    
+    printVC.userId = self.userId;
     [self.navigationController pushViewController:printVC animated:YES];
 }
 
@@ -125,7 +133,6 @@
     
     self.imagePic = [[UIImagePickerController alloc] init];
     _imagePic.delegate = self;
-    
     
     self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(20, 100, self.view.hd_width - 40, self.view.hd_width - 40)];
     self.scrollView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
@@ -236,18 +243,31 @@
     NSLog(@"文字编辑");
     TextEditViewController * textVC = [[TextEditViewController alloc]init];
     __weak MaterialViewController * matervc = self;
-    [textVC getTextEditImage:^(UIImage *image) {
+    textVC.userId = self.userId;
+    [textVC getTextEditImage:^(UIImage *image, NSString * content, int Alignment) {
         matervc.iconImageView.image = image;
-//        matervc.iconImageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
-//        matervc.scrollView.contentSize = CGSizeMake(matervc.scrollView.hd_width, matervc.iconImageView.hd_height);
         
         MaterialDataModel * model = [[MaterialDataModel alloc]init];
         model.image = image;
+        model.title = content;
         model.imageModel = TextEditImageModel;
-        [matervc.dataArr addObject:model];
-        NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
-        [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
-        [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+        model.Alignment = Alignment;
+        if (content.length > 0) {
+            [matervc.dataArr addObject:model];
+            NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
+            [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
+            [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+
+        }else
+        {
+            if ([self canAddMoreImage]) {
+                [matervc.dataArr addObject:model];
+                NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
+                [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
+                [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+            }
+        }
+        
     }];
     [self.navigationController pushViewController:textVC animated:YES];
 }
@@ -256,6 +276,9 @@
 - (void)picture
 {
     [self recoverUI];
+    if (![self canAddMoreImage]) {
+        return;
+    }
     UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
@@ -296,7 +319,7 @@
     processVC.image = self.iconImageView.image;
     
     processVC.hidesBottomBarWhenPushed = YES;
-    
+    processVC.userId = self.userId;
     __weak MaterialViewController * meVc = self;
     [processVC processImage:^(UIImage *image) {
         meVc.iconImageView.image = image;
@@ -336,7 +359,6 @@
         [self.view addSubview:_expressionView];
         self.tableView.hd_height = self.tableView.hd_height - 120;
         self.toolBar.hd_y = self.toolBar.hd_y - 120;
-        
     }else
     {
         [_expressionItem setImage:[[UIImage imageNamed:@"materia-3"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
@@ -355,11 +377,12 @@
             MaterialDataModel * model = [[MaterialDataModel alloc]init];
             model.image = image;
             model.imageModel = expressionModel;
-            [matervc.dataArr addObject:model];
-            
-            NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
-            [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
-            [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+            if ([self canAddMoreImage]) {
+                [matervc.dataArr addObject:model];
+                NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
+                [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
+                [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
+            }
         }
     }];
 }
@@ -410,7 +433,11 @@
 //        }
 //    }];
     [self recoverUI];
+    if (![self canAddMoreImage]) {
+        return;
+    }
     MaterialDetailViewController * materiadetailVc = [[MaterialDetailViewController alloc]init];
+    materiadetailVc.userId = self.userId;
     __weak MaterialViewController * matervc = self;
     [materiadetailVc getMaterialDetailImage:^(UIImage *image) {
         if (image) {
@@ -437,6 +464,9 @@
 - (void)qrCode
 {
     [self recoverUI];
+    if (![self canAddMoreImage]) {
+        return;
+    }
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
     [delegate.window addSubview:_qrCodeView];
     
@@ -535,8 +565,11 @@
 - (void)graffiti
 {
     [self recoverUI];
+    if (![self canAddMoreImage]) {
+        return;
+    }
     GraffitiViewController * graffitiVC = [[GraffitiViewController alloc]init];
-    
+    graffitiVC.userId = self.userId;
     __weak MaterialViewController * matervc = self;
     [graffitiVC graffitiImage:^(UIImage *image) {
         if (image) {
@@ -635,6 +668,33 @@
         [self.tableView setContentOffset:CGPointMake(0, contentSize.height - tableViewH) animated:YES];
     }
 }
+
+- (BOOL )canAddMoreImage
+{
+    self.imageCount = 0;
+    for (MaterialDataModel * model in self.dataArr) {
+        if (model.imageModel == TextEditImageModel) {
+            if (model.title.length > 0) {
+                
+            }else{
+                self.imageCount++;
+            }
+        }else
+        {
+            self.imageCount++;
+        }
+    }
+    if (self.imageCount < 3) {
+        return YES;
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"不能插入超过三张图片" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil , nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
+        return NO;
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

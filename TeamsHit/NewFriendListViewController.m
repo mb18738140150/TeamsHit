@@ -9,6 +9,9 @@
 #import "NewFriendListViewController.h"
 #import "NewFriendListTableViewCell.h"
 #import "NewFriendModel.h"
+#import "FriendInformationViewController.h"
+#import "ChatViewController.h"
+
 //#import "NewFriendVerifyViewController.h"
 
 #define CELL_IDENTIFIRE @"cellId"
@@ -42,8 +45,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"新的朋友"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"新的朋友";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -121,6 +124,11 @@
 {
 //    NewFriendVerifyViewController * newfriendVerifyVC = [[NewFriendVerifyViewController alloc]initWithNibName:@"NewFriendVerifyViewController" bundle:nil];
 //    [self.navigationController pushViewController:newfriendVerifyVC animated:YES];
+    
+    FriendInformationViewController * vc = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+    NewFriendModel * model = self.newfriendListArray[indexPath.row];
+    vc.targetId = [NSString stringWithFormat:@"%@", model.userId];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -160,9 +168,20 @@
         if (code == 200) {
             model.status = @1;
             [newFriendVC.friendtableview reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            ChatViewController * chatVc = [[ChatViewController alloc]init];
+            chatVc.hidesBottomBarWhenPushed = YES;
+            chatVc.conversationType = ConversationType_PRIVATE;
+            chatVc.displayUserNameInCell = NO;
+            chatVc.targetId = [NSString stringWithFormat:@"%@", model.userId];
+            chatVc.title = model.nickname;
+            chatVc.needPopToRootView = YES;
+            [self.navigationController pushViewController:chatVc animated:YES];
             NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
             [RCDDataSource syncFriendList:url complete:^(NSMutableArray * result) {
+                
             }];
+            
+            
         }else
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

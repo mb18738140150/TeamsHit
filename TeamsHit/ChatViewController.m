@@ -49,12 +49,16 @@
     self.enableSaveNewPhotoToLocalSystem = YES;
     self.isRightBarItem = NO;
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:self.title];
-    self.title = @"";
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+//    self.title = @"";
     [leftBarItem addTarget:self action:@selector(leftBarButtonItemPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"backImage.jpg"] title:@"传纸条" tag:10006];
+    if (![self.targetId isEqualToString:@"200"]) {
+        [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"passNotes.png"] title:@"传纸条" tag:10006];
+    }
+    [self.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
@@ -66,7 +70,7 @@
                 if (discussion != nil && discussion.memberIdList.count>0) {
                     if ([discussion.memberIdList containsObject:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
                         UIButton *button  = [[UIButton alloc] initWithFrame:CGRectMake(0,0,25, 25)];
-                        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"circle"]];
+                        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mine_normal"]];
                         imageView.frame = CGRectMake(7,-1, 25, 25);
                         [button addSubview:imageView];
                         [button addTarget:self action:@selector(rightBarButtonItemClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -83,7 +87,7 @@
             }];
         }else{
             UIButton *button  = [[UIButton alloc] initWithFrame:CGRectMake(0,0,25, 25)];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"circle"]];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mine_normal"]];
             imageView.frame = CGRectMake(7,-1, 25, 25);
             [button addSubview:imageView];
             [button addTarget:self action:@selector(rightBarButtonItemClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -95,7 +99,11 @@
     } else {
         self.navigationItem.rightBarButtonItem = nil;
     }
-
+    
+    if ([self.targetId isEqualToString:@"200"]) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    
 /*******************实时地理位置共享***************/
     [self registerClass:[RealTimeLocationStartCell class] forCellWithReuseIdentifier:RCRealTimeLocationStartMessageTypeIdentifier];
     [self registerClass:[RealTimeLocationEndCell class] forCellWithReuseIdentifier:RCRealTimeLocationEndMessageTypeIdentifier];
@@ -592,8 +600,32 @@
         } break;
         case 10006: {
             
-            MaterialViewController * processVC = [[MaterialViewController alloc]init];
-            [self.navigationController pushViewController:processVC animated:YES];
+            NSString * url = [NSString stringWithFormat:@"%@userinfo/testTeamState?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+            NSDictionary * dic = @{@"ToUserId":@(self.targetId.intValue)
+                                   };
+            [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:dic progress:^(NSProgress * _Nullable progress) {
+                ;
+            } success:^(id  _Nonnull responseObject) {
+                NSLog(@"responseObject = %@", responseObject);
+                int code = [[responseObject objectForKey:@"Code"] intValue];
+                if (code == 200) {
+                    MaterialViewController * processVC = [[MaterialViewController alloc]init];
+                    processVC.userId = @(self.targetId.intValue);
+                    [self.navigationController pushViewController:processVC animated:YES];
+                }else
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                    [alert show];
+                    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                }
+                
+            } failure:^(NSError * _Nonnull error) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败请重试" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                NSLog(@"%@", error);
+            }];
+            
             
         } break;
         default:
@@ -1055,6 +1087,27 @@
         NSLog(@"%@", error);
     }];
      self.isRightBarItem = NO;
+    
+    if ([self.targetId isEqualToString:@"200"]) {
+        RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.targetId]];
+        userinfo.name = self.friendmodel.UserName;
+        userinfo.portraitUri = self.friendmodel.iconUrl;
+        userinfo.displayName = self.friendmodel.displayName;
+        [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
+        
+        RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.friendmodel.userId]];
+        user.portraitUri = self.friendmodel.iconUrl;
+        if (self.friendmodel.displayName.length != 0) {
+            user.name = self.friendmodel.displayName;
+        }else
+        {
+            user.name = self.friendmodel.nickName;
+        }
+        [[RCDataBaseManager shareInstance]insertUserToDB:user];
+        
+        [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

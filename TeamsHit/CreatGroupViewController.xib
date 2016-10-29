@@ -14,7 +14,9 @@
                 <outlet property="groupIconimageview" destination="rE4-z0-yrU" id="Afg-B9-rkM"/>
                 <outlet property="groupIntroduceTF" destination="3XP-vx-Zu6" id="KQX-NH-3vB"/>
                 <outlet property="groupNameTF" destination="jek-ra-E4T" id="BfB-27-vBb"/>
+                <outlet property="groupTypeLB" destination="0ky-lO-4Sa" id="Qqq-Zi-Xnz"/>
                 <outlet property="groupVerifyLabel" destination="29x-wX-d9u" id="sfU-ES-7a1"/>
+                <outlet property="groupVerifyTypeLB" destination="MKN-p0-WWq" id="uaz-Sv-VIF"/>
                 <outlet property="groupVerifyView" destination="sr9-qd-6FI" id="TzW-cK-Grl"/>
                 <outlet property="topView" destination="fAx-7I-rGE" id="apg-Hl-5y5"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -124,19 +126,32 @@
                                         <constraint firstAttribute="width" constant="7" id="dh9-fq-Deg"/>
                                     </constraints>
                                 </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="吹牛" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ky-lO-4Sa">
+                                    <constraints>
+                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="15" id="ZDp-hQ-DH0"/>
+                                        <constraint firstAttribute="width" constant="72" id="qff-zL-tsv"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                    <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="qff-zL-tsv"/>
+                                        </mask>
+                                    </variation>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <gestureRecognizers/>
                             <constraints>
+                                <constraint firstItem="knS-A6-V7v" firstAttribute="leading" secondItem="0ky-lO-4Sa" secondAttribute="trailing" constant="10" id="Gh4-O6-VqS"/>
                                 <constraint firstItem="knS-A6-V7v" firstAttribute="top" secondItem="HeW-5j-WCA" secondAttribute="top" constant="19" id="IpC-qI-zJb"/>
+                                <constraint firstItem="0ky-lO-4Sa" firstAttribute="top" secondItem="HeW-5j-WCA" secondAttribute="top" constant="17" id="UD2-5N-WvX"/>
                                 <constraint firstAttribute="height" constant="47" id="dTc-ly-3oK"/>
                                 <constraint firstAttribute="trailing" secondItem="knS-A6-V7v" secondAttribute="trailing" constant="15" id="gd3-mH-XsQ"/>
                                 <constraint firstItem="VGE-Jq-CZ3" firstAttribute="leading" secondItem="HeW-5j-WCA" secondAttribute="leading" constant="15" id="kQ3-fv-gIQ"/>
                                 <constraint firstItem="VGE-Jq-CZ3" firstAttribute="top" secondItem="HeW-5j-WCA" secondAttribute="top" constant="15" id="vj4-pB-bmh"/>
                             </constraints>
-                            <connections>
-                                <outletCollection property="gestureRecognizers" destination="QUy-Pp-dYp" appends="YES" id="d0w-wn-BPT"/>
-                            </connections>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sr9-qd-6FI">
                             <subviews>
@@ -160,14 +175,30 @@
                                         <constraint firstAttribute="width" constant="7" id="eWH-Jx-6aH"/>
                                     </constraints>
                                 </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="允许任何人加入" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MKN-p0-WWq">
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="72" id="6IR-rS-YQC"/>
+                                        <constraint firstAttribute="height" constant="18" id="nmZ-ff-1jG"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                    <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="6IR-rS-YQC"/>
+                                        </mask>
+                                    </variation>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <gestureRecognizers/>
                             <constraints>
                                 <constraint firstItem="29x-wX-d9u" firstAttribute="leading" secondItem="sr9-qd-6FI" secondAttribute="leading" constant="15" id="1bh-23-Wk2"/>
+                                <constraint firstItem="8MK-lm-HKI" firstAttribute="leading" secondItem="MKN-p0-WWq" secondAttribute="trailing" constant="10" id="9tg-Dr-QIO"/>
                                 <constraint firstAttribute="trailing" secondItem="8MK-lm-HKI" secondAttribute="trailing" constant="15" id="BEn-cn-SKx"/>
                                 <constraint firstAttribute="height" constant="47" id="Owm-Yz-tx8"/>
                                 <constraint firstItem="8MK-lm-HKI" firstAttribute="top" secondItem="sr9-qd-6FI" secondAttribute="top" constant="19" id="UGj-23-4QB"/>
+                                <constraint firstItem="MKN-p0-WWq" firstAttribute="top" secondItem="sr9-qd-6FI" secondAttribute="top" constant="17" id="qhO-vt-fbW"/>
                                 <constraint firstItem="29x-wX-d9u" firstAttribute="top" secondItem="sr9-qd-6FI" secondAttribute="top" constant="15" id="rN8-f5-pG8"/>
                             </constraints>
                             <connections>
@@ -261,6 +292,7 @@
                 <constraint firstItem="G4B-fj-PnE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="c2s-EM-WN3"/>
                 <constraint firstAttribute="bottom" secondItem="G4B-fj-PnE" secondAttribute="bottom" id="thx-dj-zmH"/>
             </constraints>
+            <point key="canvasLocation" x="-33" y="-48"/>
         </view>
         <tapGestureRecognizer id="hg6-h4-GT4">
             <connections>

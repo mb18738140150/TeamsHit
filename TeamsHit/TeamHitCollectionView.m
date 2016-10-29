@@ -95,6 +95,10 @@
         if (self.myblock) {
             _myblock();
         }
+    }else
+    {
+        RCUserInfo * userInfo = [self.dateSourceArray objectAtIndex:indexPath.row];
+        [self.delegate lookUserDetailWithUserid:userInfo.userId];
     }
 }
 

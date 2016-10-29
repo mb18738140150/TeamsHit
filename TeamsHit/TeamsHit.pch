@@ -50,6 +50,8 @@
 #import "TipView.h"
 #import "PlayMusicModel.h"
 
+#import "Print.h"
+
 // 语音合成
 #import "iflyMSC/IFlySpeechSynthesizerDelegate.h"
 #import "iflyMSC/IFlySpeechSynthesizer.h"

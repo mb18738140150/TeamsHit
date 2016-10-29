@@ -11,4 +11,5 @@
 @interface PlayMusicModel : NSObject
 +(PlayMusicModel *)share;
 - (void)playMusicWithName:(NSString *)name;
+- (void)playMusicWithName:(NSString *)name type:(NSString *)type;
 @end

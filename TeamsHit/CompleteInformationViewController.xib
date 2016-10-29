@@ -68,7 +68,7 @@
                                         <outlet property="delegate" destination="-1" id="IOq-Zf-NIU"/>
                                     </connections>
                                 </textField>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入用户名" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CSt-bR-qF1">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="仅支持字母数字下划线" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CSt-bR-qF1">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="30" id="KoX-rl-32A"/>
                                     </constraints>

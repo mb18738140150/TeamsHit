@@ -478,8 +478,15 @@
                 group.creatorTime = [NSString stringWithFormat:@"%@", [groupInfo objectForKey:@"CreatorTime"]];
                 
                 [tempArr addObject:group];
+                
+                RCGroup * groupInfo = [[RCGroup alloc]init];
+                groupInfo.groupId = group.groupId;
+                groupInfo.groupName = group.groupName;
+                groupInfo.portraitUri = group.portraitUri;
+                
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                     [[RCDataBaseManager shareInstance] insertGroupToDB:group];
+                    [[RCIM sharedRCIM]refreshGroupInfoCache:groupInfo withGroupId:groupInfo.groupId];
                 });
             }
             

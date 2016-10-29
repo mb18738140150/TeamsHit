@@ -24,11 +24,11 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sjl-Fe-AAL">
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo(1).png" translatesAutoresizingMaskIntoConstraints="NO" id="N6e-oE-6W3">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mstcging-logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="N6e-oE-6W3">
                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="81" id="bmw-mY-kb7"/>
-                                <constraint firstAttribute="width" constant="81" id="h8e-KG-zpR"/>
+                                <constraint firstAttribute="height" constant="59" id="bmw-mY-kb7"/>
+                                <constraint firstAttribute="width" constant="240" id="h8e-KG-zpR"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="账号" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j67-qJ-kOw">
@@ -46,7 +46,7 @@
                                 </mask>
                             </variation>
                         </label>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入账号" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4L7-ae-UXk">
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入手机号/对对号" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4L7-ae-UXk">
                             <constraints>
                                 <constraint firstAttribute="width" constant="200" id="aw1-wp-gp3"/>
                                 <constraint firstAttribute="height" constant="20" id="hb1-t2-y5X"/>
@@ -184,6 +184,6 @@
         </view>
     </objects>
     <resources>
-        <image name="logo(1).png" width="512" height="512"/>
+        <image name="mstcging-logo.png" width="305" height="74"/>
     </resources>
 </document>

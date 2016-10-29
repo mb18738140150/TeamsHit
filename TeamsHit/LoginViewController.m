@@ -11,6 +11,8 @@
 #import "RCDUtilities.h"
 #import "MyTabBarController.h"
 #import "CompleteInformationViewController.h"
+#import "ForgetPAsswordViewController.h"
+
 
 @interface LoginViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
 
@@ -59,16 +61,15 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     
     // 自动登录
-    if (self.notAutoLogin) {
-        self.notAutoLogin = NO;
-    }else
-    {
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"]) {
-            self.accountNumber.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
-            self.passwordTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"];
-            
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"]) {
+        self.accountNumber.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
+        self.passwordTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"];
+        
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"haveLogin"] boolValue]) {
             [self login];
-            
+        }else
+        {
+            self.passwordTF.text = @"";
         }
     }
     
@@ -110,6 +111,8 @@
 //    
 //    [UIView commitAnimations];
 }
+
+#pragma mark - textfiledDelegate
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     self.myTextfiled = textField;
@@ -215,6 +218,7 @@
                 });
                 
             }];
+            [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];
             // 账号密码保存到本地
             [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
             [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
@@ -266,6 +270,10 @@
     [self.navigationController pushViewController:registerVC animated:YES];
 }
 - (IBAction)fogetPaddwordAction:(id)sender {
+    
+    ForgetPAsswordViewController * forgetVC = [[ForgetPAsswordViewController alloc]initWithNibName:@"ForgetPAsswordViewController" bundle:nil];
+    forgetVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:forgetVC animated:YES];
 }
 
 - (void)pushMyTabbarViewController

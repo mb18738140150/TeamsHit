@@ -31,6 +31,8 @@
 
 @property (nonatomic, strong)UILabel * noreadLabel;
 
+@property (nonatomic, assign)BOOL lookUserInfo;
+
 @end
 
 @implementation FriendListViewController
@@ -50,8 +52,8 @@
     self.friendsTabelView.tableFooterView = [UIView new];
     float colorFloat = 245.f / 255.f;
     self.friendsTabelView.backgroundColor = [[UIColor alloc] initWithRed:colorFloat green:colorFloat blue:colorFloat alpha:1];
-    _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"群组", nil];
-    _defaultCellsPortrait   = [NSArray arrayWithObjects:@"newFriend",@"defaultGroup", nil];
+    _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"群组", @"对对碰团队", nil];
+    _defaultCellsPortrait   = [NSArray arrayWithObjects:@"newFriend",@"defaultGroup", @"logo(1)", nil];
     
     _allFriends = [NSMutableDictionary new];
     _allKeys = [NSMutableArray new];
@@ -72,8 +74,13 @@
         return;
     }else
     {
-        [_friendsArr removeAllObjects];
-        [self getAllData];
+        if (!self.lookUserInfo) {
+            [_friendsArr removeAllObjects];
+            [self getAllData];
+        }else
+        {
+            self.lookUserInfo = NO;
+        }
     }
     
     if ([[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count] > 0) {
@@ -101,7 +108,7 @@
 {
     NSInteger rows = 0;
     if (section == 0) {
-        rows = 2;
+        rows = 3;
     }else
     {
         NSString * key = [_allKeys objectAtIndex:section - 1];
@@ -221,20 +228,30 @@
         FriendInformationViewController * vc = [[FriendInformationViewController alloc]init];
         vc.targetId = userInfo.userId;
         vc.hidesBottomBarWhenPushed = YES;
-        
-        ChatViewController * chatVc = [[ChatViewController alloc]init];
-        chatVc.hidesBottomBarWhenPushed = YES;
-        chatVc.conversationType = ConversationType_PRIVATE;
-        chatVc.displayUserNameInCell = NO;
-        chatVc.targetId = userInfo.userId;
-        chatVc.title = userInfo.name;
-        chatVc.needPopToRootView = YES;
+        self.lookUserInfo = YES;
+//        ChatViewController * chatVc = [[ChatViewController alloc]init];
+//        chatVc.hidesBottomBarWhenPushed = YES;
+//        chatVc.conversationType = ConversationType_PRIVATE;
+//        chatVc.displayUserNameInCell = NO;
+//        chatVc.targetId = userInfo.userId;
+//        chatVc.title = userInfo.name;
+//        chatVc.needPopToRootView = YES;
         [self.navigationController pushViewController:vc animated:YES];
     }else if (indexPath.row == 1 && indexPath.section == 0)
     {
         GroupListViewController * groupListVC = [[GroupListViewController alloc]init];
         groupListVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:groupListVC animated:YES];
+    }else if (indexPath.row == 2 && indexPath.section == 0)
+    {
+        ChatViewController * chatVc = [[ChatViewController alloc]init];
+        chatVc.hidesBottomBarWhenPushed = YES;
+        chatVc.conversationType = ConversationType_PRIVATE;
+        chatVc.displayUserNameInCell = NO;
+        chatVc.targetId = @"200";
+        chatVc.title = @"手机对对碰团队";
+        chatVc.needPopToRootView = YES;
+        [self.navigationController pushViewController:chatVc animated:YES];
     }
 }
 

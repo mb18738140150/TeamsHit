@@ -31,8 +31,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"群组"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"群组";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -95,8 +95,8 @@
         [self.keyArray addObject:@"吹牛"];
     }
     if (self.twentyoneArray.count != 0) {
-        [self.dataSource addObject:self.twentyoneArray];
-        [self.keyArray addObject:@"21点"];
+//        [self.dataSource addObject:self.twentyoneArray];
+//        [self.keyArray addObject:@"21点"];
     }
     if ([alldataArr count] == 0 && _isSyncGroup == NO) {
         
@@ -120,7 +120,7 @@
         return self.bragArray.count;
     }else
     {
-        return self.twentyoneArray.count;
+        return 0;
     }
 }
 
@@ -154,16 +154,6 @@
     groupInfo.groupName = group.groupName;
     groupInfo.portraitUri = group.portraitUri;
     [[RCIM sharedRCIM]refreshGroupInfoCache:groupInfo withGroupId:groupInfo.groupId];
-    
-    
-//    GameChatViewController * chatVc = [[GameChatViewController alloc]init];
-//    chatVc.hidesBottomBarWhenPushed = YES;
-//    chatVc.conversationType = ConversationType_GROUP;
-//    chatVc.displayUserNameInCell = NO;
-//    chatVc.targetId = group.groupId;
-//    chatVc.title = group.groupName;
-//    chatVc.needPopToRootView = YES;
-//    [self.navigationController pushViewController:chatVc animated:YES];
     
     
     BragGameChatViewController * conversationVC = [[BragGameChatViewController alloc]init];

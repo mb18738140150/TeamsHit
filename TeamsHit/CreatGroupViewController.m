@@ -24,6 +24,10 @@
 @property (strong, nonatomic) IBOutlet UILabel *groupVerifyLabel;
 @property (strong, nonatomic) IBOutlet UITextField *groupIntroduceTF;
 
+@property (strong, nonatomic) IBOutlet UILabel *groupTypeLB;
+@property (strong, nonatomic) IBOutlet UILabel *groupVerifyTypeLB;
+
+
 @property (strong, nonatomic) IBOutlet UIButton *creatGroupBT;
 // 图片选择器
 @property (nonatomic, strong)UIImagePickerController * imagePic;
@@ -42,8 +46,8 @@
     self.GroupType = 1;
     self.VerificationType = 1;
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"创建群组"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"创建群组";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -147,11 +151,14 @@
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
-        if ([string isEqualToString:@"允许任何人加入"]) {
-            self.GroupType = 1;
-        }else if([string isEqualToString:@"不允许任何人加入"])
+        if([string isEqualToString:@"不允许任何人加入"])
         {
-            self.GroupType = 2;
+            self.VerificationType = 2;
+            self.groupVerifyTypeLB.text = @"不允许任何人加入";
+        }else
+        {
+            self.VerificationType = 1;
+            self.groupVerifyTypeLB.text = @"允许任何人加入";
         }
     }];
 }

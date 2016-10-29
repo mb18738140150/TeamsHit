@@ -130,7 +130,7 @@
             rulerImageView.userInteractionEnabled = YES;
             [backWhiteView addSubview:rulerImageView];
             
-            UILabel * rulerLabel = [[UILabel alloc]initWithFrame:CGRectMake(39, 61, 30, 15)];
+            UILabel * rulerLabel = [[UILabel alloc]initWithFrame:CGRectMake(39, 61, 40, 15)];
             rulerLabel.text = @"规则";
             rulerLabel.textColor = UIColorFromRGB(0x12B7F5);
             rulerLabel.font = [UIFont systemFontOfSize:15];
@@ -241,7 +241,7 @@
     quitTipView.layer.masksToBounds = YES;
     [self addSubview:quitTipView];
     
-    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 16, 75, 15)];
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 16, 85, 15)];
     titleLabel.text = @"三思而后行";
     titleLabel.textColor = MAIN_COLOR;
     titleLabel.font = [UIFont systemFontOfSize:15];

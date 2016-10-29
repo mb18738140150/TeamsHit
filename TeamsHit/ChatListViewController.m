@@ -17,13 +17,14 @@
 #import "FriendListViewController.h"
 #import "CreatGroupChatRoomViewController.h"
 #import "AddEquipmentViewController.h"
-
+#import "MaterialViewController.h"
 #import "BragGameChatViewController.h"
-
+#import "ChatListCollectionViewController.h"
 @interface ChatListViewController ()
 
 @property (nonatomic,strong) RCConversationModel *tempModel;
 @property (nonatomic,assign) BOOL isClick;
+@property (nonatomic, strong)UILabel * printTimeLabel;
 - (void) updateBadgeValueForTabBarItem;
 
 @end
@@ -52,7 +53,7 @@
     
     UIButton * barButtonItem = [UIButton buttonWithType:UIButtonTypeCustom];
     barButtonItem.frame = CGRectMake(0, 0, 30, 30);
-    [barButtonItem setImage:[[UIImage imageNamed:@"addicon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [barButtonItem setImage:[[UIImage imageNamed:@"chat"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [barButtonItem addTarget:self action:@selector(showMenu:) forControlEvents:UIControlEventTouchUpInside];
     
 //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"addicon"] style:UIBarButtonItemStyleDone target:self action:@selector(showMenu:)];
@@ -65,10 +66,12 @@
     //聚合会话类型
 //    [self setCollectionConversationType:@[@(ConversationType_SYSTEM)]];
     
+    self.conversationListTableView.frame = CGRectMake(self.conversationListTableView.hd_x, self.conversationListTableView.hd_y + 95, self.conversationListTableView.hd_width, self.conversationListTableView.hd_height - 95);
+    UIView * view333 = [[UIView alloc]initWithFrame:CGRectMake(0, 64, self.view.hd_width, 80)];
+    view333.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
-    self.conversationListTableView.frame = CGRectMake(self.conversationListTableView.hd_x, self.conversationListTableView.hd_y + 50, self.conversationListTableView.hd_width, self.conversationListTableView.hd_height - 50);
-    UIView * view333 = [[UIView alloc]initWithFrame:CGRectMake(0, 64, self.view.hd_width, 50)];
-    view333.backgroundColor = [UIColor cyanColor];
+    [view333 addSubview: [self getMymstching]];
+    
     [self.view addSubview:view333];
     [self.view insertSubview:view333 aboveSubview:self.conversationListTableView];
     
@@ -86,6 +89,76 @@
     NSLog(@"删除好友了");
     [self refreshConversationTableViewIfNeeded];
 }
+
+#pragma mark - 我的对对机
+- (UIView *)getMymstching
+{
+    UIView * view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, 65)];
+    view.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(16, 13, 44, 41)];
+    imageView.image = [UIImage imageNamed:@"logo(1)"];
+    imageView.userInteractionEnabled = YES;
+    [view addSubview:imageView];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(75, 15, 90, 16)];
+    titleLabel.text = @"我的对对机";
+    titleLabel.font = [UIFont systemFontOfSize:15];
+    titleLabel.textColor = UIColorFromRGB(0x1A1A1A);
+    titleLabel.userInteractionEnabled = YES;
+    [view addSubview:titleLabel];
+    
+    self.printTimeLabel = [[UILabel alloc]initWithFrame:CGRectMake(75, 38, 250, 15)];
+    _printTimeLabel.text = @"您暂时还未打印";
+    _printTimeLabel.textColor = UIColorFromRGB(0x999999);
+    _printTimeLabel.font = [UIFont systemFontOfSize:13];
+    _printTimeLabel.userInteractionEnabled = YES;
+    [view addSubview:_printTimeLabel];
+    
+    UIImageView * goImageView = [[UIImageView alloc]initWithFrame:CGRectMake(screenWidth - 20, 25, 8, 16)];
+    goImageView.image = [UIImage imageNamed:@"next_icon.png"];
+    goImageView.userInteractionEnabled = YES;
+    [view addSubview:goImageView];
+    
+    UITapGestureRecognizer * mymstchingTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(mymstchingTapAction)];
+    [view addGestureRecognizer:mymstchingTap];
+    
+    return view;
+}
+
+- (void)mymstchingTapAction
+{
+    MaterialViewController * processVC = [[MaterialViewController alloc]init];
+    processVC.hidesBottomBarWhenPushed = YES;
+    processVC.userId = @([RCIM sharedRCIM].currentUserInfo.userId.intValue);
+    [self.navigationController pushViewController:processVC animated:YES];
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/testTeamState?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    NSDictionary * dic = @{@"ToUserId":@([RCIM sharedRCIM].currentUserInfo.userId.intValue)
+                           };
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:dic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败请重试" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        NSLog(@"%@", error);
+    }];
+    
+}
+
+#pragma mark - add
 - (void)showMenu:(UIBarButtonItem *)button
 {
     NSArray *menuItems =
@@ -175,6 +248,10 @@
     }
     [self refreshConversationTableViewIfNeeded];
     
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"PrintTime"]) {
+        self.printTimeLabel.text = [NSString stringWithFormat:@"上次打印时间：%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"PrintTime"]];
+    }
+    
 //    [self.conversationListTableView reloadData];
 }
 
@@ -185,7 +262,6 @@
                                                     name:@"kRCNeedReloadDiscussionListNotification"
                                                   object:nil];
 }
-
 
 - (void)updateBadgeValueForTabBarItem
 {
@@ -281,11 +357,12 @@
         //聚合会话类型，此处自定设置。
         if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION) {
             
-            ChatListViewController *temp = [[ChatListViewController alloc] init];
+            ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
             NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
             [temp setDisplayConversationTypes:array];
             [temp setCollectionConversationType:nil];
             temp.isEnteredToCollectionViewController = YES;
+            temp.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:temp animated:YES];
         }
         
@@ -356,7 +433,15 @@
     RCConversationModel * model = self.conversationListDataSource[indexPath.row];
     if (model.conversationType == ConversationType_PRIVATE) {
         RCConversationCell * cell1 = (RCConversationCell *)cell;
-        //        cell1.conversationTitle.textColor = [UIColor redColor];
+//                cell1.conversationTitle.textColor = [UIColor redColor];
+    }else if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION)
+    {
+        RCConversationCell * cell1 = (RCConversationCell *)cell;
+        cell1.conversationTitle.text = @"系统消息";
+    }else if (model.conversationType == ConversationType_GROUP)
+    {
+        RCConversationCell * cell1 = (RCConversationCell *)cell;
+        
     }
 }
 
@@ -593,38 +678,58 @@
     }
     
     if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
-        ChatViewController *_conversationVC = [[ChatViewController alloc]init];
-        _conversationVC.conversationType = model.conversationType;
-        _conversationVC.targetId = model.targetId;
-        _conversationVC.userName = model.conversationTitle;
-        _conversationVC.title = model.conversationTitle;
-        _conversationVC.conversation = model;
-        _conversationVC.unReadMessage = model.unreadMessageCount;
-        _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
-        _conversationVC.enableUnreadMessageIcon=YES;
-        if (model.conversationType == ConversationType_SYSTEM) {
-            _conversationVC.userName = @"系统消息";
-            _conversationVC.title = @"系统消息";
+        
+        
+        if (model.conversationType == 3) {
+            BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
+            _conversationVC.conversationType = model.conversationType;
+            _conversationVC.targetId = model.targetId;
+            _conversationVC.userName = model.conversationTitle;
+            _conversationVC.title = model.conversationTitle;
+            _conversationVC.conversation = model;
+            _conversationVC.unReadMessage = model.unreadMessageCount;
+            _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+            _conversationVC.enableUnreadMessageIcon=YES;
+            _conversationVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:_conversationVC animated:YES];
+        }else
+        {
+            ChatViewController *_conversationVC = [[ChatViewController alloc]init];
+            _conversationVC.conversationType = model.conversationType;
+            _conversationVC.targetId = model.targetId;
+            _conversationVC.userName = model.conversationTitle;
+            _conversationVC.title = model.conversationTitle;
+            _conversationVC.conversation = model;
+            _conversationVC.unReadMessage = model.unreadMessageCount;
+            _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+            _conversationVC.enableUnreadMessageIcon=YES;
+            if (model.conversationType == ConversationType_SYSTEM) {
+                _conversationVC.userName = @"系统消息";
+                _conversationVC.title = @"系统消息";
+            }
+            if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
+                UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                //            RCDAddressBookViewController *addressBookVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddressBookViewController"];
+                //            addressBookVC.needSyncFriendList = YES;
+                //            [self.navigationController pushViewController:addressBookVC animated:YES];
+                return;
+            }
+            _conversationVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:_conversationVC animated:YES];
+            
         }
-        if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
-            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//            RCDAddressBookViewController *addressBookVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddressBookViewController"];
-//            addressBookVC.needSyncFriendList = YES;
-//            [self.navigationController pushViewController:addressBookVC animated:YES];
-            return;
-        }
-        _conversationVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:_conversationVC animated:YES];
+        
     }
     
     //聚合会话类型，此处自定设置。
     if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION) {
         
-        ChatListViewController *temp = [[ChatListViewController alloc] init];
+        ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
         NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
         [temp setDisplayConversationTypes:array];
         [temp setCollectionConversationType:nil];
         temp.isEnteredToCollectionViewController = YES;
+        temp.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:temp animated:YES];
     }
     

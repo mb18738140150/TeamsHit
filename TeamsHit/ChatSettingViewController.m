@@ -9,6 +9,7 @@
 #import "ChatSettingViewController.h"
 #import "FriendInformationModel.h"
 #import "CreatGroupChatRoomViewController.h"
+#import "FriendInformationViewController.h"
 
 @interface ChatSettingViewController ()<UIActionSheetDelegate, TipViewDelegate>
 {
@@ -32,15 +33,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"聊天详情"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
+    self.title = @"聊天详情";
     
     UITapGestureRecognizer * addGroupFriendTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addGroupFriendAction:)];
     [self.addGroupmenberView addGestureRecognizer:addGroupFriendTap];
     
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:self.model.iconUrl] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+    UITapGestureRecognizer * FrienddetailTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(FrienddetailTapAction:)];
+    [self.iconImageView addGestureRecognizer:FrienddetailTap];
+    
+    
     self.remarkLabel.text = self.model.nickName;
     
     [self.messageDisturbbt setImage:[[UIImage imageNamed:@"forbid"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateSelected];
@@ -229,6 +235,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex {
     [[RCIMClient sharedRCIMClient] getHistoryMessages:ConversationType_PRIVATE targetId:@"" oldestMessageId:999 count:10];
     
     // Dispose of any resources that can be recreated.
+}
+
+- (void)FrienddetailTapAction:(UITapGestureRecognizer *)sender
+{
+    FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+    friend.targetId = self.userId;
+    [self.navigationController pushViewController:friend animated:YES];
 }
 
 /*

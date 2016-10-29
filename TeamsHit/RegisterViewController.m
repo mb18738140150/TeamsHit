@@ -46,8 +46,8 @@
     self.getVerifyCodeBT.layer.cornerRadius = 3;
     self.getVerifyCodeBT.layer.masksToBounds = YES;
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"注册"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"注册";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -89,8 +89,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    UINavigationBar * bar = self.navigationController.navigationBar;
-    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+//    UINavigationBar * bar = self.navigationController.navigationBar;
+//    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
 //    self.backGroundView.frame = CGRectMake(0, 64, self.view.hd_width, self.view.hd_height);
 }
@@ -139,6 +139,7 @@
 - (void)codeTime
 {
     [_getVerifyCodeBT setTitle:[NSString stringWithFormat:@"%ds后重发", --_t] forState:UIControlStateDisabled];
+    NSLog(@"%d", _t);
 }
 - (void)passTime
 {
@@ -152,7 +153,7 @@
 #pragma mark = 注册
 - (void)registerAction:(UIButton *)button
 {
-    [self registerAccount];
+//    [self registerAccount];
     
     if (self.verifyCodeTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入验证码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -248,6 +249,16 @@
 {
     [textField resignFirstResponder];
     return YES;
+}
+
+- (void)dealloc
+{
+    if (self.codeTimer) {
+        [self.codeTimer invalidate];
+        self.codeTimer = nil;
+        NSLog(@"销毁定时器");
+    }
+    NSLog(@"界面销毁");
 }
 
 //- (void)pushComPleteVC

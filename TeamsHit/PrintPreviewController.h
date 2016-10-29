@@ -12,4 +12,5 @@
 
 @property (nonatomic, strong)NSMutableArray * printDataSourceArr;
 
+@property (nonatomic, strong)NSNumber * userId;
 @end

@@ -10,10 +10,16 @@
 
 typedef void(^AddNewGroupMumberBlock)();
 
+@protocol LookUserDetailDelegate <NSObject>
+
+- (void)lookUserDetailWithUserid:(NSString *)userId;
+
+@end
+
 @interface TeamHitCollectionView : UIView
 
 @property (nonatomic, strong)NSMutableArray * dateSourceArray;
-
+@property (nonatomic, assign)id<LookUserDetailDelegate>delegate;
 - (void)addNewGroupMumber:(AddNewGroupMumberBlock)block;
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)reloadDataAction;

@@ -9,17 +9,24 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FriendInformationViewController">
             <connections>
                 <outlet property="accountNumberLabel" destination="toA-Lt-RAX" id="PSK-5f-9rP"/>
+                <outlet property="addressLB" destination="7T2-Zc-0Yf" id="fdO-hF-cLq"/>
                 <outlet property="addresslabel" destination="OO4-N9-8cs" id="7a1-UQ-AHJ"/>
+                <outlet property="assressLine" destination="qPY-hz-3Xa" id="49Z-Hh-15O"/>
+                <outlet property="displayNameLabel" destination="3ya-Vl-eFP" id="MGY-aQ-ArV"/>
+                <outlet property="genderImageView" destination="PFu-Pa-Ja5" id="mZH-BR-vEg"/>
                 <outlet property="iconImageview" destination="Gcc-Qn-hGF" id="3S8-y0-rT0"/>
                 <outlet property="imageView1" destination="FgJ-Et-1SO" id="io4-Ou-LS3"/>
                 <outlet property="imageview" destination="57V-sC-fLr" id="WWX-nY-cui"/>
                 <outlet property="imageview2" destination="zxX-O3-QfE" id="RPg-eY-yYR"/>
                 <outlet property="imageview3" destination="rli-Vd-mnx" id="ccd-88-CiI"/>
                 <outlet property="imageview4" destination="PGK-0D-Kwl" id="6ag-Nw-aht"/>
+                <outlet property="informationView" destination="tKC-42-g6F" id="bdM-Hg-Tjn"/>
                 <outlet property="nickNameLabel" destination="utg-ms-6tu" id="8gB-8x-kt0"/>
                 <outlet property="oparationBT" destination="wdf-eg-W7c" id="hUl-e6-fUZ"/>
+                <outlet property="phoneNumberLB" destination="gn8-Jp-9tV" id="9b4-zc-GfE"/>
                 <outlet property="phoneNumberLabel" destination="UCT-Ll-Hkd" id="unC-t8-qDB"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="viewHeight" destination="Mad-vh-Jta" id="98t-eW-xPV"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -29,7 +36,7 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gq3-6g-edJ">
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gcc-Qn-hGF">
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gcc-Qn-hGF">
                             <constraints>
                                 <constraint firstAttribute="width" constant="65" id="a7J-v8-q2V"/>
                                 <constraint firstAttribute="height" constant="65" id="ohf-kg-ETK"/>
@@ -51,18 +58,35 @@
                             <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="昵称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ya-Vl-eFP">
+                            <constraints>
+                                <constraint firstAttribute="height" constant="13" id="hsj-cc-49e"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PFu-Pa-Ja5">
+                            <constraints>
+                                <constraint firstAttribute="height" constant="15" id="RhI-3r-aNY"/>
+                                <constraint firstAttribute="width" constant="15" id="UTK-z8-XtQ"/>
+                            </constraints>
+                        </imageView>
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
+                        <constraint firstItem="PFu-Pa-Ja5" firstAttribute="leading" secondItem="utg-ms-6tu" secondAttribute="trailing" constant="5" id="5q9-9x-49d"/>
                         <constraint firstItem="Gcc-Qn-hGF" firstAttribute="top" secondItem="gq3-6g-edJ" secondAttribute="top" constant="12" id="8pS-nK-ehn"/>
-                        <constraint firstItem="utg-ms-6tu" firstAttribute="top" secondItem="gq3-6g-edJ" secondAttribute="top" constant="26" id="Qyg-c8-Y7m"/>
+                        <constraint firstItem="3ya-Vl-eFP" firstAttribute="leading" secondItem="Gcc-Qn-hGF" secondAttribute="trailing" constant="12" id="M6C-eM-Nlu"/>
+                        <constraint firstItem="utg-ms-6tu" firstAttribute="top" secondItem="gq3-6g-edJ" secondAttribute="top" constant="18" id="Qyg-c8-Y7m"/>
                         <constraint firstItem="utg-ms-6tu" firstAttribute="leading" secondItem="Gcc-Qn-hGF" secondAttribute="trailing" constant="12" id="SEh-mU-sNL"/>
                         <constraint firstAttribute="height" constant="88" id="Xqy-iC-18p"/>
+                        <constraint firstItem="3ya-Vl-eFP" firstAttribute="top" secondItem="toA-Lt-RAX" secondAttribute="bottom" constant="10" id="ZON-TD-gOT"/>
                         <constraint firstItem="toA-Lt-RAX" firstAttribute="top" secondItem="utg-ms-6tu" secondAttribute="bottom" constant="10" id="c27-I8-OV8"/>
                         <constraint firstItem="toA-Lt-RAX" firstAttribute="leading" secondItem="Gcc-Qn-hGF" secondAttribute="trailing" constant="12" id="f8H-1j-0Zc"/>
+                        <constraint firstItem="PFu-Pa-Ja5" firstAttribute="top" secondItem="gq3-6g-edJ" secondAttribute="top" constant="18" id="nTV-DO-luH"/>
                         <constraint firstItem="Gcc-Qn-hGF" firstAttribute="leading" secondItem="gq3-6g-edJ" secondAttribute="leading" constant="15" id="on1-34-kmV"/>
                         <constraint firstAttribute="trailing" secondItem="toA-Lt-RAX" secondAttribute="trailing" constant="15" id="sCA-jy-Ziv"/>
-                        <constraint firstAttribute="trailing" secondItem="utg-ms-6tu" secondAttribute="trailing" constant="15" id="w0X-sX-eRB"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tKC-42-g6F">
@@ -155,7 +179,7 @@
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="57V-sC-fLr">
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="相册" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gXA-Ic-VMx">
+                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="相册" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gXA-Ic-VMx">
                             <constraints>
                                 <constraint firstAttribute="height" constant="14" id="pGK-8S-eJ3"/>
                                 <constraint firstAttribute="width" constant="40" id="qnF-DE-XaG"/>
@@ -164,28 +188,29 @@
                             <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="zxX-O3-QfE">
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="zxX-O3-QfE">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="x28-EX-EO0"/>
                             </constraints>
                         </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="PGK-0D-Kwl">
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="PGK-0D-Kwl">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="V5F-n7-KAk"/>
                             </constraints>
                         </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="FgJ-Et-1SO">
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="FgJ-Et-1SO">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="Kug-Xa-apo"/>
                             </constraints>
                         </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="rli-Vd-mnx">
+                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meIcon_default.png" translatesAutoresizingMaskIntoConstraints="NO" id="rli-Vd-mnx">
                             <constraints>
                                 <constraint firstAttribute="height" constant="59" id="aVz-mZ-nkg"/>
                             </constraints>
                         </imageView>
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <gestureRecognizers/>
                     <constraints>
                         <constraint firstItem="FgJ-Et-1SO" firstAttribute="top" secondItem="57V-sC-fLr" secondAttribute="top" constant="8" id="177-u6-gLm"/>
                         <constraint firstItem="FgJ-Et-1SO" firstAttribute="leading" secondItem="gXA-Ic-VMx" secondAttribute="trailing" constant="44" id="5lT-d2-wim"/>
@@ -203,6 +228,9 @@
                         <constraint firstItem="zxX-O3-QfE" firstAttribute="leading" secondItem="FgJ-Et-1SO" secondAttribute="trailing" constant="9" id="yoG-We-Ffk"/>
                         <constraint firstItem="rli-Vd-mnx" firstAttribute="top" secondItem="57V-sC-fLr" secondAttribute="top" constant="8" id="zNP-RI-9rQ"/>
                     </constraints>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="zhQ-zd-T5Z" appends="YES" id="Ugs-Uj-iNB"/>
+                    </connections>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wdf-eg-W7c">
                     <color key="backgroundColor" red="0.070588235294117646" green="0.71764705882352942" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -238,7 +266,13 @@
                 <constraint firstItem="gq3-6g-edJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="21" id="slO-QZ-RHa"/>
                 <constraint firstItem="57V-sC-fLr" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="vTd-6S-HhC"/>
             </constraints>
+            <point key="canvasLocation" x="-127" y="-31"/>
         </view>
+        <tapGestureRecognizer id="zhQ-zd-T5Z">
+            <connections>
+                <action selector="lookUserFriendCircle:" destination="-1" id="JYh-KI-9J7"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="meIcon_default.png" width="72" height="72"/>

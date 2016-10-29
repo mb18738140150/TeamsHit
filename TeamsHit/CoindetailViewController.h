@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^BuyCoinsBlock)(NSString * coinCount);
+
 @interface CoindetailViewController : UIViewController
 
 @property (nonatomic, copy)NSString * cointCount;
-
+- (void)BuyCoins:(BuyCoinsBlock)block;
 @end

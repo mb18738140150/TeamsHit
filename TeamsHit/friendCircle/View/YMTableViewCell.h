@@ -13,7 +13,7 @@
 
 typedef void(^DeleteTakeBlock)();
 
-typedef void(^LookUserShuoshuoBlock)() ;
+typedef void(^LookUserShuoshuoBlock)(NSString * string) ;
 
 @protocol cellDelegate <NSObject>
 
@@ -21,6 +21,7 @@ typedef void(^LookUserShuoshuoBlock)() ;
 - (void)showImageViewWithImageViews:(NSArray *)imageViews byClickWhich:(NSInteger)clickTag;
 - (void)clickRichText:(NSInteger)index replyIndex:(NSInteger)replyIndex;
 - (void)longClickRichText:(NSInteger)index replyIndex:(NSInteger)replyIndex;
+- (void)clickUserName:(NSString *)userId;
 
 @end
 

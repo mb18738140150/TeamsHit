@@ -38,28 +38,6 @@
                         <constraint firstItem="Dkl-rs-iuI" firstAttribute="leading" secondItem="clc-nt-VA7" secondAttribute="leading" constant="15" id="esc-4y-a1k"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hy4-eZ-yzz">
-                    <subviews>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入WiFi密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C1L-xS-sJe">
-                            <constraints>
-                                <constraint firstAttribute="height" constant="15" id="x8x-uj-9AU"/>
-                            </constraints>
-                            <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <textInputTraits key="textInputTraits"/>
-                            <connections>
-                                <outlet property="delegate" destination="-1" id="Sao-7T-SQa"/>
-                            </connections>
-                        </textField>
-                    </subviews>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <constraints>
-                        <constraint firstItem="C1L-xS-sJe" firstAttribute="top" secondItem="Hy4-eZ-yzz" secondAttribute="top" constant="15" id="Avx-vH-GKM"/>
-                        <constraint firstItem="C1L-xS-sJe" firstAttribute="leading" secondItem="Hy4-eZ-yzz" secondAttribute="leading" constant="15" id="KOS-o9-pya"/>
-                        <constraint firstAttribute="trailing" secondItem="C1L-xS-sJe" secondAttribute="trailing" constant="15" id="Qew-02-9fF"/>
-                        <constraint firstAttribute="height" constant="45" id="h4g-wz-c1I"/>
-                    </constraints>
-                </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s1U-5t-atd">
                     <color key="backgroundColor" red="0.070588235294117646" green="0.71764705882352942" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
@@ -73,6 +51,29 @@
                         <action selector="configurationWLAN:" destination="-1" eventType="touchUpInside" id="xlK-Yo-4eh"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hy4-eZ-yzz">
+                    <frame key="frameInset" minY="65" width="375" height="45"/>
+                    <subviews>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Xldz*$#@" placeholder="请输入WiFi密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C1L-xS-sJe">
+                            <constraints>
+                                <constraint firstAttribute="height" constant="18" id="x8x-uj-9AU"/>
+                            </constraints>
+                            <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="Sao-7T-SQa"/>
+                            </connections>
+                        </textField>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="C1L-xS-sJe" firstAttribute="top" secondItem="Hy4-eZ-yzz" secondAttribute="top" constant="15" id="Avx-vH-GKM"/>
+                        <constraint firstItem="C1L-xS-sJe" firstAttribute="leading" secondItem="Hy4-eZ-yzz" secondAttribute="leading" constant="15" id="KOS-o9-pya"/>
+                        <constraint firstAttribute="trailing" secondItem="C1L-xS-sJe" secondAttribute="trailing" constant="15" id="Qew-02-9fF"/>
+                        <constraint firstAttribute="height" constant="45" id="h4g-wz-c1I"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>

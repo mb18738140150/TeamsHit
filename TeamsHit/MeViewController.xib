@@ -15,6 +15,7 @@
                 <outlet property="equipmentmanagerView" destination="cCZ-q6-NFd" id="r7o-aC-JcQ"/>
                 <outlet property="iconImageView" destination="qPn-x4-qLW" id="VP7-Ip-ZOU"/>
                 <outlet property="infoView" destination="Hf3-LO-EPb" id="nzE-FJ-ttV"/>
+                <outlet property="shareGetCoinLabel" destination="Fdi-HA-dSE" id="cAn-jL-Lgc"/>
                 <outlet property="userNameLabel" destination="Dom-g5-bV1" id="DAz-rk-TUC"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -79,8 +80,7 @@
                                         <constraint firstAttribute="height" constant="30" id="ohu-qC-H7w"/>
                                     </constraints>
                                 </imageView>
-                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="2000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NGh-iS-99g">
-                                    <frame key="frameInset" minX="51" minY="40" width="28" height="8"/>
+                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NGh-iS-99g">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="10" id="8sJ-To-BBZ"/>
                                     </constraints>
@@ -218,7 +218,7 @@
                                         <constraint firstAttribute="width" constant="30" id="gcM-Y6-5Nz"/>
                                     </constraints>
                                 </imageView>
-                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="分享好友" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EnR-02-caD">
+                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="分享" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EnR-02-caD">
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="12Y-m2-4t9"/>
                                         <constraint firstAttribute="height" constant="15" id="XSi-FB-Lkg"/>
@@ -308,6 +308,50 @@
                                 <outletCollection property="gestureRecognizers" destination="zfw-uY-NoW" appends="YES" id="5UE-er-rrQ"/>
                             </connections>
                         </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lo0-ST-Ubp" userLabel="telephoneCheck">
+                            <subviews>
+                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="recharge.png" translatesAutoresizingMaskIntoConstraints="NO" id="yOy-c8-Boe">
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="30" id="tGe-ic-LwM"/>
+                                        <constraint firstAttribute="height" constant="30" id="vQa-ud-J93"/>
+                                    </constraints>
+                                </imageView>
+                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="手机充值" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ff1-mC-Io2">
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="60" id="cXl-zm-2oX"/>
+                                        <constraint firstAttribute="height" constant="15" id="p0e-to-rZ4"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="cXl-zm-2oX"/>
+                                        </mask>
+                                    </variation>
+                                </label>
+                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="next_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="tZ0-hf-KOK">
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="8" id="dKl-hZ-HhS"/>
+                                        <constraint firstAttribute="height" constant="13" id="fbJ-Ch-qOv"/>
+                                    </constraints>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <gestureRecognizers/>
+                            <constraints>
+                                <constraint firstItem="tZ0-hf-KOK" firstAttribute="top" secondItem="Lo0-ST-Ubp" secondAttribute="top" constant="16" id="0go-hz-T1v"/>
+                                <constraint firstAttribute="trailing" secondItem="tZ0-hf-KOK" secondAttribute="trailing" constant="16" id="6DH-ss-3Ml"/>
+                                <constraint firstItem="ff1-mC-Io2" firstAttribute="leading" secondItem="yOy-c8-Boe" secondAttribute="trailing" constant="10" id="K4I-Dc-hgJ"/>
+                                <constraint firstItem="ff1-mC-Io2" firstAttribute="top" secondItem="Lo0-ST-Ubp" secondAttribute="top" constant="15" id="Qdu-nH-jPb"/>
+                                <constraint firstAttribute="height" constant="45" id="UZJ-oz-8tR"/>
+                                <constraint firstItem="yOy-c8-Boe" firstAttribute="top" secondItem="Lo0-ST-Ubp" secondAttribute="top" constant="8" id="Zdd-mg-DS6"/>
+                                <constraint firstItem="yOy-c8-Boe" firstAttribute="leading" secondItem="Lo0-ST-Ubp" secondAttribute="leading" constant="15" id="hPy-Vr-nNk"/>
+                            </constraints>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="tc7-bf-KLc" appends="YES" id="fWc-c9-eTW"/>
+                            </connections>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
@@ -318,6 +362,7 @@
                         <constraint firstAttribute="trailing" secondItem="cCZ-q6-NFd" secondAttribute="trailing" id="5Ky-Cf-qmS"/>
                         <constraint firstAttribute="trailing" secondItem="Jcp-q0-84h" secondAttribute="trailing" id="6ZD-gc-GKA"/>
                         <constraint firstItem="cCZ-q6-NFd" firstAttribute="leading" secondItem="cCU-l4-zYg" secondAttribute="leading" id="7WA-iC-cRH"/>
+                        <constraint firstItem="Lo0-ST-Ubp" firstAttribute="top" secondItem="ZBM-WW-l5g" secondAttribute="bottom" constant="12" id="DMM-Ie-eCc"/>
                         <constraint firstItem="wHl-ek-NPl" firstAttribute="top" secondItem="Hf3-LO-EPb" secondAttribute="bottom" constant="11" id="QWs-Ra-qhi"/>
                         <constraint firstItem="M5K-y6-VZz" firstAttribute="leading" secondItem="wHl-ek-NPl" secondAttribute="trailing" constant="1" id="U2Y-Sg-Px1"/>
                         <constraint firstAttribute="trailing" secondItem="ZBM-WW-l5g" secondAttribute="trailing" id="ZLC-81-mC4"/>
@@ -327,8 +372,10 @@
                         <constraint firstItem="Hf3-LO-EPb" firstAttribute="leading" secondItem="cCU-l4-zYg" secondAttribute="leading" id="ecJ-5W-6kB"/>
                         <constraint firstItem="ZBM-WW-l5g" firstAttribute="leading" secondItem="cCU-l4-zYg" secondAttribute="leading" id="gbJ-4f-Vhu"/>
                         <constraint firstItem="M5K-y6-VZz" firstAttribute="top" secondItem="Hf3-LO-EPb" secondAttribute="bottom" constant="11" id="hlC-eU-qjG"/>
-                        <constraint firstItem="Jcp-q0-84h" firstAttribute="top" secondItem="ZBM-WW-l5g" secondAttribute="bottom" constant="12" id="lNT-HE-pKu"/>
+                        <constraint firstAttribute="trailing" secondItem="Lo0-ST-Ubp" secondAttribute="trailing" id="k3y-33-HcZ"/>
+                        <constraint firstItem="Jcp-q0-84h" firstAttribute="top" secondItem="ZBM-WW-l5g" secondAttribute="bottom" constant="69" id="lNT-HE-pKu"/>
                         <constraint firstItem="Jcp-q0-84h" firstAttribute="leading" secondItem="cCU-l4-zYg" secondAttribute="leading" id="oLE-BL-r75"/>
+                        <constraint firstItem="Lo0-ST-Ubp" firstAttribute="leading" secondItem="cCU-l4-zYg" secondAttribute="leading" id="qwU-k7-FTf"/>
                     </constraints>
                 </view>
             </subviews>
@@ -361,6 +408,11 @@
                 <action selector="setup:" destination="-1" id="Ue1-xb-VAO"/>
             </connections>
         </tapGestureRecognizer>
+        <tapGestureRecognizer id="tc7-bf-KLc">
+            <connections>
+                <action selector="telePhoneCheck:" destination="-1" id="qxT-qB-GJK"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="equipment.png" width="60" height="60"/>
@@ -370,5 +422,6 @@
         <image name="my_share.png" width="50" height="50"/>
         <image name="next_icon.png" width="17" height="30"/>
         <image name="price1.png" width="48" height="48"/>
+        <image name="recharge.png" width="60" height="60"/>
     </resources>
 </document>

@@ -13,7 +13,7 @@
 #import "MaterialdetailBigView.h"
 #import "MaterialDetaileListCell.h"
 #import "MaterialDetailCell.h"
-#define maxCount 5
+#define maxCount 9
 
 static NSString* ALCELLID = @"MaterialDetaileListCell";
 
@@ -86,8 +86,8 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     // Do any additional setup after loading the view, typically from a nib.
     self.view.backgroundColor = [UIColor whiteColor];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"素材"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"素材";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -400,10 +400,11 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 }
 - (void)materaildetailListPrint:(UIImage *)image
 {
-#warning print ***** 
     NSLog(@"print");
+    
+    [[Print sharePrint] printImage:image taskType:@1 toUserId:self.userId];
+    
 }
-
 
 - (void)getMaterialDetailImage:(MaterialDetailBlock)materialDetailImage
 {
@@ -506,7 +507,33 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 }
 - (void)printClick:(int )listItem andItem:(int )item
 {
-#warning print *****
+    UIImage * image;
+    NSArray * visiblecellindex = [_collectView visibleCells];
+    for (MaterialDetaileListCell * cell in visiblecellindex) {
+        NSIndexPath *path1 = (NSIndexPath *)[_collectView indexPathForCell:cell];
+        if (path1.row == listItem) {
+            BOOL ishave = NO;
+            NSArray * visebArr = [cell.materialDetailCollectionView visibleCells];
+            for (MaterialDetailCell * cell2 in visebArr) {
+                NSIndexPath *path2 = (NSIndexPath *)[cell.materialDetailCollectionView indexPathForCell:cell2];
+                if (path2.row == item) {
+                    
+                    image = cell2.detailImageView.image;
+                    ishave = YES;
+                    break;
+                    
+                }
+                
+            }
+            
+            if (ishave) {
+                break;
+            }
+        }
+        
+    }
+     [[Print sharePrint] printImage:image taskType:@1 toUserId:self.userId];
+    [self.bigView closeView];
     NSLog(@"print");
 }
 

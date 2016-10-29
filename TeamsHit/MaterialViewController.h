@@ -10,4 +10,6 @@
 
 @interface MaterialViewController : UIViewController
 
+@property (nonatomic, strong)NSNumber * userId;
+
 @end

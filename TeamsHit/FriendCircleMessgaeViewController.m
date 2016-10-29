@@ -38,13 +38,13 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"新评论列表"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    
+    self.title = @"新评论列表";
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"title_right_icon"] title:@"清空"];
     [rightBarItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateNormal];
-    [rightBarItem addTarget:self action:@selector(publishAction:) forControlEvents:UIControlEventTouchUpInside];
+    [rightBarItem addTarget:self action:@selector(clearAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     
     
@@ -69,9 +69,9 @@
     self.allMessage = NO;
     [self.navigationController popViewControllerAnimated:YES];
 }
-- (void)publishAction:(UIButton *)button
+- (void)clearAction:(UIButton *)button
 {
-    NSLog(@"删除");
+    NSLog(@"清空");
     
     NSString * url = [NSString stringWithFormat:@"%@news/deleteFriendCircleMessage?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     
@@ -85,14 +85,16 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"清空成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alert show];
             [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
-            
+            [wxVC.dataArray removeAllObjects];
+            [wxVC.tableView reloadData];
+            [_tableView.mj_footer endRefreshingWithNoMoreData];
         }else
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alert show];
             [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
         }
-        
+        [wxVC.tableView reloadData];
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];

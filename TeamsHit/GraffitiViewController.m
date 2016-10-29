@@ -10,7 +10,7 @@
 #import "GraffitiView.h"
 
 
-@interface GraffitiViewController ()
+@interface GraffitiViewController ()<PrintGraffitiDelegate>
 @property (nonatomic, copy)GraffitiImageBlock graffitiImage;
 @property (nonatomic, strong)GraffitiView * graffitiView;
 
@@ -23,8 +23,8 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"涂鸦板"];
-    
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    self.title = @"涂鸦板";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -33,7 +33,7 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
     
     self.graffitiView = [[GraffitiView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height) image:self.sourceimage];
-    
+    _graffitiView.delegate = self;
     [self.view addSubview:_graffitiView];
     
     // Do any additional setup after loading the view.
@@ -54,6 +54,10 @@
 - (void)graffitiImage:(GraffitiImageBlock)processImage
 {
     self.graffitiImage = [processImage copy];
+}
+- (void)printGraffitiImage
+{
+    [[Print sharePrint] printImage:[self.graffitiView getGraffitiImage] taskType:@1 toUserId:self.userId];
 }
 
 - (void)didReceiveMemoryWarning {

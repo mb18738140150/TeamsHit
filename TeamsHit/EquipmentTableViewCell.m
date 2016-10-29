@@ -45,7 +45,7 @@
         [self.contentView addSubview:self.equipmentTitle];
         
         self.cancleBindingBT = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.cancleBindingBT.frame = CGRectMake(frame.size.width - 115, 10, 90, 15);
+        self.cancleBindingBT.frame = CGRectMake(frame.size.width - 125, 10, 100, 15);
         self.cancleBindingBT.backgroundColor = [UIColor whiteColor];
         [self.cancleBindingBT setTitle:@"解除账户绑定" forState:UIControlStateNormal];
         [self.cancleBindingBT setTitleColor:UIColorFromRGB(0xFF4C6A) forState:UIControlStateNormal];

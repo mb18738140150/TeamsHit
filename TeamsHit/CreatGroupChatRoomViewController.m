@@ -51,9 +51,11 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"选择联系人"];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
+    
+    self.title = @"选择联系人";
     
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithTitle:@"确定" backgroundcolor:UIColorFromRGB(0x12B7F5) cornerRadio:3];
     [rightBarItem addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
