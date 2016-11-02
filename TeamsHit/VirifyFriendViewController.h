@@ -11,5 +11,5 @@
 @interface VirifyFriendViewController : UIViewController
 
 @property (nonatomic, strong)NSNumber * userId;
-
+@property (nonatomic, assign)int IsPhoneNumber;
 @end

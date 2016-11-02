@@ -26,6 +26,8 @@
     self.taskType = taskType;
     self.userId = toUserId;
     
+    text = [text stringByReplacingOccurrencesOfString:@"/n" withString:@""];
+    
     NSDictionary * dic = @{@"PrintType":@0,
                            @"PrintContent":[text hd_base64Encode],
                            @"Alignment":@(alignment)
@@ -42,7 +44,8 @@
     self.taskType = taskType;
     self.userId = toUserId;
     NSData * imageData = nil;
-    
+    image = [self getDownImge:image];
+    image = [self getMirrorImage:image];
     if ([self imageHasAlpha:image]) {
         imageData = UIImagePNGRepresentation(image);
     }else
@@ -107,7 +110,8 @@
 - (NSString *)getImageStr:(UIImage *)image
 {
     NSData * imageData = nil;
-    
+    image = [self getDownImge:image];
+    image = [self getMirrorImage:image];
     if ([self imageHasAlpha:image]) {
         imageData = UIImagePNGRepresentation(image);
     }else
@@ -182,6 +186,32 @@
         NSLog(@"%@", error);
     }];
 
+}
+
+- (UIImage *)getDownImge:(UIImage *)image
+{
+    UIGraphicsBeginImageContext(image.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality(context, kCGInterpolationNone);
+    CGContextTranslateCTM(context, image.size.width, 0);
+    CGContextScaleCTM(context, -1.f, 1.f);
+    CGContextDrawImage(context, CGRectMake(0, 0, image.size.width, image.size.height), image.CGImage);
+    UIImage * downImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return downImage;
+}
+- (UIImage *)getMirrorImage:(UIImage *)image
+{
+    CGRect  rect =  CGRectMake(0, 0, image.size.width , image.size.height);
+    UIGraphicsBeginImageContextWithOptions(image.size, false, 1);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextClipToRect(context, rect);
+    CGContextRotateCTM(context, M_PI);
+    CGContextTranslateCTM(context, -rect.size.width, -rect.size.height);
+    CGContextDrawImage(context, rect, image.CGImage);
+    UIImage * downImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return downImage;
 }
 
 @end

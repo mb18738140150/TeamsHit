@@ -152,7 +152,8 @@
                                @"TargetId":model.userId,
                                @"LeaveMsg":@"",
                                @"ApplyId":model.applyId,
-                               @"Type":@2
+                               @"Type":@2,
+                               @"IsPhoneNumber":@2
                                };
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"处理中...";

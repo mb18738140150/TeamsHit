@@ -26,12 +26,13 @@
 @property (nonatomic, strong)NSArray * arrayForKey;// 首字母对应的好友列表
 @property (nonatomic, strong)NSMutableArray * searchReasult;
 @property (nonatomic, strong)NSMutableArray * friendsArr; // 好友信息
-@property (nonatomic, strong)NSArray * defaultCellsTitle;// 默认显示列表： 新朋友、群组
+@property (nonatomic, strong)NSArray * defaultCellsTitle;// 默认显示列表： 新朋友、房间
 @property (nonatomic, strong)NSArray * defaultCellsPortrait;// 默认显示列表头像
 
 @property (nonatomic, strong)UILabel * noreadLabel;
 
 @property (nonatomic, assign)BOOL lookUserInfo;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchFriendsBar;
 
 @end
 
@@ -52,7 +53,7 @@
     self.friendsTabelView.tableFooterView = [UIView new];
     float colorFloat = 245.f / 255.f;
     self.friendsTabelView.backgroundColor = [[UIColor alloc] initWithRed:colorFloat green:colorFloat blue:colorFloat alpha:1];
-    _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"群组", @"对对碰团队", nil];
+    _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"房间", @"对对碰团队", nil];
     _defaultCellsPortrait   = [NSArray arrayWithObjects:@"newFriend",@"defaultGroup", @"logo(1)", nil];
     
     _allFriends = [NSMutableDictionary new];
@@ -229,13 +230,6 @@
         vc.targetId = userInfo.userId;
         vc.hidesBottomBarWhenPushed = YES;
         self.lookUserInfo = YES;
-//        ChatViewController * chatVc = [[ChatViewController alloc]init];
-//        chatVc.hidesBottomBarWhenPushed = YES;
-//        chatVc.conversationType = ConversationType_PRIVATE;
-//        chatVc.displayUserNameInCell = NO;
-//        chatVc.targetId = userInfo.userId;
-//        chatVc.title = userInfo.name;
-//        chatVc.needPopToRootView = YES;
         [self.navigationController pushViewController:vc animated:YES];
     }else if (indexPath.row == 1 && indexPath.section == 0)
     {
@@ -274,6 +268,7 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     [_searchReasult removeAllObjects];
+    NSLog(@"搜索框改变");
     if ([searchText length]) {
         for (RCDUserInfo * user in _friends) {
             if ([user.status isEqualToString:@"1"] || [user.name rangeOfString:searchText].location == NSNotFound) {
@@ -290,12 +285,34 @@
     }
     if ([searchText length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
+//            [_searchReasult removeAllObjects];
+            NSLog(@"搜索框清空");
             _allFriends = [self sortedArrayWithPinYinDic:_friends];
             [self.friendsTabelView reloadData];
         });
     }
 }
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    self.searchFriendsBar.showsCancelButton = NO;
+    [self.searchFriendsBar resignFirstResponder];
+    self.searchFriendsBar.text = @"";
+    [_searchReasult removeAllObjects];
+    _allFriends = [self sortedArrayWithPinYinDic:_friendsArr];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.friendsTabelView reloadData];
+    });
+}
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+    self.searchFriendsBar.showsCancelButton = YES;
+    return YES;
+}
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
 #pragma mark - 获取好友并排序
 - (void)getAllData
 {

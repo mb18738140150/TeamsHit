@@ -135,7 +135,6 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
             [weakSelf.materiaTypeTitleArr addObject:model.materialTypeName];
         }
         
-        
         [weakSelf initSilderBar:weakSelf.materiaTypeTitleArr];
         [weakSelf reloadMaterialDetailsWithmateriaTypeModel:weakSelf.materialTyprArr[0] indexpath:[NSIndexPath indexPathForRow:0 inSection:0]];
         
@@ -385,8 +384,13 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
         }];
     }else
     {
-        [collection.mj_footer endRefreshing];
-        [self.collectView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:item + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+        if (item +1 >= self.materiaTypeTitleArr.count) {
+            [collection.mj_footer endRefreshingWithNoMoreData];
+        }else
+        {
+            [collection.mj_footer endRefreshing];
+            [self.collectView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:item + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+        }
     }
     
 }

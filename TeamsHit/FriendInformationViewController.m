@@ -72,6 +72,9 @@
     UITapGestureRecognizer *amplificationTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(amplification:)];
     [self.iconImageview addGestureRecognizer:amplificationTap];
     
+    if (self.IsPhoneNumber != 1) {
+        self.IsPhoneNumber = 2;
+    }
     
     self.imageview.tag = 1000;
     self.imageView1.tag = 1001;
@@ -124,11 +127,11 @@
     }
     if ([self.model.gender isEqualToString:@"男"]) {
         self.genderImageView.image = [UIImage imageNamed:@"gender_man"];
-        self.ishavePhonenumber = YES;
+        
     }else if ([self.model.gender isEqualToString:@"女"])
     {
         self.genderImageView.image = [UIImage imageNamed:@"gender_woman"];
-        self.ishavePhonenumber = NO;
+        
     }else
     {
         self.genderImageView.image = [UIImage imageNamed:@"gender_secret"];
@@ -137,6 +140,12 @@
         self.genderImageView.image = [UIImage imageNamed:@"gender_verify"];
     }
     
+    if (self.model.IsPhoneNumber.intValue == 1) {
+        self.ishavePhonenumber = YES;
+    }else
+    {
+        self.ishavePhonenumber = NO;
+    }
     
     self.accountNumberLabel.text = [NSString stringWithFormat:@"对对号:%@", self.model.UserName];
     [self.iconImageview sd_setImageWithURL:[NSURL URLWithString:self.model.iconUrl] placeholderImage:[UIImage imageNamed:@"logo(1)"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
@@ -186,11 +195,11 @@
     }else
     {
         [self refreshUI];
-        
-        
     }
     
 }
+
+#pragma mark - 添加好友
 - (IBAction)addfriendAction:(id)sender {
     
     if ([self.oparationBT.titleLabel.text isEqualToString:@"发消息"]) {
@@ -199,13 +208,19 @@
         chatVc.hidesBottomBarWhenPushed = YES;
         chatVc.conversationType = ConversationType_PRIVATE;
         chatVc.displayUserNameInCell = NO;
-        chatVc.targetId = self.targetId;
+        if (self.model) {
+            chatVc.targetId = [NSString stringWithFormat:@"%@", self.model.userId];
+        }else
+        {
+            chatVc.targetId = self.targetId;
+        }
         chatVc.title = self.model.displayName;
         chatVc.needPopToRootView = YES;
         [self.navigationController pushViewController:chatVc animated:YES];
     }else
     {
         VirifyFriendViewController * verifyVc = [[VirifyFriendViewController alloc]initWithNibName:@"VirifyFriendViewController" bundle:nil];
+        verifyVc.IsPhoneNumber = self.IsPhoneNumber;
         verifyVc.userId = self.model.userId;
         [self.navigationController pushViewController:verifyVc animated:YES];
     }
@@ -235,7 +250,6 @@
 
 - (void)refreshUI
 {
-    
     if (self.ishavePhonenumber) {
         self.phoneNumberLB.hidden = NO;
         self.phoneNumberLabel.hidden = NO;

@@ -103,37 +103,69 @@
     [self.verifyCodeTF resignFirstResponder];
     [self.passwordTF resignFirstResponder];
     if ([NSString isTelPhoneNub:self.phonrNumberTF.text]) {
-        _t = 60;
-        _verifyCodeTF.enabled = YES;
-        self.codeTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(codeTime) userInfo:nil repeats:YES];
-//        button.backgroundColor = [UIColor colorWithWhite:0.7 alpha:1];
-        button.enabled = NO;
-        [_getVerifyCodeBT setTitle:[NSString stringWithFormat:@"%ds后重发", _t] forState:UIControlStateDisabled];
-        [self performSelector:@selector(passTime) withObject:nil afterDelay:10];
         
-        NSDictionary * jsonDic = @{
+        
+        NSDictionary * dic = @{
                                    @"PhoneNumber":self.phonrNumberTF.text
                                    };
-        [[HDNetworking sharedHDNetworking] POST:@"user/getVerificationCode" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        [[HDNetworking sharedHDNetworking] POST:@"user/verifyPhoneNumberRegisterd" parameters:dic progress:^(NSProgress * _Nullable progress) {
             ;
         } success:^(id  _Nonnull responseObject) {
             NSLog(@"responseObject = %@", responseObject);
-            self.md5Code = [responseObject objectForKey:@"Verifycode"];
+            
             if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
-                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
                 [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+                [self passTime];
+            }else
+            {
+                _t = 60;
+                _verifyCodeTF.enabled = YES;
+                self.codeTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(codeTime) userInfo:nil repeats:YES];
+                
+                button.enabled = NO;
+                [_getVerifyCodeBT setTitle:[NSString stringWithFormat:@"%ds后重发", _t] forState:UIControlStateDisabled];
+                [self performSelector:@selector(passTime) withObject:nil afterDelay:60];
+                
+                [self getverifyCode];
             }
-            self.codeDate = [NSDate date];
+            
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"请求失败 error = %@", error);
         }];
+        
     }else
     {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入正确的手机号码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }
+}
+
+- (void)getverifyCode
+{
+    NSDictionary * jsonDic = @{
+                               @"PhoneNumber":self.phonrNumberTF.text
+                               };
+    [[HDNetworking sharedHDNetworking] POST:@"user/getVerificationCode" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+            [self passTime];
+        }else
+        {
+            self.md5Code = [responseObject objectForKey:@"Verifycode"];
+            self.codeDate = [NSDate date];
+        }
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"请求失败 error = %@", error);
+        [self passTime];
+    }];
 }
 
 - (void)codeTime
@@ -144,7 +176,6 @@
 - (void)passTime
 {
     self.getVerifyCodeBT.enabled = YES;
-//    _getVerifyCodeBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [_getVerifyCodeBT setTitle:@"重新获取" forState:UIControlStateNormal];
     [self.codeTimer invalidate];
     self.codeTimer = nil;

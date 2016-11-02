@@ -168,7 +168,7 @@ MBProgressHUD* hud;
             if ([RCIM sharedRCIM].userInfoDataSource && [[RCIM sharedRCIM].userInfoDataSource respondsToSelector:@selector(getUserInfoWithUserId:completion:)]) {
                 [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
                     if (!userInfo) {
-                        userInfo = [[RCUserInfo alloc] initWithUserId:userId name:[NSString stringWithFormat:@"user<%@>", userId] portrait:nil];
+                        userInfo = [[RCUserInfo alloc] initWithUserId:userId name:@"user" portrait:nil];
                     }
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -225,7 +225,7 @@ MBProgressHUD* hud;
         if ([RCIM sharedRCIM].userInfoDataSource && [[RCIM sharedRCIM].userInfoDataSource respondsToSelector:@selector(getUserInfoWithUserId:completion:)]) {
             [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
                 if (!userInfo) {
-                    userInfo = [[RCUserInfo alloc] initWithUserId:userId name:[NSString stringWithFormat:@"user<%@>", userId] portrait:nil];
+                    userInfo = [[RCUserInfo alloc] initWithUserId:userId name:@"user" portrait:nil];
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     RCAnnotation *annotaton=[__weakself.userAnnotationDic objectForKey:userInfo.userId];

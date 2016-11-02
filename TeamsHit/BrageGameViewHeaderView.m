@@ -26,6 +26,7 @@
 - (void)creatUI:(NSString *)type title:(NSString *)title
 {
     self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 32 - TOP_SPACE, 40, 16)];
+    
     self.timeLB.textColor = MAINCOLOR;
     self.timeLB.font = [UIFont systemFontOfSize:15];
     self.timeLB.textAlignment = 1;
@@ -64,16 +65,22 @@
     self.titleLabel.hd_centerX = self.hd_centerX- LEFTSPACE;
     
     self.setUpBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.setUpBT.frame = CGRectMake(self.hd_width - 30 - LEFTSPACE, 32 - TOP_SPACE, 25, 25);
+    self.setUpBT.frame = CGRectMake(self.hd_width - 38 - LEFTSPACE, 32 - TOP_SPACE, 30, 30);
     [self.setUpBT setTitleColor:MAINCOLOR forState:UIControlStateNormal];
 //    [self.setUpBT setTitle:@"设置" forState:UIControlStateNormal];
     self.setUpBT.titleLabel.font = [UIFont systemFontOfSize:14];
     [self.setUpBT setImage:[UIImage imageNamed:@"groupSetup"] forState:UIControlStateNormal];
 //    _setUpBT.titleEdgeInsets = UIEdgeInsetsMake(0, -35, 0, 0);
-//    _setUpBT.imageEdgeInsets = UIEdgeInsetsMake(0, 35, 0, 0);
-    
-    [self addSubview:self.setUpBT];
+    _setUpBT.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+//    _setUpBT.backgroundColor = [UIColor redColor];
+//    [self addSubview:self.setUpBT];
     [_setUpBT addTarget:self action:@selector(setupAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (screenWidth > 320) {
+        self.timeLB.hd_x = 13 - LEFTSPACE - TOP_SPACE;
+        self.timeLabel.hd_x = 13 - LEFTSPACE - TOP_SPACE;
+//        self.setUpBT.hd_x = self.hd_width - 38 - LEFTSPACE - TOP_SPACE;
+    }
     
 }
 
@@ -82,7 +89,7 @@
     NSLog(@"点击了设置按钮");
     
     if (self.delegete && [self.delegete respondsToSelector:@selector(setUpGameChatGroup)]) {
-        [self.delegete setUpGameChatGroup];
+//        [self.delegete setUpGameChatGroup];
     }
 }
 

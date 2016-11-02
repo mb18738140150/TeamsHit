@@ -31,7 +31,7 @@
     self.iconImageView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.iconImageView];
     
-    self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.iconImageView.frame) + 7, 14, 25, 10)];
+    self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.iconImageView.frame) + 7, 14, 55, 10)];
     self.nameLabel.textColor = [UIColor whiteColor];
     self.nameLabel.font = [UIFont systemFontOfSize:10];
     [self.contentView addSubview:self.nameLabel];
@@ -50,7 +50,7 @@
     layout.minimumInteritemSpacing = 6;
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
-    self.diceCollection = [[UICollectionView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.iconImageView.frame) + 45, 17, self.hd_width - 150, 27) collectionViewLayout:layout];
+    self.diceCollection = [[UICollectionView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.iconImageView.frame) + 45, (self.hd_height - (self.hd_width - 150 - 24) / 5) / 2, self.hd_width - 150, (self.hd_width - 150 - 24) / 5) collectionViewLayout:layout];
     self.diceCollection.delegate = self;
     self.diceCollection.dataSource = self;
     self.diceCollection.backgroundColor = [UIColor clearColor];

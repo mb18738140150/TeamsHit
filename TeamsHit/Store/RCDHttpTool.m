@@ -821,7 +821,12 @@
                         
                         RCUserInfo *user = [RCUserInfo new];
                         user.userId = userDic[@"UserId"];
-                        user.name = userDic[@"Nickname"];
+                        if (userInfo.displayName.length == 0) {
+                            user.name = userDic[@"NickName"];
+                        }else
+                        {
+                            user.name = userDic[@"DisplayName"];
+                        }
                         user.portraitUri = userDic[@"PortraitUri"];
                         if (!user.portraitUri || user.portraitUri <= 0) {
                             user.portraitUri = [RCDUtilities defaultUserPortrait:user];
@@ -1299,21 +1304,20 @@
                 }else
                 {
                     user.userId = [NSString stringWithFormat:@"%@", userID];
-                    user.name = [NSString stringWithFormat:@"name%@", userID];
+                    user.name = [NSString stringWithFormat:@"name"];
                     user.portraitUri = [RCDUtilities defaultUserPortrait:user];
                 }
                 
             } else {
                 RCUserInfo *user = [RCUserInfo new];
                 user.userId = userID;
-                user.name = [NSString stringWithFormat:@"name%@", userID];
+                user.name = [NSString stringWithFormat:@"name"];
                 user.portraitUri = [RCDUtilities defaultUserPortrait:user];
-                
             }
         } else {
             RCUserInfo *user = [RCUserInfo new];
             user.userId = userID;
-            user.name = [NSString stringWithFormat:@"name%@", userID];
+            user.name = [NSString stringWithFormat:@"name"];
             user.portraitUri = [RCDUtilities defaultUserPortrait:user];
             
         }
@@ -1322,7 +1326,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             RCUserInfo *user = [RCUserInfo new];
             user.userId = userID;
-            user.name = [NSString stringWithFormat:@"name%@", userID];
+            user.name = [NSString stringWithFormat:@"name"];
             user.portraitUri = [RCDUtilities defaultUserPortrait:user];
             
         });

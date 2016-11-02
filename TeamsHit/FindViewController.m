@@ -114,7 +114,7 @@
     [self.navigationController pushViewController:wxVC animated:YES];
 }
 
-#pragma mark - 按房号加群
+#pragma mark - 按房号加房间
 - (IBAction)addGroupAction:(id)sender {
     
     NSLog(@"加入群");

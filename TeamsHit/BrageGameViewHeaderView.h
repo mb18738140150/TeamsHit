@@ -10,7 +10,7 @@
 
 @protocol BrageGameViewHeaderViewProtocol <NSObject>
 
-- (void)setUpGameChatGroup;
+//- (void)setUpGameChatGroup;
 
 @end
 

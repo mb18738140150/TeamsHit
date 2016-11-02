@@ -343,7 +343,7 @@
         
         [_ilcoreText setOldString:matchString andNewString:[ymData.completionReplySource objectAtIndex:i]];
         
-        _ilcoreText.frame = CGRectMake(offSet_X + 8,TableHeader + 10 + ymData.showImageHeight + origin_Y + hhhh + kDistance + (ymData.islessLimit?0:30) + balanceHeight + kReplyBtnDistance + ymData.favourHeight + (ymData.favourHeight == 0?0:kReply_FavourDistance) - 30, screenWidth - offSet_X - offSet_X_right, [_ilcoreText getTextHeight]);
+        _ilcoreText.frame = CGRectMake(offSet_X + 8,TableHeader + 10 + ymData.showImageHeight + origin_Y + hhhh + kDistance + (ymData.islessLimit?0:30) + balanceHeight + kReplyBtnDistance + ymData.favourHeight + (ymData.favourHeight == 0?0:kReply_FavourDistance) - 30, screenWidth - offSet_X - offSet_X_right - 8, [_ilcoreText getTextHeight]);
         [self.contentView addSubview:_ilcoreText];
         origin_Y += [_ilcoreText getTextHeight] + 5 ;
         

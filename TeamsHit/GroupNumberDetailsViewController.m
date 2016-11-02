@@ -37,7 +37,7 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    self.title = @"群成员";
+    self.title = @"房间成员";
     
     self.memberTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, self.view.hd_height) style:UITableViewStylePlain];
     self.memberTableView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);

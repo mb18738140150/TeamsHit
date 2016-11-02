@@ -78,7 +78,7 @@
         [weakSelf addNewGroupMumber];
     }];
     
-    self.groupNumberLabel.text = [NSString stringWithFormat:@"全部群成员（%@）", rcGroupInfo.number];
+    self.groupNumberLabel.text = [NSString stringWithFormat:@"全部房间成员（%@）", rcGroupInfo.number];
     self.groupRoomNumberLabel.text = rcGroupInfo.groupId;
     self.groupNameLabel.text = rcGroupInfo.groupName;
     self.groupMumberlabel.text = rcGroupInfo.number;
@@ -222,7 +222,7 @@
         [[RCDataBaseManager shareInstance] insertGroupToDB:userInfo];
     });
     
-    self.groupNumberLabel.text = [NSString stringWithFormat:@"全部群成员（%@）", userInfo.number];
+    self.groupNumberLabel.text = [NSString stringWithFormat:@"全部房间成员（%@）", userInfo.number];
     self.groupNameLabel.text = userInfo.groupName;
     self.groupRoomNumberLabel.text = userInfo.groupId;
     self.GroupType = [[dic objectForKey:@"GroupType"] intValue];
@@ -270,7 +270,7 @@
         return;
     }
     
-    NSLog(@"改变群名称");
+    NSLog(@"改变房间名称");
     
     NSArray * typeArr = [NSArray array];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"修改房间名称" content:typeArr];
@@ -325,7 +325,7 @@
         return;
     }
     
-    NSLog(@"改变群type");
+    NSLog(@"改变房间type");
     NSArray * typeArr = @[@"吹牛", @"21点"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"游戏模式" content:typeArr];
     [setTipView show];
@@ -458,9 +458,9 @@
     
 }
 - (IBAction)quitGroupAction:(id)sender {
-    NSLog(@"退出群组");
-    NSArray * typeArr = @[@"确定退出群组？"];
-    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"退出群组" content:typeArr];
+    NSLog(@"退出房间");
+    NSArray * typeArr = @[@"确定退出房间？"];
+    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"退出房间" content:typeArr];
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
@@ -515,7 +515,7 @@
         return;
     }
     NSArray * typeArr = @[@"允许任何人加入", @"不允许任何人加入"];
-    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"群组验证" content:typeArr];
+    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"房间验证" content:typeArr];
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);

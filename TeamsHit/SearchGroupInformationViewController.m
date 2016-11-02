@@ -156,8 +156,8 @@
     }
     
 
-    
-    self.groupNumber.text = [NSString stringWithFormat:@"全部群成员（%@）", userInfo.number];
+    [self.groupIconImageView sd_setImageWithURL:[NSURL URLWithString:userInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+    self.groupNumber.text = [NSString stringWithFormat:@"全部房间成员（%@）", userInfo.number];
     self.groupLabel.text = userInfo.groupName;
     self.groupLabel.text = userInfo.groupId;
     self.GroupType = [[dic objectForKey:@"GroupType"] intValue];
@@ -197,12 +197,12 @@
         [self.applyJoinIngroupBT setTitle:@"发起会话" forState:UIControlStateNormal];
     }else
     {
-        [self.applyJoinIngroupBT setTitle:@"申请加群" forState:UIControlStateNormal];
+        [self.applyJoinIngroupBT setTitle:@"申请加入房间" forState:UIControlStateNormal];
     }
     
 }
 - (IBAction)applyJoinInBT:(id)sender {
-    if ([((UIButton *)sender).titleLabel.text isEqualToString:@"申请加群"]) {
+    if ([((UIButton *)sender).titleLabel.text isEqualToString:@"申请加入房间"]) {
         hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.labelText = @"加载中...";
         [hud show:YES];

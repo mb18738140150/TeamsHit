@@ -16,6 +16,7 @@
 @property (nonatomic, copy)DeleteBlock deleteBlock;
 @property (nonatomic, strong)UIImageView * detailImage;
 @property (nonatomic, strong)UIButton * deleteButton;
+@property (nonatomic, strong)UILabel * titleLabel;
 
 @end
 
@@ -33,6 +34,12 @@
         [self.deleteButton setImage:[[UIImage imageNamed:@"imgErro"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
         [self.contentView addSubview:self.deleteButton];
         [self.deleteButton addTarget:self action:@selector(deletaItemAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 25, self.hd_width - 20, self.hd_height - 30)];
+        self.titleLabel.numberOfLines = 0;
+        self.titleLabel.font = [UIFont systemFontOfSize:16];
+        [self.contentView addSubview:self.titleLabel];
+        
     }
 }
 
@@ -65,6 +72,17 @@
             self.detailImage.frame = CGRectMake(0, 0, self.hd_width, self.hd_width *materialmodel.image.size.height / materialmodel.image.size.width );
             self.detailImage.center = self.contentView.center;
         }
+        if (materialmodel.title.length != 0) {
+            self.detailImage.hidden = YES;
+            self.titleLabel.hidden = NO;
+            self.titleLabel.textAlignment = materialmodel.Alignment;
+            self.titleLabel.text = materialmodel.title;
+        }else
+        {
+            self.titleLabel.hidden = YES;
+            self.detailImage.hidden = NO;
+        }
+        
     }
     
 }

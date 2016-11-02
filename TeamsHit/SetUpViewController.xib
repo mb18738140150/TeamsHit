@@ -25,7 +25,7 @@
                                 <constraint firstAttribute="height" constant="30" id="x6A-bP-GNy"/>
                             </constraints>
                         </imageView>
-                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="声音" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgf-0E-ndo">
+                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="消息免打扰" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgf-0E-ndo">
                             <constraints>
                                 <constraint firstAttribute="height" constant="15" id="Ecd-Qk-xR8"/>
                                 <constraint firstAttribute="width" constant="60" id="dUX-H6-ruR"/>

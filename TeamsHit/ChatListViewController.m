@@ -36,10 +36,11 @@
 {
     self = [super init];
     if (self) {
-        [self setDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_GROUP),@(ConversationType_SYSTEM)]];
+        [self setDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_SYSTEM)]];
         
         //聚合会话类型
         [self setCollectionConversationType:@[@(ConversationType_SYSTEM)]];
+        [self setCollectionConversationType:@[@(ConversationType_GROUP)]];
     }
     return self;
 }
@@ -169,7 +170,7 @@
                     target:self
                     action:@selector(pushChat:)],
       
-      [KxMenuItem menuItem:@"创建群组"
+      [KxMenuItem menuItem:@"创建房间"
                      image:[UIImage imageNamed:@"creatGroupImage"]
                     target:self
                     action:@selector(pushContactSelected:)],
@@ -357,13 +358,20 @@
         //聚合会话类型，此处自定设置。
         if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION) {
             
-            ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
-            NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
-            [temp setDisplayConversationTypes:array];
-            [temp setCollectionConversationType:nil];
-            temp.isEnteredToCollectionViewController = YES;
-            temp.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:temp animated:YES];
+            if (model.conversationType == ConversationType_GROUP) {
+                NSLog(@"群聊");
+            }else
+            {
+                
+                ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
+                NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
+                [temp setDisplayConversationTypes:array];
+                [temp setCollectionConversationType:nil];
+                temp.isEnteredToCollectionViewController = YES;
+                temp.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:temp animated:YES];
+            }
+            
         }
         
         //自定义会话类型

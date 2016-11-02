@@ -31,7 +31,7 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fAx-7I-rGE">
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="群组头像" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vKn-3N-8l8">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="房间头像" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vKn-3N-8l8">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="18" id="OpO-rJ-h86"/>
                                         <constraint firstAttribute="width" constant="72" id="h8d-sl-b9v"/>
@@ -68,7 +68,7 @@
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WiY-Eo-F22">
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="群组名称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vVl-ND-fFM">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="房间名称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vVl-ND-fFM">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="18" id="OgA-HV-a6A"/>
                                         <constraint firstAttribute="width" constant="72" id="cWk-dZ-Kq1"/>
@@ -82,9 +82,9 @@
                                         </mask>
                                     </variation>
                                 </label>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入群组名称" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jek-ra-E4T">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入房间名称" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jek-ra-E4T">
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="15" id="dSP-sP-XXv"/>
+                                        <constraint firstAttribute="height" constant="18" id="dSP-sP-XXv"/>
                                     </constraints>
                                     <color key="textColor" red="0.67843137254901964" green="0.67843137254901964" blue="0.67843137254901964" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -98,7 +98,7 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="47" id="GHz-T3-8yg"/>
                                 <constraint firstItem="vVl-ND-fFM" firstAttribute="top" secondItem="WiY-Eo-F22" secondAttribute="top" constant="15" id="LUT-XJ-Nmk"/>
-                                <constraint firstItem="jek-ra-E4T" firstAttribute="top" secondItem="WiY-Eo-F22" secondAttribute="top" constant="17" id="Rdf-32-PIH"/>
+                                <constraint firstItem="jek-ra-E4T" firstAttribute="top" secondItem="WiY-Eo-F22" secondAttribute="top" constant="16" id="Rdf-32-PIH"/>
                                 <constraint firstItem="jek-ra-E4T" firstAttribute="leading" secondItem="vVl-ND-fFM" secondAttribute="trailing" constant="37" id="dPj-Ls-prG"/>
                                 <constraint firstAttribute="trailing" secondItem="jek-ra-E4T" secondAttribute="trailing" constant="15" id="nYn-4m-OJW"/>
                                 <constraint firstItem="vVl-ND-fFM" firstAttribute="leading" secondItem="WiY-Eo-F22" secondAttribute="leading" constant="15" id="tFT-E2-YQQ"/>
@@ -155,7 +155,7 @@
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sr9-qd-6FI">
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="群组验证" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="29x-wX-d9u">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="房间验证" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="29x-wX-d9u">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="18" id="n44-1d-7e7"/>
                                         <constraint firstAttribute="width" constant="72" id="qRM-PF-1gJ"/>
@@ -225,7 +225,7 @@
                         </button>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uuy-cK-UAi">
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="群组简介" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xAA-Hh-oJ4">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="房间简介" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xAA-Hh-oJ4">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="18" id="SmK-f2-5wr"/>
                                         <constraint firstAttribute="width" constant="72" id="gAO-pN-iB4"/>
@@ -239,7 +239,7 @@
                                         </mask>
                                     </variation>
                                 </label>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入群组简介" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3XP-vx-Zu6">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入房间简介" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3XP-vx-Zu6">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="33" id="Wgf-ja-L0r"/>
                                     </constraints>

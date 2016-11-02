@@ -19,6 +19,7 @@ typedef enum:NSInteger {
     CalledDicePoint_Pass = 0,
     CalledDicePoint_Now = 1,
     CalledDicePoint_Wait = 2,
+    CalledDicePoint_Open = 3,
 }CalledDicePointState; // 叫点状态
 
 typedef enum :NSInteger

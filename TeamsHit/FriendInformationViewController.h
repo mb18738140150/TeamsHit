@@ -14,5 +14,5 @@
 
 @property (nonatomic, strong)FriendInformationModel * model;
 @property (nonatomic, copy)NSString * targetId;
-
+@property (nonatomic, assign)int IsPhoneNumber;
 @end

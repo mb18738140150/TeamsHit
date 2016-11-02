@@ -59,9 +59,23 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     self.view.backgroundColor = [UIColor whiteColor];
-//    self.image = [UIImage imageNamed:@"1(1).jpg"];
+//    self.image = [UIImage imageNamed:@"888.JPG"];
+    
+    self.image = [ImageUtil imageByScalingAndCroppingForSize:self.image];
     
     NSData * imageData = UIImageJPEGRepresentation(self.image, 1.0);
+    if (UIImagePNGRepresentation(self.image) == nil)
+    {
+        imageData = UIImageJPEGRepresentation(_image, 1.0);
+        NSLog(@" **** jpeg");
+    }else{
+        
+        imageData = UIImagePNGRepresentation(self.image);
+        NSLog(@" *** png");
+    }
+    
+    NSLog(@"imageData = %@", imageData);
+    
     self.image = [UIImage imageWithData:imageData];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
@@ -71,7 +85,7 @@
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [hud show:YES];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self dealImage];
@@ -87,7 +101,7 @@
 - (void)done
 {
     if (self.processImage) {
-        _processImage(self.finalImage);
+        _processImage([self tailorborderImage:self.finalImage]);
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -103,7 +117,6 @@
     [self.processImageTypeView getProcessImageType:^(int type) {
         [processVC processImageWithType:type];
     }];
-    
     
 }
 
@@ -188,6 +201,17 @@
     return newImage;
     
 }
+
+- (UIImage *)tailorborderImage:(UIImage *)image
+{
+    CGSize size = image.size;
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(-1, -1, size.width + 1, size.height + 1)];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 
 - (void)refreshUI
 {

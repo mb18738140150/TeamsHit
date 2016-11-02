@@ -17,6 +17,7 @@
 
 #define TEXTFONT [UIFont systemFontOfSize:14]
 #define TEXTCOLOR UIColorFromRGB(0xB3B3B3)
+#define kAlphaNum  @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
 
 @interface SearchFriendViewController ()<UITextFieldDelegate>
 {
@@ -27,6 +28,7 @@
 @property (nonatomic, strong)UIView * imageView;
 
 @property (nonatomic, strong)NSMutableArray * groupInfoArr;
+@property (nonatomic, assign)int IsPhoneNumber;
 
 @end
 
@@ -63,7 +65,7 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     self.searchBarView = [[SearchBarView alloc]initWithFrame:CGRectMake(self.navigationItem.leftBarButtonItem.customView.hd_width + 10, 0, self.view.hd_width - self.navigationItem.leftBarButtonItem.customView.hd_width - 20, 40)];
-    
+    self.searchBarView.searchTextView.delegate = self;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:_searchBarView.searchTextView];
     
     self.navigationItem.titleView = _searchBarView;
@@ -103,7 +105,7 @@
     nickLabel.textColor = TEXTCOLOR;
     nickLabel.font = TEXTFONT;
     nickLabel.textAlignment = 1;
-    nickLabel.text = @"昵称";
+    nickLabel.text = @"对对号";
     nickLabel.hd_centerX = nickImageView.center.x;
     [self.imageView addSubview:nickLabel];
     
@@ -114,7 +116,7 @@
     UILabel * groupLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 161, 50, 14)];
     groupLabel.textColor = TEXTCOLOR;
     groupLabel.font = TEXTFONT;
-    groupLabel.text = @"群组";
+    groupLabel.text = @"房间";
     groupLabel.textAlignment = 1;
     groupLabel.hd_centerX = groupImageView.center.x;
     [self.imageView addSubview:groupLabel];
@@ -164,6 +166,12 @@
     }
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
 - (void)accountAction
 {
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -172,6 +180,13 @@
     
     [self.searchBarView.searchTextView resignFirstResponder];
     NSLog(@"搜索账号");
+    
+    if ([self.searchBarView.searchTextView.text hd_isValidPhoneNum]) {
+        self.IsPhoneNumber = 1;
+    }else
+    {
+        self.IsPhoneNumber = 2;
+    }
     
     NSDictionary * jsonDic = @{
                                @"Account":self.searchBarView.searchTextView.text
@@ -190,9 +205,13 @@
             FriendInformationModel * model = [[FriendInformationModel alloc]initWithDictionery:responseObject];
             if (model.userId.intValue == 0) {
                 NSLog(@"搜索结果为空");
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"搜索结果为空" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
             }else
             {
                 FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+                friend.IsPhoneNumber = self.IsPhoneNumber;
                 friend.model = model;
                 [searchVC.navigationController pushViewController:friend animated:YES];
             }
@@ -244,6 +263,12 @@
                 [self.groupInfoArr removeAllObjects];
             }
             NSArray * groupListArr = [responseObject objectForKey:@"GroupList"];
+            if (groupListArr.count == 0) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"搜索结果为空" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            }
+            
             for (NSDictionary * dic in groupListArr) {
                 SearchGroupListModel * groupInfoModel = [[SearchGroupListModel alloc]initWithDictionary:dic];
                 [self.groupInfoArr addObject:groupInfoModel];
@@ -272,6 +297,24 @@
     }];
     
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([textField isEqual:self.searchBarView.searchTextView]) {
+        NSCharacterSet *cs;
+        cs = [[NSCharacterSet characterSetWithCharactersInString:kAlphaNum] invertedSet];
+        
+        NSString *filtered = [[string componentsSeparatedByCharactersInSet:cs] componentsJoinedByString:@""]; //按cs分离出数组,数组按@""分离出字符串
+        
+        BOOL canChange = [string isEqualToString:filtered];
+        
+        return canChange;
+    }else
+    {
+        return YES;
+    }
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidChangeNotification object:nil];

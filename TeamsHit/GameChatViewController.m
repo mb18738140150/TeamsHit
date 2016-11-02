@@ -60,6 +60,10 @@
     self.isRightBarItem = NO;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStyleDone target:self action:nil];;
     
+    TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithImage:[UIImage imageNamed:@"groupSetup"]];
+    [rightBarItem addTarget:self action:@selector(setUpGameChatGroup) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
+    
     self.groupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.targetId];
     
      // 建立WebSocket连接
@@ -185,7 +189,7 @@
     //    self.enableContinuousReadUnreadVoice = YES;//开启语音连读功能
     
     
-    //群组改名之后，更新当前页面的Title
+    //房间改名之后，更新当前页面的Title
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(renameGroupName:)
                                                  name:@"renameGroupName"
@@ -266,7 +270,7 @@
          {
              dispatch_async(dispatch_get_main_queue(), ^{
                  _groupInfo = group;
-                 //判断如果是解散的群组，不显示导航栏的setting按钮。
+                 //判断如果是解散的房间，不显示导航栏的setting按钮。
                  if ([group.isDismiss isEqualToString:@"YES"]) {
                      self.navigationItem.rightBarButtonItem = nil;
                  }
@@ -811,7 +815,7 @@
 #pragma mark - BrageGameViewHeaderViewProtocol
 - (void)setUpGameChatGroup
 {
-//    NSLog(@"群组设置");
+//    NSLog(@"房间设置");
 //    GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
 //    groupDetailVC.groupID = self.targetId;
 //    [self.navigationController pushViewController:groupDetailVC animated:YES];

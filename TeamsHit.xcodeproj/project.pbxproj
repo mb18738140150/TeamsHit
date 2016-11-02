@@ -67,9 +67,10 @@
 		731449C11D98F70800512E64 /* findStartGame.png in Resources */ = {isa = PBXBuildFile; fileRef = 731449BA1D98F70800512E64 /* findStartGame.png */; };
 		731449C51D98FAC900512E64 /* TypeofGameTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 731449C31D98FAC900512E64 /* TypeofGameTableViewCell.m */; };
 		731449C61D98FAC900512E64 /* TypeofGameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 731449C41D98FAC900512E64 /* TypeofGameTableViewCell.xib */; };
-		7316F7541DC46E4500FD5D86 /* 我开你.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7316F7531DC46E4500FD5D86 /* 我开你.mp3 */; };
-		7316F7571DC494B500FD5D86 /* PgySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7316F7551DC494B500FD5D86 /* PgySDK.framework */; };
-		7316F7581DC494B500FD5D86 /* PgyUpdate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7316F7561DC494B500FD5D86 /* PgyUpdate.framework */; };
+		731554661DC6F53400FDEF16 /* icon_open_call_point.png in Resources */ = {isa = PBXBuildFile; fileRef = 731554651DC6F53400FDEF16 /* icon_open_call_point.png */; };
+		7315546A1DC757B500FDEF16 /* 888.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 731554691DC757B500FDEF16 /* 888.JPG */; };
+		7316F75A1DC4958B00FD5D86 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7316F7591DC4958B00FD5D86 /* CoreMotion.framework */; };
+		7316F75C1DC4C95100FD5D86 /* bbb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7316F75B1DC4C95100FD5D86 /* bbb.jpg */; };
 		73199DA61D83A38B00D5015E /* PrepareGameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73199DA51D83A38B00D5015E /* PrepareGameView.m */; };
 		73199DA91D83A60C00D5015E /* PrepareGameCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73199DA81D83A60C00D5015E /* PrepareGameCollectionViewCell.m */; };
 		73199DAB1D83AA2200D5015E /* preparegameSign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73199DAA1D83AA2200D5015E /* preparegameSign.png */; };
@@ -484,7 +485,6 @@
 		73934A8C1DBF6BA0005A2BA0 /* experienceNow.png in Resources */ = {isa = PBXBuildFile; fileRef = 73934A8B1DBF6BA0005A2BA0 /* experienceNow.png */; };
 		73934A8E1DBF7920005A2BA0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73934A8D1DBF7920005A2BA0 /* Images.xcassets */; };
 		7399F5151DBB3CD5001CC3C5 /* title_right_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7399F5141DBB3CD5001CC3C5 /* title_right_icon@2x.png */; };
-		7399F5191DBB4B1A001CC3C5 /* publishshuoshuoCamera@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7399F5181DBB4B1A001CC3C5 /* publishshuoshuoCamera@2x.png */; };
 		73A5F7181D77D7B200B48ADF /* FriendCircleMessgaeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A5F7171D77D7B200B48ADF /* FriendCircleMessgaeViewController.m */; };
 		73A5F71C1D77D7CD00B48ADF /* FriendCircleMessgaeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A5F71A1D77D7CD00B48ADF /* FriendCircleMessgaeCell.m */; };
 		73A5F7201D77FC3200B48ADF /* FriendCircleMessgaeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A5F71F1D77FC3200B48ADF /* FriendCircleMessgaeModel.m */; };
@@ -553,6 +553,7 @@
 		73E666071D4C98AF005B11A4 /* equipicon4-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E665FB1D4C98AF005B11A4 /* equipicon4-2@2x.png */; };
 		73E6660B1D4C9A50005B11A4 /* ConfigurationWiFiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E666091D4C9A50005B11A4 /* ConfigurationWiFiViewController.m */; };
 		73E6660C1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73E6660A1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib */; };
+		73ED5E3D1DC866F2008647D6 /* 我开你.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73ED5E3C1DC866F2008647D6 /* 我开你.mp3 */; };
 		73F21BDA1DAB31EC00424693 /* 统计点数.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD51DAB31EC00424693 /* 统计点数.wav */; };
 		73F21BDB1DAB31EC00424693 /* 统计完点数的声音.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */; };
 		73F21BDC1DAB31EC00424693 /* 摇色子.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD71DAB31EC00424693 /* 摇色子.wav */; };
@@ -577,6 +578,8 @@
 		73FAEBA01D9B9E54006BA437 /* BragGameOverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEB9F1D9B9E54006BA437 /* BragGameOverView.xib */; };
 		73FAEBA21D9BA06D006BA437 /* bragGameOverSign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEBA11D9BA06D006BA437 /* bragGameOverSign.png */; };
 		73FAEBA41D9BBA0D006BA437 /* TeamHitCoin.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEBA31D9BBA0D006BA437 /* TeamHitCoin.png */; };
+		73FE00051DC98360009E4942 /* publishshuoshuoCamera@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FE00041DC98360009E4942 /* publishshuoshuoCamera@2x.png */; };
+		73FE00071DC98963009E4942 /* Foundation+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE00061DC98963009E4942 /* Foundation+Log.m */; };
 		B066D292396B30E079F1068D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD37318826D3BEB471350FB4 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -686,9 +689,10 @@
 		731449C21D98FAC900512E64 /* TypeofGameTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeofGameTableViewCell.h; sourceTree = "<group>"; };
 		731449C31D98FAC900512E64 /* TypeofGameTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeofGameTableViewCell.m; sourceTree = "<group>"; };
 		731449C41D98FAC900512E64 /* TypeofGameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TypeofGameTableViewCell.xib; sourceTree = "<group>"; };
-		7316F7531DC46E4500FD5D86 /* 我开你.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "我开你.mp3"; sourceTree = "<group>"; };
-		7316F7551DC494B500FD5D86 /* PgySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PgySDK.framework; sourceTree = "<group>"; };
-		7316F7561DC494B500FD5D86 /* PgyUpdate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PgyUpdate.framework; sourceTree = "<group>"; };
+		731554651DC6F53400FDEF16 /* icon_open_call_point.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_open_call_point.png; sourceTree = "<group>"; };
+		731554691DC757B500FDEF16 /* 888.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 888.JPG; sourceTree = "<group>"; };
+		7316F7591DC4958B00FD5D86 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		7316F75B1DC4C95100FD5D86 /* bbb.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bbb.jpg; sourceTree = "<group>"; };
 		73199DA41D83A38B00D5015E /* PrepareGameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrepareGameView.h; sourceTree = "<group>"; };
 		73199DA51D83A38B00D5015E /* PrepareGameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrepareGameView.m; sourceTree = "<group>"; };
 		73199DA71D83A60C00D5015E /* PrepareGameCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrepareGameCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1311,7 +1315,6 @@
 		73934A8D1DBF7920005A2BA0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7399B1CB1DA8A5B6001D0AB5 /* TeamsHit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TeamsHit.entitlements; sourceTree = "<group>"; };
 		7399F5141DBB3CD5001CC3C5 /* title_right_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title_right_icon@2x.png"; sourceTree = "<group>"; };
-		7399F5181DBB4B1A001CC3C5 /* publishshuoshuoCamera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "publishshuoshuoCamera@2x.png"; sourceTree = "<group>"; };
 		73A5F7161D77D7B200B48ADF /* FriendCircleMessgaeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendCircleMessgaeViewController.h; sourceTree = "<group>"; };
 		73A5F7171D77D7B200B48ADF /* FriendCircleMessgaeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendCircleMessgaeViewController.m; sourceTree = "<group>"; };
 		73A5F7191D77D7CD00B48ADF /* FriendCircleMessgaeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendCircleMessgaeCell.h; sourceTree = "<group>"; };
@@ -1415,6 +1418,7 @@
 		73E666081D4C9A50005B11A4 /* ConfigurationWiFiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigurationWiFiViewController.h; sourceTree = "<group>"; };
 		73E666091D4C9A50005B11A4 /* ConfigurationWiFiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigurationWiFiViewController.m; sourceTree = "<group>"; };
 		73E6660A1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfigurationWiFiViewController.xib; sourceTree = "<group>"; };
+		73ED5E3C1DC866F2008647D6 /* 我开你.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "我开你.mp3"; sourceTree = "<group>"; };
 		73F21BD51DAB31EC00424693 /* 统计点数.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "统计点数.wav"; sourceTree = "<group>"; };
 		73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "统计完点数的声音.wav"; sourceTree = "<group>"; };
 		73F21BD71DAB31EC00424693 /* 摇色子.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "摇色子.wav"; sourceTree = "<group>"; };
@@ -1441,6 +1445,8 @@
 		73FAEB9F1D9B9E54006BA437 /* BragGameOverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BragGameOverView.xib; sourceTree = "<group>"; };
 		73FAEBA11D9BA06D006BA437 /* bragGameOverSign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bragGameOverSign.png; sourceTree = "<group>"; };
 		73FAEBA31D9BBA0D006BA437 /* TeamHitCoin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TeamHitCoin.png; sourceTree = "<group>"; };
+		73FE00041DC98360009E4942 /* publishshuoshuoCamera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "publishshuoshuoCamera@2x.png"; sourceTree = "<group>"; };
+		73FE00061DC98963009E4942 /* Foundation+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Foundation+Log.m"; sourceTree = "<group>"; };
 		7A62B45D9A4259D08DDDAA06 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		DD37318826D3BEB471350FB4 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8877E15C35E4DD0C8FB5930 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1451,11 +1457,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7316F75A1DC4958B00FD5D86 /* CoreMotion.framework in Frameworks */,
 				7323589A1DBDFC7B00CF21FD /* Security.framework in Frameworks */,
 				736299E71DB9FCBB004E25A9 /* StoreKit.framework in Frameworks */,
 				733A26031DB4BAA1003FADF0 /* Photos.framework in Frameworks */,
 				733A26011DB4BA86003FADF0 /* MapKit.framework in Frameworks */,
-				7316F7571DC494B500FD5D86 /* PgySDK.framework in Frameworks */,
 				733A25FF1DB4BA77003FADF0 /* libz.tbd in Frameworks */,
 				733A262A1DB4BBCF003FADF0 /* RongIMKit.framework in Frameworks */,
 				733A25FD1DB4BA68003FADF0 /* libxml2.tbd in Frameworks */,
@@ -1473,7 +1479,6 @@
 				73F21BFF1DAB6A2B00424693 /* Foundation.framework in Frameworks */,
 				73F21BFD1DAB6A2100424693 /* UIKit.framework in Frameworks */,
 				73F21BFB1DAB6A0400424693 /* QuartzCore.framework in Frameworks */,
-				7316F7581DC494B500FD5D86 /* PgyUpdate.framework in Frameworks */,
 				73F21BF91DAB69E700424693 /* AudioToolbox.framework in Frameworks */,
 				73F21BF71DAB69DD00424693 /* AddressBook.framework in Frameworks */,
 				73F21BF51DAB69CC00424693 /* CoreTelephony.framework in Frameworks */,
@@ -1544,6 +1549,7 @@
 		730CD9A41D7428FA00183ED8 /* feirndCicleResource */ = {
 			isa = PBXGroup;
 			children = (
+				732BABB21D37716400D480B0 /* publish */,
 				731449B31D98F70800512E64 /* 发现 */,
 				73A5F7211D78145600B48ADF /* zan1.png */,
 				730CD9A51D7428FA00183ED8 /* 01@2x.png */,
@@ -2020,6 +2026,7 @@
 				737118041D388B8500B590CB /* TeamHitBarButtonItem.m */,
 				732BABB91D37B06E00D480B0 /* UserInfo.h */,
 				732BABBA1D37B06E00D480B0 /* UserInfo.m */,
+				73FE00061DC98963009E4942 /* Foundation+Log.m */,
 				73F21BDF1DAB339800424693 /* PlayMusicModel.h */,
 				73F21BE01DAB339800424693 /* PlayMusicModel.m */,
 				73644C4A1D36199A0060DA9F /* 选择器 */,
@@ -2098,6 +2105,7 @@
 		732B93411D2E3D8B0095DD62 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				7316F75B1DC4C95100FD5D86 /* bbb.jpg */,
 				73DAAFBF1DC2DFF4000ACB66 /* 1(1).jpg */,
 				73555C741DBF54BE00153E6A /* welcomeImageSource */,
 				73199DD11D83E36C00D5015E /* main */,
@@ -2109,7 +2117,6 @@
 				737118191D38BFDA00B590CB /* meResource */,
 				737118061D38905200B590CB /* navigationBar */,
 				737117F21D388B2C00B590CB /* tabbar */,
-				732BABB21D37716400D480B0 /* publish */,
 				7390BC0C1D34917100F5EA01 /* Login */,
 			);
 			name = Resource;
@@ -2172,13 +2179,14 @@
 		732BABB21D37716400D480B0 /* publish */ = {
 			isa = PBXGroup;
 			children = (
+				73FE00041DC98360009E4942 /* publishshuoshuoCamera@2x.png */,
 				73DEC7CF1DB7693E00CD822D /* placeHolderImage1.png */,
-				7399F5181DBB4B1A001CC3C5 /* publishshuoshuoCamera@2x.png */,
 				732BABB31D37717300D480B0 /* upload.png */,
 				732BABB41D37717300D480B0 /* upload@2x.png */,
 				732BABB51D37717300D480B0 /* upload@3x.png */,
 			);
 			name = publish;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		732C50881D3C66720072F709 /* Models */ = {
@@ -3022,6 +3030,7 @@
 		73ACFC8C1D3E14F20024F0D3 /* 图片处理 */ = {
 			isa = PBXGroup;
 			children = (
+				731554691DC757B500FDEF16 /* 888.JPG */,
 				73ACFC8E1D3E15C90024F0D3 /* ProcessingImagesViewController.h */,
 				73ACFC8F1D3E15C90024F0D3 /* ProcessingImagesViewController.m */,
 				733716411D3F62E8000F8628 /* tailorImage */,
@@ -3131,6 +3140,7 @@
 		73DEBC111D863E3700395FD0 /* 图标 */ = {
 			isa = PBXGroup;
 			children = (
+				731554651DC6F53400FDEF16 /* icon_open_call_point.png */,
 				731D08CB1D960F7500FD172A /* icon_wait_call_point.png */,
 				73097E001D88FB26001057F5 /* callDicePointState.png */,
 				73BD46F51D93B60D002F38CF /* chooseDicepointCallOrOpen_call.png */,
@@ -3203,7 +3213,7 @@
 		73F21BD41DAB31DA00424693 /* 音频文件 */ = {
 			isa = PBXGroup;
 			children = (
-				7316F7531DC46E4500FD5D86 /* 我开你.mp3 */,
+				73ED5E3C1DC866F2008647D6 /* 我开你.mp3 */,
 				73F21BE41DAB386200424693 /* dice_m_11.mp3 */,
 				73F21BD51DAB31EC00424693 /* 统计点数.wav */,
 				73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */,
@@ -3217,8 +3227,7 @@
 		CDBCAD4034AC9575BD8FD84B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7316F7551DC494B500FD5D86 /* PgySDK.framework */,
-				7316F7561DC494B500FD5D86 /* PgyUpdate.framework */,
+				7316F7591DC4958B00FD5D86 /* CoreMotion.framework */,
 				732358991DBDFC7B00CF21FD /* Security.framework */,
 				732358911DBDFC2700CF21FD /* Wechat */,
 				736299E61DB9FCBB004E25A9 /* StoreKit.framework */,
@@ -3401,6 +3410,7 @@
 				730BE9D71DB0A5BA00BC3468 /* zoomer.png in Resources */,
 				730CD9AD1D7428FA00183ED8 /* 01@2x.png in Resources */,
 				73199DC71D83E30800D5015E /* 骰子4-1.png in Resources */,
+				731554661DC6F53400FDEF16 /* icon_open_call_point.png in Resources */,
 				737117FF1D388B2C00B590CB /* friend-1@2x.png in Resources */,
 				73E665FC1D4C98AF005B11A4 /* equipicon1.png in Resources */,
 				73F5AA4E1D928BB200EC04D4 /* quitGameImg.png in Resources */,
@@ -3465,6 +3475,7 @@
 				73362FD51D59B82C00331BFB /* wifi_paring_02.png in Resources */,
 				733412D81D5AC0EF00196F4E /* FriendInformationViewController.xib in Resources */,
 				73F21BE51DAB386200424693 /* dice_m_11.mp3 in Resources */,
+				73ED5E3D1DC866F2008647D6 /* 我开你.mp3 in Resources */,
 				73DAAFC61DC31DE9000ACB66 /* groupSetup.png in Resources */,
 				73DAAFC21DC2FE89000ACB66 /* informationCenter.png in Resources */,
 				7340351D1DBDDEAE0050FC82 /* my_share.png in Resources */,
@@ -3519,6 +3530,7 @@
 				73362FE01D59B82C00331BFB /* wifi_paring_13.png in Resources */,
 				73555C7E1DBF552D00153E6A /* welcome_2.png in Resources */,
 				732C51111D3C85A10072F709 /* newFriend.png in Resources */,
+				7316F75C1DC4C95100FD5D86 /* bbb.jpg in Resources */,
 				733412E51D5AFC7500196F4E /* forbid.png in Resources */,
 				736EEFEF1DC09B7000DA5B5E /* process_opposite.png in Resources */,
 				737339EE1D333C5B00E9A18C /* Photo.bundle in Resources */,
@@ -3548,8 +3560,8 @@
 				733412E61D5AFC7500196F4E /* noForbid.png in Resources */,
 				7340351B1DBDDEAE0050FC82 /* about.png in Resources */,
 				731449C11D98F70800512E64 /* findStartGame.png in Resources */,
+				7315546A1DC757B500FDEF16 /* 888.JPG in Resources */,
 				732E04971D41C58E00BED0ED /* ico_dot_04@2x.png in Resources */,
-				7399F5191DBB4B1A001CC3C5 /* publishshuoshuoCamera@2x.png in Resources */,
 				731449BE1D98F70800512E64 /* BragSign.png in Resources */,
 				730B70D61DADCBFA005B4637 /* materia-7@2x.png in Resources */,
 				733A26251DB4BBCF003FADF0 /* RongCloudKit.strings in Resources */,
@@ -3580,7 +3592,6 @@
 				732607301DB5D63700B1E626 /* normalscrip.png in Resources */,
 				73BD46F71D93B60D002F38CF /* chooseDicepointCallOrOpen_call.png in Resources */,
 				730CD9B21D7428FA00183ED8 /* mao@2x.jpg in Resources */,
-				7316F7541DC46E4500FD5D86 /* 我开你.mp3 in Resources */,
 				73DEC7DB1DB7709B00CD822D /* bangdingshebei@2x.png in Resources */,
 				737118281D38C68E00B590CB /* FindViewController.xib in Resources */,
 				732E04751D41B9F800BED0ED /* ico_align_checked@2x.png in Resources */,
@@ -3598,6 +3609,7 @@
 				73555C591DBF16B900153E6A /* ForgetPAsswordViewController.xib in Resources */,
 				7326072E1DB5D63700B1E626 /* importantINformation.png in Resources */,
 				7371181D1D38BFFF00B590CB /* equipment.png in Resources */,
+				73FE00051DC98360009E4942 /* publishshuoshuoCamera@2x.png in Resources */,
 				737118181D38BE7200B590CB /* next_icon.png in Resources */,
 				7340351F1DBDDEAE0050FC82 /* voice.png in Resources */,
 				737118231D38C60D00B590CB /* RoronoaZoro.jpg in Resources */,
@@ -3733,6 +3745,7 @@
 				73BB21451D52CC5C000CBC9A /* ConfigurationWiFiSecondViewController.m in Sources */,
 				73199DA61D83A38B00D5015E /* PrepareGameView.m in Sources */,
 				732C50EA1D3C66720072F709 /* FMDatabaseAdditions.m in Sources */,
+				73FE00071DC98963009E4942 /* Foundation+Log.m in Sources */,
 				732C50E41D3C66720072F709 /* RCDUserInfo.m in Sources */,
 				732BAB791D37246F00D480B0 /* NSDictionary+Unicode.m in Sources */,
 				73BB215F1D532504000CBC9A /* Scanner.m in Sources */,

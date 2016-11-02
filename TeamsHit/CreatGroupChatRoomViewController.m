@@ -185,7 +185,7 @@
             
         }else
         {
-            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"至少添加两个好友才能创建群组" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"至少添加两个好友才能创建房间" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
             [alert show];
         }
     }

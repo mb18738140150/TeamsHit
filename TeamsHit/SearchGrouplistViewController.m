@@ -79,6 +79,7 @@
     groupModel.groupName = model.GroupName;
     groupModel.groupId = [NSString stringWithFormat:@"%@", model.GroupId];
     groupModel.introduce = model.groupIntro;
+    groupModel.number = [NSString stringWithFormat:@"%@", model.GroupPeople];
     cell.model = groupModel;
     return cell;
 }

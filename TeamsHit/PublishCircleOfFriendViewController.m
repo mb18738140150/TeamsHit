@@ -110,7 +110,7 @@
     self.informationView.backgroundColor = [UIColor whiteColor];
     [self.publishScrollView addSubview:self.informationView];
     
-    self.ideaTextView = [[UITextView alloc]initWithFrame:CGRectMake(15, 12, self.informationView.hd_width, 135)];
+    self.ideaTextView = [[UITextView alloc]initWithFrame:CGRectMake(15, 12, self.informationView.hd_width - 30, 135)];
     self.ideaTextView.textColor =[UIColor blackColor];
     _ideaTextView.font = [UIFont systemFontOfSize:15];
 //    self.ideaTextView.text = @"这一刻的想法...";
@@ -349,11 +349,19 @@
     
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if (range.location + range.length > textView.text.length) {
+        return NO;
+    }
+    NSInteger newLength = [textView.text length] + [text length] - range.length;
+    return newLength <= 2000;
+}
+
 #pragma mark - 上传图片
 - (void)uploadImage
 {
     [self.ideaTextView resignFirstResponder];
-    
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"图片上传中...";
     NSLog(@"***** 上传图片");

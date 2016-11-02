@@ -20,7 +20,6 @@
         image = [self calculateImagesize:image];
         NSLog(@"适应宽度");
     }
-    
     NSData *data;
     if (UIImagePNGRepresentation(image) == nil)
     {
@@ -82,6 +81,32 @@
     NSLog(@"%f *** %f", size.width, height);
     
     return height;
+}
+
+- (UIImage *)getDownImge:(UIImage *)image
+{
+    UIGraphicsBeginImageContext(image.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality(context, kCGInterpolationNone);
+    CGContextTranslateCTM(context, image.size.width, 0);
+    CGContextScaleCTM(context, -1.f, 1.f);
+    CGContextDrawImage(context, CGRectMake(0, 0, image.size.width, image.size.height), image.CGImage);
+    UIImage * downImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return downImage;
+}
+- (UIImage *)getMirrorImage:(UIImage *)image
+{
+    CGRect  rect =  CGRectMake(0, 0, image.size.width , image.size.height);
+    UIGraphicsBeginImageContextWithOptions(image.size, false, 1);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextClipToRect(context, rect);
+    CGContextRotateCTM(context, M_PI);
+    CGContextTranslateCTM(context, -rect.size.width, -rect.size.height);
+    CGContextDrawImage(context, rect, image.CGImage);
+    UIImage * downImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return downImage;
 }
 
 @end

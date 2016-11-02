@@ -42,6 +42,7 @@
 @property (nonatomic, strong)NSMutableArray * indexpathArr;
 @property (nonatomic, assign)int  refreshNUmber;
 @property (nonatomic, strong)NSTimer * turnRefreshTimer;
+@property (nonatomic, strong)UIButton * quitBT;
 
 @end
 
@@ -91,6 +92,8 @@
     self.gametableView.backgroundColor = [UIColor clearColor];
     self.gametableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.gametableView registerClass:[BraggameTableViewCell class] forCellReuseIdentifier:BRAGEGAMECELLIDENTIFIRE];
+    self.gametableView.tableFooterView = [self getGameTableFootView];
+    
     [self addSubview:self.gametableView];
     
     
@@ -112,7 +115,26 @@
     [self addSubview:self.chooseDiceNumberView];
     self.chooseDiceNumberView.hidden = YES;
     
+}
+
+- (UIView *)getGameTableFootView
+{
+    UIView * footView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.gametableView.hd_width, 70)];
+    footView.backgroundColor = [UIColor clearColor];
     
+    self.quitBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.quitBT.frame = CGRectMake(15, 10, 40, 40);
+    [self.quitBT setImage:[UIImage imageNamed:@"quieGameButton"] forState:UIControlStateNormal];
+    [footView addSubview:self.quitBT];
+    [self.quitBT addTarget:self action:@selector(quitBragGame) forControlEvents:UIControlEventTouchUpInside];
+    
+    return footView;
+}
+- (void)quitBragGame
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(quitBragGameView)]) {
+        [self.delegate quitBragGameView];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -653,6 +675,10 @@
 // 开点
 - (void)openDIcePoint:(NSDictionary *)dic
 {
+    PlayMusicModel * playmusic = [PlayMusicModel share];
+    [playmusic playMusicWithName:@"我开你" type:@"mp3"];
+    
+    
 //    NSNumber * OpenUserId = [dic objectForKey:@"OpenUserId"];
 //    NSNumber * BeOpenUserId = [dic objectForKey:@"BeOpenUserId"];
     NSNumber * WinPoint = [dic objectForKey:@"WinPoint"];
@@ -675,13 +701,9 @@
         model.isFinish = YES;
         if (model.gameUserInfo.userId.intValue == WinUserId.intValue) {
             self.WinUserId = WinUserId;
-//            NSLog(@"%@ win", model.gameUserInfo.userId);
-//            model.isWin = IsWinTheGame_win;
         }else if (model.gameUserInfo.userId.intValue == loseUserId.intValue)
         {
             self.loseUserId = loseUserId;
-//            NSLog(@"%@ lose", model.gameUserInfo.userId);
-//             model.isWin = IsWinTheGame_lose;
         }
         [model.dicePointArr removeAllObjects];
         [model.showDicePointArr removeAllObjects];

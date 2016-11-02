@@ -97,7 +97,7 @@
     
     if (isRule) {
         backWhiteView.hd_height = 201;
-        self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(22, 64, backWhiteView.hd_width - 52 , 110) style:UITableViewStylePlain];
+        self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(22, 64, backWhiteView.hd_width - 52 , 120) style:UITableViewStylePlain];
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -120,6 +120,9 @@
         if (self.isQuit) {
             backWhiteView.hd_height = 141;
             backBlackView.backgroundColor = [UIColor colorWithWhite:.3 alpha:.3];
+            UITapGestureRecognizer * distap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
+            [backBlackView addGestureRecognizer:distap];
+            
             UIView * rulerView = [[UIView alloc]initWithFrame:CGRectMake(14, 60, backWhiteView.hd_width - 26, 20)];
             rulerView.backgroundColor = [UIColor whiteColor];
             [backWhiteView addSubview:rulerView];
@@ -249,7 +252,7 @@
     
     UILabel * contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(40, 50, 196, 40)];
     contentLabel.textColor = MAIN_COLOR;
-    contentLabel.text = @"游戏中退出，会损失大量的金 币和积分。";
+    contentLabel.text = @"游戏中退出，会损失大量的碰碰币和积分。";
     contentLabel.font = [UIFont systemFontOfSize:15];
     contentLabel.numberOfLines = 0;
     [quitTipView addSubview:contentLabel];

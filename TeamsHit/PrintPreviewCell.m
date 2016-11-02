@@ -19,8 +19,8 @@
     [self.contentView removeAllSubviews];
     
     CGFloat imageWidth = 0.0;
-    if (width > screenWidth - 90) {
-        imageWidth = screenWidth - 90;
+    if (width > screenWidth - 70) {
+        imageWidth = screenWidth - 70;
     }else
     {
         imageWidth = width;
@@ -34,14 +34,14 @@
 {
     CGFloat height;
     CGSize size = image.size;
-    if (size.width <= screenWidth - 90) {
+    if (size.width <= screenWidth - 70) {
         height = size.height;
         self.photoImageView.hd_width = size.width;
         self.photoImageView.hd_height = height;
     }else
     {
-        height = size.height * (screenWidth - 90) / size.width;
-        self.photoImageView.hd_width = screenWidth - 90;
+        height = size.height * (screenWidth - 70) / size.width;
+        self.photoImageView.hd_width = screenWidth - 70;
         self.photoImageView.hd_height = height;
     }
     self.photoImageView.image = image;

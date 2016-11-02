@@ -119,7 +119,7 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     [_bottomView addSubview:_importantLabel];
     
     NSDateFormatter * formatter = [[NSDateFormatter alloc]init];
-    formatter.dateFormat = @"YYYY-MM-DD hh:mm:ss";
+    formatter.dateFormat = @"YYYY-MM-dd hh:mm:ss";
     NSDate * date = [NSDate dateWithTimeIntervalSinceNow:0];
     NSString * printTime = [formatter stringFromDate:date];
     
@@ -133,7 +133,6 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     self.imaginariView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 71, _headerView.hd_width - 20, 2)];
     _imaginariView.image = [UIImage imageNamed:@"imaginaryline"];
     [_bottomView addSubview:_imaginariView];
-    
     
     return _headerView;
 }

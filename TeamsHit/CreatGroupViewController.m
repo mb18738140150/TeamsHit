@@ -47,7 +47,7 @@
     self.VerificationType = 1;
     
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
-    self.title = @"创建群组";
+    self.title = @"创建房间";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -147,7 +147,7 @@
     [self.groupNameTF resignFirstResponder];
     [self.groupIntroduceTF resignFirstResponder];
     NSArray * typeArr = @[@"允许任何人加入", @"不允许任何人加入"];
-    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"群组验证" content:typeArr];
+    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"房间验证" content:typeArr];
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
@@ -165,7 +165,7 @@
 - (IBAction)completeAction:(id)sender {
     
     if (self.groupNameTF.text.length == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"群组名称不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"房间名称不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
     }else
     {
@@ -231,7 +231,7 @@
         NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];
         
         NSString *timeStr = [fomatter stringFromDate:date];
-        groupIntroduceStr = [NSString stringWithFormat:@"本群创建于%@", timeStr];
+        groupIntroduceStr = [NSString stringWithFormat:@"本房间创建于%@", timeStr];
     }else
     {
         groupIntroduceStr = self.groupIntroduceTF.text;

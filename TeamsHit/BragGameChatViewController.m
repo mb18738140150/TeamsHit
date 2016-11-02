@@ -104,37 +104,10 @@
 #pragma mark - BrageGameViewHeaderViewProtocol
 - (void)setUpGameChatGroup
 {
-    if (self.isStartGame) {
-        
-        if (self.IsViewer) {
-            GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
-            groupDetailVC.groupID = self.targetId;
-            [self.navigationController pushViewController:groupDetailVC animated:YES];
-        }else
-        {
-            NSLog(@"开始游戏");
-            quitTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:[NSString stringWithFormat:@"%@房间", self.targetId] quit:YES];
-            quitTipView.IsViewer = self.IsViewer;
-            [quitTipView getPickerData:^(NSString *string) {
-                if ([string isEqualToString:@"lookRuler"]) {
-                    [self lookRuler];
-                }else
-                {
-                    [self forceOut];
-                }
-                
-            }];
-            [quitTipView show];
-        }
-        
-    }else
-    {
-        NSLog(@"群组设置");
-        GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
-        groupDetailVC.groupID = self.targetId;
-        [self.navigationController pushViewController:groupDetailVC animated:YES];
-    }
-    
+    NSLog(@"群组设置");
+    GroupDetailViewController * groupDetailVC = [[GroupDetailViewController alloc]init];
+    groupDetailVC.groupID = self.targetId;
+    [self.navigationController pushViewController:groupDetailVC animated:YES];
 }
 
 // 倒计时
@@ -155,7 +128,7 @@
     NSArray * typeArr = @[@"轮流叫出不超过桌面上所有骰子的个数。", @"当你认为上家加的点数太大时，就开 TA吧！", @"一点可以当其他使用，但如果有人叫 了一点后，就变成一个普通点了。"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"吹牛游戏规则" content:typeArr isRule:YES ishaveQuit:YES];
     [setTipView show];
-
+    
 }
 
 - (void)forceOut
@@ -174,11 +147,8 @@
         
         [_webSocket send:[dictionary JSONString]];
         [quitTipView dismiss];
-        //    [_webSocket close];
         NSLog(@"callDicePOint %@", [dictionary JSONString]);
     }
-    
-    
     
 //    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 }
@@ -197,13 +167,12 @@
 #pragma mark - SRWebSocketDelegate 写上具体聊天逻辑
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket;
 {
-     NSLog(@"Websocket Connected");
+    NSLog(@"Websocket Connected");
     
     NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
     [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
     [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
     [dictionary setValue:@(1001) forKey:@"GameCommand"];
-    
     
     [_webSocket send:[dictionary JSONString]];
 }
@@ -353,31 +322,27 @@
         }
     }
     if (isgameUser) {
-        NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-        [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
-        [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
-        [dictionary setValue:@(QUITGAME) forKey:@"GameCommand"];
-        [dictionary setValue:@0 forKey:@"GameId"];
-        
-        NSLog(@"%@", [dictionary description]);
-        
-        [_webSocket send:[dictionary JSONString]];
-        NSLog(@"callDicePOint %@", [dictionary JSONString]);
-        NSLog(@"请求后退出");
+        if (_webSocket.readyState == SR_CLOSED) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }else
+        {
+            NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+            [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
+            [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
+            [dictionary setValue:@(QUITGAME) forKey:@"GameCommand"];
+            [dictionary setValue:@0 forKey:@"GameId"];
+            
+            NSLog(@"%@", [dictionary description]);
+            
+            [_webSocket send:[dictionary JSONString]];
+            NSLog(@"callDicePOint %@", [dictionary JSONString]);
+            NSLog(@"请求后退出");
+        }
     }else
     {
-//        NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-//        [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
-//        [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
-//        [dictionary setValue:@(QUITGAME) forKey:@"GameCommand"];
-//        [dictionary setValue:@0 forKey:@"GameId"];
-//        
-//        [_webSocket send:[dictionary JSONString]];
-//        NSLog(@"callDicePOint %@", [dictionary JSONString]);
-//        [self.navigationController popViewControllerAnimated:YES];
+        [_webSocket close];
+        [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
     }
-    [_webSocket close];
-    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
 }
 
 - (void)quitgame
@@ -427,15 +392,36 @@
             break;
         }
     }
-    
-    [self.GameUserInfoArr removeObject:user];
-    [self.prepareGameView reloadDataAction];
-//    [self removeAllsubViews];
-//    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
-
+    if (!self.isStartGame) {
+        [self.GameUserInfoArr removeObject:user];
+        [self.prepareGameView reloadDataAction];
+    }
 }
 
 #pragma mark - BragGameViewProtocol
+
+- (void)quitBragGameView
+{
+    if (self.IsViewer) {
+        [_webSocket close];
+        [self.navigationController popViewControllerAnimated:YES];
+    }else
+    {
+        NSLog(@"开始游戏");
+        quitTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:[NSString stringWithFormat:@"%@房间", self.targetId] quit:YES];
+        quitTipView.IsViewer = self.IsViewer;
+        [quitTipView getPickerData:^(NSString *string) {
+            if ([string isEqualToString:@"lookRuler"]) {
+                [self lookRuler];
+            }else
+            {
+                [self forceOut];
+            }
+        }];
+        [quitTipView show];
+    }
+}
+
 - (void)bragShakeDIceCup
 {
     NSLog(@"开始摇骰盅");
@@ -522,8 +508,6 @@
     [_webSocket send:[dictionary JSONString]];
     NSLog(@"callDicePOint %@", [dictionary JSONString]);
     
-    PlayMusicModel * playmusic = [PlayMusicModel share];
-    [playmusic playMusicWithName:@"我开你" type:@"mp3"];
 }
 
 // 游戏结束，获取最后结果

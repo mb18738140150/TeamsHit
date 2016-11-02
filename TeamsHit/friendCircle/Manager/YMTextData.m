@@ -132,7 +132,7 @@
         
         [self matchString:newString fromView:typeview];
         
-        WFTextView *_ilcoreText = [[WFTextView alloc] initWithFrame:CGRectMake(offSet_X,10, sizeWidth - offSet_X - offSet_X_right, 0)];
+        WFTextView *_ilcoreText = [[WFTextView alloc] initWithFrame:CGRectMake(offSet_X + 8,10, sizeWidth - offSet_X - offSet_X_right - 8, 0)];
         
         _ilcoreText.isFold = NO;
         _ilcoreText.isDraw = NO;

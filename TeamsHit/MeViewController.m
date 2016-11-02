@@ -88,6 +88,9 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
     
     [WXApiManager sharedManager].delegate = self;
     
+//    UIImage * image = [UIImage imageNamed:@"bbb.jpg"];
+//    NSLog(@"width =  %f ** height = %f", image.size.width, image.size.height);
+    
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -128,6 +131,13 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
     self.userNameLabel.text = [dic objectForKey:@"NickName"];
     self.coinCountLB.text = [NSString stringWithFormat:@"对对号:%@", [dic objectForKey:@"UserName"]];
     self.counCountLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"CoinCount"]];
+    if([[dic objectForKey:@"IsShare"] boolValue])
+    {
+        self.shareGetCoinLabel.hidden = YES;
+    }else
+    {
+        self.shareGetCoinLabel.hidden = NO;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -390,54 +400,14 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
             NSLog(@"%@", error);
         }];
     }
-    
 }
 
 - (IBAction)telePhoneCheck:(id)sender {
     
-//    TelephoneRechargeViewController * rechargeVC = [[TelephoneRechargeViewController alloc]init];
-//    
-//    rechargeVC.hidesBottomBarWhenPushed = YES;
-//    [self.navigationController pushViewController:rechargeVC animated:YES];
+    TelephoneRechargeViewController * rechargeVC = [[TelephoneRechargeViewController alloc]init];
     
-    
-    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [hud show:YES];
-    
-    NSDictionary *requestContents = @{
-                                      @"OrderId": @"p1610282115109151"
-                                      };
-    
-    __weak MeViewController * weakSelf = self;
-    NSString * url = [NSString stringWithFormat:@"%@userinfo/WeChatPay?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
-    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:requestContents progress:^(NSProgress * _Nullable progress) {
-        ;
-    } success:^(id  _Nonnull responseObject) {
-        [hud hide:YES];
-        NSLog(@"responseObject = %@", responseObject);
-        int code = [[responseObject objectForKey:@"Code"] intValue];
-        if (code == 200) {
-            
-            PayReq* req             = [[PayReq alloc] init];
-            req.openID              = [responseObject objectForKey:@"AppId"];
-            req.partnerId           = [responseObject objectForKey:@"PartnerId"];
-            req.prepayId            = [responseObject objectForKey:@"PrepayId"];
-            req.nonceStr            = [responseObject objectForKey:@"NonceStr"];
-            req.timeStamp           = [[responseObject objectForKey:@"TimeStamp"] intValue];
-            req.package             = [responseObject objectForKey:@"Package"];
-            req.sign                = [responseObject objectForKey:@"Sign"];
-            [WXApi sendReq:req];
-        }else
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
-        }
-        
-    } failure:^(NSError * _Nonnull error) {
-        [hud hide:YES];
-        NSLog(@"%@", error);
-    }];
+    rechargeVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:rechargeVC animated:YES];
     
 }
 

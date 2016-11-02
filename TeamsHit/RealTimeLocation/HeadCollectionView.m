@@ -93,7 +93,7 @@
         if ([RCIM sharedRCIM].userInfoDataSource && [[RCIM sharedRCIM].userInfoDataSource respondsToSelector:@selector(getUserInfoWithUserId:completion:)]) {
             [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
                 if (!userInfo) {
-                    userInfo = [[RCUserInfo alloc] initWithUserId:userId name:[NSString stringWithFormat:@"user<%@>", userId] portrait:nil];
+                    userInfo = [[RCUserInfo alloc] initWithUserId:userId name:@"user" portrait:nil];
                 }
                 [self.rcUserInfos addObject:userInfo];
                 [self addHeadViewUser: userInfo];

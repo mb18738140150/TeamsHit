@@ -37,7 +37,7 @@
     
     self.tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, 11)];
     self.tipLabel.backgroundColor = [UIColor clearColor];
-    self.tipLabel.text = @"群主";
+    self.tipLabel.text = @"房东";
     self.tipLabel.font = [UIFont systemFontOfSize:9];
     self.tipLabel.textAlignment = 1;
     self.tipLabel.textColor = UIColorFromRGB(0x12B7F5);

@@ -26,5 +26,5 @@
 + (UIImage *)ditherImage:(UIImage *)image;
 - (UIImage *)ditherBlackWhite:(UIImage *)image;
 +(UIImage *)getDefault:(UIImage *)image;
-
++ (UIImage*)imageByScalingAndCroppingForSize:(UIImage *)image;
 @end

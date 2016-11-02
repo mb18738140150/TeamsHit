@@ -18,6 +18,7 @@
 @property (nonatomic, copy)NSString * gender;
 @property (nonatomic, copy)NSString * phone;
 @property (nonatomic, copy)NSString * address;
+@property (nonatomic, strong)NSNumber * IsPhoneNumber;
 @property (nonatomic, strong)NSNumber * isFriend;
 @property (nonatomic, strong)NSMutableArray * galleriesList;// 朋友圈图片地址链接数组
 

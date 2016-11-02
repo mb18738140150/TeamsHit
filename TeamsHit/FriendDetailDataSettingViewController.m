@@ -200,6 +200,10 @@
             RCDUserInfo *user = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
             user.displayName = name;
             [[RCDataBaseManager shareInstance]insertFriendToDB:user];
+            RCUserInfo * userInfo = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
+            userInfo.name = name;
+            [[RCDataBaseManager shareInstance]insertUserToDB:userInfo];
+            [[RCIM sharedRCIM]refreshUserInfoCache:userInfo withUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"renameFriendName" object:nil userInfo:@{@"displayName":name}];
             

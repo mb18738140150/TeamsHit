@@ -9,11 +9,13 @@
 #import "StoreViewController.h"
 #import <WebKit/WebKit.h>
 #import "WXApi.h"
+#import "WXApiManager.h"
 
-@interface StoreViewController ()<WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler>
+@interface StoreViewController ()<WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, WXApiManagerDelegate>
 
 @property (nonatomic, strong)WKWebView *webView;
 @property (nonatomic, strong)UIProgressView * progressView;
+@property (nonatomic, copy)NSString * orderId;
 @end
 
 @implementation StoreViewController
@@ -27,7 +29,7 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     self.title = @"对对商城";
-    
+    [WXApiManager sharedManager].delegate = self;
     // 创建配置类
     WKWebViewConfiguration * config = [[WKWebViewConfiguration alloc]init];
     config.preferences = [[WKPreferences alloc]init];
@@ -37,9 +39,7 @@
     
     //配置web内容处理池
     config.processPool = [[WKProcessPool alloc] init];
-    // 配置Js与Web内容交互
-    // WKUserContentController是用于给JS注入对象的，注入对象后，JS端就可以使用：
-    // window.webkit.messageHandlers.<name>.postMessage(<messageBody>)
+    
     /*
      
      配置Js与Web内容交互
@@ -86,10 +86,9 @@
     [self.view addSubview:_webView];
     
     self.progressView = [[UIProgressView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, 1)];
-    self.progressView.tintColor = [UIColor blueColor];
+    self.progressView.tintColor = MAIN_COLOR;
     self.progressView.trackTintColor = [UIColor whiteColor];
     [self.view addSubview:self.progressView];
-    
     
 }
 
@@ -100,6 +99,12 @@
         // 打印所传过来的参数，只支持NSNumber, NSString, NSDate, NSArray,
         // NSDictionary, and NSNull类型
         NSLog(@"%@", message.body);
+        NSString * orderId = [message.body objectForKey:@"body"];
+        self.orderId = orderId;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self requestOrderInformation:orderId];
+        });
+        
     }
 }
 
@@ -254,12 +259,7 @@
 
 - (void)backAction:(UIButton *)button
 {
-    if ([_webView canGoBack]) {
-        [_webView goBack];
-    }else
-    {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
     
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -279,22 +279,67 @@
             self.progressView.hidden = NO;
             [self.progressView setProgress:newprogress animated:YES];
         }
+    }else if ([keyPath isEqualToString:@"loading"]) {
+        NSLog(@"loading");
     }
 }
 
-- (void)sendPay
+- (void)requestOrderInformation:(NSString *)orderId
 {
-    NSDictionary * dict;
-     NSMutableString *stamp  = [dict objectForKey:@"timestamp"];
-    PayReq* req             = [[PayReq alloc] init];
-    req.openID              = [dict objectForKey:@"appid"];
-    req.partnerId           = [dict objectForKey:@"partnerid"];
-    req.prepayId            = [dict objectForKey:@"prepayid"];
-    req.nonceStr            = [dict objectForKey:@"noncestr"];
-    req.timeStamp           = stamp.intValue;
-    req.package             = [dict objectForKey:@"package"];
-    req.sign                = [dict objectForKey:@"sign"];
-    [WXApi sendReq:req];
+    NSDictionary *requestContents = @{
+                                      @"OrderId":orderId
+                                      };
+    
+    __weak StoreViewController * weakSelf = self;
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/WeChatPay?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:requestContents progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            
+            PayReq* req             = [[PayReq alloc] init];
+            req.openID              = [responseObject objectForKey:@"AppId"];
+            req.partnerId           = [responseObject objectForKey:@"PartnerId"];
+            req.prepayId            = [responseObject objectForKey:@"PrepayId"];
+            req.nonceStr            = [responseObject objectForKey:@"NonceStr"];
+            req.timeStamp           = [[responseObject objectForKey:@"TimeStamp"] intValue];
+            req.package             = [responseObject objectForKey:@"Package"];
+            req.sign                = [responseObject objectForKey:@"Sign"];
+            [WXApi sendReq:req];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
+
+#pragma mark - WXApiManagerDelegate
+- (void)managerDidPaySuccess:(PayResp *)response
+{
+    switch (response.errCode) {
+        case WXSuccess:
+        {
+            NSString * urlStr = [NSString stringWithFormat:@"http://www.wap.mstching.com/paycallback/returnurl?out_trade_no=%@&trade_status=%@",self.orderId, @"TRADE_SUCCESS"];
+            NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
+            [_webView loadRequest:request];
+        }
+            break;
+            
+        default:
+        {
+            NSString * urlStr = [NSString stringWithFormat:@"http://www.wap.mstching.com/paycallback/returnurl?out_trade_no=%@&trade_status=%@",self.orderId, @"TRADE_FAIL"];
+            NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
+            [_webView loadRequest:request];
+        }
+            break;
+    }
 }
 
 - (void)dealloc {

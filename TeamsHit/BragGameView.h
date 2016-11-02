@@ -17,6 +17,7 @@
 - (void)openGameuser:(NSString *)beOpendUserId;// 开点
 - (void)timeoutAction;// 超时不叫
 - (void)getGameResultSourceRequest;// 结果展示完毕，获取最后结果
+- (void)quitBragGameView;
 
 @end
 

@@ -25,6 +25,8 @@
 
 - (void)managerDidRecvAddCardResponse:(AddCardToWXCardPackageResp *)response;
 
+- (void)managerDidPaySuccess:(PayResp *)response;
+
 @end
 
 @interface WXApiManager : NSObject<WXApiDelegate>

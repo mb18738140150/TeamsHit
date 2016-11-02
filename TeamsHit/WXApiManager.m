@@ -46,7 +46,10 @@
         }
     }else if([resp isKindOfClass:[PayResp class]])
     {
-        
+         PayResp *payResponse = (PayResp *)resp;
+        if (_delegate && [_delegate respondsToSelector:@selector(managerDidPaySuccess:)]) {
+            [_delegate managerDidPaySuccess:payResponse];
+        }
     }
 }
 

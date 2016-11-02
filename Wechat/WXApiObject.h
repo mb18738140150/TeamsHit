@@ -150,8 +150,6 @@ typedef NS_ENUM(UInt64, enAppSupportContentFlag)
 
 @end
 
-
-
 /*! @brief 第三方向微信终端发起拆企业红包的消息结构体
  *
  *  第三方向微信终端发起拆企业红包的消息结构体，微信终端处理后会向第三方返回处理结果

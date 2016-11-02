@@ -33,6 +33,9 @@
 
 #import "WelcomeViewController.h"
 
+//#import <PgySDK/PgyManager.h>
+//#import <PgyUpdate/PgyUpdateManager.h>
+
 #define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // online key
 
 #define UMENG_APPKEY @"563755cbe0f55a5cb300139c"
@@ -86,8 +89,13 @@
         [defaults synchronize];
     }
     
-    
     [WXApi registerApp:@"wxac84b8b5d1acbad9"];
+    
+    
+    //启动基本SDK
+//    [[PgyManager sharedPgyManager] startManagerWithAppId:@"af86174cc19c1c7082246dd966c64a97"];
+    //启动更新检查SDK
+//    [[PgyUpdateManager sharedPgyManager] startManagerWithAppId:@"af86174cc19c1c7082246dd966c64a97"];
     
     // 初始化语音包
     [self configIFlySpeech];

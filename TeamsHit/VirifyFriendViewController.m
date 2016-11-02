@@ -59,7 +59,8 @@
                                @"TargetId":self.userId,
                                @"LeaveMsg":str,
                                @"ApplyId":@0,
-                               @"Type":@1
+                               @"Type":@1,
+                               @"IsPhoneNumber":@(self.IsPhoneNumber)
                                };
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"发送请求中...";

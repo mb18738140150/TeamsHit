@@ -13,7 +13,9 @@
 #define DICEPOINTANDCOUNTCELLIDENTIFIRE @"dicePointAndcountcell"
 
 @interface ChooseDicenumberView ()<UICollectionViewDelegate, UICollectionViewDataSource>
-
+{
+    UIView * backView;
+}
 
 @property (nonatomic, strong)UILabel *countdownLabel;// 倒计时label
 @property (nonatomic, strong)UILabel * diceCountlabel;// 所选骰子个数label
@@ -71,9 +73,12 @@
 {
     self.backgroundColor = [UIColor clearColor];
     
-    UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, self.hd_width, self.hd_height + 64)];
+    backView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, self.hd_width, self.hd_height + 64)];
     backView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.4];
     [self addSubview:backView];
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
+    [backView addGestureRecognizer:tap];
     
     UIView * backWhiteView = [[UIView alloc]initWithFrame:CGRectMake(0, 100, 233, 216)];
     backWhiteView.layer.cornerRadius = 5;
@@ -294,7 +299,13 @@
             
         }else
         {
-            self.diceCountlabel.text = model.contentStr;
+            if (model.contentStr.intValue > self.maxPointCount) {
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"不能叫更大点数了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alert show];
+            }else
+            {
+                self.diceCountlabel.text = model.contentStr;
+            }
         }
         
         [self.diceCountCollectionView reloadData];

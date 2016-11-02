@@ -890,8 +890,7 @@
 
 - (void)deleteTake:(YMTextData *)ymData
 {
-    
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"确定删除此说说？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"确定删除此动态？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
     alert.tag = 10000;
     [alert show];
     self.deleteYMTextdata = ymData;

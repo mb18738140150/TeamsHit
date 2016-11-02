@@ -188,10 +188,17 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
     UIImage * image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    self.iconImageView.image = [self imageCompressForWidth:image targetWidth:150.0];
+    self.iconImageView.image = image;
     NSData *imageData = UIImageJPEGRepresentation(image, 1);
     NSLog(@"**** %u", [imageData length] / 1024);
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+    if (UIImagePNGRepresentation(image) != nil) {
+        NSLog(@" *** png");
+    }else if (UIImageJPEGRepresentation(image, 1.0) != nil )
+    {
+        NSLog(@" *** jpeg");
+    }
     
     //    [self uploadImageWithUrlString];
 }
@@ -473,6 +480,7 @@
 //            [alert show];
 //            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             [RCDHTTPTOOL refreshUserInfoByUserID:[RCIM sharedRCIM].currentUserInfo.userId];
+            
         }else
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

@@ -15,7 +15,6 @@
 
 
 @interface LoginViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
-
 {
     MBProgressHUD* hud ;
 }
@@ -27,6 +26,9 @@
 @property (strong, nonatomic) IBOutlet UIButton *hiddenPasswordBT;
 @property (strong, nonatomic) IBOutlet UIButton *loginBT;
 @property (nonatomic, strong)UITextField * myTextfiled;
+
+@property (nonatomic, strong)NSTimer * overTimer;
+@property (nonatomic, assign)BOOL noOverTime;
 @end
 
 @implementation LoginViewController
@@ -173,6 +175,8 @@
 - (void)login
 {
     
+    self.overTimer = [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(timeOver) userInfo:nil repeats:NO];
+    
     NSDictionary * jsonDic = @{
                                @"Account":self.accountNumber.text,
                                @"Password":self.passwordTF.text,
@@ -185,79 +189,99 @@
     } success:^(id  _Nonnull responseObject) {
         
         NSLog(@"**%@", responseObject);
-        if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
-            [hud hide:YES];
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alert show];
-            [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.2];
-        }else
-        {
-            [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];
-            [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
-            
-            RCUserInfo *user = [RCUserInfo new];
-            user.userId = [NSString stringWithFormat:@"%@", responseObject[@"UserId"]];
-            user.name = [NSString stringWithFormat:@"name%@", [NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
-            user.portraitUri = [RCDUtilities defaultUserPortrait:user];
-            [RCIM sharedRCIM].currentUserInfo = user;
-            
-            [hud hide:YES];
-            // 连接融云服务器
-            [[RCIM sharedRCIM] connectWithToken:[UserInfo shareUserInfo].rongToken success:^(NSString *userId) {
-                NSLog(@"连接融云成功");
-                
-            } error:^(RCConnectErrorCode status) {
+        
+        if (!self.noOverTime) {
+            if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
                 [hud hide:YES];
-                NSLog(@"连接融云失败");
-            } tokenIncorrect:^{
-                [hud hide:YES];
-                NSLog(@"IncorrectToken");
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [hud hide:YES];
-                });
-                
-            }];
-            [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];
-            // 账号密码保存到本地
-            [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
-            [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
-            [[NSUserDefaults standardUserDefaults] setObject:[responseObject objectForKey:@"IosChecked"] forKey:@"IosChecked"];
-            int i = 1;
-            while (i) {
-                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"IosChecked"]) {
-                    i = 0;
-                }else
-                {
-                    [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
-                    [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
-                    [[NSUserDefaults standardUserDefaults] setObject:[responseObject objectForKey:@"IosChecked"] forKey:@"IosChecked"];
-                }
-            }
-            
-            if ([[responseObject objectForKey:@"IsCompleteInfor"] intValue ] == 1) {
-                [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
-                [self pushMyTabbarViewController];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.2];
             }else
             {
-                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请先完善用户信息" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                [alert show];
+                [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];
+                [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
+                
+                RCUserInfo *user = [RCUserInfo new];
+                user.userId = [NSString stringWithFormat:@"%@", responseObject[@"UserId"]];
+                //            user.name = [NSString stringWithFormat:@"name%@", [NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                [RCIM sharedRCIM].currentUserInfo = user;
+                
+                [hud hide:YES];
+                // 连接融云服务器
+                [[RCIM sharedRCIM] connectWithToken:[UserInfo shareUserInfo].rongToken success:^(NSString *userId) {
+                    NSLog(@"连接融云成功");
+                    
+                } error:^(RCConnectErrorCode status) {
+                    [hud hide:YES];
+                    NSLog(@"连接融云失败");
+                } tokenIncorrect:^{
+                    [hud hide:YES];
+                    NSLog(@"IncorrectToken");
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [hud hide:YES];
+                    });
+                    
+                }];
+                [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];
+                // 账号密码保存到本地
+                [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
+                [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
+                int i = 1;
+                while (i) {
+                    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"] ) {
+                        i = 0;
+                    }else
+                    {
+                        [[NSUserDefaults standardUserDefaults] setObject:self.accountNumber.text forKey:@"AccountNumber"];
+                        [[NSUserDefaults standardUserDefaults] setObject:self.passwordTF.text forKey:@"Password"];
+                        
+                    }
+                }
+                
+                if ([[responseObject objectForKey:@"IsCompleteInfor"] intValue ] == 1) {
+                    [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                    [self pushMyTabbarViewController];
+                }else
+                {
+                    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请先完善用户信息" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alert show];
+                    
+                }
+                // 同步好友列表
+                NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
+                
+                // 同步组群
+                [RCDDataSource syncGroups];
                 
             }
-            // 同步好友列表
-            NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
-            [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
-            
-            // 同步组群
-            [RCDDataSource syncGroups];
-            
         }
+        
+        self.noOverTime = YES;
     } failure:^(NSError * _Nonnull error) {
         [hud hide:YES];
+        [self cancelTime];
         NSLog(@"error = %@", error);
     }];
 }
 
+- (void)timeOver
+{
+    if (self.noOverTime) {
+    }else
+    {
+        [self login];
+    }
+    [self cancelTime];
+}
+
+- (void)cancelTime
+{
+    [self.overTimer invalidate];
+    self.overTimer = nil;
+}
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {

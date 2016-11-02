@@ -15,12 +15,12 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
 //在内购项目中创的商品单号
-#define ProductID_IAP0p6 @"com.xianlin.TeamsHit.6"
-#define ProductID_IAP1p18 @"com.xianlin.TeamsHit.18"
-#define ProductID_IAP4p30 @"com.xianlin.TeamsHit.30"
-#define ProductID_IAP9p88 @"com.xianlin.TeamsHit.88"
-#define ProductID_IAP24p388 @"com.xianlin.TeamsHit.388"
-#define ProductID_IAP24p588 @"com.xianlin.TeamsHit.588"
+#define ProductID_IAP0p6 @"com.xianlin.TeamsHit_6"
+#define ProductID_IAP1p18 @"com.xianlin.TeamsHit_18"
+#define ProductID_IAP4p30 @"com.xianlin.TeamsHit_30"
+#define ProductID_IAP9p88 @"com.xianlin.TeamsHit_88"
+#define ProductID_IAP24p388 @"com.xianlin.TeamsHit_388"
+#define ProductID_IAP24p588 @"com.xianlin.TeamsHit_588"
 enum{IAP0p6=6,
     IAP1p18,
     IAP4p30,
@@ -73,7 +73,6 @@ buyCoinsTag;
             self.useApplePurchase = YES;
         }
     }
-    NSLog(@"IosChecked = %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"IosChecked"]);
     
 }
 
@@ -112,7 +111,6 @@ buyCoinsTag;
         [self pushOtherPaytype];
     }else
     {
-        
         NSLog(@"30");
         buyType = IAP4p30;
         [self productFunc:ProductID_IAP4p30];
@@ -183,6 +181,8 @@ buyCoinsTag;
     NSArray *product = response.products;
     if([product count] == 0){
         NSLog(@"--------------没有商品------------------");
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"没有该商品" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
         return;
     }
     
@@ -323,8 +323,6 @@ buyCoinsTag;
     
     __weak BuyCoinsViewController * infoVC = self;
     NSString * url = [NSString stringWithFormat:@"%@coins/applePurchase?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
-    
-    
     
     [[HDNetworking sharedHDNetworking]POSTwithToken:url parameters:requestContents progress:^(NSProgress * _Nullable progress) {
         ;
@@ -537,7 +535,7 @@ buyCoinsTag;
 {
     NSLog(@"其他支付方式");
     BuyCoinWebViewController * buywebVC = [[BuyCoinWebViewController alloc]init];
-    
+    self.buyCoin = YES;
     [self.navigationController pushViewController:buywebVC animated:NO];
 }
 
