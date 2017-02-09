@@ -39,7 +39,7 @@
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
     layout.itemSize = CGSizeMake((COLLECTIONVIE_WIDTH - 80) / 3, (COLLECTIONVIE_WIDTH - 80) / 3);
     layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    layout.minimumInteritemSpacing = 40;
+    layout.minimumInteritemSpacing = 38;
     layout.minimumLineSpacing = 30;
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
@@ -58,7 +58,6 @@
     [self.prepareBT setImage:[UIImage imageNamed:@"prepareBT"] forState:UIControlStateNormal];
     [self addSubview:self.prepareBT];
     [self.prepareBT addTarget:self action:@selector(preparegameAction:) forControlEvents:UIControlEventTouchUpInside];
-    
     
     self.preparedButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.preparedButton.frame = CGRectMake(self.hd_width / 2 - 27, CGRectGetMaxY(self.prepareCollectionView.frame) + 109, 54, 54);

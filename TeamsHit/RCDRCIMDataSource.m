@@ -68,6 +68,8 @@
 #pragma mark - GroupInfoFetcherDelegate
 - (void)getGroupInfoWithGroupId:(NSString*)groupId completion:(void (^)(RCGroup *))completion
 {
+    
+     NSLog(@"getGroupInfoWithGroupId ----- %@", groupId);
     if ([groupId length] == 0)
         return;
     

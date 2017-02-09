@@ -175,13 +175,14 @@
             chatVc.displayUserNameInCell = NO;
             chatVc.targetId = [NSString stringWithFormat:@"%@", model.userId];
             chatVc.title = model.nickname;
+            chatVc.enableNewComingMessageIcon=YES;//开启消息提醒
+            chatVc.enableUnreadMessageIcon=YES;
             chatVc.needPopToRootView = YES;
             [self.navigationController pushViewController:chatVc animated:YES];
             NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
             [RCDDataSource syncFriendList:url complete:^(NSMutableArray * result) {
-                
-            }];
             
+            }];
             
         }else
         {

@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^QuitGroupBlock)();
+
 @interface GroupDetailViewController : UIViewController
 
 @property (nonatomic, copy)NSString * groupID;
-
+- (void)quitGameRoom:(QuitGroupBlock)block;
 @end

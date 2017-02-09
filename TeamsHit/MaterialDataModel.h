@@ -25,6 +25,7 @@ typedef enum:NSInteger {
 @property (nonatomic, assign)CGFloat  height;
 @property (nonatomic, assign)int Alignment;
 @property (nonatomic, strong)UIImage * dealImage;
+@property (nonatomic, copy)NSString * fileName;
 
 @property (nonatomic, assign)BOOL isprocessImage;
 

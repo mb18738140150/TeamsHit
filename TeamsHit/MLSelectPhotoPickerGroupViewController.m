@@ -155,9 +155,9 @@
     if (self.status == PickerViewShowStatusVideo){
         // 获取所有的视频URLs
         [datas getAllGroupWithVideos:^(NSArray *groups) {
-            self.groups = groups;
-            if (self.status) {
-                [self jump2StatusVc];
+            weakSelf.groups = groups;
+            if (weakSelf.status) {
+                [weakSelf jump2StatusVc];
             }
             
             weakSelf.tableView.dataSource = self;
@@ -168,9 +168,9 @@
     }else{
         // 获取所有的图片URLs
         [datas getAllGroupWithPhotos:^(NSArray *groups) {
-            self.groups = groups;
-            if (self.status) {
-                [self jump2StatusVc];
+            weakSelf.groups = groups;
+            if (weakSelf.status) {
+                [weakSelf jump2StatusVc];
             }
             
             weakSelf.tableView.dataSource = self;

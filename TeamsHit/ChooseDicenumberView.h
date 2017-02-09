@@ -20,11 +20,13 @@
 @property (nonatomic, assign)int maxPointCount;
 @property (nonatomic, assign)BOOL isOnePoint;
 @property (nonatomic, assign)int leaveTime;
-
+// 倒计时
+@property (nonatomic, strong)NSTimer * timer;
 - (instancetype)initWithFrame:(CGRect)frame withDiceNumber:(int)diceNumber andDicePoint:(int)dicePoint;
 
 - (void)refreshViewWithDiceNumber:(int)diceNumber andDicePoint:(int)dicePoint;
 
 - (void)show;
 - (void)dismiss;
+
 @end

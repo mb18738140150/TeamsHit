@@ -45,7 +45,7 @@
         [self.contentView addSubview:self.equipmentTitle];
         
         self.cancleBindingBT = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.cancleBindingBT.frame = CGRectMake(frame.size.width - 125, 10, 100, 15);
+        self.cancleBindingBT.frame = CGRectMake(frame.size.width - 110, 10, 100, 15);
         self.cancleBindingBT.backgroundColor = [UIColor whiteColor];
         [self.cancleBindingBT setTitle:@"解除账户绑定" forState:UIControlStateNormal];
         [self.cancleBindingBT setTitleColor:UIColorFromRGB(0xFF4C6A) forState:UIControlStateNormal];
@@ -131,7 +131,7 @@
     switch (emodel.state.intValue) {
         case 0:
         {
-            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(正常)", emodel.deviceName];
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(在线)", emodel.deviceName];
         }
             break;
         case 1:
@@ -151,7 +151,7 @@
             break;
         case 4:
         {
-            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(离线)", emodel.deviceName];
+            self.equipmentTitle.text = [NSString stringWithFormat:@"%@(离线，请配置WiFi)", emodel.deviceName];
         }
             break;
             

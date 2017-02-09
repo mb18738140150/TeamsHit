@@ -26,6 +26,7 @@
 #import "RCFriendCircleUserInfo.h"
 
 #import "UserFriendCircleViewController.h"
+#import "ActivityView.h"
 
 #define dataCount 10
 #define kLocationToBottom 20
@@ -66,7 +67,7 @@
 
 
 @property (nonatomic, strong)YMTextData * deleteYMTextdata;
-
+@property (nonatomic, strong) ActivityView *activityView;
 @end
 
 @implementation WXViewController
@@ -249,7 +250,7 @@
                 _AllCount = [responseObject objectForKey:@"AllCount"];
                 NSArray * FirendCircleList = [NSArray array];
                 FirendCircleList = [responseObject objectForKey:@"FriendCircleList"];
-                [self getdataWithArray:FirendCircleList];
+                [wxVC getdataWithArray:FirendCircleList];
                 
             }else
             {
@@ -327,7 +328,6 @@
             }
             [posterReplies addObject:body];
         }
-        
         
         WFMessageBody * messageBody = [[WFMessageBody alloc]init];
         messageBody.posterContent = [friendCircleDic objectForKey:@"TakeContent"];
@@ -526,7 +526,7 @@
       
     });
 }
-
+#define kWMActivityViewSize 28.0
 - (void) initTableview{
 
     mainTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64)];
@@ -538,14 +538,21 @@
     mainTable.dataSource = self;
     [self.view addSubview:mainTable];
 
-    mainTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+    __weak typeof(self) weakself = self;
+    _activityView = [[ActivityView alloc] initWithFrame:CGRectMake(15.0, -kWMActivityViewSize+64 , kWMActivityViewSize, kWMActivityViewSize)];
+    _activityView.scrollView = mainTable;
+    _activityView.refreshRequest = ^(ActivityView *sender) {
+        [weakself loadNewData];
+    };
+    [self.view addSubview:_activityView];
+    
+//    mainTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     mainTable.mj_footer = [MJRefreshAutoNormalFooter  footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
 }
 
 - (void)loadNewData
 {
     _page = 1;
-    [mainTable.mj_header beginRefreshing];
     mainTable.mj_footer.state = MJRefreshStateIdle;
     NSDictionary * jsonDic = @{
                                @"CurPage":@1,
@@ -558,7 +565,9 @@
     [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
-        [mainTable.mj_header endRefreshing];
+        if ([wxVC.activityView refresh]) {
+            [wxVC.activityView endRefreshing];
+        };
         NSLog(@"responseObject = %@", responseObject);
         int command = [[responseObject objectForKey:@"Command"] intValue];
         int code = [[responseObject objectForKey:@"Code"] intValue];
@@ -589,7 +598,9 @@
         
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"%@", error);
-        [mainTable.mj_header endRefreshing];
+        if ([wxVC.activityView refresh]) {
+            [wxVC.activityView endRefreshing];
+        };
     }];
     
 }
@@ -716,7 +727,7 @@
                 [weakSelf lookUserFriendCircle:[NSString stringWithFormat:@"%@", data.messageBody.posterUserId]];
             }else
             {
-                [self showActionSheet:[_tableDataSource objectAtIndex:indexPath.row]];
+                [weakSelf showActionSheet:[_tableDataSource objectAtIndex:indexPath.row]];
             }
             
         }];
@@ -809,8 +820,14 @@
     backImageView.userInteractionEnabled = YES;
     [backImageView addGestureRecognizer:walltap];
     
-    UIImageView * iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headView.hd_width - 95, headView.hd_height - 80, 80, 80)];
+    UIImageView * iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headView.hd_width - 95, headView.hd_height - 80, 74, 74)];
     [iconImageView sd_setImageWithURL:[NSURL URLWithString:[RCIM sharedRCIM].currentUserInfo.portraitUri] placeholderImage:[UIImage imageNamed:@"logo(1)"]];
+    
+    UIView * iconBackView = [[UIView alloc]initWithFrame:CGRectMake(iconImageView.hd_x - 3, iconImageView.hd_y - 3, iconImageView.hd_width + 6, iconImageView.hd_height + 6)];
+    iconBackView.backgroundColor = [UIColor whiteColor];
+    iconBackView.layer.borderWidth = 0.5;
+    iconBackView.layer.borderColor = [UIColor colorWithWhite:.7 alpha:1].CGColor;
+    [headView addSubview:iconBackView];
     [headView addSubview:iconImageView];
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(lookselfFriendCirclr)];
@@ -1060,7 +1077,7 @@
 }
 
 #pragma mark - 图片点击事件回调
-- (void)showImageViewWithImageViews:(NSArray *)imageViews byClickWhich:(NSInteger)clickTag{
+- (void)showImageViewWithImageViews:(NSArray *)imageViews byClickWhich:(NSInteger)clickTag placeImage:(UIImage *)placeImage{
    [self.operationView dismiss];
     UIView *maskview = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     maskview.backgroundColor = [UIColor blackColor];
@@ -1069,7 +1086,7 @@
     
     [delegate.window addSubview:maskview];
     
-    YMShowImageView *ymImageV = [[YMShowImageView alloc] initWithFrame:[UIScreen mainScreen].bounds byClick:clickTag appendArray:imageViews];
+    YMShowImageView *ymImageV = [[YMShowImageView alloc] initWithFrame:[UIScreen mainScreen].bounds byClick:clickTag appendArray:imageViews placeImage:placeImage];
     [ymImageV show:maskview didFinish:^(){
         
         [UIView animateWithDuration:0.5f animations:^{
@@ -1282,7 +1299,7 @@
                 [ymData.completionReplySource removeAllObjects];
                 [ymData.attributedDataReply removeAllObjects];
                 
-                ymData.replyHeight = [ymData calculateReplyHeightWithWidth:self.view.frame.size.width];
+                ymData.replyHeight = [ymData calculateReplyHeightWithWidth:wxVC.view.frame.size.width];
                 [_tableDataSource replaceObjectAtIndex:actionSheet.actionIndex withObject:ymData];
                 
                 [mainTable reloadData];

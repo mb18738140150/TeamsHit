@@ -13,6 +13,7 @@
 #import "MaterialdetailBigView.h"
 #import "MaterialDetaileListCell.h"
 #import "MaterialDetailCell.h"
+#import "ImageUtil.h"
 #define maxCount 9
 
 static NSString* ALCELLID = @"MaterialDetaileListCell";
@@ -28,7 +29,6 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 
 @property (nonatomic, strong)NSMutableArray * OriginalArr;
 @property (nonatomic, strong)NSMutableArray * ThumbnailArr;
-
 
 
 @end
@@ -120,7 +120,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     __weak MaterialDetailViewController * weakSelf = self;
     [[HDNetworking sharedHDNetworking]getMaterialType:jsonDic success:^(id  _Nonnull responseObject) {
         [hud hide:YES];
-        NSLog(@"responseObject = %@", responseObject);
+//        NSLog(@"responseObject = %@", responseObject);
         NSArray * materialtypearray = [responseObject objectForKey:@"MaterialType"];
         
         for (int i = 0; i < materialtypearray.count; i++) {
@@ -171,7 +171,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     __weak MaterialDetailViewController * weakSelf = self;
     [[HDNetworking sharedHDNetworking]getMaterialWithType:jsonDic success:^(id  _Nonnull responseObject) {
         [hud hide:YES];
-        NSLog(@"responseObject = %@", responseObject);
+//        NSLog(@"responseObject = %@", responseObject);
         model.allCount = [[responseObject objectForKey:@"AllCount"] intValue];
         NSArray * Materials = [responseObject objectForKey:@"Materials"];
         
@@ -251,7 +251,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     
     MateriaTypeModel * model = self.materialTyprArr[indexPath.row];
     MaterialDetaileListCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ALCELLID forIndexPath:indexPath];
-    [cell creatContentviews:model.ThumbnailArr];
+    [cell creatContentviews:model.OriginalArr];
     cell.delegate = self;
     cell.isHavenotAddBT = self.isOtnerVc;
     cell.item = indexPath.row;
@@ -298,7 +298,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
     __weak MaterialDetailViewController * weakSelf = self;
     [[HDNetworking sharedHDNetworking]getMaterialWithType:jsonDic success:^(id  _Nonnull responseObject) {
         [collection.mj_header endRefreshing];
-        NSLog(@"responseObject = %@", responseObject);
+//        NSLog(@"responseObject = %@", responseObject);
         model.allCount = [[responseObject objectForKey:@"AllCount"] intValue];
         NSArray * Materials = [responseObject objectForKey:@"Materials"];
         
@@ -314,7 +314,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
         for (MaterialDetaileListCell * cell in visiblecellindex) {
             NSIndexPath *path1 = (NSIndexPath *)[_collectView indexPathForCell:cell];
             if (path1.row == item) {
-                cell.materialDetailsArrar = model.ThumbnailArr;
+                cell.materialDetailsArrar = model.OriginalArr;
                 break;
             }
             
@@ -350,7 +350,7 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
         __weak MaterialDetailViewController * weakSelf = self;
         [[HDNetworking sharedHDNetworking]getMaterialWithType:jsonDic success:^(id  _Nonnull responseObject) {
             [collection.mj_footer endRefreshing];
-            NSLog(@"responseObject = %@", responseObject);
+//            NSLog(@"responseObject = %@", responseObject);
             model.allCount = [[responseObject objectForKey:@"AllCount"] intValue];
             NSArray * Materials = [responseObject objectForKey:@"Materials"];
             
@@ -363,12 +363,11 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
             for (MaterialDetaileListCell * cell in visiblecellindex) {
                 NSIndexPath *path1 = (NSIndexPath *)[_collectView indexPathForCell:cell];
                 if (path1.row == item) {
-                    cell.materialDetailsArrar = model.ThumbnailArr;
+                    cell.materialDetailsArrar = model.OriginalArr;
                     break;
                 }
                 
             }
-//            [weakSelf.collectView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:item inSection:0]]];
             [collection reloadData];
         } failure:^(NSError * _Nonnull error) {
             [collection.mj_footer endRefreshing];
@@ -392,29 +391,25 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
             [self.collectView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:item + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
         }
     }
-    
 }
 
 - (void)materaildetailListAdd:(UIImage *)image
 {
     if (self.myBlock) {
-        self.myBlock(image);
+        self.myBlock([ImageUtil tailorborderImage:image]);
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)materaildetailListPrint:(UIImage *)image
 {
     NSLog(@"print");
-    
-    [[Print sharePrint] printImage:image taskType:@1 toUserId:self.userId];
-    
+    [[Print sharePrint] printMaterailImage:[ImageUtil tailorborderImage:image] taskType:@0 toUserId:self.userId];
 }
 
 - (void)getMaterialDetailImage:(MaterialDetailBlock)materialDetailImage
 {
     self.myBlock = [materialDetailImage copy];
 }
-
 
 #pragma mark - MaterialDetailBigViewDelegate
 - (void)beforeClick
@@ -493,7 +488,6 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
                     break;
                     
                 }
-                
             }
             
             if (ishave) {
@@ -502,9 +496,8 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
         }
         
     }
-    
     if (self.myBlock) {
-        self.myBlock(image);
+        self.myBlock([ImageUtil tailorborderImage:image]);
     }
     [self.bigView closeView];
     [self.navigationController popViewControllerAnimated:YES];
@@ -521,22 +514,17 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
             for (MaterialDetailCell * cell2 in visebArr) {
                 NSIndexPath *path2 = (NSIndexPath *)[cell.materialDetailCollectionView indexPathForCell:cell2];
                 if (path2.row == item) {
-                    
                     image = cell2.detailImageView.image;
                     ishave = YES;
                     break;
-                    
                 }
-                
             }
-            
             if (ishave) {
                 break;
             }
         }
-        
     }
-     [[Print sharePrint] printImage:image taskType:@1 toUserId:self.userId];
+     [[Print sharePrint] printMaterailImage:[ImageUtil tailorborderImage:image] taskType:@0 toUserId:self.userId];
     [self.bigView closeView];
     NSLog(@"print");
 }

@@ -8,6 +8,9 @@
 
 #import "YMShowImageView.h"
 #import <UIImageView+WebCache.h>
+#import "AppDelegate.h"
+#define kPageControlHeioght 50
+#define LOADINGIMAGE_WIDTH 20
 
 @implementation YMShowImageView{
 
@@ -17,7 +20,33 @@
     BOOL doubleClick;
 
 }
-
+- (id)initWithFrame:(CGRect)frame byClick:(NSInteger)clickTag appendArray:(NSArray *)appendArray placeImage:(UIImage *)placeImage
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        self_Frame = frame;
+        
+        self.backgroundColor = [UIColor redColor];
+        self.alpha = 0.0f;
+        page = 0;
+        doubleClick = YES;
+        self.placeImage = placeImage;
+        [self configScrollViewWith:clickTag andAppendArray:appendArray];
+        
+        UITapGestureRecognizer *tapGser = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disappear)];
+        tapGser.numberOfTouchesRequired = 1;
+        tapGser.numberOfTapsRequired = 1;
+        [self addGestureRecognizer:tapGser];
+        
+        UITapGestureRecognizer *doubleTapGser = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changeBig:)];
+        doubleTapGser.numberOfTapsRequired = 2;
+        [self addGestureRecognizer:doubleTapGser];
+        [tapGser requireGestureRecognizerToFail:doubleTapGser];
+        
+    }
+    return self;
+}
 
 
 - (id)initWithFrame:(CGRect)frame byClick:(NSInteger)clickTag appendArray:(NSArray *)appendArray{
@@ -60,6 +89,22 @@
     
     float W = self.frame.size.width;
     
+    self.loadingImageView = [[UIImageView alloc]initWithFrame:CGRectMake(screenWidth / 2 - 20, screenHeight / 2 - 20, LOADINGIMAGE_WIDTH, LOADINGIMAGE_WIDTH)];
+    UIImageView * loadView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
+    loadView.image =[UIImage imageNamed:@"icon1.png"];
+    loadView.alpha = 0.5;
+    [_loadingImageView addSubview:loadView];
+    CABasicAnimation * rotationAnimation;
+    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.toValue = [NSNumber numberWithInt:M_PI * 2.0];
+    rotationAnimation.duration = 3;
+    rotationAnimation.repeatCount = FLT_MAX;
+    rotationAnimation.cumulative = NO;
+    // RemovedOnCompletion这个属性默认为 YES,那意味着,在指定的时间段完成后,动画就自动的从层上移除了。这个一般不用
+    rotationAnimation.removedOnCompletion = NO;
+    [self.loadingImageView.layer addAnimation:rotationAnimation forKey:@"Rotation"];
+    AppDelegate * delegate = ShareApplicationDelegate;
+    [delegate.window addSubview:self.loadingImageView];
     
     for (int i = 0; i < appendArray.count; i ++) {
         
@@ -71,10 +116,32 @@
         imageScrollView.minimumZoomScale = 1;
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:[appendArray objectAtIndex:i]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
-//        UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[appendArray objectAtIndex:i]]];
-//        imageView.image = img;
-        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imageView.backgroundColor = [UIColor whiteColor];
+        
+        
+        __weak YMShowImageView * weakself = self;
+        UIImage * placeholdImage = nil;
+        if (self.placeImage) {
+            placeholdImage = self.placeImage;
+        }else
+        {
+        }
+        placeholdImage = [UIImage imageNamed:@"placeHolderImage1"];
+        
+        [imageView sd_setImageWithURL:[NSURL URLWithString:[appendArray objectAtIndex:i]] placeholderImage:placeholdImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            CGSize imagesize = [self getImageSizeForPreview:image];
+            imageView.hd_width = imagesize.width;
+            imageView.hd_height = imagesize.height;
+            
+            imageView.center = _scrollView.center;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakself.loadingImageView removeFromSuperview];
+                weakself.loadingImageView = nil;
+                NSLog(@"移除");
+            });
+        }];
+        
+        imageView.contentMode = UIViewContentModeScaleToFill;
         [imageScrollView addSubview:imageView];
         [_scrollView addSubview:imageScrollView];
         
@@ -84,14 +151,41 @@
     }
     [_scrollView setContentOffset:CGPointMake(W * (clickTag - 9999), 0) animated:YES];
     page = clickTag - 9999;
+    self.myPageControl = [[WelPageControl alloc]initWithFrame:CGRectMake(0, self.frame.size.height - kPageControlHeioght, self.frame.size.width, kPageControlHeioght)];
+    self.myPageControl.numberOfPages = appendArray.count;
+    self.myPageControl.currentPage = page;
+    [_myPageControl setImagePageStateNormal:[UIImage imageNamed:@"point_unselect"]];
+    [_myPageControl setImagePageStateHighlighted:[UIImage imageNamed:@"point_select"]];
+    //    [_myPageControl setImagePageStateHighlighted:[UIImage imageNamed:@"1.jpg"]];
+    if (appendArray.count >1) {
+        [self addSubview:self.myPageControl];
+    }
+    
 }
-
+- (CGSize)getImageSizeForPreview:(UIImage *)image
+{
+    CGFloat maxWidth = screenWidth,maxHeight = screenHeight;
+    
+    CGSize size = image.size;
+    
+    if (size.width > maxWidth) {
+        size.height *= (maxWidth / size.width);
+        size.width = maxWidth;
+    }
+    
+    if (size.height > maxHeight) {
+        size.width *= (maxHeight / size.height);
+        size.height = maxHeight;
+    }
+    
+    return size;
+    
+}
 - (void)disappear{
     
     _removeImg();
    
 }
-
 
 - (void)changeBig:(UITapGestureRecognizer *)tapGes{
 
@@ -156,7 +250,7 @@
     CGPoint offset = _scrollView.contentOffset;
     page = offset.x / self.frame.size.width ;
    
-    
+    self.myPageControl.currentPage = page;
     UIScrollView *scrollV_next = (UIScrollView *)[self viewWithTag:page+100+1]; //前一页
     
     if (scrollV_next.zoomScale != 1.0){

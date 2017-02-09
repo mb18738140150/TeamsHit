@@ -26,7 +26,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *displayNameLabel;
 
 @property (nonatomic,strong) RCUserInfo *userInfo;
-
+@property(nonatomic, copy)ChangeDisplayName myBlock;
 @end
 
 @implementation FriendDetailDataSettingViewController
@@ -84,6 +84,7 @@
 
 - (void)backAction:(UIButton *)button
 {
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -192,11 +193,7 @@
         [hud hide:YES];
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"设置成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-//            [alert show];
-//            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             self.displayNameLabel.text = name;
-            
             RCDUserInfo *user = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
             user.displayName = name;
             [[RCDataBaseManager shareInstance]insertFriendToDB:user];
@@ -205,6 +202,9 @@
             [[RCDataBaseManager shareInstance]insertUserToDB:userInfo];
             [[RCIM sharedRCIM]refreshUserInfoCache:userInfo withUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
             
+            if (self.myBlock) {
+                _myBlock(self.displayNameLabel.text);
+            }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"renameFriendName" object:nil userInfo:@{@"displayName":name}];
             
         }else
@@ -219,6 +219,10 @@
         [alert show];
         [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
     }];
+}
+- (void)changeDisplayname:(ChangeDisplayName)block
+{
+    self.myBlock = [block copy];
 }
 
 #pragma mark - 黑名单
@@ -236,7 +240,7 @@
                 [hud hide:YES];
             });
             [[RCDataBaseManager shareInstance]removeBlackList:weakSelf.userInfo.userId];
-            self.blackListBT.selected = NO;
+            weakSelf.blackListBT.selected = NO;
         } error:^(RCErrorCode status) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [hud hide:YES];
@@ -244,7 +248,7 @@
                                           , nil];
                 [alertView show];
             });
-            self.blackListBT.selected = YES;
+            weakSelf.blackListBT.selected = YES;
         }];
     }else
     {

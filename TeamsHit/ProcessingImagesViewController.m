@@ -16,6 +16,8 @@
 #import "TailorImageViewController.h"
 #import "GraffitiViewController.h"
 #import "UIImage+HDExtension.h"
+#import "HDPicModle.h"
+#import "UserInfo.h"
 
 @interface ProcessingImagesViewController ()
 
@@ -41,7 +43,7 @@
 @property (nonatomic, strong)UIImage * contraryImage;
 @property (nonatomic, strong)UIImage * inkjetImage;
 
-
+@property (nonatomic, copy)NSString * iconImageUrl;// 处理图片默认连接
 @property (nonatomic, assign)int rotateNumber;//记录旋转方向
 
 @property (nonatomic, assign)CGRect initailRect;// imageView初始rect
@@ -59,24 +61,7 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     self.view.backgroundColor = [UIColor whiteColor];
-//    self.image = [UIImage imageNamed:@"888.JPG"];
-    
-    self.image = [ImageUtil imageByScalingAndCroppingForSize:self.image];
-    
-    NSData * imageData = UIImageJPEGRepresentation(self.image, 1.0);
-    if (UIImagePNGRepresentation(self.image) == nil)
-    {
-        imageData = UIImageJPEGRepresentation(_image, 1.0);
-        NSLog(@" **** jpeg");
-    }else{
-        
-        imageData = UIImagePNGRepresentation(self.image);
-        NSLog(@" *** png");
-    }
-    
-    NSLog(@"imageData = %@", imageData);
-    
-    self.image = [UIImage imageWithData:imageData];
+//    self.image = [UIImage imageNamed:@"face0.jpg"];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
     self.rotateNumber = 1;
@@ -85,15 +70,31 @@
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [hud show:YES];
     
+    self.image = [ImageUtil imageByScalingAndCroppingForSize:self.image];
+    NSLog(@"image.size.width = %f, image.size.height = %f", _image.size.width, _image.size.height);
+    [self dealImage];
+    [self refreshUI];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self dealImage];
-            [self refreshUI];
         });
     });
-    
 }
+
+- (UIImage *)calculateImagesize:(UIImage *)image
+{
+    NSData *data;
+    data = UIImageJPEGRepresentation(image, .1);
+    image = [UIImage imageWithData:data];
+    
+    CGSize size = image.size;
+    UIGraphicsBeginImageContext(CGSizeMake(size.width * 0.3, size.height * 0.3));
+    [image drawInRect:CGRectMake(0, 0, size.width * 0.3, size.height * 0.3)];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -101,7 +102,9 @@
 - (void)done
 {
     if (self.processImage) {
-        _processImage([self tailorborderImage:self.finalImage]);
+        [ImageUtil erzhiBMPImage:self.finalImage];
+//        [ImageUtil tailorborderImage:self.finalImage]
+        _processImage([ImageUtil tailorborderImage:self.finalImage]);
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -153,7 +156,7 @@
 - (ProcessImageTypeView *)processImageTypeView
 {
     if (!_processImageTypeView) {
-        _processImageTypeView = [[ProcessImageTypeView alloc]initWithFrame:CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT - 64 - 60, SELF_WIDTH, 60)];
+        _processImageTypeView = [[ProcessImageTypeView alloc]initWithFrame:CGRectMake(0, screenHeight - TOOLBAR_HEIGHT - 64 - 60, screenWidth, 60)];
     }
     return _processImageTypeView;
 }
@@ -161,7 +164,7 @@
 - (UIScrollView *)scrollView
 {
     if (!_scrollView) {
-        _scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SELF_WIDTH, SELF_HEIGHT - TOOLBAR_HEIGHT - 64)];
+        _scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight - TOOLBAR_HEIGHT - 64)];
         _scrollView.backgroundColor = [UIColor blackColor];
     }
     return _scrollView;
@@ -170,22 +173,126 @@
 - (UIImageView *)imageView
 {
     if (!_imageView) {
-        _imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SELF_WIDTH, SELF_WIDTH)];
+        _imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, _scrollView.hd_width, screenWidth)];
     }
     return _imageView;
 }
 
-- (void)dealImage
+#pragma mark - 从服务器获取处理图片
+- (void)getDefaultImageFromServer
+{
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"修改中...";
+    [hud show:YES];
+    
+    HDPicModle * imageModel = [[HDPicModle alloc]init];
+    imageModel.pic = self.image;
+    imageModel.picName = [self imageName];
+    imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+    NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"1"];
+    NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    __weak ProcessingImagesViewController * weakSelf = self;
+    [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
+        NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
+    } success:^(id  _Nonnull responseObject) {
+        NSLog(@"上传成功");
+        NSLog(@"responseObject = %@", responseObject);
+        
+        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        NSLog(@"dic = %@", dic);
+        weakSelf.iconImageUrl = [dic objectForKey:@"ImgPath"];
+        [weakSelf completeInformation1];
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        NSLog(@"error = %@", error);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"图片处理失败，请从新选择" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        [weakSelf.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+- (NSString *)imageName
+{
+    NSDateFormatter * myFormatter = [[NSDateFormatter alloc]init];
+    [myFormatter setDateFormat:@"yyyyMMddhhmmss"];
+    NSString * strTime = [myFormatter stringFromDate:[NSDate date]];
+    NSString * name = [NSString stringWithFormat:@"t%@%lld.png",  strTime, arc4random() % 9000000000 + 1000000000];
+    return name;
+}
+
+- (NSString *)getLibraryCachePath
+{
+    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+- (void)completeInformation1
 {
     
-    UIImage * newImage = [self zoomImageScale:self.image];
-    _imageView.image = [ImageUtil ditherImage:newImage];
+    NSDictionary * jsonDic = @{
+                               @"IconUrl":self.iconImageUrl
+                               };
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/completeInformation?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    __weak ProcessingImagesViewController * weakSelf = self;
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            
+            NSString * imagebase64Str = [responseObject objectForKey:@"ImageData"];
+            NSData * imageData = [[NSData alloc] initWithBase64EncodedString:imagebase64Str options:0];
+            self.image = [UIImage imageWithData:imageData];
+            [weakSelf dealImage];
+            [weakSelf refreshUI];
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"图片处理失败，请从新选择" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"图片处理失败，请从新选择" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+- (void)dealImage
+{
+    _imageView.image = [ImageUtil ditherImage:self.image];
     self.defaultImage = _imageView.image;
     self.finalImage = _imageView.image;
-    self.contraryImage = [ImageUtil imageBlackToTransparent:self.defaultImage];
-    self.inkjetImage = [ImageUtil splashInk:newImage];
-    _imageView.hd_height = SELF_WIDTH *_imageView.image.size.height / _imageView.image.size.width;
+//    UIImageWriteToSavedPhotosAlbum(self.imageView.image, nil, nil, nil);
+    _imageView.hd_height = screenWidth *_imageView.image.size.height / _imageView.image.size.width;
     [hud hide:YES];
+    
+    [self performSelector:@selector(processImageinkblack) withObject:nil afterDelay:.4];
+}
+
+- (void)processImageinkblack
+{
+//    NSString* fileName = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@.bmp", [UserInfo shareUserInfo].timeStr]];;
+//    NSData * imageData = [NSData dataWithContentsOfFile:fileName];
+//    NSLog(@"imageData = %@", [imageData base64EncodedStringWithOptions:0]);
+//    https://pastebin.mozilla.org/8931101
+//    
+//    NSLog(@"创建新图片");
+//    UIImage *erzhiImage = [UIImage imageWithContentsOfFile:fileName];
+//    NSLog(@"新图片 = %@ ** 地址 + %@", erzhiImage, fileName);
+//    _imageView.image = erzhiImage;
+//    self.defaultImage = erzhiImage;
+//    self.finalImage = erzhiImage;
+    self.contraryImage = [ImageUtil imageBlackToTransparent:self.defaultImage];
+    self.inkjetImage = [ImageUtil splashInk:self.image];
 }
 
 - (UIImage *)zoomImageScale:(UIImage *)image
@@ -197,21 +304,8 @@
     [image drawInRect:CGRectMake(0, 0, SELF_WIDTH, SELF_WIDTH *size.height / size.width)];
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
-    return newImage;
-    
-}
-
-- (UIImage *)tailorborderImage:(UIImage *)image
-{
-    CGSize size = image.size;
-    UIGraphicsBeginImageContext(size);
-    [image drawInRect:CGRectMake(-1, -1, size.width + 1, size.height + 1)];
-    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
     return newImage;
 }
-
 
 - (void)refreshUI
 {
@@ -227,7 +321,6 @@
 #pragma mark - toolBar点击事件
 - (void)changeType
 {
-    
     NSData * data1 = UIImagePNGRepresentation(_imageType.image);
     NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"ico_effects_unchecked"]);
     if ([data1 isEqual:data2]) {
@@ -239,8 +332,6 @@
 
         self.processImageTypeView.hidden = YES;
     }
-    
-//    self.processImageTypeView.hidden = !(self.processImageTypeView.hidden);
 }
 - (void)tailor
 {
@@ -254,20 +345,18 @@
 
 - (void)print
 {
-    NSLog(@"打印功能");
-    
-    [[Print sharePrint] printImage:self.finalImage taskType:@1 toUserId:self.userId];
-    
+    [[Print sharePrint] printImage:self.finalImage taskType:@0 toUserId:self.userId];
 }
 - (void)graffiti
 {
     GraffitiViewController * graffitiVC = [[GraffitiViewController alloc]init];
     graffitiVC.sourceimage = self.finalImage;
     graffitiVC.userId = self.userId;
+    __weak ProcessingImagesViewController * weakSelf = self;
     [graffitiVC graffitiImage:^(UIImage *image) {
         if (image) {
-            self.imageView.image = image;
-            self.finalImage = image;
+            weakSelf.imageView.image = image;
+            weakSelf.finalImage = image;
             NSLog(@"获取到了");
         }
     }];
@@ -429,6 +518,7 @@
 
 
 - (void)didReceiveMemoryWarning {
+    NSLog(@"内存警告");
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

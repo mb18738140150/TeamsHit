@@ -26,8 +26,7 @@
 @property (nonatomic, assign)int begainDiceCount;
 @property (nonatomic, assign)int begainDicePoint;
 
-// 倒计时
-@property (nonatomic, strong)NSTimer * timer;
+
 @property (nonatomic, assign)int timeLenght;
 
 // 骰子数量
@@ -148,7 +147,7 @@
     
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
     layout.itemSize = CGSizeMake((backWhiteView.hd_width - 20 - 50) / 6, (backWhiteView.hd_width - 20 - 50) / 6);
-    layout.minimumInteritemSpacing = 10;
+    layout.minimumInteritemSpacing = 9;
     
     self.diceCountCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(10, 108, backWhiteView.hd_width - 20, 27) collectionViewLayout:layout];
     self.diceCountCollectionView.delegate = self;
@@ -278,13 +277,8 @@
         
     }else
     {
-        if (self.diceCountIndex != indexPath.row) {
-            ChooseDiceModel * model = [self.diceCountDataArray objectAtIndex:self.diceCountIndex];
-            model.isSelect = NO;
-        }
-        self.diceCountIndex = indexPath.row;
+        
         ChooseDiceModel * model = [self.diceCountDataArray objectAtIndex:indexPath.row];
-        model.isSelect = YES;
         
         if (indexPath.row == self.diceCountDataArray.count - 1) {
             NSLog(@"self.diceCountlabel.text = %@", self.diceCountlabel.text);
@@ -292,6 +286,7 @@
             if (self.diceCountlabel.text.intValue >= self.maxPointCount) {
                 UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"不能叫更大点数了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
                 [alert show];
+                return;
             }else
             {
                 self.diceCountlabel.text = [NSString stringWithFormat:@"%d", self.diceCountlabel.text.intValue + 1];
@@ -302,11 +297,19 @@
             if (model.contentStr.intValue > self.maxPointCount) {
                 UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"不能叫更大点数了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
                 [alert show];
+                return;
             }else
             {
                 self.diceCountlabel.text = model.contentStr;
             }
         }
+        
+        if (self.diceCountIndex != indexPath.row) {
+            ChooseDiceModel * model1 = [self.diceCountDataArray objectAtIndex:self.diceCountIndex];
+            model1.isSelect = NO;
+        }
+        self.diceCountIndex = indexPath.row;
+        model.isSelect = YES;
         
         [self.diceCountCollectionView reloadData];
     }
@@ -315,6 +318,13 @@
 #pragma mark - completeChoose
 - (void)completeAction:(UIButton *)button
 {
+    
+    if (self.diceCountlabel.text.intValue > self.maxPointCount) {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"不能叫更大点数了" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        [alert show];
+        return;
+    }
+    
     ChooseDiceModel * model = [self.diceCountDataArray objectAtIndex:self.diceCountIndex];
     int count = 0;
     if ([model.contentStr isEqualToString:@"+1"]) {
@@ -333,7 +343,7 @@
     }else
     {
         if (self.dicepointIndex + 1 != 1) {
-            if (count < self.begainDiceCount || (count == self.begainDiceCount && self.dicepointIndex + 1 < self.begainDicePoint) ) {
+            if (count < self.begainDiceCount  || (self.begainDicePoint == 1 && count == self.begainDiceCount  && self.dicepointIndex + 1 > self.begainDicePoint) || (count == self.begainDiceCount && self.dicepointIndex + 1 < self.begainDicePoint)) {
                 UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"所选择的骰子数量必须大于上家所选数量" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                 [alert show];
             }else
@@ -371,7 +381,7 @@
         self.timer = nil;
         [self dismiss];
     }
-    NSLog(@"剩余时间 %d", self.timeLenght);
+    NSLog(@"ChooseDicenumberView 剩余时间 %d", self.timeLenght);
 }
 
 - (void)dismiss

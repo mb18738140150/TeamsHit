@@ -12,6 +12,7 @@
 @interface NormalProblemViewController ()<WKUIDelegate, WKNavigationDelegate>
 {
     WKWebView *webView;
+    MBProgressHUD * hud;
 }
 @property (nonatomic, strong)UIProgressView * progressView;
 @end
@@ -40,9 +41,12 @@
     [self.view addSubview:webView];
     [webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
     self.progressView = [[UIProgressView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, 1)];
-    self.progressView.tintColor = [UIColor blueColor];
+    self.progressView.tintColor = MAIN_COLOR;
     self.progressView.trackTintColor = [UIColor whiteColor];
     [self.view addSubview:self.progressView];
+    
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
 }
 
 // 页面开始加载时调用
@@ -61,9 +65,9 @@
     
 }
 // 页面加载失败时调用
-- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    
+    [hud hide:YES];
 }
 
 - (void)backAction:(UIButton *)button
@@ -78,6 +82,7 @@
 {
     NSLog(@"****%f", webView.estimatedProgress);;
     if (object == webView && [keyPath isEqualToString:@"estimatedProgress"]) {
+        [hud hide:YES];
         CGFloat newprogress = [[change objectForKey:NSKeyValueChangeNewKey] doubleValue];
         if (newprogress == 1) {
             self.progressView.hidden = YES;

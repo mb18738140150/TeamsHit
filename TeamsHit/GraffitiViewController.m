@@ -57,7 +57,7 @@
 }
 - (void)printGraffitiImage
 {
-    [[Print sharePrint] printImage:[self.graffitiView getGraffitiImage] taskType:@1 toUserId:self.userId];
+    [[Print sharePrint] printImage:[self.graffitiView getGraffitiImage] taskType:@0 toUserId:self.userId];
 }
 
 - (void)didReceiveMemoryWarning {

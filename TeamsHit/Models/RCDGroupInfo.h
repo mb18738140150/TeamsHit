@@ -27,6 +27,6 @@
 /** 是否解散 */
 @property(nonatomic, strong) NSString *isDismiss;
 
-@property (nonatomic, assign)int  GroupType;// 游戏类型 1.吹牛 2.21点
+@property (nonatomic, assign)int  GroupType;// 游戏类型 1.吹牛 2.梦幻
 
 @end

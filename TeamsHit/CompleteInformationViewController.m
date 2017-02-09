@@ -51,7 +51,7 @@
     
     self.birthBt.userInteractionEnabled = YES;
     UITapGestureRecognizer * birthTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(cityAction:)];
-    [self.birthBt addGestureRecognizer:birthTap];
+//    [self.birthBt addGestureRecognizer:birthTap];
     
     
     self.imagePic = [[UIImagePickerController alloc] init];
@@ -197,6 +197,14 @@
 
 - (void)uploadImage
 {
+    NSData * dimageData = UIImagePNGRepresentation([UIImage imageNamed:@"camera_icon.png"]);
+    NSData * imageData = UIImagePNGRepresentation(self.iconImageView.image);
+    if ([dimageData isEqual:imageData]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"头像不能为空" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+    }
+    
     HDPicModle * imageModel = [[HDPicModle alloc]init];
     imageModel.pic = self.iconImageView.image;
     imageModel.picName = [self imageName];
@@ -345,7 +353,7 @@
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }else if (self.accountNameTF.text.length == 0)
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入用户名" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入对对号" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }else if ([self.genderBT.titleLabel.text isEqualToString:@"请选择"])
@@ -356,11 +364,6 @@
     }else if (self.cityBT.text.length == 0 || [self.cityBT.text isEqualToString:@"请选择"])
     {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请选择所在城市" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-        [alert show];
-        [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
-    }else if (self.birthBt.text.length == 0 || [self.birthBt.text isEqualToString:@"请选择"])
-    {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请选择出生日期" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }else
@@ -392,7 +395,7 @@
                                @"Province":Province,
                                @"Gender":self.genderBT.titleLabel.text,
                                @"City":city,
-                               @"BirthDate":self.birthBt.text
+                               @"BirthDate":@"1900-01-01"
                                };
     
     NSString * url = [NSString stringWithFormat:@"%@userinfo/completeInformation?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];

@@ -18,7 +18,7 @@ typedef void(^LookUserShuoshuoBlock)(NSString * string) ;
 @protocol cellDelegate <NSObject>
 
 - (void)changeFoldState:(YMTextData *)ymD onCellRow:(NSInteger) cellStamp;
-- (void)showImageViewWithImageViews:(NSArray *)imageViews byClickWhich:(NSInteger)clickTag;
+- (void)showImageViewWithImageViews:(NSArray *)imageViews byClickWhich:(NSInteger)clickTag placeImage:(UIImage *)placeImage;
 - (void)clickRichText:(NSInteger)index replyIndex:(NSInteger)replyIndex;
 - (void)longClickRichText:(NSInteger)index replyIndex:(NSInteger)replyIndex;
 - (void)clickUserName:(NSString *)userId;

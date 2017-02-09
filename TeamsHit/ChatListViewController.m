@@ -19,6 +19,7 @@
 #import "AddEquipmentViewController.h"
 #import "MaterialViewController.h"
 #import "BragGameChatViewController.h"
+#import "FantasyGameChatViewController.h"
 #import "ChatListCollectionViewController.h"
 @interface ChatListViewController ()
 
@@ -36,11 +37,10 @@
 {
     self = [super init];
     if (self) {
-        [self setDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_SYSTEM)]];
+        [self setDisplayConversationTypes:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION), @(ConversationType_APPSERVICE), @(ConversationType_PUBLICSERVICE),@(ConversationType_SYSTEM),@(ConversationType_GROUP)]];
         
         //聚合会话类型
         [self setCollectionConversationType:@[@(ConversationType_SYSTEM)]];
-        [self setCollectionConversationType:@[@(ConversationType_GROUP)]];
     }
     return self;
 }
@@ -54,7 +54,7 @@
     
     UIButton * barButtonItem = [UIButton buttonWithType:UIButtonTypeCustom];
     barButtonItem.frame = CGRectMake(0, 0, 30, 30);
-    [barButtonItem setImage:[[UIImage imageNamed:@"chat"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [barButtonItem setImage:[[UIImage imageNamed:@"addicon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [barButtonItem addTarget:self action:@selector(showMenu:) forControlEvents:UIControlEventTouchUpInside];
     
 //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"addicon"] style:UIBarButtonItemStyleDone target:self action:@selector(showMenu:)];
@@ -223,7 +223,6 @@
                                                 name:@"kRCNeedReloadDiscussionListNotification"
                                               object:nil];
     
-    
     RCUserInfo *groupNotify = [[RCUserInfo alloc] initWithUserId:[RCIM sharedRCIM].currentUserInfo.userId
                                                             name:[RCIM sharedRCIM].currentUserInfo.name
                                                         portrait:[RCIM sharedRCIM].currentUserInfo.portraitUri];
@@ -301,31 +300,47 @@
             _conversationVC.title = model.conversationTitle;
             _conversationVC.conversation = model;
             _conversationVC.unReadMessage = model.unreadMessageCount;
+            
             _conversationVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:_conversationVC animated:YES];
         }
         
         if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
             
-            if (model.conversationType == 3) {
-                BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
-                _conversationVC.conversationType = model.conversationType;
-                _conversationVC.targetId = model.targetId;
-                _conversationVC.userName = model.conversationTitle;
-                _conversationVC.title = model.conversationTitle;
-                _conversationVC.conversation = model;
-                _conversationVC.unReadMessage = model.unreadMessageCount;
-                _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
-                _conversationVC.enableUnreadMessageIcon=YES;
-                _conversationVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:_conversationVC animated:YES];
+            if (model.conversationType == ConversationType_GROUP) {
+                
+                RCDGroupInfo * groupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:model.targetId];
+                if (groupInfo.GroupType == 1) {
+                    
+                    BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
+                    _conversationVC.conversationType = model.conversationType;
+                    _conversationVC.targetId = model.targetId;
+                    _conversationVC.title = model.conversationTitle;
+                    _conversationVC.conversation = model;
+                    _conversationVC.unReadMessage = model.unreadMessageCount;
+                    _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+                    _conversationVC.enableUnreadMessageIcon=YES;
+                    _conversationVC.hidesBottomBarWhenPushed = YES;
+                    [self.navigationController pushViewController:_conversationVC animated:YES];
+                }else if (groupInfo.GroupType == 2)
+                {
+                    FantasyGameChatViewController * _conversationVC = [[FantasyGameChatViewController alloc]init];
+                    _conversationVC.conversationType = model.conversationType;
+                    _conversationVC.targetId = model.targetId;
+                    _conversationVC.title = model.conversationTitle;
+                    _conversationVC.conversation = model;
+                    _conversationVC.unReadMessage = model.unreadMessageCount;
+                    _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+                    _conversationVC.enableUnreadMessageIcon=YES;
+                    _conversationVC.hidesBottomBarWhenPushed = YES;
+                    [self.navigationController pushViewController:_conversationVC animated:YES];
+                }
+                
             }else
             {
-                
                 ChatViewController *_conversationVC = [[ChatViewController alloc]init];
                 _conversationVC.conversationType = model.conversationType;
                 _conversationVC.targetId = model.targetId;
-                _conversationVC.userName = model.conversationTitle;
                 _conversationVC.title = model.conversationTitle;
                 _conversationVC.conversation = model;
                 _conversationVC.unReadMessage = model.unreadMessageCount;
@@ -333,7 +348,6 @@
                 _conversationVC.enableUnreadMessageIcon=YES;
                 
                 if (model.conversationType == ConversationType_SYSTEM) {
-                    _conversationVC.userName = @"系统消息";
                     _conversationVC.title = @"系统消息";
                 }
                 if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
@@ -351,26 +365,18 @@
                 [self.navigationController pushViewController:_conversationVC animated:YES];
             }
             
-            
-            
         }
         
         //聚合会话类型，此处自定设置。
         if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION) {
-            
-            if (model.conversationType == ConversationType_GROUP) {
-                NSLog(@"群聊");
-            }else
-            {
-                
-                ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
+            ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
                 NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
                 [temp setDisplayConversationTypes:array];
                 [temp setCollectionConversationType:nil];
                 temp.isEnteredToCollectionViewController = YES;
+                temp.title = @"系统消息";
                 temp.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:temp animated:YES];
-            }
             
         }
         
@@ -431,7 +437,7 @@
             }
         }
     }
-    NSLog(@"dataSource = %d", dataSource.count);
+//    NSLog(@"dataSource = %d", dataSource.count);
     return dataSource;
 }
 
@@ -444,12 +450,14 @@
 //                cell1.conversationTitle.textColor = [UIColor redColor];
     }else if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION)
     {
-        RCConversationCell * cell1 = (RCConversationCell *)cell;
-        cell1.conversationTitle.text = @"系统消息";
-    }else if (model.conversationType == ConversationType_GROUP)
-    {
-        RCConversationCell * cell1 = (RCConversationCell *)cell;
-        
+        if (model.conversationType == ConversationType_GROUP) {
+//            RCConversationCell * cell1 = (RCConversationCell *)cell;
+//            cell1.conversationTitle.text = @"我的房间";
+        }else
+        {
+            RCConversationCell * cell1 = (RCConversationCell *)cell;
+            cell1.conversationTitle.text = @"系统消息";
+        }
     }
 }
 
@@ -458,7 +466,7 @@
 {
     //可以从数据库删除数据
     RCConversationModel *model = self.conversationListDataSource[indexPath.row];
-    [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_SYSTEM targetId:model.targetId];
+    [[RCIMClient sharedRCIMClient] removeConversation:model.conversationType targetId:model.targetId];
     [self.conversationListDataSource removeObjectAtIndex:indexPath.row];
     [self.conversationListTableView reloadData];
 }
@@ -688,7 +696,7 @@
     if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
         
         
-        if (model.conversationType == 3) {
+        if (model.conversationType == ConversationType_GROUP) {
             BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
             _conversationVC.conversationType = model.conversationType;
             _conversationVC.targetId = model.targetId;
@@ -732,13 +740,27 @@
     //聚合会话类型，此处自定设置。
     if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_COLLECTION) {
         
-        ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
-        NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
-        [temp setDisplayConversationTypes:array];
-        [temp setCollectionConversationType:nil];
-        temp.isEnteredToCollectionViewController = YES;
-        temp.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:temp animated:YES];
+        if (model.conversationType == ConversationType_GROUP) {
+//            ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
+//            NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
+//            [temp setDisplayConversationTypes:array];
+//            [temp setCollectionConversationType:nil];
+//            temp.isEnteredToCollectionViewController = YES;
+//             temp.title = @"房间";
+//            temp.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:temp animated:YES];
+        }else
+        {
+            ChatListCollectionViewController *temp = [[ChatListCollectionViewController alloc] init];
+            NSArray *array = [NSArray arrayWithObject:[NSNumber numberWithInt:model.conversationType]];
+            [temp setDisplayConversationTypes:array];
+            [temp setCollectionConversationType:nil];
+            temp.isEnteredToCollectionViewController = YES;
+            temp.title = @"系统消息";
+            temp.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:temp animated:YES];
+        }
+        
     }
     
     //自定义会话类型

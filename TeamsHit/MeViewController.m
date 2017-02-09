@@ -22,6 +22,7 @@
 #import "WXApiManager.h"
 #import "TelephoneRechargeViewController.h"
 
+
 static NSString *kLinkURL = @"http://download.www.mstching.com";
 static NSString *kLinkTagName = @"WECHAT_TAG_JUMP_SHOWRANK";
 static NSString *kLinkTitle = @"当下最火的游戏娱乐APP";
@@ -47,6 +48,8 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
 @property (strong, nonatomic) IBOutlet UILabel *equipmentLB;
 
 @property (nonatomic, copy)NSString * iconImageStr;
+
+@property (nonatomic, strong)UIImageView * loadingImageView;
 
 @end
 
@@ -88,10 +91,14 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
     
     [WXApiManager sharedManager].delegate = self;
     
+//    NSArray * rr = @[@"hhh"];
+//    NSLog(@"%@", rr[1]);
+    
 //    UIImage * image = [UIImage imageNamed:@"bbb.jpg"];
 //    NSLog(@"width =  %f ** height = %f", image.size.width, image.size.height);
     
     // Do any additional setup after loading the view from its nib.
+    
 }
 
 - (void)getUserInfo

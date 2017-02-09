@@ -32,7 +32,6 @@
 @property (nonatomic, strong)UILabel * noreadLabel;
 
 @property (nonatomic, assign)BOOL lookUserInfo;
-@property (strong, nonatomic) IBOutlet UISearchBar *searchFriendsBar;
 
 @end
 
@@ -53,7 +52,7 @@
     self.friendsTabelView.tableFooterView = [UIView new];
     float colorFloat = 245.f / 255.f;
     self.friendsTabelView.backgroundColor = [[UIColor alloc] initWithRed:colorFloat green:colorFloat blue:colorFloat alpha:1];
-    _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"房间", @"对对碰团队", nil];
+    _defaultCellsTitle      = [NSArray arrayWithObjects:@"新朋友",@"房间", @"手机对对碰团队", nil];
     _defaultCellsPortrait   = [NSArray arrayWithObjects:@"newFriend",@"defaultGroup", @"logo(1)", nil];
     
     _allFriends = [NSMutableDictionary new];
@@ -62,6 +61,8 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deletefriend:) name:@"deleteFriend" object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(newfriendRequest:) name:@"newFriendRequestNotification" object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(newfriendAccept:) name:@"newFriendAcceptNotification" object:nil];
     // Do any additional setup after loading the view from its nib.
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -87,21 +88,38 @@
     if ([[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count] > 0) {
         self.noreadLabel.hidden = NO;
         self.noreadLabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+        self.tabBarItem.badgeValue = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
     }else
     {
         self.noreadLabel.hidden = YES;
         self.noreadLabel.text = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+        self.tabBarItem.badgeValue = nil;
     }
 }
 
 - (void)deletefriend:(NSNotification *)notification
 {
-    [self getAllData];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf getAllData];
+    });
 }
 
 - (void)newfriendRequest:(NSNotification *)notification
 {
-    [self getAllData];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf getAllData];
+        weakSelf.tabBarItem.badgeValue = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+    });
+}
+
+- (void)newfriendAccept:(NSNotification *)notification
+{
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf getAllData];
+    });
 }
 
 #pragma mark - uitableviewDelegate
@@ -215,7 +233,6 @@
         [self.navigationController pushViewController:newfriendVC animated:YES];
     }else if (indexPath.section != 0)
     {
-        
         NSString *key = [_allKeys objectAtIndex:indexPath.section - 1];
         _arrayForKey = [_allFriends objectForKey:key];
         
@@ -230,6 +247,9 @@
         vc.targetId = userInfo.userId;
         vc.hidesBottomBarWhenPushed = YES;
         self.lookUserInfo = YES;
+        [vc changeDisplayname:^(NSString *displayName) {
+            [self getAllData];
+        }];
         [self.navigationController pushViewController:vc animated:YES];
     }else if (indexPath.row == 1 && indexPath.section == 0)
     {
@@ -244,6 +264,8 @@
         chatVc.displayUserNameInCell = NO;
         chatVc.targetId = @"200";
         chatVc.title = @"手机对对碰团队";
+        chatVc.enableNewComingMessageIcon=YES;//开启消息提醒
+        chatVc.enableUnreadMessageIcon=YES;
         chatVc.needPopToRootView = YES;
         [self.navigationController pushViewController:chatVc animated:YES];
     }
@@ -285,34 +307,13 @@
     }
     if ([searchText length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [_searchReasult removeAllObjects];
             NSLog(@"搜索框清空");
-            _allFriends = [self sortedArrayWithPinYinDic:_friends];
+            _allFriends = [self sortedArrayWithPinYinDic:_friendsArr];
             [self.friendsTabelView reloadData];
         });
     }
 }
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
-{
-    self.searchFriendsBar.showsCancelButton = NO;
-    [self.searchFriendsBar resignFirstResponder];
-    self.searchFriendsBar.text = @"";
-    [_searchReasult removeAllObjects];
-    _allFriends = [self sortedArrayWithPinYinDic:_friendsArr];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.friendsTabelView reloadData];
-    });
-}
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
-{
-    self.searchFriendsBar.showsCancelButton = YES;
-    return YES;
-}
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    [searchBar resignFirstResponder];
-}
 #pragma mark - 获取好友并排序
 - (void)getAllData
 {

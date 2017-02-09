@@ -43,12 +43,18 @@
     _friendListVC.tabBarItem.image = [UIImage imageNamed:@"friend-1"] ;
     _friendListVC.tabBarItem.selectedImage = [UIImage imageNamed:@"friend-2"] ;
     UINavigationController * friendListNav = [[UINavigationController alloc] initWithRootViewController:_friendListVC];
+    if ([[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count] > 0) {
+        _friendListVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+    }
     
     self.findVC = [[FindViewController alloc]init];
     _findVC.tabBarItem.title = @"发现";
     _findVC.tabBarItem.image = [UIImage imageNamed:@"find-1"] ;
     _findVC.tabBarItem.selectedImage = [UIImage imageNamed:@"find-2"] ;
     UINavigationController * findNav = [[UINavigationController alloc] initWithRootViewController:_findVC];
+    if ([[RCDataBaseManager shareInstance]getFriendcircleMessageNumber] > 0) {
+        _findVC.tabBarItem.badgeValue = [[NSString alloc]initWithFormat:@"%d",[[RCDataBaseManager shareInstance]getFriendcircleMessageNumber]];
+    }
     
     self.meVC = [[MeViewController alloc]init];
     _meVC.tabBarItem.title = @"我的";
@@ -70,6 +76,33 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(newfriendRequest:) name:@"newFriendRequestNotification" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateFriendCircleMessageCount:) name:@"UpdateFriendCircleMessageCount" object:nil];
+    
+}
+
+// 新评论通知
+- (void)updateFriendCircleMessageCount:(NSNotification *)notification
+{
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        weakSelf.findVC.tabBarItem.badgeValue = [[NSString alloc]initWithFormat:@"%d",[[RCDataBaseManager shareInstance]getFriendcircleMessageNumber]];
+    });
+}
+
+- (void)newfriendRequest:(NSNotification *)notification
+{
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.friendListVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%d", [[[RCDataBaseManager shareInstance]getAllNewFriendRequests] count]];
+    });
+}
+- (void)dealloc {
+    //反注册通知，不用了就得移除
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 - (void)didReceiveMemoryWarning {

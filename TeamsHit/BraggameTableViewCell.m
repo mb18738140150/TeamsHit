@@ -119,9 +119,13 @@
             if (bragGameModel.calledDicePointState == CalledDicePoint_Now) {
                 self.calldicePointStateView.content = [NSString stringWithFormat:@"%@个", bragGameModel.diceCount];
                 self.calldicePointStateView.dicePointImage = [UIImage imageNamed:[NSString stringWithFormat:@"骰子%@", bragGameModel.dicePoint]];
-            }else
+            }else if (bragGameModel.calledDicePointState == CalledDicePoint_Wait)
             {
                 self.calldicePointStateView.content = @"纠结中";
+            }else
+            {
+#warning calldicePointStateView ******** 
+                self.calldicePointStateView.hidden = YES;
             }
             
         }else

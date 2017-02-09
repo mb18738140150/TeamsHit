@@ -210,7 +210,8 @@
             
             UIImageView *image = [[UIImageView alloc] initWithFrame:CGRectMake(offSet_X + IMAGE_SPACE*(i%3) + ((screenWidth - offSet_X - 2 * offSet_X_right) / 3)*(i%3), TableHeader + 5 * ((i/3) + 1) + (i/3) *  ShowImage_H + hhhh + kDistance + (ymData.islessLimit?0:30) - 30, ShowImage_H, ShowImage_H)];
             image.userInteractionEnabled = YES;
-            
+            [image setContentMode:UIViewContentModeScaleAspectFill];
+            image.clipsToBounds = YES;
             YMTapGestureRecongnizer *tap = [[YMTapGestureRecongnizer alloc] initWithTarget:self action:@selector(tapImageView:)];
             [image addGestureRecognizer:tap];
             tap.appendArray = ymData.showImageArray;
@@ -264,7 +265,6 @@
     
     float backView_Y = 0;
     float backView_H = 0;
-    
     
     
     WFTextView *favourView = [[WFTextView alloc] initWithFrame:CGRectMake(offSet_X+30, TableHeader + 10 + ymData.showImageHeight + origin_Y + hhhh + kDistance + (ymData.islessLimit?0:30) + balanceHeight + kReplyBtnDistance - 30 , screenWidth - offSet_X_right - offSet_X - 30, 0)];
@@ -396,7 +396,6 @@
     
 }
 
-
 - (void)longClickWFCoretext:(NSString *)clickString replyIndex:(NSInteger)index{
   
     if (index == -1) {
@@ -419,6 +418,9 @@
         if ([clickString isEqualToString:@""]) {
             //
         }else{
+            if ([NSString isTelPhoneNub:clickString] ) {
+                return;
+            }
             NSLog(@"clickString id = %@", clickString);
 //            [WFHudView showMsg:clickString inView:nil];
             
@@ -462,7 +464,8 @@
 #pragma mark - 点击action
 - (void)tapImageView:(YMTapGestureRecongnizer *)tapGes{
     
-    [_delegate showImageViewWithImageViews:tapGes.appendArray byClickWhich:tapGes.view.tag];
+    UIImageView * imageView = (UIImageView *)tapGes.view;
+    [_delegate showImageViewWithImageViews:tapGes.appendArray byClickWhich:tapGes.view.tag placeImage:imageView.image];
 }
 
 - (void)drawRect:(CGRect)rect

@@ -10,11 +10,8 @@
 #import "BrageGameViewHeaderView.h"
 
 @interface GameChatViewController : RCConversationViewController
-{
-    SRWebSocket *_webSocket;
-}
+
 @property (nonatomic, strong)UIImageView * backImageView;
-- (void)connectSocket;
 /**
  *  会话数据模型
  */

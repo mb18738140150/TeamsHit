@@ -22,7 +22,6 @@
 
 @implementation ImageModel
 
-
 @end
 
 @interface PublishCircleOfFriendViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
@@ -48,7 +47,6 @@
 @property (nonatomic, strong)NSMutableArray * imageArrays;
 
 @end
-
 
 @implementation PublishCircleOfFriendViewController
 
@@ -90,7 +88,7 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     
     self.imagePic = [[UIImagePickerController alloc] init];
-    _imagePic.allowsEditing = YES;
+//    _imagePic.allowsEditing = YES;
     _imagePic.delegate = self;
     
     [self creatSubViews];
@@ -244,7 +242,7 @@
                     weakSelf.informationView.hd_height = weakSelf.phoneCollectionView.hd_height + weakSelf.phoneCollectionView.hd_y;
                     weakSelf.permissionView.hd_y = weakSelf.informationView.hd_y + weakSelf.informationView.hd_height + 30;
                 }
-                weakSelf.phoneCollectionView.contentSize = CGSizeMake(weakSelf.phoneCollectionView.hd_width, self.permissionView.hd_height + weakSelf.permissionView.hd_y + 30);
+                weakSelf.phoneCollectionView.contentSize = CGSizeMake(weakSelf.phoneCollectionView.hd_width, weakSelf.permissionView.hd_height + weakSelf.permissionView.hd_y + 30);
                 [weakSelf.phoneCollectionView reloadData];
             };
         }];
@@ -274,21 +272,19 @@
         bigVC.item = indexPath.row + 1;
         [bigVC creatWithImageArr:self.imageArrays];
         [self.navigationController pushViewController:bigVC animated:YES];
-//        MLSelectPhotoBrowserViewController *browserVc = [[MLSelectPhotoBrowserViewController alloc] init];
-//        browserVc.currentPage = indexPath.row;
-//        browserVc.photos = self.assets;
-//        [self.navigationController pushViewController:browserVc animated:YES];
     }
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    UIImage * image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    UIImage * image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+//    UIImage * image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     
+    image = [self calculateImagesize:image];
+    NSLog(@"%f, %f", image.size.width, image.size.height);
     ImageModel * model = [[ImageModel alloc]init];
     model.oriImage = image;
     [self.assets addObject:model];
     [self.phoneCollectionView reloadData];
-    
     
     if (self.assets.count > 3 && self.assets.count < 8) {
         self.phoneCollectionView.hd_height = (self.informationView.hd_width - 64) / 4 * 2 + 30;
@@ -306,6 +302,21 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+- (UIImage *)calculateImagesize:(UIImage *)image
+{
+    NSData *data;
+    data = UIImageJPEGRepresentation(image, .1);
+    image = [UIImage imageWithData:data];
+    
+    CGSize size = image.size;
+    UIGraphicsBeginImageContext(CGSizeMake(size.width * 0.3, size.height * 0.3));
+    [image drawInRect:CGRectMake(0, 0, size.width * 0.3, size.height * 0.3)];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 #pragma mark - uitextviewDelegate
 - (void)textViewDidChangeSelection:(UITextView *)textView
 {
@@ -377,7 +388,7 @@
             id model = self.assets[i];
             if ([model isKindOfClass:[MLSelectPhotoAssets class]]) {
                 MLSelectPhotoAssets *asset = self.assets[i];
-                [self.imageArrays addObject:[MLSelectPhotoPickerViewController getImageWithImageObj:asset]];
+//                [self.imageArrays addObject:[MLSelectPhotoPickerViewController getImageWithImageObj:asset]];
                 
                 HDPicModle * imageModel = [[HDPicModle alloc]init];
                 imageModel.pic = asset.originImage;
@@ -388,7 +399,7 @@
             }else
             {
                 ImageModel * model = self.assets[i];
-                [self.imageArrays addObject:model.oriImage];
+//                [self.imageArrays addObject:model.oriImage];
                 
                 HDPicModle * imageModel = [[HDPicModle alloc]init];
                 imageModel.pic = model.oriImage;
@@ -472,14 +483,31 @@
         
     }else if(self.assets.count == 1)
     {
-        HDPicModle * imageModel = [[HDPicModle alloc]init];
-        imageModel.pic = [[self.assets firstObject] originImage];
-        imageModel.picName = [self imageName];
-        imageModel.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageModel.picName];
+        HDPicModle * imageMode = [[HDPicModle alloc]init];
+        
+        id model = self.assets[0];
+        if ([model isKindOfClass:[MLSelectPhotoAssets class]]) {
+            MLSelectPhotoAssets *asset = self.assets[0];
+//            [self.imageArrays addObject:[MLSelectPhotoPickerViewController getImageWithImageObj:asset]];
+            
+            imageMode.pic = asset.originImage;
+            imageMode.picName = [self imageName];
+            imageMode.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageMode.picName];
+            
+        }else
+        {
+            ImageModel * model1 = self.assets[0];
+            
+            imageMode.pic = model1.oriImage;
+            imageMode.picName = [self imageName];
+            imageMode.picFile = [[self getLibraryCachePath] stringByAppendingPathComponent:imageMode.picName];
+            
+        }
+        
         NSString * imageUrl = [NSString stringWithFormat:@"%@%@", POST_IMAGE_URL, @"2"];
         NSString * url = [imageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         
-        [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageModel progress:^(NSProgress * _Nullable progress) {
+        [[HDNetworking sharedHDNetworking] POST:url parameters:nil andPic:imageMode progress:^(NSProgress * _Nullable progress) {
             NSLog(@"progress = %lf", 1.0 * progress.completedUnitCount / progress.totalUnitCount);
         } success:^(id  _Nonnull responseObject) {
             [hud hide:YES];
@@ -539,6 +567,22 @@
     {
         ideaStr = self.ideaTextView.text;
     }
+    if (ideaStr == nil) {
+        ideaStr = @"";
+        if (imageUrlStr == nil) {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"发布失败，请从新发布" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            
+            [self.assets removeAllObjects];
+            [self.imageUrlArr removeAllObjects];
+            [self.imageArrays removeAllObjects];
+            [self.phoneCollectionView reloadData];
+            
+            return;
+        }
+    }
+    
     NSDictionary * jsonDic = @{
                                @"TakeContent":ideaStr,
                                @"PhotoLists":imageUrlStr
@@ -559,12 +603,12 @@
         if (command == 10029) {
             if (code == 200) {
                 
-                if (self.myPublishBlock) {
+                if (addVC.myPublishBlock) {
                     
                     WFMessageBody * messageBody = [[WFMessageBody alloc]init];
-                    messageBody.posterContent = self.ideaTextView.text;
+                    messageBody.posterContent = addVC.ideaTextView.text;
                     messageBody.posterId = [responseObject objectForKey:@"TakeId"];
-                    messageBody.publishTime = [self getTimeStr:[responseObject objectForKey:@"CreateTime"]];
+                    messageBody.publishTime = [addVC getTimeStr:[responseObject objectForKey:@"CreateTime"]];
                     
                     NSString * photoLists = imageUrlStr;
                     if (![photoLists isEqual:[NSNull null]] && photoLists && photoLists.length != 0) {

@@ -77,8 +77,8 @@
                 
                 _allCount = [responseObject objectForKey:@"AllCount"];
                 
-                if (self.datasourceArr.count > 0) {
-                    [self.datasourceArr removeAllObjects];
+                if (wxVC.datasourceArr.count > 0) {
+                    [wxVC.datasourceArr removeAllObjects];
                 }
                 
                 NSArray * RechargeRecordList = [NSArray array];

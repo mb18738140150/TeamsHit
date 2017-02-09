@@ -10,6 +10,8 @@
 #import "HDPicModle.h"
 #import "UIImage+HDExtension.h"
 #import "AFNetworking.h"
+#import "LoginViewController.h"
+#import "AppDelegate.h"
 
 @implementation HDNetworking
 HDSingletonM(HDNetworking) // 单例实现
@@ -141,6 +143,21 @@ HDSingletonM(HDNetworking) // 单例实现
         if (success)
         {
             success(responseObject);
+            
+            if ([[responseObject objectForKey:@"Code"] intValue] == 1010) {
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"登录失效，请从新登录" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
+                
+                LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+                
+                UINavigationController *_navi =
+                [[UINavigationController alloc] initWithRootViewController:loginVC];
+                AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+                delegate.window.rootViewController = _navi;
+                [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+            }
+            
         }
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; // 关闭状态栏动画

@@ -27,16 +27,19 @@
 #import "AFHttpTool.h"
 #import "RCDataBaseManager.h"
 #import "RCDTestMessage.h"
+#import "RCDUtilities.h"
 #import "MobClick.h"
 #import "RCFriendCircleUserInfo.h"
 #import "WXApiManager.h"
-
+#import <sys/utsname.h>
 #import "WelcomeViewController.h"
+#import "BragGameChatViewController.h"
 
 //#import <PgySDK/PgyManager.h>
 //#import <PgyUpdate/PgyUpdateManager.h>
 
-#define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // online key
+//#define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // 测试 
+#define RONGCLOUD_IM_APPKEY @"8brlm7ufrwl93"// 正式
 
 #define UMENG_APPKEY @"563755cbe0f55a5cb300139c"
 
@@ -71,11 +74,73 @@
     NSString *newVersions = [[NSBundle mainBundle].infoDictionary objectForKey:@"CFBundleVersion"];
     
     if ([newVersions isEqualToString:lastVersions]) {//版本相同
-        //设置跟视图控制器(密码锁界面)
-        LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
-        TeamsHitNavigationViewController * teamsNav = [[TeamsHitNavigationViewController alloc]initWithRootViewController:loginVC];
-        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
-        self.window.rootViewController = nav;
+        //设置跟视图控制器
+        
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"haveLogin"] boolValue]) {
+            NSString * accountNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
+            NSString * password = [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"];
+            if (accountNumber && password) {
+                __weak typeof(self) weakself = self;
+                NSDictionary * jsonDic = @{
+                                           @"Account":accountNumber,
+                                           @"Password":password,
+                                           };
+                [[HDNetworking sharedHDNetworking] POST:@"user/login" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+                    ;
+                } success:^(id  _Nonnull responseObject) {
+                    
+                    NSLog(@"**%@", responseObject);
+                    
+                    if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
+                        [weakself pushLoginVC];
+                    }else
+                    {
+                        [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];
+                        [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
+                        
+                        RCUserInfo *user = [RCUserInfo new];
+                        user.userId = [NSString stringWithFormat:@"%@", responseObject[@"UserId"]];
+                        //            user.name = [NSString stringWithFormat:@"name%@", [NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                        user.portraitUri = [RCDUtilities defaultUserPortrait:user];
+                        [RCIM sharedRCIM].currentUserInfo = user;
+                        [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                        // 连接融云服务器
+                        [[RCIM sharedRCIM] connectWithToken:[UserInfo shareUserInfo].rongToken success:^(NSString *userId) {
+                            NSLog(@"连接融云成功");
+                            [weakself pushTabBarVC];
+                        } error:^(RCConnectErrorCode status) {
+                            NSLog(@"连接融云失败");
+                            [weakself pushLoginVC];
+                        } tokenIncorrect:^{
+                            NSLog(@"IncorrectToken");
+                            [weakself pushLoginVC];
+                            
+                        }];
+                        [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];
+                        
+                        // 同步好友列表
+                        NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                        [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
+                        
+                        // 同步组群
+                        [RCDDataSource syncGroups];
+                        [weakself pushTabBarVC];
+                    }
+                    
+                } failure:^(NSError * _Nonnull error) {
+                    NSLog(@"error = %@", error);
+                    [weakself pushLoginVC];
+                }];
+            }else
+            {
+                LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+                UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
+                self.window.rootViewController = nav;
+            }
+        }else
+        {
+            [self pushLoginVC];
+        }
         [self.window makeKeyAndVisible];
         
     } else {
@@ -91,6 +156,13 @@
     
     [WXApi registerApp:@"wxac84b8b5d1acbad9"];
     
+    // 崩溃日志检测
+//    NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
+    
+//    NSSetUncaughtExceptionHandler (&UncaughtExceptionHandler);
+//    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"Buglogfile"] && [[[NSUserDefaults standardUserDefaults] objectForKey:@"Buglogfile"] length] != 0) {
+//        [self sendLogMessage:[[NSUserDefaults standardUserDefaults] objectForKey:@"Buglogfile"]];
+//    }
     
     //启动基本SDK
 //    [[PgyManager sharedPgyManager] startManagerWithAppId:@"af86174cc19c1c7082246dd966c64a97"];
@@ -132,6 +204,9 @@
     //设置用户信息源和群组信息源
     [RCIM sharedRCIM].userInfoDataSource = RCDDataSource;
     [RCIM sharedRCIM].groupInfoDataSource = RCDDataSource;
+    
+//    [[RCIM sharedRCIM] setUserInfoDataSource:self];
+//    [[RCIM sharedRCIM] setGroupInfoDataSource:self];
     //设置群组内用户信息源。如果不使用群名片功能，可以不设置
     //  [RCIM sharedRCIM].groupUserInfoDataSource = RCDDataSource;
     //  [RCIM sharedRCIM].enableMessageAttachUserInfo = YES;
@@ -302,7 +377,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
     AudioServicesPlaySystemSound(1007);
     
-    NSLog(@"notification = %@", notification);
+    NSLog(@"Local notification = %@", notification);
     
 }
 
@@ -344,13 +419,12 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    
+    [[NSNotificationCenter defaultCenter]postNotificationName:kNetChangedNotification object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
-
 
 - (void)redirectNSlogToDocumentFolder {
     NSLog(@"Log重定向到本地，如果您需要控制台Log，注释掉重定向逻辑即可。");
@@ -429,6 +503,7 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
 - (void)setNewMessageNotificationSound:(BOOL)on {
     [RCIM sharedRCIM].disableMessageAlertSound = !on;
 }
+
 - (void)logout {
     [DEFAULTS removeObjectForKey:@"userName"];
     [DEFAULTS removeObjectForKey:@"userPwd"];
@@ -460,6 +535,7 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
  */
 - (void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status {
     if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
+        
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle:@"提示"
                               message:@"您"
@@ -468,6 +544,11 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
                               cancelButtonTitle:@"知道了"
                               otherButtonTitles:nil, nil];
         [alert show];
+        if ([[self getCurrentVC] isKindOfClass:[BragGameChatViewController class]]) {
+            BragGameChatViewController * bragVC = (BragGameChatViewController *)[self getCurrentVC];
+            [bragVC removeAllsubViews];
+            [bragVC.navigationController popToRootViewControllerAnimated:NO];
+        }
         LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
         loginVC.notAutoLogin = YES;
         [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
@@ -477,9 +558,11 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         UINavigationController *_navi =
         [[UINavigationController alloc] initWithRootViewController:loginVC];
         self.window.rootViewController = _navi;
+        
     } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
         dispatch_async(dispatch_get_main_queue(), ^{
             LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+            loginVC.notAutoLogin = YES;
             UINavigationController *_navi = [[UINavigationController alloc]
                                              initWithRootViewController:loginVC];
             self.window.rootViewController = _navi;
@@ -493,10 +576,37 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         });
     }
 }
-
+- (UIViewController *)getCurrentVC
+{
+    UIViewController *result = nil;
+    
+    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    if (window.windowLevel != UIWindowLevelNormal)
+    {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * tmpWin in windows)
+        {
+            if (tmpWin.windowLevel == UIWindowLevelNormal)
+            {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+    
+    UIView *frontView = [[window subviews] objectAtIndex:0];
+    id nextResponder = [frontView nextResponder];
+    
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        result = nextResponder;
+    else
+        result = window.rootViewController;
+    
+    return result;
+}
 -(void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left
 {
-    NSLog(@"message.targetId = %@, *** %@ *** ", message.targetId, message.senderUserId);
+    NSLog(@"message.targetId = %@, *** message.senderUserId = %@ *** 发送者 %@", message.targetId, message.senderUserId, message.content.senderUserInfo.userId);
     
     // 通知类消息
     if ([message.content isMemberOfClass:[RCInformationNotificationMessage class]]) {
@@ -518,10 +628,11 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         
         if ([msg.operation isEqualToString:ContactNotificationMessage_ContactOperationAcceptResponse]) {
             
-            NSLog(@"msg.senderUserInfo.userid = %@ msg.senderUserInfo.name = %@ ** %@", msg.senderUserInfo.userId, msg.senderUserInfo.name, msg.senderUserInfo.portraitUri);
+//            NSLog(@"msg.senderUserInfo.userid = %@ msg.senderUserInfo.name = %@ ** %@", msg.senderUserInfo.userId, msg.senderUserInfo.name, msg.senderUserInfo.portraitUri);
             
             NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
             [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"newFriendAcceptNotification" object:nil];
             }];
         }
         if ([msg.operation isEqualToString:@"DelFriend"]) {
@@ -607,11 +718,11 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     [[NSNotificationCenter defaultCenter]postNotificationName:@"UpdateFriendCircleMessageCount" object:nil];
 }
 
-// 被解除好友关系操作
+#pragma mark - 被解除好友关系操作
 - (void)deleteFriendWithUserId:(NSString * )strId
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"被删除" message:@"你呗好友删除！" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"被删除" message:@"你被好友删除！" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
 //        [alert show];
         
     });
@@ -631,6 +742,7 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     
 }
 
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter]
      removeObserver:self
@@ -639,7 +751,7 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
 }
 
 - (void)umengTrack {
-    //        [MobClick setCrashReportEnabled:NO]; // 如果不需要捕捉异常，注释掉此行
+    [MobClick setCrashReportEnabled:YES]; // 如果不需要捕捉异常，注释掉此行
     [MobClick setLogEnabled:YES];  // 打开友盟sdk调试，注意Release发布时需要注释掉此行,减少io消耗
     [MobClick setAppVersion:XcodeAppVersion]; //参数为NSString * 类型,自定义app版本信息，如果不设置，默认从CFBundleVersion里取
     //
@@ -684,5 +796,172 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     [[IFlySpeechSynthesizer sharedInstance] setParameter:nil forKey:[IFlySpeechConstant TTS_AUDIO_PATH]];
     
 }
+#define ERRORPATH  [NSString stringWithFormat:@"%@/error.log",[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]]
+//void UncaughtExceptionHandler(NSException *exception) {
+//    NSArray *stackArr = [exception callStackSymbols];//得到当前调用栈信息
+//    NSString *reasonStr = [exception reason];//非常重要，就是崩溃的原因
+//    NSString *nameStr = [exception name];//异常类型
+//    NSString *exceptionInfo = [NSString stringWithFormat:@"Exception reason：%@\nException name：%@\nException stack：%@",nameStr, reasonStr, stackArr];
+//    NSMutableArray *carshArr = [NSMutableArray arrayWithArray:stackArr];
+//    [carshArr insertObject:reasonStr atIndex:0];
+//    //保存到本地
+//    [exceptionInfo writeToFile:ERRORPATH atomically:YES encoding:NSUTF8StringEncoding error:nil];
+//    NSLog(@"崩溃日志路径:%@",ERRORPATH);
+//    NSLog(@"exception type : %@ \n crash reason : %@ \n call stack info : %@", nameStr, reasonStr, stackArr);
+//}
+
+- (void)pushTabBarVC
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        MyTabBarController * myTabbarVC = [[MyTabBarController alloc]init];
+        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:myTabbarVC];
+        self.window.rootViewController = nav;
+    });
+}
+
+- (void)pushLoginVC
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
+        self.window.rootViewController = nav;
+    });
+}
+
+- (void)sendLogMessage:(NSString *)buglogfile
+{
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:buglogfile delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+    [alert show];
+    NSDictionary * jsonDic = @{
+                               @"Model": [self iphoneType],
+                               @"AndroidVer":[[UIDevice currentDevice] systemVersion],
+                               @"ErrorLog":buglogfile
+                               };
+    [[HDNetworking sharedHDNetworking] POST:@"version/UpdateBugLog" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        
+        NSLog(@"**%@", responseObject);
+        
+        if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
+            [self sendLogMessage:buglogfile];
+        }else
+        {
+            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"Buglogfile"];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"error = %@", error);
+    }];
+}
+- (NSString *)iphoneType {
+    
+    
+    struct utsname systemInfo;
+    
+    uname(&systemInfo);
+    
+    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
+    
+    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G";
+    
+    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G";
+    
+    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS";
+    
+    if ([platform isEqualToString:@"iPhone3,1"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone3,2"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone3,3"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S";
+    
+    if ([platform isEqualToString:@"iPhone5,1"]) return @"iPhone 5";
+    
+    if ([platform isEqualToString:@"iPhone5,2"]) return @"iPhone 5";
+    
+    if ([platform isEqualToString:@"iPhone5,3"]) return @"iPhone 5c";
+    
+    if ([platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c";
+    
+    if ([platform isEqualToString:@"iPhone6,1"]) return @"iPhone 5s";
+    
+    if ([platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s";
+    
+    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus";
+    
+    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6";
+    
+    if ([platform isEqualToString:@"iPhone8,1"]) return @"iPhone 6s";
+    
+    if ([platform isEqualToString:@"iPhone8,2"]) return @"iPhone 6s Plus";
+    
+    if ([platform isEqualToString:@"iPhone8,4"]) return @"iPhone SE";
+    
+    if ([platform isEqualToString:@"iPhone9,1"]) return @"iPhone 7";
+    
+    if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone 7 Plus";
+    
+    if ([platform isEqualToString:@"iPod1,1"]) return @"iPod Touch 1G";
+    
+    if ([platform isEqualToString:@"iPod2,1"])  return @"iPod Touch 2G";
+    
+    if ([platform isEqualToString:@"iPod3,1"])  return @"iPod Touch 3G";
+    
+    if ([platform isEqualToString:@"iPod4,1"])  return @"iPod Touch 4G";
+    
+    if ([platform isEqualToString:@"iPod5,1"])  return @"iPod Touch 5G";
+    
+    if ([platform isEqualToString:@"iPad1,1"])  return @"iPad 1G";
+    
+    if ([platform isEqualToString:@"iPad2,1"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,2"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,3"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,4"])  return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,5"])  return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad2,6"])  return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad2,7"])  return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad3,1"])  return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,2"])  return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,3"])  return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,4"])  return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad3,5"]) return @"iPad 4";
+
+    if ([platform isEqualToString:@"iPad3,6"]) return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad4,1"]) return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,2"]) return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,3"]) return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,4"]) return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"iPad4,5"]) return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"iPad4,6"]) return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"i386"]) return @"iPhone Simulator";
+    
+    if ([platform isEqualToString:@"x86_64"]) return @"iPhone Simulator";
+    
+    return platform;
+    
+}
+
 
 @end

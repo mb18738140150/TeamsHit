@@ -14,6 +14,7 @@
 #import "CreatGroupChatRoomViewController.h"
 #import "GroupNumberDetailsViewController.h"
 #import "FriendInformationViewController.h"
+#import "GameBackImageViewController.h"
 @interface GroupDetailViewController ()<LookUserDetailDelegate>
 {
     MBProgressHUD* hud ;
@@ -36,7 +37,7 @@
 @property (nonatomic, assign)int VerificationType;
 @property (nonatomic, assign)int minCoin;
 @property (nonatomic, assign)int minGameUserCount;
-
+@property (nonatomic, copy)QuitGroupBlock myBlock;
 @property (nonatomic, copy)NSString * groupManagerID;
 
 @property (nonatomic, copy)NSString * groupMumberIDs;
@@ -86,7 +87,7 @@
         self.groupTypeLabel.text = @"吹牛";
     }else
     {
-        self.groupTypeLabel.text = @"21点";
+        self.groupTypeLabel.text = @"梦幻";
     }
     
     [self startLoadView];
@@ -106,6 +107,7 @@
 {
     __weak GroupDetailViewController * vc = self;
     CreatGroupChatRoomViewController * crearGroupVc = [[CreatGroupChatRoomViewController alloc]init];
+    crearGroupVc.addGroupMember = YES;
     crearGroupVc.targetId = self.groupMumberIDs;
     crearGroupVc.groupID = self.groupID;
     [crearGroupVc addgroupMumberAction:^{
@@ -127,7 +129,7 @@
 {
 //    currentConversation = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_GROUP
 //                                                                targetId:self.groupID];
-    [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_PRIVATE
+    [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_GROUP
                                                             targetId:self.groupID
                                                              success:^(RCConversationNotificationStatus nStatus) {
                                                                  
@@ -162,8 +164,8 @@
         ;
     } success:^(id  _Nonnull responseObject) {
         [hud hide:YES];
-        NSLog(@"PortraitUri = %@", [responseObject objectForKey:@"PortraitUri"]);
-        NSLog(@"responseObject = %@", responseObject);
+//        NSLog(@"PortraitUri = %@", [responseObject objectForKey:@"PortraitUri"]);
+//        NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
             
@@ -174,7 +176,6 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alert show];
             [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
-            
         }
         
     } failure:^(NSError * _Nonnull error) {
@@ -188,7 +189,6 @@
 
 - (void)refreshUIWith:(NSDictionary *)dic
 {
-    
     RCDGroupInfo * userInfo = [[RCDGroupInfo alloc]init];
     userInfo.groupId = [NSString stringWithFormat:@"%@", [dic objectForKey:@"GroupId"]];
     userInfo.groupName = [dic objectForKey:@"GroupName"];
@@ -205,12 +205,12 @@
     {
         userInfo.isJoin = NO;
     }
-    if ([[dic objectForKey:@"GroupType"] intValue] == 1) {
-        userInfo.GroupType = 1;
-    }else if ([[dic objectForKey:@"GroupType"] intValue] == 2)
-    {
-        userInfo.GroupType = 2;
-    }
+    userInfo.GroupType = [[dic objectForKey:@"GroupType"] intValue];
+//    if ([[dic objectForKey:@"GroupType"] intValue] == 1) {
+//    }else if ([[dic objectForKey:@"GroupType"] intValue] == 2)
+//    {
+//        userInfo.GroupType = 2;
+//    }
     if ([[dic objectForKey:@"IsDismiss"] intValue] == 1) {
         userInfo.isDismiss = @"1";
     }else
@@ -228,9 +228,9 @@
     self.GroupType = [[dic objectForKey:@"GroupType"] intValue];
     if (self.GroupType == 1) {
         self.groupTypeLabel.text = @"吹牛";
-    }else
+    }else if (self.GroupType == 2)
     {
-        self.groupTypeLabel.text = @"21点";
+        self.groupTypeLabel.text = @"梦幻";
     }
     self.groupMumberlabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"GamePeople"]];
     self.minCoinNumberLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"LeastCoins"]];
@@ -326,17 +326,17 @@
     }
     
     NSLog(@"改变房间type");
-    NSArray * typeArr = @[@"吹牛", @"21点"];
+    NSArray * typeArr = @[@"吹牛", @"梦幻"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"游戏模式" content:typeArr];
     [setTipView show];
     __weak GroupDetailViewController * weakself = self;
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
-        if ([string isEqualToString:@"21点"]) {
-            self.GroupType = 2;
+        if ([string isEqualToString:@"梦幻"]) {
+            weakself.GroupType = 2;
         }else
         {
-            self.GroupType = 1;
+            weakself.GroupType = 1;
         }
         
         hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -349,11 +349,11 @@
         [[HDNetworking sharedHDNetworking]modifyGroupType:jsonDic success:^(id  _Nonnull responseObject) {
             [hud hide:YES];
             NSLog(@"responseObject = %@", responseObject);
-            if (self.GroupType == 2) {
-                self.groupTypeLabel.text = @"21点";
+            if (weakself.GroupType == 2) {
+                weakself.groupTypeLabel.text = @"梦幻";
             }else
             {
-                self.groupTypeLabel.text = @"吹牛";
+                weakself.groupTypeLabel.text = @"吹牛";
             }
             
             RCDGroupInfo * rcGroupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:weakself.groupID];
@@ -377,10 +377,17 @@
 }
 - (IBAction)lookRuleAction:(id)sender {
     NSLog(@"查看规则");
+    if (_GroupType == 1) {
+        NSArray * typeArr = @[@"轮流叫出不超过桌面上所有骰子的个数。", @"当你认为上家加的点数太大时，就开 TA吧！", @"一点可以当其他使用，但如果有人叫 了一点后，就变成一个普通点了。"];
+        GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"吹牛游戏规则" content:typeArr isRule:YES];
+        [setTipView show];
+    }else
+    {
+        NSArray * typeArr = @[@"52张扑克随机打乱(没有大小王) 系统随机分配出牌顺序，会给每人两张底牌（只有自己看到），一张公牌各玩家共用，这三张牌将组成自己的牌。", @"按照玩家顺序依次操作，玩家有不换、换底牌、换公牌三种操作，当您觉得自己的牌满意即可选择不换，轮到下一玩家操作。如果不满意可以选择换底牌（需要扣除50碰碰币）或者换公牌（需要扣除100碰碰币）直到满意。", @"选择换牌的玩家后面的玩家都可以有一次操作机会，直到最近一次换牌玩家后面的玩家都选择不换牌，系统会进行开牌比牌，换牌扣除的碰碰币都会进入奖池，最终牌面最大的玩家将赢得奖池所有碰碰币。", @"比牌大小依据： 自己手中的两张牌加公牌一共三张\n1、豹子（AAA最大，222最小）。\n2、同花顺（AKQ最大，A23最小）。\n3、同花（AKJ最大，352最小）。\n 4、顺子（AKQ最大，234最小）。\n5、对子（AAK最大，223最小）。\n6、单张（AKJ最大，352最小）"];
+        GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"吹牛游戏规则" content:typeArr isRule:YES];
+        [setTipView show];
+    }
     
-    NSArray * typeArr = @[@"轮流叫出不超过桌面上所有骰子的个数。", @"当你认为上家加的点数太大时，就开 TA吧！", @"一点可以当其他使用，但如果有人叫 了一点后，就变成一个普通点了。"];
-    GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"吹牛游戏规则" content:typeArr isRule:YES];
-    [setTipView show];
     
 }
 - (IBAction)changeMinCoinAction:(id)sender {
@@ -432,15 +439,13 @@
     }];
 }
 - (IBAction)noticeAction:(id)sender {
-    NSLog(@"消息免打扰");
 //    UIButton * button = (UIButton *)sender;
 //    button.selected = !button.selected;
     
-    [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:ConversationType_PRIVATE
+    [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:ConversationType_GROUP
                                                             targetId:self.groupID
                                                            isBlocked:!self.noticeBT.selected
                                                              success:^(RCConversationNotificationStatus nStatus) {
-                                                                 NSLog(@"设置消息免打扰成功");
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                                      if (nStatus == DO_NOT_DISTURB) {
                                                                          NSLog(@"消息免打扰开启");
@@ -459,6 +464,16 @@
 }
 - (IBAction)quitGroupAction:(id)sender {
     NSLog(@"退出房间");
+    
+    UIWebView*webView =[[UIWebView alloc] initWithFrame:CGRectMake(10,10,200,200)];
+    
+    NSURL *targetURL =[NSURL URLWithString:@"http://developer.apple.com/iphone/library/documentation/UIKit/Reference/UIWebView_Class/UIWebView_Class.pdf"];
+    NSURLRequest*request =[NSURLRequest requestWithURL:targetURL];
+    [webView loadRequest:request];
+    
+    [self.view addSubview:webView];
+    return;
+    
     NSArray * typeArr = @[@"确定退出房间？"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"退出房间" content:typeArr];
     [setTipView show];
@@ -470,7 +485,7 @@
         NSDictionary * jsonDic = @{
                                    @"GroupId":@(self.groupID.intValue),
                                    };
-        
+        __weak GroupDetailViewController * weakSelf = self;
         [[HDNetworking sharedHDNetworking]quitGroup:jsonDic success:^(id  _Nonnull responseObject) {
             [hud hide:YES];
             NSLog(@"responseObject = %@", responseObject);
@@ -481,16 +496,19 @@
                 ;
             }];
             
-            [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_GROUP targetId:[NSString stringWithFormat:@"%@", self.groupID]];
+            [[RCIMClient sharedRCIMClient]removeConversation:ConversationType_GROUP targetId:[NSString stringWithFormat:@"%@", weakSelf.groupID]];
             [[RCDataBaseManager shareInstance] deleteGroupToDB:self.groupID];
             
+            if (weakSelf.myBlock) {
+                weakSelf.myBlock();
+            }
             
             UIViewController * viewController = [self.navigationController.viewControllers objectAtIndex:0];
             if ([viewController isKindOfClass:[FriendListViewController class]]) {
-                [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
+                [weakSelf.navigationController popToViewController:[weakSelf.navigationController.viewControllers objectAtIndex:0] animated:YES];
             }else
             {
-                [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
+                [weakSelf.navigationController popToViewController:[weakSelf.navigationController.viewControllers objectAtIndex:0] animated:YES];
             }
             
         } failure:^(NSError * _Nonnull error) {
@@ -505,7 +523,6 @@
                 NSLog(@"%@", error);
             }
         }];
-        
         
     }];
 }
@@ -567,7 +584,6 @@
         [self showNotManagerTip];
         return;
     }
-    NSLog(@"改变碰碰币");
     NSArray * typeArr = @[@"3", @"4", @"5", @"6"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"最大游戏人数" content:typeArr];
     [setTipView show];
@@ -586,7 +602,7 @@
         NSDictionary * jsonDic = @{
                                    @"GroupId":@(self.groupID.intValue),
                                    @"GamePeople":@(self.minGameUserCount)
-                                   };;
+                                   };
         
         [[HDNetworking sharedHDNetworking]modifyGamePeople:jsonDic success:^(id  _Nonnull responseObject) {
             [hud hide:YES];
@@ -606,12 +622,14 @@
             }
         }];
         
-        
     }];
     
 }
 
-
+- (IBAction)changeGameBackImageAction:(id)sender {
+    GameBackImageViewController * gameBackimageVC = [[GameBackImageViewController alloc]init];
+    [self.navigationController pushViewController:gameBackimageVC animated:YES];
+}
 
 - (BOOL)isGroupManager
 {
@@ -647,6 +665,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)quitGameRoom:(QuitGroupBlock)block
+{
+    self.myBlock = [block copy];
 }
 
 /*

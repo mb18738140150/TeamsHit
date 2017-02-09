@@ -15,5 +15,6 @@ typedef void(^AddGroupMumberBlock)();
 @property (nonatomic, copy)AddGroupMumberBlock myBlock;
 @property (nonatomic, copy)NSString * targetId;
 @property (nonatomic, copy)NSString * groupID;
+@property (nonatomic, assign)BOOL addGroupMember;
 - (void)addgroupMumberAction:(AddGroupMumberBlock)block;
 @end

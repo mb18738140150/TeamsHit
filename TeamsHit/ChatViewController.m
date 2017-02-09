@@ -55,9 +55,9 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     if (![self.targetId isEqualToString:@"200"]) {
-        [self.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"passNotes.png"] title:@"传纸条" tag:10006];
+        [self.chatSessionInputBarControl.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"passNotes.png"] title:@"传纸条" tag:10006];
     }
-    [self.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
+    [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
@@ -309,8 +309,9 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.conversationMessageCollectionView reloadData];
     });
-    
 }
+
+
 
 - (void)leftBarButtonItemPressed:(id)sender {
     if ([self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_OUTGOING ||
@@ -666,12 +667,11 @@
 {
     if ([cell.model.content isMemberOfClass:[RCTextMessage class]]) {
         RCTextMessage * textMessage = cell.model.content;
-        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , textMessage.content);
+        NSLog(@"senderUserId = %@ ** targetID = %@ ** 发送者用户id %@",cell.model.senderUserId,cell.model.targetId , cell.model.userInfo.userId);
     }else
     {
         NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , [cell.model.content class]);
     }
-    
     
 }
 - (void)didSendMessage:(NSInteger)stauts
@@ -1113,6 +1113,14 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"renameFriendName" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ClearHistoryMsg" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"renameGroupName" object:nil];
+    NSLog(@"释放了");
 }
 
 /*

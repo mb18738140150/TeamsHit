@@ -39,7 +39,7 @@
     
     self.title = @"房间成员";
     
-    self.memberTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, self.view.hd_height) style:UITableViewStylePlain];
+    self.memberTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, self.view.hd_height - 64) style:UITableViewStylePlain];
     self.memberTableView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
     self.memberTableView.delegate = self;
     self.memberTableView.dataSource = self;

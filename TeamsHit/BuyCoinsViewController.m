@@ -280,7 +280,7 @@ buyCoinsTag;
                 {
                     [[SKPaymentQueue defaultQueue] finishTransaction:tran];
                 }
-                //                [self completeTransaction:tran];
+//                                [self completeTransaction:tran];
             }
                 break;
             case SKPaymentTransactionStatePurchasing:
@@ -307,7 +307,7 @@ buyCoinsTag;
 
 - (void)verifyTransaction:(SKPaymentTransaction *)transaction
 {
-    
+    self.buyCoin = YES;
     NSURL *recepitURL = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receipt = [NSData dataWithContentsOfURL:recepitURL];
     
@@ -320,7 +320,6 @@ buyCoinsTag;
                                       @"ReceiptData": [receipt base64EncodedStringWithOptions:0]
                                       };
     
-    
     __weak BuyCoinsViewController * infoVC = self;
     NSString * url = [NSString stringWithFormat:@"%@coins/applePurchase?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     
@@ -330,8 +329,6 @@ buyCoinsTag;
         NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
-            
-            infoVC.buyCoin = YES;
             
         }else
         {
@@ -538,7 +535,6 @@ buyCoinsTag;
     self.buyCoin = YES;
     [self.navigationController pushViewController:buywebVC animated:NO];
 }
-
 
 - (BOOL)ishaveWechat
 {

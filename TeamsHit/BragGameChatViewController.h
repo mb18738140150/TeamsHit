@@ -10,4 +10,6 @@
 
 @interface BragGameChatViewController : GameChatViewController
 
+- (void)removeAllsubViews;
+
 @end

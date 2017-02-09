@@ -148,6 +148,55 @@
     return height;
     
 }
+
+//计算replyview高度
+- (float) DetailcalculateReplyHeightWithWidth:(float)sizeWidth{
+    
+    typeview = TypeReply;
+    float height = .0f;
+    
+    for (int i = 0; i < self.replyDataSource.count; i ++ ) {
+        
+        tempInt = i;
+        
+        WFReplyBody *body = (WFReplyBody *)[self.replyDataSource objectAtIndex:i];
+        
+        NSString *matchString;
+        
+        if ([body.repliedUser isEqualToString:@""]) {
+            matchString = [NSString stringWithFormat:@"%@:%@",body.replyUser,body.replyInfo];
+            
+        }else{
+            matchString = [NSString stringWithFormat:@"%@回复%@:%@",body.replyUser,body.repliedUser,body.replyInfo];
+            
+        }
+        NSArray *itemIndexs = [ILRegularExpressionManager itemIndexesWithPattern:EmotionItemPattern inString:matchString];
+        
+        NSString *newString = [matchString replaceCharactersAtIndexes:itemIndexs
+                                                           withString:PlaceHolder];
+        //存新的
+        [self.completionReplySource addObject:newString];
+        
+        [self matchString:newString fromView:typeview];
+        
+        WFTextView *_ilcoreText = [[WFTextView alloc] initWithFrame:CGRectMake(offSet_X + 8,10, sizeWidth - offSet_X - offSet_X_right - 8, 0)];
+        
+        _ilcoreText.isFold = NO;
+        _ilcoreText.isDraw = NO;
+        
+        [_ilcoreText setOldString:matchString andNewString:newString];
+        
+        height =  height + [_ilcoreText getTextHeight] + 5;
+        
+    }
+    
+    [self calculateShowImageHeight];
+    
+    return height;
+    
+}
+
+
 //图片高度
 - (void)calculateShowImageHeight{
     

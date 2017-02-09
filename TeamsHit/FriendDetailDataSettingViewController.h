@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 @class FriendInformationModel;
 
+typedef void(^ChangeDisplayName)(NSString * displayName);
+
 @interface FriendDetailDataSettingViewController : UIViewController
 
 @property (nonatomic, strong)FriendInformationModel * model;
+- (void)changeDisplayname:(ChangeDisplayName )block;
 
 @end

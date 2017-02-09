@@ -142,12 +142,12 @@
     {
         userInfo.isJoin = NO;
     }
-    if ([[dic objectForKey:@"GroupType"] intValue] == 1) {
-        userInfo.GroupType = 1;
-    }else if ([[dic objectForKey:@"GroupType"] intValue] == 2)
-    {
-        userInfo.GroupType = 2;
-    }
+    userInfo.GroupType = [[dic objectForKey:@"GroupType"] intValue];
+//    if ([[dic objectForKey:@"GroupType"] intValue] == 1) {
+//    }else if ([[dic objectForKey:@"GroupType"] intValue] == 2)
+//    {
+//        userInfo.GroupType = 2;
+//    }
     if ([[dic objectForKey:@"IsDismiss"] intValue] == 1) {
         userInfo.isDismiss = @"1";
     }else
@@ -163,9 +163,9 @@
     self.GroupType = [[dic objectForKey:@"GroupType"] intValue];
     if (self.GroupType == 1) {
         self.groupTypeLabel.text = @"吹牛";
-    }else
+    }else if (self.GroupType == 2)
     {
-        self.groupTypeLabel.text = @"21点";
+        self.groupTypeLabel.text = @"梦幻";
     }
 //    self.groupMumberlabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"GamePeople"]];
 //    self.minCoinNumberLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"LeastCoins"]];
@@ -194,7 +194,7 @@
         }
     }
     if (self.isGroupMember) {
-        [self.applyJoinIngroupBT setTitle:@"发起会话" forState:UIControlStateNormal];
+        [self.applyJoinIngroupBT setTitle:@"发起聊天" forState:UIControlStateNormal];
     }else
     {
         [self.applyJoinIngroupBT setTitle:@"申请加入房间" forState:UIControlStateNormal];
@@ -254,10 +254,7 @@
         [self.navigationController pushViewController:conversationVC animated:YES];
         
     }
-    
-    
 }
-
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {

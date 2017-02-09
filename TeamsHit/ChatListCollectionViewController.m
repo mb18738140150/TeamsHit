@@ -33,7 +33,6 @@
     
     self.view.backgroundColor = [UIColor grayColor];
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
-    self.title = @"系统消息";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
@@ -119,7 +118,72 @@
     });
 }
 
+/**
+ *  点击进入会话界面
+ *
+ *  @param conversationModelType 会话类型
+ *  @param model                 会话数据
+ *  @param indexPath             indexPath description
+ */
+-(void)onSelectedTableRow:(RCConversationModelType)conversationModelType conversationModel:(RCConversationModel *)model atIndexPath:(NSIndexPath *)indexPath
+{
+    
+    NSLog(@"点击了cell");
+    
+    if (_isClick) {
+        _isClick = NO;
+        
+        if (conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
+            
+            if (model.conversationType == 3) {
+                BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
+                _conversationVC.conversationType = model.conversationType;
+                _conversationVC.targetId = model.targetId;
+                _conversationVC.userName = model.conversationTitle;
+                _conversationVC.title = model.conversationTitle;
+                _conversationVC.conversation = model;
+                _conversationVC.unReadMessage = model.unreadMessageCount;
+                _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+                _conversationVC.enableUnreadMessageIcon=YES;
+                _conversationVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:_conversationVC animated:YES];
+            }else
+            {
+                ChatViewController *_conversationVC = [[ChatViewController alloc]init];
+                _conversationVC.conversationType = model.conversationType;
+                _conversationVC.targetId = model.targetId;
+                _conversationVC.userName = model.conversationTitle;
+                _conversationVC.title = model.conversationTitle;
+                _conversationVC.conversation = model;
+                _conversationVC.unReadMessage = model.unreadMessageCount;
+                _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+                _conversationVC.enableUnreadMessageIcon=YES;
+                
+                if (model.conversationType == ConversationType_SYSTEM) {
+                    _conversationVC.userName = @"系统消息";
+                    _conversationVC.title = @"系统消息";
+                }
+                if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
+                    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                    //                RCDAddressBookViewController *addressBookVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddressBookViewController"];
+                    //                addressBookVC.needSyncFriendList = YES;
+                    //                [self.navigationController pushViewController:addressBookVC animated:YES];
+                    return;
+                }
+                //如果是单聊，不显示发送方昵称
+                if (model.conversationType == ConversationType_PRIVATE) {
+                    _conversationVC.displayUserNameInCell = NO;
+                }
+                _conversationVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:_conversationVC animated:YES];
+            }
+            
+            
+            
+        }
+    }
 
+}
 //*********************插入自定义Cell*********************//
 
 //插入自定义会话model
@@ -149,7 +213,7 @@
             }
         }
     }
-    NSLog(@"dataSource = %d", dataSource.count);
+//    NSLog(@"dataSource = %d", dataSource.count);
     return dataSource;
 }
 
@@ -378,6 +442,56 @@
             //                                  }];
         });
     }
+}
+-(void)didTapCellPortrait:(RCConversationModel *)model
+{
+    NSLog(@"点击了cell头部");
+    
+    if (model.conversationModelType == RC_CONVERSATION_MODEL_TYPE_NORMAL) {
+        
+        
+        if (model.conversationType == 3) {
+            BragGameChatViewController * _conversationVC = [[BragGameChatViewController alloc]init];
+            _conversationVC.conversationType = model.conversationType;
+            _conversationVC.targetId = model.targetId;
+            _conversationVC.userName = model.conversationTitle;
+            _conversationVC.title = model.conversationTitle;
+            _conversationVC.conversation = model;
+            _conversationVC.unReadMessage = model.unreadMessageCount;
+            _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+            _conversationVC.enableUnreadMessageIcon=YES;
+            _conversationVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:_conversationVC animated:YES];
+        }else
+        {
+            ChatViewController *_conversationVC = [[ChatViewController alloc]init];
+            _conversationVC.conversationType = model.conversationType;
+            _conversationVC.targetId = model.targetId;
+            _conversationVC.userName = model.conversationTitle;
+            _conversationVC.title = model.conversationTitle;
+            _conversationVC.conversation = model;
+            _conversationVC.unReadMessage = model.unreadMessageCount;
+            _conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+            _conversationVC.enableUnreadMessageIcon=YES;
+            if (model.conversationType == ConversationType_SYSTEM) {
+                _conversationVC.userName = @"系统消息";
+                _conversationVC.title = @"系统消息";
+            }
+            if ([model.objectName isEqualToString:@"RC:ContactNtf"]) {
+                UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                //            RCDAddressBookViewController *addressBookVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"RCDAddressBookViewController"];
+                //            addressBookVC.needSyncFriendList = YES;
+                //            [self.navigationController pushViewController:addressBookVC animated:YES];
+                return;
+            }
+            _conversationVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:_conversationVC animated:YES];
+            
+        }
+        
+    }
+    
+    
 }
 
 

@@ -230,8 +230,8 @@
     } failure:^(NSError * _Nonnull error) {
         [hud hide:YES];
         NSLog(@"%@", error);
-        self.searchTypeView.hidden = YES;
-        self.imageView.hidden = NO;
+        searchVC.searchTypeView.hidden = YES;
+        searchVC.imageView.hidden = NO;
     }];
     
 }
@@ -292,8 +292,8 @@
     } failure:^(NSError * _Nonnull error) {
         [hud hide:YES];
         NSLog(@"%@", error);
-        self.searchTypeView.hidden = YES;
-        self.imageView.hidden = NO;
+        searchVC.searchTypeView.hidden = YES;
+        searchVC.imageView.hidden = NO;
     }];
     
 }

@@ -146,12 +146,22 @@
     
     for (int i = 1; i <= 31; i++)
     {
-        [DaysArray addObject:[NSString stringWithFormat:@"%d",i]];
+        if (i < 10) {
+            [DaysArray addObject:[NSString stringWithFormat:@"0%d",i]];
+        }else
+        {
+            [DaysArray addObject:[NSString stringWithFormat:@"%d",i]];
+        }
         
     }
     for (int i = 1; i <day+1; i++)
     {
-        [DaysMutableArray addObject:[NSString stringWithFormat:@"%d",i]];
+        if (i < 10) {
+            [DaysArray addObject:[NSString stringWithFormat:@"0%d",i]];
+        }else
+        {
+            [DaysArray addObject:[NSString stringWithFormat:@"%d",i]];
+        }
         
     }
     

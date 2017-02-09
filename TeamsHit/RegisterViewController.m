@@ -79,6 +79,10 @@
 
 - (void)backAction:(UIButton *)button
 {
+    if (self.codeTimer) {
+        [self.codeTimer invalidate];
+        self.codeTimer = nil;
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -185,6 +189,8 @@
 - (void)registerAction:(UIButton *)button
 {
 //    [self registerAccount];
+//    CompleteInformationViewController * completeVc = [[CompleteInformationViewController alloc]initWithNibName:@"CompleteInformationViewController" bundle:nil];
+//    [self.navigationController pushViewController:completeVc animated:YES];
     
     if (self.verifyCodeTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入验证码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -227,6 +233,9 @@
     [[HDNetworking sharedHDNetworking] POST:@"user/register" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:@"注册成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:.8];
         [self pushCompleteVC];
         NSLog(@"**%@", responseObject);
     } failure:^(NSError * _Nonnull error) {

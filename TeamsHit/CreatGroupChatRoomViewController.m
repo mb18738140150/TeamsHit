@@ -106,7 +106,7 @@
 #pragma mark - 确认创建
 - (void)sureAction:(UIButton *)button
 {
-    if (self.groupMumberIDsArr.count > 1) {
+    if (self.addGroupMember) {
          RCDGroupInfo * rcGroupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.groupID];
         
         NSString * userIdStr = @"";
@@ -152,7 +152,6 @@
                 
             }else
             {
-                
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
                 [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
@@ -166,28 +165,24 @@
     }else
     {
         
-        if (self.seleteUsers.count > 1) {
-            NSString * userIdStr = @"";
-            for (int i = 0; i < self.seleteUsers.count; i++) {
-                RCDUserInfo * userInfo = [self.seleteUsers objectAtIndex:i];
-                if (i == 0) {
-                    userIdStr = [[RCIM sharedRCIM].currentUserInfo.userId stringByAppendingFormat:@",%@", userInfo.userId];
-                }else
-                {
-                    userIdStr = [userIdStr stringByAppendingFormat:@",%@", userInfo.userId];
-                }
+        NSString * userIdStr = @"";
+        for (int i = 0; i < self.seleteUsers.count; i++) {
+            RCDUserInfo * userInfo = [self.seleteUsers objectAtIndex:i];
+            if (i == 0) {
+                userIdStr = [[RCIM sharedRCIM].currentUserInfo.userId stringByAppendingFormat:@",%@", userInfo.userId];
+            }else
+            {
+                userIdStr = [userIdStr stringByAppendingFormat:@",%@", userInfo.userId];
             }
-            
-            CreatGroupViewController * crearVC = [[CreatGroupViewController alloc]init];
-            crearVC.userIdArrayStr = userIdStr;
-            self.isCreatGroupVC = YES;
-            [self.navigationController pushViewController:crearVC animated:YES];
-            
-        }else
-        {
-            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"至少添加两个好友才能创建房间" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            [alert show];
         }
+        if (userIdStr.length == 0) {
+            userIdStr = [RCIM sharedRCIM].currentUserInfo.userId;
+        }
+        CreatGroupViewController * crearVC = [[CreatGroupViewController alloc]init];
+        crearVC.userIdArrayStr = userIdStr;
+        self.isCreatGroupVC = YES;
+        [self.navigationController pushViewController:crearVC animated:YES];
+        
     }
     
 }

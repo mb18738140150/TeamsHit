@@ -115,20 +115,33 @@
 }
 -(void)startLoadView
 {
+    __weak ChatSettingViewController *weakSelf = self;
     currentConversation = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_PRIVATE
                                                                 targetId:self.userId];
     [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_PRIVATE
                                                             targetId:self.userId
                                                              success:^(RCConversationNotificationStatus nStatus) {
                                                                 
-                                                                 if (nStatus == DO_NOT_DISTURB) {
-                                                                     NSLog(@"消息免打扰开启");
-                                                                     self.messageDisturbbt.selected = YES;
+                                                                 BOOL enableNotification = YES;
+                                                                 if (nStatus == NOTIFY) {
+                                                                     enableNotification = NO;
+                                                                     NSLog(@"消息免打扰未开启");
                                                                  }else
                                                                  {
-                                                                      NSLog(@"消息免打扰开启未开启");
-                                                                     self.messageDisturbbt.selected = NO;
+                                                                     NSLog(@"消息免打扰开启");
                                                                  }
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     weakSelf.messageDisturbbt.selected = enableNotification;
+                                                                 });
+                                                                 
+//                                                                 if (nStatus == DO_NOT_DISTURB) {
+//                                                                     NSLog(@"消息免打扰开启");
+//                                                                     self.messageDisturbbt.selected = YES;
+//                                                                 }else
+//                                                                 {
+//                                                                      NSLog(@"消息免打扰未开启");
+//                                                                     self.messageDisturbbt.selected = NO;
+//                                                                 }
                                                              }
                                                                error:^(RCErrorCode status){
                                                                    
@@ -150,21 +163,36 @@
     
 }
 - (IBAction)messageDisturbAction:(id)sender {
-    
+    __weak ChatSettingViewController *weakSelf = self;
     [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:ConversationType_PRIVATE
                                                             targetId:self.userId
                                                            isBlocked:!self.messageDisturbbt.selected
                                                              success:^(RCConversationNotificationStatus nStatus) {
-                                                                 NSLog(@"设置消息免打扰成功");
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     if (nStatus == DO_NOT_DISTURB) {
-                                                                         NSLog(@"消息免打扰开启");
-                                                                         self.messageDisturbbt.selected = YES;
+                                                                     BOOL enableNotification = YES;
+                                                                     
+                                                                     if (nStatus == NOTIFY) {
+                                                                         enableNotification = NO;
+                                                                         NSLog(@"消息免打扰未开启");
                                                                      }else
                                                                      {
-                                                                         NSLog(@"消息免打扰未开启");
-                                                                         self.messageDisturbbt.selected = NO;
+                                                                         NSLog(@"消息免打扰开启");
                                                                      }
+                                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                                         weakSelf.messageDisturbbt.selected = enableNotification;
+                                                                     });
+                                                                     
+                                                                     
+//                                                                     if (nStatus == DO_NOT_DISTURB) {
+//                                                                         NSLog(@"消息免打扰开启");
+//                                                                         [self startLoadView];
+//                                                                         self.messageDisturbbt.selected = YES;
+//                                                                     }else
+//                                                                     {
+//                                                                         NSLog(@"消息免打扰未开启");
+//                                                                         [self startLoadView];
+//                                                                         self.messageDisturbbt.selected = NO;
+//                                                                     }
                                                                  });
                                                                  
                                                              } error:^(RCErrorCode status) {

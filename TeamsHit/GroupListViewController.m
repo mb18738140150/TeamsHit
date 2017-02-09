@@ -11,6 +11,7 @@
 #import "SearchGroupListModel.h"
 #import "GameChatViewController.h"
 #import "BragGameChatViewController.h"
+#import "FantasyGameChatViewController.h"
 
 #define CELL_IDENTIFIRE @"GroupCellIdentifire"
 
@@ -20,7 +21,7 @@
 }
 @property (nonatomic, strong)NSMutableArray * dataSource;
 @property (nonatomic, strong)NSMutableArray * bragArray;
-@property (nonatomic, strong)NSMutableArray * twentyoneArray;
+@property (nonatomic, strong)NSMutableArray * fantasyArray;
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)NSMutableArray * keyArray;
 @property (nonatomic, assign)BOOL isSyncGroup;
@@ -46,7 +47,7 @@
 
     self.dataSource = [NSMutableArray array];
     self.bragArray = [NSMutableArray array];
-    self.twentyoneArray = [NSMutableArray array];
+    self.fantasyArray = [NSMutableArray array];
     self.keyArray = [NSMutableArray array];
     
     [self getAllData];
@@ -83,9 +84,9 @@
             if (groupInfo.isDismiss.intValue == 0) {
                 if (groupInfo.GroupType == 1) {
                     [self.bragArray addObject:groupInfo];
-                }else
+                }else if (groupInfo.GroupType == 2)
                 {
-                    [self.twentyoneArray addObject:groupInfo];
+                    [self.fantasyArray addObject:groupInfo];
                 }
             }
         }
@@ -94,9 +95,9 @@
         [self.dataSource addObject:self.bragArray];
         [self.keyArray addObject:@"吹牛"];
     }
-    if (self.twentyoneArray.count != 0) {
-//        [self.dataSource addObject:self.twentyoneArray];
-//        [self.keyArray addObject:@"21点"];
+    if (self.fantasyArray.count != 0) {
+        [self.dataSource addObject:self.fantasyArray];
+        [self.keyArray addObject:@"梦幻"];
     }
     if ([alldataArr count] == 0 && _isSyncGroup == NO) {
         
@@ -120,7 +121,7 @@
         return self.bragArray.count;
     }else
     {
-        return 0;
+        return self.fantasyArray.count;
     }
 }
 
@@ -155,19 +156,43 @@
     groupInfo.portraitUri = group.portraitUri;
     [[RCIM sharedRCIM]refreshGroupInfoCache:groupInfo withGroupId:groupInfo.groupId];
     
+    if (group.GroupType == 1) {
+        [self pushBragGameView:group];
+    }else if (group.GroupType == 2)
+    {
+        [self pushFantasyGameView:group];
+    }
     
+}
+
+- (void)pushBragGameView:(RCDGroupInfo *)group
+{
     BragGameChatViewController * conversationVC = [[BragGameChatViewController alloc]init];
     conversationVC.conversationType = ConversationType_GROUP;
     conversationVC.targetId = group.groupId;
-//    _conversationVC.userName = group.groupName;
+    //    _conversationVC.userName = group.groupName;
     conversationVC.title = group.groupName;
-//    _conversationVC.conversation = model;
-//    _conversationVC.unReadMessage = model.unreadMessageCount;
+    //    _conversationVC.conversation = model;
+    //    _conversationVC.unReadMessage = model.unreadMessageCount;
     conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
     conversationVC.enableUnreadMessageIcon=YES;
     conversationVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:conversationVC animated:YES];
-    
+}
+
+- (void)pushFantasyGameView:(RCDGroupInfo *)group
+{
+    FantasyGameChatViewController * conversationVC = [[FantasyGameChatViewController alloc]init];
+    conversationVC.conversationType = ConversationType_GROUP;
+    conversationVC.targetId = group.groupId;
+    //    _conversationVC.userName = group.groupName;
+    conversationVC.title = group.groupName;
+    //    _conversationVC.conversation = model;
+    //    _conversationVC.unReadMessage = model.unreadMessageCount;
+    conversationVC.enableNewComingMessageIcon=YES;//开启消息提醒
+    conversationVC.enableUnreadMessageIcon=YES;
+    conversationVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:conversationVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

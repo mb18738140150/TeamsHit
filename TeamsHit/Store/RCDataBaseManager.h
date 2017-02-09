@@ -99,4 +99,10 @@
 
 -(NSArray *) getAllNewFriendRequests;
 
+
+// 游戏背景
+- (void)insertGamebackImage:(RCGroup *)groupInfo userID:(NSString *)userID backImageName:(NSString *)imageName;
+- (NSString *)getGameBackImagenameWith:(NSString *)groupId userID:(NSString *)userID;
+
+
 @end

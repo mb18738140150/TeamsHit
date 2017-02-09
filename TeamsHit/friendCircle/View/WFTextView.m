@@ -78,7 +78,6 @@
     [self cookEmotionString];
 }
 
-
 #pragma mark -
 - (void)cookEmotionString{
     
@@ -134,7 +133,6 @@
         NSString *str = [[[_attributedData objectAtIndex:i] allKeys] objectAtIndex:0];
         
         [attrString addAttribute:(id)kCTForegroundColorAttributeName value:(id)(_textColor.CGColor) range:NSRangeFromString(str)];
-        
     }
     
     for(NSInteger i = 0; i < [ranges count]; i++){
@@ -277,7 +275,6 @@ void Draw_Emoji_For_Line(CGContextRef context, CTLineRef line, id owner, CGPoint
         }
     }
 }
-
 
 - (float)getTextHeight{
     
@@ -468,7 +465,6 @@ void Draw_Emoji_For_Line(CGContextRef context, CTLineRef line, id owner, CGPoint
             
             return YES;
         }
-        
     }
     
     return NO;

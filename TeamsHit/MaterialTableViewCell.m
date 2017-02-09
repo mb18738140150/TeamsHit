@@ -24,28 +24,28 @@
 
 - (void)createSubView:(CGRect)frame
 {
-    if (!_detailImage) {
-        
-        self.detailImage = [[UIImageView alloc]initWithFrame:CGRectMake(frame.size.width / 2 - 60, 5, 120, 120)];
-        [self.contentView addSubview:self.detailImage];
-        
-        self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.deleteButton.frame = CGRectMake(frame.size.width - 50, 10, 20, 20);
-        [self.deleteButton setImage:[[UIImage imageNamed:@"imgErro"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-        [self.contentView addSubview:self.deleteButton];
-        [self.deleteButton addTarget:self action:@selector(deletaItemAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 25, self.hd_width - 20, self.hd_height - 30)];
-        self.titleLabel.numberOfLines = 0;
-        self.titleLabel.font = [UIFont systemFontOfSize:16];
-        [self.contentView addSubview:self.titleLabel];
-        
-    }
+    [self.contentView removeAllSubviews];
+    
+    self.detailImage = [[UIImageView alloc]initWithFrame:CGRectMake(frame.size.width / 2 - 60, 5, 120, 120)];
+    [self.contentView addSubview:self.detailImage];
+    
+    self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.deleteButton.frame = CGRectMake(frame.size.width - 50, 10, 30, 30);
+    [self.deleteButton setImage:[[UIImage imageNamed:@"imgErro"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    self.deleteButton.imageEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    [self.contentView addSubview:self.deleteButton];
+    [self.deleteButton addTarget:self action:@selector(deletaItemAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 25, self.hd_width - 20, self.hd_height - 30)];
+    self.titleLabel.numberOfLines = 0;
+    self.titleLabel.font = [UIFont systemFontOfSize:16];
+    [self.contentView addSubview:self.titleLabel];
+    
 }
 
 - (void)setMaterialmodel:(MaterialDataModel *)materialmodel
 {
-    self.detailImage.image = materialmodel.image;
+    _detailImage.image = materialmodel.dealImage;
     if (materialmodel.image.size.width > materialmodel.image.size.height) {
         if (materialmodel.image.size.width > 120) {
             self.detailImage.frame = CGRectMake(0, 0, IMAGEWIDTH, IMAGEWIDTH *materialmodel.image.size.height / materialmodel.image.size.width );

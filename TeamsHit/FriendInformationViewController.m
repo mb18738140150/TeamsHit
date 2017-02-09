@@ -43,13 +43,7 @@
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *viewHeight;
 
-
-
-
-
-
-
-
+@property(nonatomic, copy)ChangeDisplayNamedetail myBlock;
 @property (nonatomic, assign)BOOL ishavePhonenumber;
 @property (nonatomic, assign)BOOL haveReload;
 
@@ -111,7 +105,22 @@
 {
     FriendDetailDataSettingViewController * fvc = [[FriendDetailDataSettingViewController alloc]initWithNibName:@"FriendDetailDataSettingViewController" bundle:nil];
     fvc.model = self.model;
+    __weak FriendInformationViewController * weakSelf = self;
+    [fvc changeDisplayname:^(NSString *displayName) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.model.displayName = displayName;
+            weakSelf.nickNameLabel.text = displayName;
+        });
+        if (weakSelf.myBlock) {
+            weakSelf.myBlock(displayName);
+        }
+    }];
     [self.navigationController pushViewController:fvc animated:YES];
+}
+
+- (void)changeDisplayname:(ChangeDisplayNamedetail)block
+{
+    self.myBlock = [block copy];
 }
 
 - (void)refreshData
@@ -215,7 +224,8 @@
             chatVc.targetId = self.targetId;
         }
         chatVc.title = self.model.displayName;
-        chatVc.needPopToRootView = YES;
+        chatVc.enableNewComingMessageIcon=YES;//开启消息提醒
+        chatVc.enableUnreadMessageIcon=YES;
         [self.navigationController pushViewController:chatVc animated:YES];
     }else
     {
@@ -286,26 +296,26 @@
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
             
-            self.haveReload = YES;
-            self.model = [[FriendInformationModel alloc]initWithDictionery:responseObject];
+            chatVC.haveReload = YES;
+            chatVC.model = [[FriendInformationModel alloc]initWithDictionery:responseObject];
             
-            RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
-            userinfo.name = self.model.nickName;
-            userinfo.portraitUri = self.model.iconUrl;
-            userinfo.displayName = self.model.displayName;
+            RCDUserInfo * userinfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", chatVC.model.userId]];
+            userinfo.name = chatVC.model.nickName;
+            userinfo.portraitUri = chatVC.model.iconUrl;
+            userinfo.displayName = chatVC.model.displayName;
             [[RCDataBaseManager shareInstance]insertFriendToDB:userinfo];
             
-            RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
-            user.portraitUri = self.model.iconUrl;
-            if (self.model.displayName.length != 0) {
-                user.name = self.model.displayName;
+            RCUserInfo * user = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", chatVC.model.userId]];
+            user.portraitUri = chatVC.model.iconUrl;
+            if (chatVC.model.displayName.length != 0) {
+                user.name = chatVC.model.displayName;
             }else
             {
-                user.name = self.model.nickName;
+                user.name = chatVC.model.nickName;
             }
             [[RCDataBaseManager shareInstance]insertUserToDB:user];
             
-            [self refreshData];
+            [chatVC refreshData];
         }else
         {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

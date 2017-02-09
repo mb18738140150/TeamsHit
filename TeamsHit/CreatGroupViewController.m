@@ -128,16 +128,18 @@
     [self.groupNameTF resignFirstResponder];
     [self.groupIntroduceTF resignFirstResponder];
     NSLog(@"选择游戏类型");
-    NSArray * typeArr = @[@"吹牛", @"21点"];
+    NSArray * typeArr = @[@"吹牛", @"梦幻"];
     GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"游戏模式" content:typeArr];
     [setTipView show];
     [setTipView getPickerData:^(NSString *string) {
         NSLog(@"%@", string);
-        if ([string isEqualToString:@"21点"]) {
+        if ([string isEqualToString:@"梦幻"]) {
             self.GroupType = 2;
+            self.groupTypeLB.text = @"梦幻";
         }else
         {
             self.GroupType = 1;
+            self.groupTypeLB.text = @"吹牛";
         }
     }];
     
@@ -275,6 +277,8 @@
             chatVc.targetId = [NSString stringWithFormat:@"%@", [responseObject objectForKey:@"GroupId"]];
             chatVc.title = self.groupNameTF.text;
             chatVc.needPopToRootView = YES;
+            chatVc.enableNewComingMessageIcon=YES;//开启消息提醒
+            chatVc.enableUnreadMessageIcon=YES;
             [self.navigationController pushViewController:chatVc animated:YES];
             
         }else

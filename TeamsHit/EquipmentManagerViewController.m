@@ -17,6 +17,9 @@
 
 
 @interface EquipmentManagerViewController ()<UITableViewDelegate, UITableViewDataSource>
+{
+    MBProgressHUD* hud ;
+}
 @property (strong, nonatomic) IBOutlet UIView *addNewEquipmentView;
 @property (strong, nonatomic) IBOutlet UITableView *equipmentTableView;
 @property (nonatomic, strong)NSMutableArray * equipmentArray;
@@ -45,8 +48,8 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     [self.equipmentTableView registerClass:[EquipmentTableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIRE];
-    self.equipmentTableView.bounces = NO;
-    
+//    self.equipmentTableView.bounces = NO;
+    self.equipmentTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshNewData)];
     
     UITapGestureRecognizer * equipmentTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(equipmentAction:)];
     [self.addNewEquipmentView addGestureRecognizer:equipmentTap];
@@ -60,15 +63,21 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self getDeviceData];
+}
 - (void)getDeviceData
 {
-    
+//    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    [hud show:YES];
     NSString * url = [NSString stringWithFormat:@"%@userinfo/getDeviceList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     
     __weak EquipmentManagerViewController * equipmentVC = self;
     
     [[HDNetworking sharedHDNetworking]GET:url parameters:nil success:^(id  _Nonnull responseObject) {
+//        [hud hide:YES];
+        [equipmentVC.equipmentTableView.mj_header endRefreshing];
         NSLog(@"responseObject = %@", responseObject);
         int command = [[responseObject objectForKey:@"Command"] intValue];
         int code = [[responseObject objectForKey:@"Code"] intValue];
@@ -84,7 +93,7 @@
                 EquipmentModel * model = [[EquipmentModel alloc]initWithDictionary:dic];
                 [equipmentVC.equipmentArray addObject:model];
             }
-            [self.equipmentTableView reloadData];
+            [equipmentVC.equipmentTableView reloadData];
         }else
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -93,8 +102,14 @@
         }
         
     } failure:^(NSError * _Nonnull error) {
-        ;
+        [hud hide:YES];
+        [equipmentVC.equipmentTableView.mj_header endRefreshing];
     }];
+}
+
+- (void)refreshNewData
+{
+    [self getDeviceData];
 }
 
 - (void)equipmentAction:(UITapGestureRecognizer *)sender

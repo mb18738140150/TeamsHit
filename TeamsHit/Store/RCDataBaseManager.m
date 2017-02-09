@@ -21,6 +21,7 @@ static NSString * const blackTableName = @"BLACKTABLE";
 static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
 static NSString * const friendCircleMessageTableName = @"FRIENDCIRCLEMESSAGETABLE";
 static NSString * const NewFriendRequestTableName = @"NEWFRINDREQUESTTABLE";
+static NSString * const GameBackImageTableName = @"GAMEBACKIMAGETABLE";
 
 + (RCDataBaseManager*)shareInstance
 {
@@ -83,6 +84,12 @@ static NSString * const NewFriendRequestTableName = @"NEWFRINDREQUESTTABLE";
             NSString *createTableSQL = @"CREATE TABLE NEWFRINDREQUESTTABLE (id integer PRIMARY KEY autoincrement, userid text,name text, portraitUri text)";
             [db executeUpdate:createTableSQL];
             NSString *createIndexSQL=@"CREATE unique INDEX idx_userid ON NEWFRINDREQUESTTABLE(userid);";
+            [db executeUpdate:createIndexSQL];
+        }
+        if (![DBHelper isTableOK: GameBackImageTableName withDB:db]) {
+            NSString *createTableSQL = @"CREATE TABLE GAMEBACKIMAGETABLE (id integer PRIMARY KEY autoincrement, groupid text, userid text,name text)";
+            [db executeUpdate:createTableSQL];
+            NSString *createIndexSQL=@"CREATE unique INDEX idx_userid ON GAMEBACKIMAGETABLE(groupid，userid);";
             [db executeUpdate:createIndexSQL];
         }
     }];
@@ -586,6 +593,40 @@ static NSString * const NewFriendRequestTableName = @"NEWFRINDREQUESTTABLE";
         [rs close];
     }];
     return allBlackList;
+}
+
+// game背景图
+- (void)insertGamebackImage:(RCGroup *)groupInfo  userID:(NSString *)userID backImageName:(NSString *)imageName;
+{
+    if(groupInfo == nil || [groupInfo.groupId length]<1)
+        return;
+    
+    NSString *insertSql = @"REPLACE INTO GAMEBACKIMAGETABLE (groupId,userid,name) VALUES (?,?,?)";
+    FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
+    if (queue==nil) {
+        return;
+    }
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:insertSql,groupInfo.groupId,userID,imageName];
+    }];
+}
+- (NSString *)getGameBackImagenameWith:(NSString *)groupId userID:(NSString *)userID
+{
+    __block NSString * backImageName;
+    FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
+    if (queue==nil) {
+        return nil;
+    }
+    [queue inDatabase:^(FMDatabase *db) {
+        FMResultSet *rs = [db executeQuery:@"SELECT * FROM GAMEBACKIMAGETABLE where groupId = ?",groupId];
+        while ([rs next]) {
+            if ([[rs stringForColumn:@"userid"] isEqualToString:userID]) {
+                backImageName = [rs stringForColumn:@"name"];
+            }
+        }
+        [rs close];
+    }];
+    return backImageName;
 }
 
 @end

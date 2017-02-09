@@ -30,6 +30,7 @@
 @property (nonatomic, copy)NSString * finishDicePoint;// 游戏结束被叫的骰子点数
 @property (nonatomic, assign)BOOL isHavoOnePoint;// 1点是否被叫过
 - (void)begainState;
+- (void)removeALLproperty;
 
 - (void)cratGameUserInformation:(NSArray *)userInfoArr withDic:(NSDictionary *)dic;
 - (void)FirstCallDicePointUser:(NSString *)firstuserId;

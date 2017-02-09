@@ -37,16 +37,16 @@
     self.timeLabel.textColor = MAINCOLOR;
     self.timeLabel.font = [UIFont systemFontOfSize:19];
     self.timeLabel.textAlignment = 1;
-    self.timeLabel.text = @"30";
+    self.timeLabel.text = @"00";
     [self addSubview:self.timeLabel];
     
-//    self.view1 = [[UILabel alloc]initWithFrame:CGRectMake(12 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
-//    self.view1.backgroundColor = MAINCOLOR;
-//    [self addSubview:self.view1];
-//    
-//    self.view2 = [[UILabel alloc]initWithFrame:CGRectMake(29 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
-//    self.view2.backgroundColor = MAINCOLOR;
-//    [self addSubview:self.view2];
+    self.view1 = [[UILabel alloc]initWithFrame:CGRectMake(18 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
+    self.view1.backgroundColor = MAINCOLOR;
+    [self addSubview:self.view1];
+    
+    self.view2 = [[UILabel alloc]initWithFrame:CGRectMake(35 - LEFTSPACE, 56 - TOP_SPACE, 13, 1)];
+    self.view2.backgroundColor = MAINCOLOR;
+    [self addSubview:self.view2];
     
     self.typeLabel = [[UILabel alloc]initWithFrame:CGRectMake(13 - LEFTSPACE, 32 - TOP_SPACE, 100, 16)];
     self.typeLabel.textColor = MAINCOLOR;
@@ -61,6 +61,7 @@
     self.titleLabel.textAlignment = 1;
     self.titleLabel.font = [UIFont systemFontOfSize:17];
     self.titleLabel.text = title;
+    self.timeLabel.hidden = YES;
     [self addSubview:self.titleLabel];
     self.titleLabel.hd_centerX = self.hd_centerX- LEFTSPACE;
     
@@ -79,6 +80,8 @@
     if (screenWidth > 320) {
         self.timeLB.hd_x = 13 - LEFTSPACE - TOP_SPACE;
         self.timeLabel.hd_x = 13 - LEFTSPACE - TOP_SPACE;
+        self.view1.hd_x = 18 - LEFTSPACE - TOP_SPACE;
+        self.view2.hd_x = 35 - LEFTSPACE - TOP_SPACE;
 //        self.setUpBT.hd_x = self.hd_width - 38 - LEFTSPACE - TOP_SPACE;
     }
     

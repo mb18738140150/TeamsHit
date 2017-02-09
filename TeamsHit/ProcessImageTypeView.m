@@ -60,7 +60,7 @@
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
     
-    self.typeCollection = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, (self.hd_width - 64) / 5 + 10) collectionViewLayout:layout];
+    self.typeCollection = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, 60) collectionViewLayout:layout];
     self.typeCollection.delegate = self;
     self.typeCollection.dataSource = self;
     

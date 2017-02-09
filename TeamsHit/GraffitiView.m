@@ -95,7 +95,6 @@ static CGSize minSize1 = {40, 40};
         //绘画
         _drawItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"ico_scrawl_02_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(draw)];
         
-        
         //擦除
         _eraserItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"ico_eraser_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(eraser)];
         
@@ -117,7 +116,6 @@ static CGSize minSize1 = {40, 40};
     }
     return _toolBar;
 }
-
 
 
 - (CGSize)getImageSizeForPreview:(UIImage *)image
@@ -263,7 +261,7 @@ static CGSize minSize1 = {40, 40};
         self.imageView.frame = rect;
         self.drawer.frame = rect;
         return viewImage;
-
+        
     }else
     {
         UIGraphicsBeginImageContext(_drawer.bounds.size);

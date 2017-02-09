@@ -25,6 +25,11 @@
 
 + (UIImage *)ditherImage:(UIImage *)image;
 - (UIImage *)ditherBlackWhite:(UIImage *)image;
-+(UIImage *)getDefault:(UIImage *)image;
+//+(UIImage *)getDefault:(UIImage *)image;
+
++ (UIImage *)erzhiBMPImage:(UIImage *)image;
+
 + (UIImage*)imageByScalingAndCroppingForSize:(UIImage *)image;
+
++ (UIImage *)tailorborderImage:(UIImage *)image;
 @end

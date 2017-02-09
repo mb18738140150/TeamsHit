@@ -10,12 +10,16 @@
 #import <WebKit/WebKit.h>
 #import "WXApi.h"
 #import "WXApiManager.h"
-
+#import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 @interface StoreViewController ()<WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, WXApiManagerDelegate>
-
+{
+    MBProgressHUD * hud;
+}
 @property (nonatomic, strong)WKWebView *webView;
 @property (nonatomic, strong)UIProgressView * progressView;
 @property (nonatomic, copy)NSString * orderId;
+@property (nonatomic, assign)int canusecoin;
 @end
 
 @implementation StoreViewController
@@ -61,7 +65,20 @@
     [config.userContentController addScriptMessageHandler:self name:@"AppModel"];
     
     
-    
+    if ([self isChinaMobile]) {
+        NSLog(@"是中国运营商");
+        self.canusecoin = 1;
+    }else
+    {
+        if ([self ishaveWechat]) {
+            NSLog(@"不是中国运营商，但是安装有微信");
+            self.canusecoin = 1;
+        }else
+        {
+            NSLog(@"不是中国运营商，也没有安装微信");
+            self.canusecoin = 0;
+        }
+    }
     
     // 1.创建webview，并设置大小，"20"为状态栏高度
     self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64) configuration:config];
@@ -73,7 +90,9 @@
                       options:NSKeyValueObservingOptionNew
                       context:nil];
     
-    NSString * urlStr = [NSString stringWithFormat:@"http://www.wap.mstching.com/account/applogin?username=%@&password=%@&backurl=/?from=app",[[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"], [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"]];
+    NSString * urlStr = [NSString stringWithFormat:@"http://www.wap.mstching.com/account/applogin?username=%@&password=%@&backurl=/?from=app%%26canusecoin=%d",[[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"], [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"], self.canusecoin];
+    
+    NSLog(@"%@", urlStr);
     
 //    WKWebViewConfiguration
 //    WKUserContentController
@@ -89,6 +108,9 @@
     self.progressView.tintColor = MAIN_COLOR;
     self.progressView.trackTintColor = [UIColor whiteColor];
     [self.view addSubview:self.progressView];
+    
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
     
 }
 
@@ -218,8 +240,12 @@
 // 导航失败时会回调
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"%s", __FUNCTION__);
+    [hud hide:YES];
 }
-
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation
+{
+    [hud hide:YES];
+}
 // 页面内容到达main frame时回调
 - (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation {
     NSLog(@"%s", __FUNCTION__);
@@ -271,6 +297,7 @@
 {
 //    NSLog(@"****%f", _webView.estimatedProgress);;
     if (object == self.webView && [keyPath isEqualToString:@"estimatedProgress"]) {
+        [hud hide:YES];
         CGFloat newprogress = [[change objectForKey:NSKeyValueChangeNewKey] doubleValue];
         if (newprogress == 1) {
             self.progressView.hidden = YES;
@@ -342,6 +369,28 @@
     }
 }
 
+- (BOOL)ishaveWechat
+{
+    if ([WXApi isWXAppInstalled]) {
+        return YES;
+    }else
+    {
+        return NO;
+    }
+}
+
+- (BOOL)isChinaMobile
+{
+    CTTelephonyNetworkInfo * info = [[CTTelephonyNetworkInfo alloc]init];
+    CTCarrier * carrier = [info subscriberCellularProvider];
+    NSString * mcc = [carrier mobileCountryCode];
+    if ([mcc isEqualToString:@"460"]) {
+        return YES;
+    }else
+    {
+        return NO;
+    }
+}
 - (void)dealloc {
     [self.webView removeObserver:self forKeyPath:@"estimatedProgress"];
 }

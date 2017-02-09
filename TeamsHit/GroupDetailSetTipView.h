@@ -18,6 +18,7 @@ typedef void(^GroupDetailPickerBlock)(NSString * string);
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content isRule:(BOOL)isRule ishaveQuit:(BOOL)ishaveQuit;
 
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title quit:(BOOL)quit;
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title message:(NSString *)content;
 
 - (void)show;
 

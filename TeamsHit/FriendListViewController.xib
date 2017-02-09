@@ -10,7 +10,6 @@
             <connections>
                 <outlet property="friendSearcgBar" destination="hMd-Dd-3OC" id="3JB-ER-zX1"/>
                 <outlet property="friendsTabelView" destination="4h2-Ny-1Ws" id="EbP-ee-to4"/>
-                <outlet property="searchFriendsBar" destination="hMd-Dd-3OC" id="TyU-Ns-kZW"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

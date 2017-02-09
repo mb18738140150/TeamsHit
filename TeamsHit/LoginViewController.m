@@ -29,6 +29,8 @@
 
 @property (nonatomic, strong)NSTimer * overTimer;
 @property (nonatomic, assign)BOOL noOverTime;
+@property (nonatomic, strong)NSTimer * timer;
+
 @end
 
 @implementation LoginViewController
@@ -61,7 +63,7 @@
     UINavigationBar * bar = self.navigationController.navigationBar;
     [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
-    
+    self.noOverTime = NO;
     // 自动登录
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"]) {
         self.accountNumber.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
@@ -184,22 +186,24 @@
     hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"登录中...";
     [hud show:YES];
+    __weak LoginViewController * weakself= self;
     [[HDNetworking sharedHDNetworking] POST:@"user/login" parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
         ;
     } success:^(id  _Nonnull responseObject) {
         
         NSLog(@"**%@", responseObject);
         
-        if (!self.noOverTime) {
-            if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
-                [hud hide:YES];
-                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-                [alert show];
-                [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.2];
-            }else
-            {
+        if ([[responseObject objectForKey:@"Code"] intValue] != 200) {
+            [hud hide:YES];
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[responseObject objectForKey:@"Message"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.2];
+        }else
+        {
+            if (!weakself.noOverTime) {
                 [UserInfo shareUserInfo].userToken = [responseObject objectForKey:@"UserToken"];
                 [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
+                
                 
                 RCUserInfo *user = [RCUserInfo new];
                 user.userId = [NSString stringWithFormat:@"%@", responseObject[@"UserId"]];
@@ -219,9 +223,7 @@
                     [hud hide:YES];
                     NSLog(@"IncorrectToken");
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [hud hide:YES];
-                    });
+                    [weakself getRongToken];
                     
                 }];
                 [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];
@@ -240,15 +242,6 @@
                     }
                 }
                 
-                if ([[responseObject objectForKey:@"IsCompleteInfor"] intValue ] == 1) {
-                    [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
-                    [self pushMyTabbarViewController];
-                }else
-                {
-                    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请先完善用户信息" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                    [alert show];
-                    
-                }
                 // 同步好友列表
                 NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
                 [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
@@ -256,13 +249,23 @@
                 // 同步组群
                 [RCDDataSource syncGroups];
                 
+                if ([[responseObject objectForKey:@"IsCompleteInfor"] intValue ] == 1) {
+                    [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                    [weakself pushMyTabbarViewController];
+                }else
+                {
+                    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请先完善用户信息" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alert show];
+                    
+                }
+                weakself.noOverTime = YES;
             }
+            
         }
         
-        self.noOverTime = YES;
     } failure:^(NSError * _Nonnull error) {
         [hud hide:YES];
-        [self cancelTime];
+        [weakself cancelTime];
         NSLog(@"error = %@", error);
     }];
 }
@@ -305,6 +308,57 @@
     MyTabBarController * myTabbrVc = [[MyTabBarController alloc]init];
 //    [ShareApplicationDelegate window].rootViewController = myTabbrVc;
     [ShareApplicationDelegate window].rootViewController = [[UINavigationController alloc]initWithRootViewController:myTabbrVc];
+}
+
+- (void)getRongToken
+{
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getRongToken?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:nil progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            [UserInfo shareUserInfo].rongToken = [responseObject objectForKey:@"RongToken"];
+            [[RCIM sharedRCIM] connectWithToken:[UserInfo shareUserInfo].rongToken success:^(NSString *userId) {
+                NSLog(@"连接融云成功");
+                
+                    [RCDHTTPTOOL refreshUserInfoByUserID:[NSString stringWithFormat:@"%@", responseObject[@"UserId"]]];
+                
+                // 同步好友列表
+                NSString * url = [NSString stringWithFormat:@"%@userinfo/getFriendList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                [RCDDataSource syncFriendList:url complete:^(NSMutableArray *friends) {}];
+                
+                // 同步组群
+
+                
+            } error:^(RCConnectErrorCode status) {
+                NSLog(@"连接融云失败");
+            } tokenIncorrect:^{
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self getRongToken];
+                });
+                
+            }];
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"服务器连接失败,请重新操作" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        NSLog(@"%@", error);
+    }];
 }
 
 /*

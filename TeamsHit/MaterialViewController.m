@@ -101,13 +101,13 @@
         });
     });
     self.imageCount = 0;
+    
     // Do any additional setup after loading the view.
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     UINavigationBar * bar = self.navigationController.navigationBar;
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
-    
 }
 - (void)backAction:(UIButton *)button
 {
@@ -212,6 +212,7 @@
     
     __weak MaterialViewController * materVC = self;
     [cell deleteItem:^{
+        NSLog(@"delete row = %d", indexPath.row);
         [materVC.dataArr removeObjectAtIndex:indexPath.row];
         [materVC.tableView reloadData];
     }];
@@ -235,12 +236,12 @@
     for (NSString * str in self.dataArr) {
         NSLog(@"str = %@", str);
     }
+    [self.tableView reloadData];
 }
 #pragma mark - 文字编辑
 - (void)textEdit
 {
     [self recoverUI];
-    NSLog(@"文字编辑");
     TextEditViewController * textVC = [[TextEditViewController alloc]init];
     __weak MaterialViewController * matervc = self;
     textVC.userId = self.userId;
@@ -248,19 +249,21 @@
         matervc.iconImageView.image = image;
         
         MaterialDataModel * model = [[MaterialDataModel alloc]init];
-        model.image = image;
-        model.title = content;
+        model.isprocessImage = NO;
         model.imageModel = TextEditImageModel;
+        model.image = image;
+        model.fileName = [NSString stringWithFormat:@"%@", [UserInfo shareUserInfo].timeStr];
+        model.title = content;
         model.Alignment = Alignment;
         if (content.length > 0) {
             [matervc.dataArr addObject:model];
             NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
             [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
             [matervc performSelector:@selector(moveToBottom) withObject:nil afterDelay:.3];
-
+            
         }else
         {
-            if ([self canAddMoreImage]) {
+            if ([matervc canAddMoreImage]) {
                 [matervc.dataArr addObject:model];
                 NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
                 [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
@@ -324,9 +327,10 @@
     [processVC processImage:^(UIImage *image) {
         meVc.iconImageView.image = image;
         MaterialDataModel * model = [[MaterialDataModel alloc]init];
-//        model.isprocessImage = YES;
-        model.image = image;
+        model.isprocessImage = YES;
         model.imageModel = ProcessImageMOdel;
+        model.image = image;
+        model.fileName = [NSString stringWithFormat:@"%@", [UserInfo shareUserInfo].timeStr];
         [meVc.dataArr addObject:model];
         NSArray * indexpaths = @[[NSIndexPath indexPathForRow:meVc.dataArr.count - 1 inSection:0]];
         [meVc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
@@ -341,16 +345,6 @@
 - (void)expression
 {
     NSLog(@"表情弹窗");
-    
-//    NSData * data3 = UIImagePNGRepresentation(_materiaItem.image);
-//    NSData * data4 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-4"]);
-//    if (![data3 isEqual:data4]) {
-//        
-//        [self.materiaView removeFromSuperview];
-//        [_materiaItem setImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
-//        _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
-//        self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
-//    }
     
     NSData * data1 = UIImagePNGRepresentation(_expressionItem.image);
     NSData * data2 = UIImagePNGRepresentation([UIImage imageNamed:@"materia-3"]);
@@ -375,9 +369,11 @@
             matervc.iconImageView.image = image;
             NSLog(@"获取到了");
             MaterialDataModel * model = [[MaterialDataModel alloc]init];
-            model.image = image;
+            model.isprocessImage = NO;
             model.imageModel = expressionModel;
-            if ([self canAddMoreImage]) {
+            model.image = image;
+            model.fileName = [NSString stringWithFormat:@"%@", [UserInfo shareUserInfo].timeStr];
+            if ([matervc canAddMoreImage]) {
                 [matervc.dataArr addObject:model];
                 NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
                 [matervc.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
@@ -444,9 +440,9 @@
             matervc.iconImageView.image = image;
             NSLog(@"获取到了");
             MaterialDataModel * model = [[MaterialDataModel alloc]init];
-            model.isprocessImage = YES;
-            model.image = image;
             model.imageModel = MateriaModel;
+            model.image = image;
+            model.fileName = [NSString stringWithFormat:@"%@", [UserInfo shareUserInfo].timeStr];
             [matervc.dataArr addObject:model];
             
             NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
@@ -532,13 +528,15 @@
 {
     [self.qrCodeView removeFromSuperview];
     if (self.qrTextView.text.length != 0) {
-        UIImage * image = [[QRCode shareQRCode]createQRCodeForString:self.qrTextView.text withWidth:self.view.hd_width * 2 / 5];
+        UIImage * image = [[QRCode shareQRCode]createQRCodeForString:self.qrTextView.text withWidth:128];
         self.iconImageView.image = image;
         
         MaterialDataModel * model = [[MaterialDataModel alloc]init];
-        model.image = image;
-        model.title = self.qrTextView.text;
+        model.isprocessImage = NO;
         model.imageModel = QRCodeModel;
+        model.image = image;
+        model.fileName = [NSString stringWithFormat:@"%@", [UserInfo shareUserInfo].timeStr];
+        model.title = self.qrTextView.text;
         [self.dataArr addObject:model];
         NSArray * indexpaths = @[[NSIndexPath indexPathForRow:self.dataArr.count - 1 inSection:0]];
         [self.tableView insertRowsAtIndexPaths:indexpaths withRowAnimation:UITableViewRowAnimationNone];
@@ -574,11 +572,13 @@
     [graffitiVC graffitiImage:^(UIImage *image) {
         if (image) {
             matervc.iconImageView.image = image;
-            NSLog(@"获取到了");
+//            NSLog(@"获取到了");
             MaterialDataModel * model = [[MaterialDataModel alloc]init];
-             model.isprocessImage = YES;
-            model.image = image;
+             model.isprocessImage = NO;
             model.imageModel = GraffitiModel;
+            model.image = image;
+            model.fileName = [NSString stringWithFormat:@"%@", [UserInfo shareUserInfo].timeStr];
+            
             [matervc.dataArr addObject:model];
             
             NSArray * indexpaths = @[[NSIndexPath indexPathForRow:matervc.dataArr.count - 1 inSection:0]];
@@ -694,7 +694,6 @@
         return NO;
     }
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

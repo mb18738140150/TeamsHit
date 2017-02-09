@@ -90,7 +90,7 @@
             [infoVC.iconImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"PortraitUri"]] placeholderImage:[UIImage imageNamed:@"camera_icon.png"]];
             infoVC.userNameLabel.text = [dic objectForKey:@"UserName"];
             infoVC.genderLabel.text = [dic objectForKey:@"Gender"];
-            infoVC.addressLabel.text = [dic objectForKey:@"City"];
+            infoVC.addressLabel.text = [NSString stringWithFormat:@"%@,%@", [dic objectForKey:@"Province"], [dic objectForKey:@"City"]];
             infoVC.nickNameLabel.text = [dic objectForKey:@"NickName"];
             infoVC.birth = [dic objectForKey:@"BirthDate"];
         }else
@@ -359,7 +359,6 @@
         self.genderSegment.selectedSegmentIndex = 2;
     }
     
-    
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
     
     [delegate.window addSubview:self.genderChooseView];
@@ -480,7 +479,7 @@
 //            [alert show];
 //            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             [RCDHTTPTOOL refreshUserInfoByUserID:[RCIM sharedRCIM].currentUserInfo.userId];
-            
+            [self.navigationController popViewControllerAnimated:YES];
         }else
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

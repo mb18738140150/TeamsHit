@@ -12,6 +12,9 @@
 #import "FriendCircleMessgaeViewController.h"
 #import "AppDelegate.h"
 #import "ExchangeBackwallImageViewController.h"
+#import "MeDetailInfomationViewController.h"
+#import "FriendInformationViewController.h"
+#import "ShuoShuoDetailViewController.h"
 
 #define CELLID @"UserFrienfCircleCellID"
 @interface UserFriendCircleViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -57,7 +60,8 @@
     }else
     {
         RCDUserInfo * rcdUserInfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.userId]];
-        TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:rcdUserInfo.displayName];
+        TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+        self.title = rcdUserInfo.displayName;
         [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     }
@@ -98,8 +102,18 @@
     }
     
     
-    iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headView.hd_width - 95, headView.hd_height - 80, 80, 80)];
+    iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headView.hd_width - 95, headView.hd_height - 80, 74, 74)];
+    iconImageView.userInteractionEnabled = YES;
     iconImageView.image = [UIImage imageNamed:@"placeHolderImage1"];
+    
+    UITapGestureRecognizer * lookUserInfoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(lookUserInfo)];
+    [iconImageView addGestureRecognizer:lookUserInfoTap];
+    
+    UIView * iconBackView = [[UIView alloc]initWithFrame:CGRectMake(iconImageView.hd_x - 3, iconImageView.hd_y - 3, iconImageView.hd_width + 6, iconImageView.hd_height + 6)];
+    iconBackView.backgroundColor = [UIColor whiteColor];
+    iconBackView.layer.borderWidth = 0.5;
+    iconBackView.layer.borderColor = [UIColor colorWithWhite:.7 alpha:1].CGColor;
+    [headView addSubview:iconBackView];
     [headView addSubview:iconImageView];
     
     nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, iconImageView.hd_y + 15, headView.hd_width - 15 * 3 - iconImageView.hd_width, 20)];
@@ -130,6 +144,21 @@
     messageVc.allMessage = YES;
 
     [self.navigationController pushViewController:messageVc animated:YES];
+}
+
+- (void)lookUserInfo
+{
+    NSString * userId = [NSString stringWithFormat:@"%@", self.userId];
+    if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
+        MeDetailInfomationViewController * meinfoVC = [[MeDetailInfomationViewController alloc]initWithNibName:@"MeDetailInfomationViewController" bundle:nil];
+        [self.navigationController pushViewController:meinfoVC animated:YES];
+    }else
+    {
+            FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
+            friend.targetId = userId;
+            [self.navigationController pushViewController:friend animated:YES];
+        
+    }
 }
 
 - (void)loadNewData
@@ -290,6 +319,29 @@
 {
     UserFriendCircleModel * model = self.datasourceArr[indexPath.row];
     return model.height;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    RCDUserInfo * rcdUserInfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.userId]];
+    if (self.userId.intValue == [RCIM sharedRCIM].currentUserInfo.userId.intValue) {
+        rcdUserInfo.userId = [RCIM sharedRCIM].currentUserInfo.userId;
+        rcdUserInfo.portraitUri = [RCIM sharedRCIM].currentUserInfo.portraitUri;
+        rcdUserInfo.name = [RCIM sharedRCIM].currentUserInfo.name;
+    }
+    UserFriendCircleModel * model = self.datasourceArr[indexPath.row];
+    ShuoShuoDetailViewController * shuoshuodetailVC = [[ShuoShuoDetailViewController alloc]init];
+    __weak typeof(self) weakself = self;
+    [shuoshuodetailVC deleteshuoshuoBlock:^(NSString *typy) {
+        [weakself loadNewData];
+    }];
+    shuoshuodetailVC.takeId = model.takeId;
+    shuoshuodetailVC.shuoshuoUserInfo = [RCUserInfo new];
+    shuoshuodetailVC.shuoshuoUserInfo.userId = rcdUserInfo.userId;
+    shuoshuodetailVC.shuoshuoUserInfo.name = rcdUserInfo.name;
+    shuoshuodetailVC.shuoshuoUserInfo.portraitUri = rcdUserInfo.portraitUri;
+    
+    [self.navigationController pushViewController:shuoshuodetailVC animated:YES];
 }
 
 #pragma mark - 修改背景墙

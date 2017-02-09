@@ -65,6 +65,13 @@
     }
     return self;
 }
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title message:(NSString *)content
+{
+    if (self = [super initWithFrame:frame]) {
+        [self prepareUIWith:title message:content];
+    }
+    return self;
+}
 
 - (void)prepareUIWith:(NSString *)title Content:(NSArray *)content isRule:(BOOL)isRule
 {
@@ -104,14 +111,19 @@
         [self.tableView registerClass:[GameRulesTableViewCell class] forCellReuseIdentifier:GAME_RULECELL_IDENTIFIRE];
         [backWhiteView addSubview:self.tableView];
         
+        int height = 0;
+        
         for (int i = 0;i < content.count;i++) {
             GameRuleModel * model = [[GameRuleModel alloc]init];
             model.number = i + 1;
             model.content = content[i];
             [model getcontentHeightWithWidth:self.tableView.hd_width - 20];
             [self.dataArray addObject:model];
+            height += model.height + 10;
         }
-        
+        self.tableView.hd_height = height;
+        height += 44 + 21 + 15;
+        backWhiteView.hd_height = height;
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
         [backBlackView addGestureRecognizer:tap];
         
@@ -196,6 +208,9 @@
                 self.textFiled.delegate = self;
                 self.textFiled.returnKeyType = UIReturnKeyDone;
                 [backWhiteView addSubview:self.textFiled];
+                
+                UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
+                [backBlackView addGestureRecognizer:tap];
             }
             
             UIButton * cancleBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -213,12 +228,67 @@
             [sureBT setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal];
             [backWhiteView addSubview:sureBT];
             [sureBT addTarget:self action:@selector(completeAction) forControlEvents:UIControlEventTouchUpInside];
+            if (content.count == 0) {
+                cancleBT.hidden = YES;
+                sureBT.hd_centerX = backWhiteView.hd_centerX;
+            }
         }
         
     }
     
     backWhiteView.center = self.center;
     
+}
+
+- (void)prepareUIWith:(NSString *)title message:(NSString *)content
+{
+    self.backgroundColor = [UIColor clearColor];
+    UIView * backBlackView = [[UIView alloc]initWithFrame:self.bounds];
+    backBlackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
+    [self addSubview:backBlackView];
+    
+    backWhiteView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 264, 152)];
+    backWhiteView.layer.cornerRadius = 5;
+    backWhiteView.layer.masksToBounds = YES;
+    backWhiteView.backgroundColor = [UIColor whiteColor];
+    [self addSubview:backWhiteView];
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
+    [backBlackView addGestureRecognizer:tap];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, backWhiteView.hd_width, 44)];
+    titleLabel.backgroundColor = UIColorFromRGB(0x12B7F5);
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.text = title;
+    titleLabel.textAlignment = 1;
+    UIBezierPath * maskPath = [UIBezierPath bezierPathWithRoundedRect:titleLabel.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
+    CAShapeLayer * maskLayer = [[CAShapeLayer alloc]init];
+    maskLayer.frame = titleLabel.bounds;
+    maskLayer.path = maskPath.CGPath;
+    titleLabel.layer.mask = maskLayer;
+    [backWhiteView addSubview:titleLabel];
+    
+    
+    
+    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(27, 60, backWhiteView.hd_width - 54, 70)];
+    tipLabel.font = [UIFont systemFontOfSize:15];
+    tipLabel.textColor = UIColorFromRGB(0x12B7F5);
+    tipLabel.text = content;
+    tipLabel.numberOfLines = 0;
+    CGSize tipSize = [tipLabel.text boundingRectWithSize:CGSizeMake(tipLabel.hd_width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
+    tipLabel.hd_height = tipSize.height;
+    [backWhiteView addSubview:tipLabel];
+    
+    UIButton * sureBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    sureBT.frame = CGRectMake(backWhiteView.hd_width - 63, 118, 34, 16);
+    [sureBT setTitle:@"确定" forState:UIControlStateNormal];
+    sureBT.titleLabel.font = [UIFont systemFontOfSize:12];
+    [sureBT setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal];
+    [backWhiteView addSubview:sureBT];
+    [sureBT addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    backWhiteView.center = self.center;
 }
 
 #pragma mark - 查看规则
@@ -346,17 +416,24 @@
     if (self.textFiled) {
         if (self.textFiled.text.length != 0) {
             self.comleteString = self.textFiled.text;
+            if (self.myblock) {
+                _myblock(self.comleteString);
+                [self dismiss];
+            }
         }else
         {
             UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"房间名称不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alert show];
         }
+    }else
+    {
+        
+        if (self.myblock) {
+            _myblock(self.comleteString);
+            [self dismiss];
+        }
     }
     
-    if (self.myblock) {
-        _myblock(self.comleteString);
-        [self dismiss];
-    }
 }
 
 - (void)getPickerData:(GroupDetailPickerBlock)block
@@ -397,7 +474,6 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    
     [textField resignFirstResponder];
     return YES;
 }

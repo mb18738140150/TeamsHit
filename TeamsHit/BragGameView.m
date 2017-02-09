@@ -157,7 +157,7 @@
     if (self.isStartGame) {
         if (self.indexpathArr.count < self.gameUserInformationArr.count) {
             [self.indexpathArr addObject:indexPath];
-            NSLog(@" *** indexPath *** ");
+            
         }
     }
     
@@ -168,16 +168,17 @@
         cell.backgroundColor = [UIColor clearColor];
         cell.bragGameModel = [self.gameUserInformationArr objectAtIndex:indexPath.row];
         BragGameModel * model = [self.gameUserInformationArr objectAtIndex:indexPath.row];
+        __weak BragGameView * weakSelf = self;
         [cell getchooseDicepointCallOrOpen:^(NSString *string) {
             if ([string isEqualToString:@"开"]) {
                 NSLog(@"开");
-                if (self.timeout != nil) {
+                if (weakSelf.timeout != nil) {
                     NSLog(@"关闭了定时器");
-                    [self.timeout invalidate];
-                    self.timeout = nil;
+                    [weakSelf.timeout invalidate];
+                    weakSelf.timeout = nil;
                 }
-                if (self.delegate && [self.delegate respondsToSelector:@selector(openGameuser:)]) {
-                    [self.delegate openGameuser:model.gameUserInfo.userId];
+                if (weakSelf.delegate && [self.delegate respondsToSelector:@selector(openGameuser:)]) {
+                    [weakSelf.delegate openGameuser:model.gameUserInfo.userId];
                 }
                 
             }else
@@ -186,22 +187,22 @@
                 self.chooseDiceNumberView.leaveTime = self.timeoutNumber;
                 if (model.dicePoint.intValue == 1) {
                     NSLog(@"***** 上家叫了1点");
-                    self.chooseDiceNumberView.isOnePoint = YES;
+                    weakSelf.chooseDiceNumberView.isOnePoint = YES;
                     
                     
-                    [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue + 1 andDicePoint:2];
+                    [weakSelf.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue + 1 andDicePoint:2];
                 }else if (model.dicePoint.intValue == 6)
                 {
                     NSLog(@"***** 上家叫了6点");
-                    self.chooseDiceNumberView.isOnePoint = NO;
-                    [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue andDicePoint:1];
+                    weakSelf.chooseDiceNumberView.isOnePoint = NO;
+                    [weakSelf.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue andDicePoint:1];
                 }
                 else
                 {
-                    self.chooseDiceNumberView.isOnePoint = NO;
-                    [self.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue andDicePoint:model.dicePoint.intValue + 1];
+                    weakSelf.chooseDiceNumberView.isOnePoint = NO;
+                    [weakSelf.chooseDiceNumberView refreshViewWithDiceNumber:model.diceCount.intValue andDicePoint:model.dicePoint.intValue + 1];
                 }
-                [self.chooseDiceNumberView show];
+                [weakSelf.chooseDiceNumberView show];
             }
         }];
         return cell;
@@ -290,15 +291,6 @@
     }
     
     _iFlySpeechSynthesizer = [IFlySpeechSynthesizer sharedInstance]; _iFlySpeechSynthesizer.delegate = self;
-//    int a = arc4random() % 10;
-//    NSLog(@"%d", a);
-//    
-//    if (a % 2 == 0) {
-//        [_iFlySpeechSynthesizer setParameter:@"xiaoyan" forKey: [IFlySpeechConstant VOICE_NAME]];
-//    }else
-//    {
-//        [_iFlySpeechSynthesizer setParameter:@"vixf" forKey: [IFlySpeechConstant VOICE_NAME]];
-//    }
     
     //启动合成会话
     [_iFlySpeechSynthesizer startSpeaking: [NSString stringWithFormat:@"%d个%d", number, point]];
@@ -407,10 +399,12 @@
         }else if ([[userDic objectForKey:@"Status"] intValue] == 1)
         {
              model.isShakeDiceCup = YES;
+            
         }else
         {
             // 开点标示游戏结束,开始显示结果了
             model.isFinish = YES;
+            model.isShakeDiceCup = YES;
         }
         
         // 是自己的话根据是否摇点显示摇到的骰子情况
@@ -483,29 +477,6 @@
         [self.gameUserInformationArr addObject:model];
         
     }
-    
-//    for (RCUserInfo * userInfo in userInfoArr) {
-//        BragGameModel * model = [[BragGameModel alloc]init];
-//        model.gameUserInfo = [RCUserInfo new];
-//        model.gameUserInfo.name = userInfo.name;
-//        model.gameUserInfo.portraitUri = userInfo.portraitUri;
-//        model.gameUserInfo.userId = userInfo.userId;
-//        model.userWinPointCount = 0;
-//        model.isFinish = NO;
-//        model.isWin = IsWinTheGame_nomal;
-//        if ([userInfo.userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
-//            model.isUserself = YES;
-//        }else
-//        {
-//            model.isUserself = NO;
-//        }
-//        
-//        model.calledDicePointState = CalledDicePoint_Pass;
-//        model.callContent = @"";
-//        model.isShakeDiceCup = NO;
-//        model.choosecallOrOpenType = ChooseCallOrOpen_Nomal;
-//        [self.gameUserInformationArr addObject:model];
-//    }
     self.isStartGame = YES;
     [self.gametableView reloadData];
     
@@ -610,15 +581,6 @@
     [self.gametableView reloadData];
     
     _iFlySpeechSynthesizer = [IFlySpeechSynthesizer sharedInstance]; _iFlySpeechSynthesizer.delegate = self;
-    //    int a = arc4random() % 10;
-    //    NSLog(@"%d", a);
-    //
-    //    if (a % 2 == 0) {
-    //        [_iFlySpeechSynthesizer setParameter:@"xiaoyan" forKey: [IFlySpeechConstant VOICE_NAME]];
-    //    }else
-    //    {
-    //        [_iFlySpeechSynthesizer setParameter:@"vixf" forKey: [IFlySpeechConstant VOICE_NAME]];
-    //    }
     
     //启动合成会话
     [_iFlySpeechSynthesizer startSpeaking: [NSString stringWithFormat:@"%@个%@", [dic objectForKey:@"DiceCount"], [dic objectForKey:@"DicePoint"]]];
@@ -641,6 +603,7 @@
         [self.chooseDiceNumberView dismiss];
         NSLog(@"已经超时了，此处该销毁 self.timeout %d", self.timeoutNumber);
     }
+    
 }
 
 // 自己摇骰子
@@ -653,23 +616,6 @@
         NSString * imageStr = [NSString stringWithFormat:@"骰子%@", point];
         [self.diceCupView.dataSourceArr addObject:imageStr];
     }
-//    [self.diceCupView showResult];
-    
-//    for (BragGameModel * model in self.gameUserInformationArr) {
-//        if ([model.gameUserInfo.userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
-//            NSArray * dicePointArr = [[dic objectForKey:@"DiceNumber"] componentsSeparatedByString:@","];
-//            [model.dicePointArr removeAllObjects];
-//            [model.showDicePointArr removeAllObjects];
-//            model.dicePointArr = [dicePointArr mutableCopy];
-//            for (NSString * point in model.dicePointArr) {
-//                NSString * imageStr = [NSString stringWithFormat:@"骰子%@", point];
-//                [model.showDicePointArr addObject:imageStr];
-//            }
-//            self.diceCupView.dataSourceArr = model.showDicePointArr;
-//            [self.diceCupView showResult];
-//            break;
-//        }
-//    }
 }
 
 // 开点
@@ -757,6 +703,7 @@
 }
 - (void)refresh
 {
+    
     if (self.refreshNUmber>= self.indexpathArr.count) {
         [self.turnRefreshTimer invalidate];
         self.turnRefreshTimer = nil;
@@ -779,6 +726,7 @@
     PlayMusicModel * playmusic = [PlayMusicModel share];
     [playmusic playMusicWithName:@"统计点数"];
     self.refreshNUmber++;
+    
 }
 
 - (void)showWinOrLose
@@ -797,6 +745,7 @@
     [self.gametableView reloadData];
     PlayMusicModel * playmusic = [PlayMusicModel share];
     [playmusic playMusicWithName:@"统计完点数的声音"];
+    
     [self performSelector:@selector(getGameResultSource) withObject:nil afterDelay:2];
     
 }
@@ -827,6 +776,25 @@
         [self.timeout invalidate];
         self.timeout = nil;
     }
+}
+
+- (void)removeALLproperty
+{
+    if (self.timeout) {
+        [self.timeout invalidate];
+        self.timeout = nil;
+    }
+    if (self.turnRefreshTimer) {
+        [self.turnRefreshTimer invalidate];
+        self.turnRefreshTimer = nil;
+    }
+    if (self.chooseDiceNumberView.timer) {
+        [self.chooseDiceNumberView.timer invalidate];
+        self.chooseDiceNumberView.timer = nil;
+    }
+    [self.chooseDiceNumberView removeFromSuperview];
+    [self.diceCupView removeFromSuperview];
+    
 }
 
 /*

@@ -10,7 +10,8 @@
 
 
 #define POST_URL @"http://www.api.mstching.com/api/"
-#define POST_IMAGE_URL @"http://www.api.mstching.com/uploadimg.aspx?savetype="// 1、头像上传 2、说说图片
+//#define POST_URL @"http://www.test.api.mstching.com/api/"
+#define POST_IMAGE_URL @"http://www.api.mstching.com/uploadimg.aspx?savetype="// 1、头像上传 2、说说图片 3、房间头像 4、朋友圈背景墙
 
 #ifdef __OBJC__
 // Include any system framework and library headers here that should be included in all compilation units.

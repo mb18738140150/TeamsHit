@@ -42,6 +42,8 @@
 - (void)creatoneImage:(NSArray *)arr
 {
     UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_height)];
+    [imageview setContentMode:UIViewContentModeScaleAspectFill];
+    imageview.clipsToBounds = YES;
     [imageview sd_setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     
     [self addSubview:imageview];
@@ -51,10 +53,14 @@
 - (void)creattwoImage:(NSArray *)arr
 {
     UIImageView * imageviewleft = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, (self.hd_width - 2) / 2, self.hd_height)];
+    [imageviewleft setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewleft.clipsToBounds = YES;
     [imageviewleft sd_setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewleft];
     
     UIImageView * imageviewRight = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(imageviewleft.frame) + 2, 0, (self.hd_width - 2) / 2, self.hd_height)];
+    [imageviewRight setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewRight.clipsToBounds = YES;
     [imageviewRight sd_setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewRight];
     
@@ -63,15 +69,21 @@
 - (void)creatthreeImage:(NSArray *)arr
 {
     UIImageView * imageviewleft = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, (self.hd_width - 2) / 2, self.hd_height)];
+    [imageviewleft setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewleft.clipsToBounds = YES;
     [imageviewleft sd_setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewleft];
     
     UIImageView * imageviewRighttop = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(imageviewleft.frame) + 2, 0, (self.hd_width - 2) / 2, (self.hd_height - 2) / 2)];
+    [imageviewRighttop setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewRighttop.clipsToBounds = YES;
     [imageviewRighttop sd_setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewRighttop];
     
     
     UIImageView * imageviewRightbottom = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(imageviewleft.frame) + 2, self.hd_height / 2 + 1, (self.hd_width - 2) / 2, (self.hd_height - 2) / 2)];
+    [imageviewRightbottom setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewRightbottom.clipsToBounds = YES;
     [imageviewRightbottom sd_setImageWithURL:[NSURL URLWithString:arr[2]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewRightbottom];
     
@@ -80,19 +92,27 @@
 - (void)creatfourImage:(NSArray *)arr
 {
     UIImageView * imageviewleft = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, (self.hd_width - 2) / 2, (self.hd_height - 2) / 2)];
+    [imageviewleft setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewleft.clipsToBounds = YES;
     [imageviewleft sd_setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewleft];
     
     UIImageView * imageviewleftbottom = [[UIImageView alloc]initWithFrame:CGRectMake(0, self.hd_height / 2 + 1, (self.hd_width - 2) / 2, (self.hd_height - 2) / 2)];
+    [imageviewleftbottom setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewleftbottom.clipsToBounds = YES;
     [imageviewleftbottom sd_setImageWithURL:[NSURL URLWithString:arr[0]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewleftbottom];
     
     UIImageView * imageviewRighttop = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(imageviewleft.frame) + 2, 0, (self.hd_width - 2) / 2, (self.hd_height - 2) / 2)];
+    [imageviewRighttop setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewRighttop.clipsToBounds = YES;
     [imageviewRighttop sd_setImageWithURL:[NSURL URLWithString:arr[1]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewRighttop];
     
     
     UIImageView * imageviewRightbottom = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(imageviewleft.frame) + 2, self.hd_height / 2 + 1, (self.hd_width - 2) / 2, (self.hd_height - 2) / 2)];
+    [imageviewRightbottom setContentMode:UIViewContentModeScaleAspectFill];
+    imageviewRightbottom.clipsToBounds = YES;
     [imageviewRightbottom sd_setImageWithURL:[NSURL URLWithString:arr[2]] placeholderImage:[UIImage imageNamed:@"placeHolderImage1"]];
     [self addSubview:imageviewRightbottom];
 }

@@ -131,6 +131,7 @@
 }
 
 - (IBAction)loginOutAction:(id)sender {
+   [[RCIM sharedRCIM]disconnect:NO];
     LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
 
     UINavigationController *_navi =
@@ -154,6 +155,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 /*
 #pragma mark - Navigation

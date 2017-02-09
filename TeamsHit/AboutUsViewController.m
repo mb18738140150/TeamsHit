@@ -49,7 +49,9 @@
     chatVc.displayUserNameInCell = NO;
     chatVc.targetId = @"200";
     chatVc.title = @"在线客服";
-    chatVc.needPopToRootView = YES;
+    chatVc.enableNewComingMessageIcon=YES;//开启消息提醒
+    chatVc.enableUnreadMessageIcon=YES;
+    
     [self.navigationController pushViewController:chatVc animated:YES];
 }
 - (IBAction)serverPhonenumber:(id)sender {

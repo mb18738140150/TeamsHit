@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "WelPageControl.h"
 typedef  void(^didRemoveImage)(void);
 
 @interface YMShowImageView : UIView<UIScrollViewDelegate>
@@ -15,9 +15,12 @@ typedef  void(^didRemoveImage)(void);
     UIImageView *showImage;
 }
 @property (nonatomic,copy) didRemoveImage removeImg;
+@property (nonatomic , strong) WelPageControl *myPageControl;
+@property (nonatomic, strong)UIImageView * loadingImageView;
+@property (nonatomic, strong)UIImage * placeImage;
 
 - (void)show:(UIView *)bgView didFinish:(didRemoveImage)tempBlock;
 
 - (id)initWithFrame:(CGRect)frame byClick:(NSInteger)clickTag appendArray:(NSArray *)appendArray;
-
+- (id)initWithFrame:(CGRect)frame byClick:(NSInteger)clickTag appendArray:(NSArray *)appendArray placeImage:(UIImage *)placeImage;
 @end

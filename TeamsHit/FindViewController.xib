@@ -27,7 +27,7 @@
                                 <constraint firstAttribute="width" constant="36" id="zfk-FN-fJg"/>
                             </constraints>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="娱乐圈" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AaM-5q-3e2">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="朋友圈" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AaM-5q-3e2">
                             <constraints>
                                 <constraint firstAttribute="height" constant="16" id="mHG-Oo-tRX"/>
                                 <constraint firstAttribute="width" constant="48" id="uq8-qN-bu2"/>
@@ -80,7 +80,7 @@
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findaddgroup.png" translatesAutoresizingMaskIntoConstraints="NO" id="gJJ-61-vfD">
+                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findaddgroup.png" translatesAutoresizingMaskIntoConstraints="NO" id="gJJ-61-vfD">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="baX-sk-YWB"/>
                                         <constraint firstAttribute="width" constant="21" id="cmi-5W-ek9"/>
@@ -93,7 +93,7 @@
                                 <constraint firstItem="gJJ-61-vfD" firstAttribute="leading" secondItem="dXT-Wx-3Jh" secondAttribute="trailing" constant="9" id="HIM-Az-MGt"/>
                                 <constraint firstItem="gJJ-61-vfD" firstAttribute="top" secondItem="YFF-0t-Ekx" secondAttribute="top" constant="13" id="NK0-gg-mGq"/>
                                 <constraint firstItem="dXT-Wx-3Jh" firstAttribute="top" secondItem="YFF-0t-Ekx" secondAttribute="top" constant="15" id="U2C-pW-lKM"/>
-                                <constraint firstAttribute="width" constant="117" id="Zcl-D4-gxh"/>
+                                <constraint firstAttribute="width" constant="140" id="Zcl-D4-gxh"/>
                                 <constraint firstItem="dXT-Wx-3Jh" firstAttribute="leading" secondItem="YFF-0t-Ekx" secondAttribute="leading" id="rqj-Pm-YGr"/>
                                 <constraint firstAttribute="height" constant="32" id="uq8-f8-ikj"/>
                             </constraints>
@@ -127,7 +127,7 @@
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findCreatgroup.png" translatesAutoresizingMaskIntoConstraints="NO" id="g73-Qt-A2Y">
+                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="findCreatgroup.png" translatesAutoresizingMaskIntoConstraints="NO" id="g73-Qt-A2Y">
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="FOS-5k-7uV"/>
                                         <constraint firstAttribute="width" constant="21" id="a3C-p4-Kib"/>

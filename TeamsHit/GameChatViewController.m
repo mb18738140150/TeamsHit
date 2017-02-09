@@ -10,7 +10,7 @@
 
 #import "RealTimeLocationViewController.h"
 #import "RealTimeLocationStartCell.h"
-#import "RealTimeLocationStatusView.h"
+//#import "RealTimeLocationStatusView.h"
 #import "RealTimeLocationEndCell.h"
 #import "RCDTestMessageCell.h"
 
@@ -24,18 +24,16 @@
 //#import "BrageGameViewHeaderView.h"
 #import "GroupDetailViewController.h"
 #import "SlideBlockView.h"
-
-//#define Web_Socket @"ws://192.168.1.111:8182/"
-#define Web_Socket @"ws://120.26.131.140:8182/"
+#import "GroupDetailSetTipView.h"
 
 #define ConversationViewHeight ([UIScreen mainScreen].bounds.size.height / 3) * 2 - 64
 
-@interface GameChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCRealTimeLocationObserver, RCMessageCellDelegate, RealTimeLocationStatusViewDelegate, RCChatSessionInputBarControlDelegate,SRWebSocketDelegate, BrageGameViewHeaderViewProtocol>
+@interface GameChatViewController ()<UIActionSheetDelegate, UIAlertViewDelegate, RCMessageCellDelegate, RCChatSessionInputBarControlDelegate, BrageGameViewHeaderViewProtocol>
 {
     MBProgressHUD* hud ;
 }
-@property (nonatomic, weak)id<RCRealTimeLocationProxy> realTimeLocation;
-@property (nonatomic, strong)RealTimeLocationStatusView *realTimeLocationStatusView;
+//@property (nonatomic, weak)id<RCRealTimeLocationProxy> realTimeLocation;
+//@property (nonatomic, strong)RealTimeLocationStatusView *realTimeLocationStatusView;
 @property (nonatomic, strong)RCDGroupInfo *groupInfo;
 @property (nonatomic, strong)NSMutableArray *groupMemberList;
 
@@ -66,15 +64,11 @@
     
     self.groupInfo = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.targetId];
     
-     // 建立WebSocket连接
-    if (_webSocket ==nil) {
-        _webSocket = [[SRWebSocket alloc]initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:Web_Socket]]];
-        _webSocket.delegate =self;
-        [_webSocket open];
-    }
     
     // 设置聊天界面frame
     self.chatSessionInputBarControl.delegate = self;
+    
+        [self.chatSessionInputBarControl.pluginBoardView insertItemWithImage:[UIImage imageNamed:@"pluginBoardViewmstchingCoin"] title:@"碰碰币" tag:10006];
     
     if (screenWidth > 320) {
         self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 40);
@@ -84,9 +78,9 @@
         
     }else
     {
-        self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 20);
+        self.conversationMessageCollectionView.frame = CGRectMake(0, ConversationViewHeight + 100, self.view.hd_width, ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 20 - 10);
         self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_y - self.chatSessionInputBarControl.hd_y;
-        self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64;
+        self.conversationMessageCollectionViewHeight = ([UIScreen mainScreen].bounds.size.height / 3) - 64 - 30;
         self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
     }
     
@@ -94,7 +88,19 @@
     
     // 游戏
     self.backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height)];
-    _backImageView.image = [UIImage imageNamed:@"gameBackGroundView"];
+    NSLog(@"游戏背景名 %@", [[RCDataBaseManager shareInstance] getGameBackImagenameWith:self.targetId userID:[RCIM sharedRCIM].currentUserInfo.userId]);
+    NSString * bundlePath = [[ NSBundle mainBundle] pathForResource: @"GamebackImage" ofType :@"bundle"];
+    NSLog(@"bundlePath = %@", [[RCDataBaseManager shareInstance] getGameBackImagenameWith:self.targetId userID:[RCIM sharedRCIM].currentUserInfo.userId]);
+    if ([[RCDataBaseManager shareInstance] getGameBackImagenameWith:self.targetId userID:[RCIM sharedRCIM].currentUserInfo.userId]) {
+        NSLog(@"获取到了");
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"gamebackimagename%@.png", [[RCDataBaseManager shareInstance] getGameBackImagenameWith:self.targetId userID:[RCIM sharedRCIM].currentUserInfo.userId]]];
+        _backImageView.image = [UIImage imageWithContentsOfFile:imgPath];
+    }else
+    {
+        NSLog(@"没获取到");
+        NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"gamebackimagename0.png"]];
+        _backImageView.image = [UIImage imageWithContentsOfFile:imgPath];
+    }
     [self.view addSubview:_backImageView];
     self.backImageView.userInteractionEnabled = YES;
     [self.view insertSubview:_backImageView belowSubview:self.conversationMessageCollectionView];
@@ -102,23 +108,19 @@
     
     // 滑块view
     self.slideBlockView = [[SlideBlockView alloc]initWithFrame:CGRectMake(self.view.hd_width / 2 - 24, self.conversationMessageCollectionView.hd_y - 30, 48, 30)];
-//    [self.view addSubview:self.slideBlockView];
-//    [self.view insertSubview:_slideBlockView belowSubview:self.conversationMessageCollectionView];
+    __weak GameChatViewController * weakSelf = self;
     [self.slideBlockView resignBlock:^{
-        [self.chatSessionInputBarControl.inputTextView resignFirstResponder];
+        [weakSelf.chatSessionInputBarControl.inputTextView resignFirstResponder];
     }];
     [self.slideBlockView moveSlideBlock:^(CGPoint point) {
         
-        CGFloat offsetHeight = self.slideBlockView.hd_y - self.conversationMessageCollectionView.hd_y;
+        CGFloat offsetHeight = weakSelf.slideBlockView.hd_y - weakSelf.conversationMessageCollectionView.hd_y;
         
-        self.conversationMessageCollectionView.hd_y = CGRectGetMaxY(self.slideBlockView.frame);
-        self.conversationMessageCollectionView.hd_height = -self.conversationMessageCollectionView.hd_y + self.chatSessionInputBarControl.hd_y;;
+        weakSelf.conversationMessageCollectionView.hd_y = CGRectGetMaxY(weakSelf.slideBlockView.frame);
+        weakSelf.conversationMessageCollectionView.hd_height = -weakSelf.conversationMessageCollectionView.hd_y + weakSelf.chatSessionInputBarControl.hd_y;;
         
-        self.conversationMessageCollectionViewHeight = self.conversationMessageCollectionView.hd_height;
-        self.conversationMessageCollectionView_y = self.conversationMessageCollectionView.hd_y;
-        
-//        NSLog(@"conversationMessageCollectionViewHeight = %f", self.conversationMessageCollectionViewHeight);
-        
+        weakSelf.conversationMessageCollectionViewHeight = weakSelf.conversationMessageCollectionView.hd_height;
+        weakSelf.conversationMessageCollectionView_y = weakSelf.conversationMessageCollectionView.hd_y;
     }];
     
 
@@ -126,7 +128,7 @@
     
     [self creatHeaderView];
     
-    [self.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
+    [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self
 //                                             selector:@selector(keyboardWillHide:)
@@ -142,22 +144,6 @@
     
     [self.chatSessionInputBarControl addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     
-    
-    
-    /*******************实时地理位置共享***************/
-    [self registerClass:[RealTimeLocationStartCell class] forCellWithReuseIdentifier:RCRealTimeLocationStartMessageTypeIdentifier];
-    [self registerClass:[RealTimeLocationEndCell class] forCellWithReuseIdentifier:RCRealTimeLocationEndMessageTypeIdentifier];
-    [self registerClass:[RCUnknownMessageCell class] forCellWithReuseIdentifier:RCUnknownMessageTypeIdentifier];
-    
-    __weak typeof(&*self) weakSelf = self;
-    [[RCRealTimeLocationManager sharedManager] getRealTimeLocationProxy:self.conversationType targetId:self.targetId success:^(id<RCRealTimeLocationProxy> realTimeLocation) {
-        weakSelf.realTimeLocation = realTimeLocation;
-        [weakSelf.realTimeLocation addRealTimeLocationObserver:self];
-        [weakSelf updateRealTimeLocationStatus];
-    } error:^(RCRealTimeLocationErrorCode status) {
-        NSLog(@"get location share failure with code %d", (int)status);
-    }];
-    /******************实时地理位置共享**************/
     
     ///注册自定义测试消息Cell
     [self registerClass:[RCDTestMessageCell class] forCellWithReuseIdentifier:RCDTestMessageTypeIdentifier];
@@ -200,8 +186,10 @@
                                              selector:@selector(clearHistoryMSG:)
                                                  name:@"ClearHistoryMsg"
                                                object:nil];
+        // Do any additional setup after loading the view.
     
-    // Do any additional setup after loading the view.
+    // 更换背景
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(changeGamebackImage:) name:@"ChangeGamebackImage" object:nil];
 }
 
 - (void)creatHeaderView
@@ -211,7 +199,7 @@
         type = @"吹牛";
     }else if (self.groupInfo.GroupType == 2)
     {
-        type = @"21点";
+        type = @"梦幻";
     }
     NSString * title = [NSString stringWithFormat:@"%@房间", self.targetId];
     self.headerView = [[BrageGameViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, 64) type:type title:title];
@@ -219,41 +207,13 @@
     self.navigationItem.titleView = _headerView;
 }
 
-- (void)connectSocket
-{
-    _webSocket = [[SRWebSocket alloc]initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:Web_Socket]]];
-    _webSocket.delegate =self;
-    [_webSocket open];
-}
-
 #pragma mark - 键盘回收监听
-//-(void)keyboardWillHide:(NSNotification *)note{
-//    
-//    self.conversationMessageCollectionView.hd_y = self.conversationMessageCollectionView_y;
-//    self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
-//    [self setChatSessionInputBarStatus:KBottomBarDefaultStatus animated:YES];
-//    
-//}
-//
-//- (void)keyboardWillshow:(NSNotification *)note
-//{
-//
-//    self.conversationMessageCollectionView.hd_y = self.chatSessionInputBarControl.hd_y - self.conversationMessageCollectionViewHeight;
-//    self.conversationMessageCollectionView.hd_height = self.conversationMessageCollectionViewHeight;
-//
-//    self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
-//    if (self.conversationMessageCollectionView.hd_y < 64) {
-//        self.conversationMessageCollectionView.hd_y = 64;
-//        self.slideBlockView.hd_y = self.conversationMessageCollectionView.hd_y - 30;
-//    }
-//}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
     self.conversationMessageCollectionView.hd_y = self.chatSessionInputBarControl.hd_y - self.conversationMessageCollectionViewHeight;
     self.conversationMessageCollectionView.hd_height = self.conversationMessageCollectionViewHeight;
 }
-
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -319,30 +279,35 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.conversationMessageCollectionView reloadData];
     });
+}
+
+- (void)changeGamebackImage:(NSNotification *)notification
+{
+    RCDGroupInfo * group = [[RCDataBaseManager shareInstance]getGroupByGroupId:self.targetId];
+    RCGroup * groupInfo = [[RCGroup alloc]init];
+    groupInfo.groupId = group.groupId;
+    groupInfo.groupName = group.groupName;
     
+    [[RCDataBaseManager shareInstance]insertGamebackImage:groupInfo userID:[RCIM sharedRCIM].currentUserInfo.userId backImageName:[notification.userInfo objectForKey:@"displayName"]];
+    
+    NSString * bundlePath = [[ NSBundle mainBundle] pathForResource: @"GamebackImage" ofType :@"bundle"];
+    NSString *imgPath= [bundlePath stringByAppendingPathComponent :[NSString stringWithFormat:@"gamebackimagename%@.png", [notification.userInfo objectForKey:@"displayName"]]];
+    _backImageView.image = [UIImage imageWithContentsOfFile:imgPath];
 }
 
 - (void)leftBarButtonItemPressed:(id)sender {
-    if ([self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_OUTGOING ||
-        [self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_CONNECTED) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"离开聊天，位置共享也会结束，确认离开" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-        [alertView show];
-    } else {
-        [self popupChatViewController];
-    }
+    [self popupChatViewController];
 }
 
 - (void)popupChatViewController {
     [super leftBarButtonItemPressed:nil];
-    [self.realTimeLocation removeRealTimeLocationObserver:self];
-    if (_needPopToRootView == YES) {
-        [self.navigationController popToRootViewControllerAnimated:YES];
-    }
-    else
-    {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-    
+//    if (_needPopToRootView == YES) {
+//        [self.navigationController popToRootViewControllerAnimated:YES];
+//    }
+//    else
+//    {
+//        [self.navigationController popViewControllerAnimated:YES];
+//    }
 }
 
 /**
@@ -418,47 +383,39 @@
     
 }
 
-- (void)setRealTimeLocation:(id<RCRealTimeLocationProxy>)realTimeLocation {
-    _realTimeLocation = realTimeLocation;
-}
-
 #pragma mark - 扩展板点击功能
 - (void)pluginBoardView:(RCPluginBoardView *)pluginBoardView clickedItemWithTag:(NSInteger)tag{
     switch (tag) {
         case PLUGIN_BOARD_ITEM_LOCATION_TAG: {
-            if (self.realTimeLocation) {
-                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"发送位置", @"位置实时共享", nil];
-                [actionSheet showInView:self.view];
-            } else {
-                [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
-            }
+//            if (self.realTimeLocation) {
+//                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"发送位置", @"位置实时共享", nil];
+//                [actionSheet showInView:self.view];
+//            } else {
+//                [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
+//            }
             
         } break;
-        
+        case 10006: {
+            [self showCoinCount];
+            
+        } break;
         default:
             [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
             break;
     }
 }
-- (RealTimeLocationStatusView *)realTimeLocationStatusView {
-    if (!_realTimeLocationStatusView) {
-        _realTimeLocationStatusView = [[RealTimeLocationStatusView alloc] initWithFrame:CGRectMake(0, 62, self.view.frame.size.width, 0)];
-        _realTimeLocationStatusView.delegate = self;
-        [self.view addSubview:_realTimeLocationStatusView];
-    }
-    return _realTimeLocationStatusView;
-}
-#pragma mark - RealTimeLocationStatusViewDelegate
-- (void)onJoin {
-    [self showRealTimeLocationViewController];
-}
-- (RCRealTimeLocationStatus)getStatus {
-    return [self.realTimeLocation getStatus];
-}
 
-- (void)onShowRealTimeLocationView {
-    [self showRealTimeLocationViewController];
-}
+#pragma mark - RealTimeLocationStatusViewDelegate
+//- (void)onJoin {
+//    [self showRealTimeLocationViewController];
+//}
+//- (RCRealTimeLocationStatus)getStatus {
+//    return [self.realTimeLocation getStatus];
+//}
+//
+//- (void)onShowRealTimeLocationView {
+//    [self showRealTimeLocationViewController];
+//}
 - (RCMessageContent *)willSendMessage:(RCMessageContent *)messageCotent
 {
     if ([messageCotent isMemberOfClass:[RCTextMessage class]]) {
@@ -468,17 +425,17 @@
     return messageCotent;
 }
 
-- (void)willDisplayMessageCell:(RCMessageBaseCell *)cell
-                   atIndexPath:(NSIndexPath *)indexPath
-{
-    if ([cell.model.content isMemberOfClass:[RCTextMessage class]]) {
-        RCTextMessage * textMessage = cell.model.content;
-//        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , textMessage.content);
-    }else
-    {
-//        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , [cell.model.content class]);
-    }
-}
+//- (void)willDisplayMessageCell:(RCMessageBaseCell *)cell
+//                   atIndexPath:(NSIndexPath *)indexPath
+//{
+//    if ([cell.model.content isMemberOfClass:[RCTextMessage class]]) {
+//        RCTextMessage * textMessage = cell.model.content;
+////        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , textMessage.content);
+//    }else
+//    {
+////        NSLog(@"userId = %@ ** targetID = %@ ** %@",cell.model.userInfo.userId,cell.model.targetId , [cell.model.content class]);
+//    }
+//}
 - (void)didSendMessage:(NSInteger)stauts
                content:(RCMessageContent *)messageCotent
 {
@@ -541,7 +498,7 @@
 - (void)didTapMessageCell:(RCMessageModel *)model {
     [super didTapMessageCell:model];
     if ([model.content isKindOfClass:[RCRealTimeLocationStartMessage class]]) {
-        [self showRealTimeLocationViewController];
+//        [self showRealTimeLocationViewController];
     }
 }
 
@@ -561,7 +518,6 @@
         }
         
     }
-    
 }
 
 #pragma mark override
@@ -603,7 +559,7 @@
 - (RCMessageBaseCell *)rcUnkownConversationCollectionView:(UICollectionView *)collectionView
                                    cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     RCMessageModel *model = [self.conversationDataRepository objectAtIndex:indexPath.row];
-    NSLog(@"message objectName = %@", model.objectName);
+//    NSLog(@"message objectName = %@", model.objectName);
     RCMessageCell *cell = [collectionView
                            dequeueReusableCellWithReuseIdentifier:RCUnknownMessageTypeIdentifier
                            forIndexPath:indexPath];
@@ -626,7 +582,7 @@
                                        layout:(UICollectionViewLayout *)collectionViewLayout
                        sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     RCMessageModel *model = [self.conversationDataRepository objectAtIndex:indexPath.row];
-    NSLog(@"message objectName = %@", model.objectName);
+//    NSLog(@"message objectName = %@", model.objectName);
     return CGSizeMake(collectionView.frame.size.width, 66);
 }
 #pragma mark - UIActionSheet Delegate
@@ -640,7 +596,7 @@
             break;
         case 1:
         {
-            [self showRealTimeLocationViewController];
+//            [self showRealTimeLocationViewController];
         }
             break;
     }
@@ -665,19 +621,19 @@
 }
 
 #pragma mark - RCRealTimeLocationObserver
-- (void)onRealTimeLocationStatusChange:(RCRealTimeLocationStatus)status {
-    __weak typeof(&*self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [weakSelf updateRealTimeLocationStatus];
-    });
-}
-
-- (void)onReceiveLocation:(CLLocation *)location fromUserId:(NSString *)userId {
-    __weak typeof(&*self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [weakSelf updateRealTimeLocationStatus];
-    });
-}
+//- (void)onRealTimeLocationStatusChange:(RCRealTimeLocationStatus)status {
+//    __weak typeof(&*self) weakSelf = self;
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [weakSelf updateRealTimeLocationStatus];
+//    });
+//}
+//
+//- (void)onReceiveLocation:(CLLocation *)location fromUserId:(NSString *)userId {
+//    __weak typeof(&*self) weakSelf = self;
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [weakSelf updateRealTimeLocationStatus];
+//    });
+//}
 
 - (void)onParticipantsJoin:(NSString *)userId {
     __weak typeof(&*self) weakSelf = self;
@@ -733,11 +689,10 @@
 - (void)notifyParticipantChange:(NSString *)text {
     __weak typeof(&*self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [weakSelf.realTimeLocationStatusView updateText:text];
+//        [weakSelf.realTimeLocationStatusView updateText:text];
         [weakSelf performSelector:@selector(updateRealTimeLocationStatus) withObject:nil afterDelay:0.5];
     });
 }
-
 
 - (void)onFailUpdateLocation:(NSString *)description {
     
@@ -746,7 +701,7 @@
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        [self.realTimeLocation quitRealTimeLocation];
+//        [self.realTimeLocation quitRealTimeLocation];
         [self popupChatViewController];
     }
 }
@@ -756,60 +711,61 @@
     return message;
 }
 
-
-
 /*******************实时地理位置共享***************/
-- (void)showRealTimeLocationViewController{
-    RealTimeLocationViewController *lsvc = [[RealTimeLocationViewController alloc] init];
-    lsvc.realTimeLocationProxy = self.realTimeLocation;
-    if ([self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_INCOMING) {
-        [self.realTimeLocation joinRealTimeLocation];
-    }else if([self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_IDLE){
-        [self.realTimeLocation startRealTimeLocation];
-    }
-    [self.navigationController presentViewController:lsvc animated:YES completion:^{
-        
-    }];
-}
-- (void)updateRealTimeLocationStatus {
-    if (self.realTimeLocation) {
-        [self.realTimeLocationStatusView updateRealTimeLocationStatus];
-        __weak typeof(&*self) weakSelf = self;
-        NSArray *participants = nil;
-        switch ([self.realTimeLocation getStatus]) {
-            case RC_REAL_TIME_LOCATION_STATUS_OUTGOING:
-                [self.realTimeLocationStatusView updateText:@"你正在共享位置"];
-                break;
-            case RC_REAL_TIME_LOCATION_STATUS_CONNECTED:
-            case RC_REAL_TIME_LOCATION_STATUS_INCOMING:
-                participants = [self.realTimeLocation getParticipants];
-                if (participants.count == 1) {
-                    NSString *userId = participants[0];
-                    [weakSelf.realTimeLocationStatusView updateText:[NSString stringWithFormat:@"user<%@>正在共享位置", userId]];
-                    [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
-                        if (userInfo.name.length) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [weakSelf.realTimeLocationStatusView updateText:[NSString stringWithFormat:@"%@正在共享位置", userInfo.name]];
-                            });
-                        }
-                    }];
-                } else {
-                    if(participants.count<1)
-                        [self.realTimeLocationStatusView removeFromSuperview];
-                    else
-                        [self.realTimeLocationStatusView updateText:[NSString stringWithFormat:@"%d人正在共享地理位置", (int)participants.count]];
-                }
-                break;
-            default:
-                break;
-        }
-    }
-}
-
+//- (void)showRealTimeLocationViewController{
+//    RealTimeLocationViewController *lsvc = [[RealTimeLocationViewController alloc] init];
+//    lsvc.realTimeLocationProxy = self.realTimeLocation;
+//    if ([self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_INCOMING) {
+//        [self.realTimeLocation joinRealTimeLocation];
+//    }else if([self.realTimeLocation getStatus] == RC_REAL_TIME_LOCATION_STATUS_IDLE){
+//        [self.realTimeLocation startRealTimeLocation];
+//    }
+//    [self.navigationController presentViewController:lsvc animated:YES completion:^{
+//        
+//    }];
+//}
+//- (void)updateRealTimeLocationStatus {
+//    if (self.realTimeLocation) {
+////        [self.realTimeLocationStatusView updateRealTimeLocationStatus];
+//        __weak typeof(&*self) weakSelf = self;
+//        NSArray *participants = nil;
+//        switch ([self.realTimeLocation getStatus]) {
+//            case RC_REAL_TIME_LOCATION_STATUS_OUTGOING:
+////                [self.realTimeLocationStatusView updateText:@"你正在共享位置"];
+//                break;
+//            case RC_REAL_TIME_LOCATION_STATUS_CONNECTED:
+//            case RC_REAL_TIME_LOCATION_STATUS_INCOMING:
+//                participants = [self.realTimeLocation getParticipants];
+//                if (participants.count == 1) {
+//                    NSString *userId = participants[0];
+////                    [weakSelf.realTimeLocationStatusView updateText:[NSString stringWithFormat:@"user<%@>正在共享位置", userId]];
+//                    [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
+//                        if (userInfo.name.length) {
+//                            dispatch_async(dispatch_get_main_queue(), ^{
+////                                [weakSelf.realTimeLocationStatusView updateText:[NSString stringWithFormat:@"%@正在共享位置", userInfo.name]];
+//                            });
+//                        }
+//                    }];
+//                } else {
+////                    if(participants.count<1)
+////                        [self.realTimeLocationStatusView removeFromSuperview];
+////                    else
+////                        [self.realTimeLocationStatusView updateText:[NSString stringWithFormat:@"%d人正在共享地理位置", (int)participants.count]];
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//}
 
 - (void)dealloc
 {
     [self.chatSessionInputBarControl removeObserver:self forKeyPath:@"frame"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ClearHistoryMsg" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"renameGroupName" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ChangeGamebackImage" object:nil];
+    NSLog(@"释放了");
 }
 
 #pragma mark - BrageGameViewHeaderViewProtocol
@@ -821,53 +777,34 @@
 //    [self.navigationController pushViewController:groupDetailVC animated:YES];
 }
 
-#pragma mark - SRWebSocketDelegate 写上具体聊天逻辑
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket;
-{
-    // NSLog(@"Websocket Connected");
-    
-    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-//    [dictionary setValue:@"subscribe" forKey:@"cmd"];
-//    [dictionary setValue:@(VER)  forKey:@"ver"];
-//    [dictionary setValue:[settingInfo getSessionId] forKey:@"sid"];
-//    [dictionary setValue:@"1" forKey:@"channel"];
-//    [dictionary setValue:[[settingInfo getUserAccountInfo]objectForKey:@"user_id"] forKey:@"client_id"];
-    //NSLog(@"dictionary:%@",[dictionary JSONString]);
-    
-    [_webSocket send:[dictionary JSONString]];
-}
-
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
-    NSLog(@"连接失败");
-}
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message//监控消息
-{
-    
-}
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
-{
-    
-}
-- (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload
-{
-    
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+- (void)showCoinCount
+{
+    [[HDNetworking sharedHDNetworking]getDetailInfor:nil success:^(id  _Nonnull responseObject) {
+        
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            NSDictionary * dic = [responseObject objectForKey:@"DetailInfor"];
+            
+            GroupDetailSetTipView * setTipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"碰碰币" message:[NSString stringWithFormat:@"您共有碰碰币%@个", [dic objectForKey:@"CoinCount"]]];
+            [setTipView show];
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"获取碰碰币失败请从新获取" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+    }];
+}
 
-//- (void)emojiView:(RCEmojiBoardView *)emojiView didTouchedEmoji:(NSString *)touchedEmoji
-//{
-//    
-//}
-//- (void)emojiView:(RCEmojiBoardView *)emojiView didTouchSendButton:(UIButton *)sendButton
-//{
-//    
-//}
 
 /*
 #pragma mark - Navigation

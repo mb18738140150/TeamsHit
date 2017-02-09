@@ -19,49 +19,51 @@
     if (imageSize.width > 384) {
         image = [self calculateImagesize:image];
         NSLog(@"适应宽度");
-    }
-    NSData *data;
-    if (UIImagePNGRepresentation(image) == nil)
+    }else
     {
-        data = UIImageJPEGRepresentation(image, 1.0);
-    }else{
-        
-        data = UIImagePNGRepresentation(image);
+        image = [self integerCalculateImagesize:image];
     }
-    CGFloat mm = data.length / 1024.0 / 1024;
-    
-    float i = 1.0;
-    while (mm > 0.02) {
-        data = UIImageJPEGRepresentation(image, i);
-        mm = data.length / 1024.0 / 1024;
-        i  -= 0.01;
-        
-        if (i <= 0.0) {
-            image = [UIImage imageWithData:data];
-            break;
-        }
-        
-        NSLog(@"图片大小是%.3f M 格式是%@  " , mm , image ? @"PNG" : @"JPEG");
-    }
-    
     _dealImage = image;
     _image = image;
-//    if (self.isprocessImage) {
-//        dispatch_queue_t urls_queue = dispatch_queue_create("blog.devtang.com", NULL);
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            
-//            _dealImage = [ImageUtil ditherImage:image];
-//        });
-//    }
+    if (!self.isprocessImage) {
+        if (self.imageModel == MateriaModel) {
+            image = [ImageUtil ditherImage:image];
+            _dealImage = [ImageUtil erzhiBMPImage:image];
+        }else
+        {
+            _dealImage = [ImageUtil erzhiBMPImage:image];
+        }
+    }
     self.height = [self getImageHeight:_dealImage.size];
-    
 }
 
 - (UIImage *)calculateImagesize:(UIImage *)image
 {
-     CGSize size = image.size;
-    UIGraphicsBeginImageContext(CGSizeMake(size.width, size.height));
-    [image drawInRect:CGRectMake(0, 0, SELF_WIDTH, SELF_WIDTH *size.height / size.width)];
+    CGSize size = image.size;
+    UIGraphicsBeginImageContext(CGSizeMake(SELF_WIDTH, (int)(SELF_WIDTH *size.height / size.width)));
+    [image drawInRect:CGRectMake(0, 0, SELF_WIDTH, (int)(SELF_WIDTH *size.height / size.width))];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+- (UIImage *)integerCalculateImagesize:(UIImage *)image
+{
+    CGSize size = image.size;
+    int width = (int )size.width;
+    int height = (int)size.height;
+    UIGraphicsBeginImageContext(CGSizeMake(width, height));
+    [image drawInRect:CGRectMake(0, 0, width, height)];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+- (UIImage *)integerRightCalculateImagesize:(UIImage *)image
+{
+    CGSize size = image.size;
+    int width = (int )size.width;
+    int height = (int)size.height;
+    UIGraphicsBeginImageContext(CGSizeMake(width - 3, height));
+    [image drawInRect:CGRectMake(0, 0, width - 3, height)];
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
@@ -78,7 +80,7 @@
         height = size.height * (screenWidth - 90) / size.width;
     }
     
-    NSLog(@"%f *** %f", size.width, height);
+//    NSLog(@"%f *** %f", size.width, height);
     
     return height;
 }

@@ -74,10 +74,13 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"插入" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
     
+    int font = (int)(24 * screenWidth / 384.0);
+    
     self.ideaTextView = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height - 64 - 40)];
     self.ideaTextView.textColor = UIColorFromRGB(0xBBBBBB);
     self.ideaTextView.delegate = self;
-    self.font = 15;
+    self.ideaTextView.font = [UIFont systemFontOfSize:font];
+    self.font = font;
     self.fontColor = [UIColor blackColor];
     self.location = 0;
     self.isBold = NO;
@@ -86,7 +89,7 @@
     
     [self.view addSubview:self.ideaTextView];
     
-    self.placeholderLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 8, 70, 15)];
+    self.placeholderLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 8, 150, 15)];
     self.placeholderLabel.text = @"请输入...";
     self.placeholderLabel.textColor = [UIColor grayColor];
     self.placeholderLabel.font = [UIFont systemFontOfSize:15];
@@ -239,7 +242,7 @@
         [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_checked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         if (!self.sizeDropList) {
             NSMutableArray * array = [NSMutableArray array];
-            for (int i = 1; i <= 15; i++) {
+            for (int i = 1; i <= 5; i++) {
                 NSString * str = [NSString stringWithFormat:@"%d", i];
                 [array addObject:str];
             }
@@ -249,8 +252,31 @@
             
             __weak TextEditViewController * vc = self;
             [self.sizeDropList getSelectRow:^(NSInteger number) {
-                NSInteger textFont = number * number  + 15;
-//                vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
+                NSInteger textFont = 0;
+                switch (number + 1) {
+                    case 1:
+                        textFont = (int)(12 * screenWidth / 384.0);
+                        break;
+                    case 2:
+                        textFont = (int)(16 * screenWidth / 384.0);
+                        break;
+                    case 3:
+                        textFont = (int)(24 * screenWidth / 384.0);
+                        break;
+                    case 4:
+                        textFont = (int)(32 * screenWidth / 384.0);
+                        break;
+                    case 5:
+                        textFont = (int)(48 * screenWidth / 384.0);
+                        break;
+                    default:
+                        textFont = (int)(24 * screenWidth / 384.0);
+                        break;
+                }
+                
+                if (vc.ideaTextView.text.length == 0) {
+                    vc.ideaTextView.font = [UIFont systemFontOfSize:textFont];
+                }
                 [_sizeItem setImage:[[UIImage imageNamed:@"ico_size_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
                 vc.font = textFont;
                 vc.isChangeFont = YES;
@@ -293,10 +319,10 @@
         }
         
     if (self.isChangeBold || self.isChangeFont){
-        [[Print sharePrint] printImage:printImage taskType:@1 toUserId:self.userId];
+        [[Print sharePrint] printImage:printImage taskType:@0 toUserId:self.userId];
     }else
     {
-        [[Print sharePrint] printText:_ideaTextView.text taskType:@1 toUserId:self.userId  Alignment:self.Alignment];
+        [[Print sharePrint] printText:_ideaTextView.text taskType:@0 toUserId:self.userId  Alignment:self.Alignment];
     }
     
 }
@@ -321,7 +347,7 @@
             
             __weak TextEditViewController * vc = self;
             [self.alinDropList getSelectRow:^(NSInteger number) {
-                self.Alignment = number;
+                vc.Alignment = number;
                 vc.ideaTextView.textAlignment = number;
                 [_alinItem setImage:[[UIImage imageNamed:@"ico_align_unchecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
                 alinImage = [UIImage imageNamed:@"ico_align_unchecked"];
@@ -426,7 +452,7 @@
 // 截取字体图片
 - (UIImage *)getcuttingImage
 {
-    UIGraphicsBeginImageContext(self.ideaTextView.bounds.size);
+    UIGraphicsBeginImageContext(CGSizeMake(self.ideaTextView.bounds.size.width, self.ideaTextView.bounds.size.height - 2));
     [self.ideaTextView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -583,7 +609,6 @@
     self.ideaTextView.selectedRange = NSMakeRange(self.newRange.location + self.newRange.length, 0);
     
 }
-
 #pragma mark - 键盘监听事件
 - (void)keyboardWillShow:(NSNotification *)note
 {

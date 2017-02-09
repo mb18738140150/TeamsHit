@@ -13,6 +13,6 @@
 
 @property (nonatomic, copy)NSString * userToken;
 @property (nonatomic, copy)NSString * rongToken;
-
+@property (nonatomic, copy)NSString * timeStr;
 - (void)setUserInfoWithDictionary:(NSDictionary *)dic;
 @end

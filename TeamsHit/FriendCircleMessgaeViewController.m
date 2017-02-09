@@ -211,7 +211,7 @@
         int command = [[responseObject objectForKey:@"Command"] intValue];
         int code = [[responseObject objectForKey:@"Code"] intValue];
         if (code == 200) {
-            self.MessageId = [responseObject objectForKey:@"MessageId"];
+            wxVC.MessageId = [responseObject objectForKey:@"MessageId"];
             NSArray * FirendCircleList = [NSArray array];
             FirendCircleList = [responseObject objectForKey:@"FriendCircleMessageList"];
             if (FirendCircleList.count > 0) {

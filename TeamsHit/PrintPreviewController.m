@@ -57,12 +57,12 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 - (void)printAction
 {
     NSLog(@"print");
-    NSNumber * type = @1;
+    NSNumber * type = @0;
     if (self.isImportantInformation) {
-        type = @2;
+        type = @1;
     }else
     {
-        type = @1;
+        type = @0;
     }
     [[Print sharePrint] printWithArr:self.printDataSourceArr taskType:type toUserId:self.userId];
     
@@ -119,7 +119,7 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     [_bottomView addSubview:_importantLabel];
     
     NSDateFormatter * formatter = [[NSDateFormatter alloc]init];
-    formatter.dateFormat = @"YYYY-MM-dd hh:mm:ss";
+    formatter.dateFormat = @"YYYY-MM-dd HH:mm:ss";
     NSDate * date = [NSDate dateWithTimeIntervalSinceNow:0];
     NSString * printTime = [formatter stringFromDate:date];
     
@@ -192,15 +192,15 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 
 - (void)importantAction:(UIButton *)button
 {
-    button.selected = !button.selected;
-    if (button.selected) {
-        self.isImportantInformation = YES;
-    }else
-    {
-        self.isImportantInformation = NO;
-    }
-    [self calculateTableviewHeight];
-    [self.printTableView reloadData];
+//    button.selected = !button.selected;
+//    if (button.selected) {
+//        self.isImportantInformation = YES;
+//    }else
+//    {
+//        self.isImportantInformation = NO;
+//    }
+//    [self calculateTableviewHeight];
+//    [self.printTableView reloadData];
 }
 
 - (UIView * )prepareFooterView
@@ -234,7 +234,7 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     MaterialDataModel * model = self.printDataSourceArr[indexPath.row];
     [cell creatSubView:model.dealImage.size.width];
-    
+    NSLog(@"model.fileName = %@", model.fileName);
     cell.photoImageView.image = model.dealImage;
     return cell;
 }
