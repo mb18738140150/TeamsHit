@@ -93,6 +93,7 @@
                 EquipmentModel * model = [[EquipmentModel alloc]initWithDictionary:dic];
                 [equipmentVC.equipmentArray addObject:model];
             }
+            
             [equipmentVC.equipmentTableView reloadData];
         }else
         {

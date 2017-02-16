@@ -229,8 +229,6 @@
 {
     NSLog(@"Websocket Connected");
     
-    
-    
     NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
     [dictionary setValue:@([RCIM sharedRCIM].currentUserInfo.userId.intValue) forKey:@"UserId"];
     [dictionary setValue:@(self.targetId.intValue) forKey:@"GroupId"];
@@ -393,6 +391,7 @@
 }
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload
 {
+//    NSLog(@"pong");
     if (self.overtimeTimer) {
         [self.overtimeTimer invalidate];
         self.overtimeTimer = nil;

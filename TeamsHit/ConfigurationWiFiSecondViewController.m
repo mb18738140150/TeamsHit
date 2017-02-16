@@ -245,6 +245,9 @@ NSString *const kNetChangedNotification = @"kNetChangedNotification";
                         [alert show];
                         [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
                         [weakSelf performSelector:@selector(popToEquipmentViewcontroller) withObject:nil afterDelay:.8];
+                        // 配置成功，将当前的WiFi名称及密码保存到本地；
+                        [[NSUserDefaults standardUserDefaults]setObject:self.myPassword forKey:self.myssid];
+                        
                     }else
                     {
                         if (weakSelf.getNetStatustime == GETNetStatusTime) {

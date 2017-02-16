@@ -50,6 +50,10 @@
     NSData * data = [dic objectForKey:@"SSIDDATA"];
     NSLog(@"%@  ** SSIDDATA = %@", [[dic objectForKey:@"SSIDDATA"] class], [data description]);
     
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:str]) {
+        self.wifiPasswordTF.text = [NSString stringWithFormat:@"%@", ([[NSUserDefaults standardUserDefaults] objectForKey:str])];
+    }
+    
 //    NSDictionary * ssiddic = [self getSCdata:str];
 //    NSLog(@"ssiddic = %@", ssiddic);
     
