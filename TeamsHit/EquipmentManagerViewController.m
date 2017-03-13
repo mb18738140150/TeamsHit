@@ -13,6 +13,8 @@
 #import "ConfigurationWiFiViewController.h"
 #import "AppDelegate.h"
 #import "AddEquipmentViewController.h"
+#import "ConcentrationlistView.h"
+
 #define CELL_IDENTIFIRE @"cellid"
 
 
@@ -23,6 +25,8 @@
 @property (strong, nonatomic) IBOutlet UIView *addNewEquipmentView;
 @property (strong, nonatomic) IBOutlet UITableView *equipmentTableView;
 @property (nonatomic, strong)NSMutableArray * equipmentArray;
+
+@property (nonatomic, strong)ConcentrationlistView * concentrationListView;
 
 // 修改设备名称
 @property (nonatomic, strong)ChangeEquipmentNameView  * changeNameView;
@@ -89,6 +93,7 @@
             }
             
             NSArray * array = [responseObject objectForKey:@"DeviceList"];
+            
             for (NSDictionary * dic in array) {
                 EquipmentModel * model = [[EquipmentModel alloc]initWithDictionary:dic];
                 [equipmentVC.equipmentArray addObject:model];
@@ -115,6 +120,7 @@
 
 - (void)equipmentAction:(UITapGestureRecognizer *)sender
 {
+    
     AddEquipmentViewController * addVC = [[AddEquipmentViewController alloc]init];
     __weak EquipmentManagerViewController * equipmentVC = self;
     [addVC refreshDeviceData:^{
@@ -205,7 +211,7 @@
                 
             }
                 break;
-            case 2:
+            case 3:
             {
                 NSLog(@"蜂鸣器");
                 NSNumber * state = @0;
@@ -240,7 +246,7 @@
                 
             }
                 break;
-            case 3:
+            case 4:
             {
                 NSLog(@"指示灯");
                 NSNumber * state = @0;
@@ -274,6 +280,12 @@
                 }];
             }
                 break;
+            case 2:
+            {
+                NSLog(@"修改打印浓度");
+                [equipmentVC modifyConcentration:model];
+            }
+                break;
             case 100:
             {
                 NSLog(@"删除设备");
@@ -291,7 +303,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 143;
+    return 148;
 }
 
 #pragma mark - 解绑
@@ -331,6 +343,59 @@
     }];
 }
 
+#pragma mark - 浓度设置
+- (void)modifyConcentration:(EquipmentModel*)model
+{
+    __weak EquipmentManagerViewController * weakSelf= self;
+    self.concentrationListView = [[ConcentrationlistView alloc]initWithFrame:[UIScreen mainScreen].bounds with:model.concentration.intValue];
+    [self.concentrationListView show];
+    [self.concentrationListView modifyConcentration:^(int concentrationNum) {
+        NSLog(@"%d", concentrationNum);
+        
+        // 浓度改变
+        if (concentrationNum != model.concentration.intValue) {
+            [weakSelf modifiConcentration:concentrationNum withModel:model];
+        }
+        
+    }];
+    
+}
+
+- (void)modifiConcentration:(int)number withModel:(EquipmentModel *)model
+{
+    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud show:YES];
+    __weak EquipmentManagerViewController * weakSelf= self;
+    NSDictionary * jsonDic = @{
+                               @"Uuid":model.uuid,
+                               @"Concentration":@(number)
+                               };
+    
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/ModifyDeviceConcentration?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+        ;
+    } success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        NSLog(@"responseObject = %@", responseObject);
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            model.concentration = @(number);
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+        [weakSelf.equipmentTableView reloadData];
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        NSLog(@"%@", error);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", @"服务器连接失败"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+    }];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

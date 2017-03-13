@@ -387,8 +387,8 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
             [collection.mj_footer endRefreshingWithNoMoreData];
         }else
         {
-            [collection.mj_footer endRefreshing];
-            [self.collectView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:item + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+            [collection.mj_footer endRefreshingWithNoMoreData];
+//            [self.collectView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:item + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
         }
     }
 }
@@ -396,7 +396,8 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
 - (void)materaildetailListAdd:(UIImage *)image
 {
     if (self.myBlock) {
-        self.myBlock([ImageUtil tailorborderImage:image]);
+//        self.myBlock([ImageUtil tailorborderImage:image]);
+        self.myBlock(image);
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -497,7 +498,8 @@ static NSString* ALCELLID = @"MaterialDetaileListCell";
         
     }
     if (self.myBlock) {
-        self.myBlock([ImageUtil tailorborderImage:image]);
+//        self.myBlock([ImageUtil tailorborderImage:image]);
+        self.myBlock(image);
     }
     [self.bigView closeView];
     [self.navigationController popViewControllerAnimated:YES];

@@ -11,6 +11,7 @@
 #import "RCDUserInfo.h"
 #import "RCDGroupInfo.h"
 #import "RCFriendCircleUserInfo.h"
+#import "TakeoutAccountModel.h"
 
 @interface RCDataBaseManager : NSObject
 
@@ -103,6 +104,12 @@
 // 游戏背景
 - (void)insertGamebackImage:(RCGroup *)groupInfo userID:(NSString *)userID backImageName:(NSString *)imageName;
 - (NSString *)getGameBackImagenameWith:(NSString *)groupId userID:(NSString *)userID;
+
+
+// 授权登录账号种类
+- (void)insertTakeoutAccountModel:(TakeoutAccountModel *)model;
+- (NSMutableArray *)getTakeoutAccounts;
+- (void)deleteTakeoutAccountWithModel:(TakeoutAccountModel *)model;
 
 
 @end

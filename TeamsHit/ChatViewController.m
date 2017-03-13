@@ -600,7 +600,11 @@
             
         } break;
         case 10006: {
+            MaterialViewController * processVC = [[MaterialViewController alloc]init];
+            processVC.userId = @(self.targetId.intValue);
             
+            [self.navigationController pushViewController:processVC animated:YES];
+
             NSString * url = [NSString stringWithFormat:@"%@userinfo/testTeamState?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
             NSDictionary * dic = @{@"ToUserId":@(self.targetId.intValue)
                                    };
@@ -612,6 +616,7 @@
                 if (code == 200) {
                     MaterialViewController * processVC = [[MaterialViewController alloc]init];
                     processVC.userId = @(self.targetId.intValue);
+                    
                     [self.navigationController pushViewController:processVC animated:YES];
                 }else
                 {

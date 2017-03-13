@@ -11,7 +11,7 @@
 typedef void(^EquipmentTypeBlock)(NSInteger type);
 
 @interface EquipmentTableViewCell : UITableViewCell
-
+@property (nonatomic, strong)UICollectionView * collectionView;
 @property (nonatomic, strong)EquipmentModel *emodel;
 - (void)createSubView:(CGRect)frame;
 - (void)getEquipmentOption:(EquipmentTypeBlock)equipmentBlock;

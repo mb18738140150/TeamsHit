@@ -11,5 +11,6 @@
 @interface MaterialViewController : UIViewController
 
 @property (nonatomic, strong)NSNumber * userId;
+@property (nonatomic, copy)NSString * userName;
 
 @end

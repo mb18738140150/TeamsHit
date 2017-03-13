@@ -1,7 +1,7 @@
 //
 //  LoginInfo.h
 //  RongCloud
-//  登陆信息
+//  登录信息
 //  Created by Liv on 14/11/10.
 //  Copyright (c) 2014年 RongCloud. All rights reserved.
 //

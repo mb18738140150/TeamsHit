@@ -9,6 +9,9 @@
 #import "PrintPreviewController.h"
 #import "MaterialDataModel.h"
 #import "PrintPreviewCell.h"
+
+#define TOUSERHEIGHT 33
+
 static NSString* ALCELLID = @"PrintPreviewCellId";
 @interface PrintPreviewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -21,6 +24,9 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 @property (nonatomic, strong)UIImageView * importantImageView;
 @property (nonatomic, strong)UILabel * timeLabel;
 @property (nonatomic, strong)UIImageView * imaginariView;
+@property (nonatomic, strong)UILabel * toUsernameLabel;
+@property (nonatomic, strong)UIImageView * tousernameImaginariView;
+
 @property (nonatomic, assign)BOOL isImportantInformation;
 @end
 
@@ -43,6 +49,15 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印" style:UIBarButtonItemStylePlain target:self action:@selector(printAction)];
+    
+    if (self.userId.intValue == [RCIM sharedRCIM].currentUserInfo.userId.intValue) {
+        self.userName = [RCIM sharedRCIM].currentUserInfo.name;
+    }else
+    {
+        
+        RCDUserInfo * userInfo = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.userId]];
+        self.userName = userInfo.displayName;
+    }
     
     [self prepareUI];
     
@@ -98,7 +113,7 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     [self.styleBT addTarget:self action:@selector(importantAction:) forControlEvents:UIControlEventTouchUpInside];
     [_headerView addSubview:self.styleBT];
     
-    self.bottomView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.styleBT.frame) + 21, _headerView.hd_width, 87)];
+    self.bottomView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.styleBT.frame) + 21, _headerView.hd_width, 87 + TOUSERHEIGHT)];
     _bottomView.backgroundColor = [UIColor whiteColor];
     UIBezierPath * path = [UIBezierPath bezierPathWithRoundedRect:_bottomView.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
     CAShapeLayer * maskLayer = [[CAShapeLayer alloc]init];
@@ -134,6 +149,17 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     _imaginariView.image = [UIImage imageNamed:@"imaginaryline"];
     [_bottomView addSubview:_imaginariView];
     
+    self.toUsernameLabel = [[UILabel alloc]initWithFrame:CGRectMake(17, 81, _bottomView.hd_width - 34, 13)];
+    _toUsernameLabel.font = [UIFont systemFontOfSize:13];
+    _toUsernameLabel.backgroundColor = [UIColor whiteColor];
+    _toUsernameLabel.text = [NSString stringWithFormat:@"To:%@", self.userName];
+    _toUsernameLabel.textColor = UIColorFromRGB(0x323232);
+    [_bottomView addSubview:_toUsernameLabel];
+    
+    self.tousernameImaginariView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 103, _headerView.hd_width - 20, 2)];
+    _tousernameImaginariView.image = [UIImage imageNamed:@"imaginaryline"];
+    [_bottomView addSubview:_tousernameImaginariView];
+    
     return _headerView;
 }
 
@@ -144,26 +170,31 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
 
 - (void)calculateTableviewHeight
 {
-    
     if (self.styleBT.selected) {
-        _headerView.hd_height = 143;
-        _bottomView.hd_height = 87;
+        _headerView.hd_height = 143 + TOUSERHEIGHT;
+        _bottomView.hd_height = 87+ TOUSERHEIGHT;
         
         _importantLabel.hidden = NO;
         _importantImageView.hidden = NO;
         
         _timeLabel.hd_y = 49;
         _imaginariView.hd_y = 71;
+        
+        _toUsernameLabel.hd_y = 81;
+        _tousernameImaginariView.hd_y = 103;
     }else
     {
-        _headerView.hd_height = 110;
-        _bottomView.hd_height = 54;
+        _headerView.hd_height = 110+ TOUSERHEIGHT;
+        _bottomView.hd_height = 54+ TOUSERHEIGHT;
         
         _importantLabel.hidden = YES;
         _importantImageView.hidden = YES;
         
         _timeLabel.hd_y = 17;
         _imaginariView.hd_y = 39;
+        
+        _toUsernameLabel.hd_y = 49;
+        _tousernameImaginariView.hd_y = 71;
         
     }
     

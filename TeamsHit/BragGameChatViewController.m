@@ -756,12 +756,11 @@
 - (void)openDIcePoint:(NSDictionary *)dic
 {
     [self.bragGameView openDIcePoint:dic];
-    self.headerView.timeLabel.text = @"0";
     if (self.leaveTime) {
         [self.leaveTime invalidate];
         self.leaveTime = nil;
     }
-    
+    self.headerView.timeLabel.text = @"0";
 }
 
 // 游戏结束

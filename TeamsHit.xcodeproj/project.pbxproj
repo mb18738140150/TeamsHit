@@ -92,8 +92,17 @@
 		731449C61D98FAC900512E64 /* TypeofGameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 731449C41D98FAC900512E64 /* TypeofGameTableViewCell.xib */; };
 		731554661DC6F53400FDEF16 /* icon_open_call_point.png in Resources */ = {isa = PBXBuildFile; fileRef = 731554651DC6F53400FDEF16 /* icon_open_call_point.png */; };
 		7315546A1DC757B500FDEF16 /* 888.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 731554691DC757B500FDEF16 /* 888.JPG */; };
+		73162B941E7275D60041C775 /* ConcentrationlistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73162B931E7275D50041C775 /* ConcentrationlistView.m */; };
+		73162B971E72A79C0041C775 /* PrintHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73162B961E72A79C0041C775 /* PrintHistoryViewController.m */; };
+		73162B9B1E72A8AA0041C775 /* OrderPrintTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73162B991E72A8AA0041C775 /* OrderPrintTableViewCell.m */; };
+		73162B9C1E72A8AA0041C775 /* OrderPrintTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73162B9A1E72A8AA0041C775 /* OrderPrintTableViewCell.xib */; };
+		73162B9F1E72A9620041C775 /* printOrderSelect.png in Resources */ = {isa = PBXBuildFile; fileRef = 73162B9D1E72A9620041C775 /* printOrderSelect.png */; };
+		73162BA01E72A9620041C775 /* printOrderUnselect.png in Resources */ = {isa = PBXBuildFile; fileRef = 73162B9E1E72A9620041C775 /* printOrderUnselect.png */; };
+		73162BA31E72AD8B0041C775 /* PrintOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73162BA21E72AD8B0041C775 /* PrintOrderModel.m */; };
 		7316F75A1DC4958B00FD5D86 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7316F7591DC4958B00FD5D86 /* CoreMotion.framework */; };
 		7316F75C1DC4C95100FD5D86 /* bbb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7316F75B1DC4C95100FD5D86 /* bbb.jpg */; };
+		731900D61E680D8900B36B45 /* 美团1.png in Resources */ = {isa = PBXBuildFile; fileRef = 731900D41E680D8900B36B45 /* 美团1.png */; };
+		731900D71E680D8900B36B45 /* 美团2.png in Resources */ = {isa = PBXBuildFile; fileRef = 731900D51E680D8900B36B45 /* 美团2.png */; };
 		73199DA61D83A38B00D5015E /* PrepareGameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73199DA51D83A38B00D5015E /* PrepareGameView.m */; };
 		73199DA91D83A60C00D5015E /* PrepareGameCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73199DA81D83A60C00D5015E /* PrepareGameCollectionViewCell.m */; };
 		73199DAB1D83AA2200D5015E /* preparegameSign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73199DAA1D83AA2200D5015E /* preparegameSign.png */; };
@@ -565,6 +574,30 @@
 		73DEC7E81DB7745500CD822D /* UserFriendCircleImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DEC7E71DB7745500CD822D /* UserFriendCircleImageView.m */; };
 		73DEC7EB1DB78E1E00CD822D /* UserFriendCircleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DEC7EA1DB78E1E00CD822D /* UserFriendCircleModel.m */; };
 		73DEF8AB1E2609DE0015096B /* ShuoshuoFavouriteAndCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DEF8AA1E2609DE0015096B /* ShuoshuoFavouriteAndCommentView.m */; };
+		73E0057E1E65123800DF4CBD /* StoreinformationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E0057D1E65123800DF4CBD /* StoreinformationModel.m */; };
+		73E005811E65126400DF4CBD /* StoreEquipmentInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E005801E65126400DF4CBD /* StoreEquipmentInfoModel.m */; };
+		73E0F4111E66B63E00AFAD4E /* SigninViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E0F4101E66B63E00AFAD4E /* SigninViewController.m */; };
+		73E0F4141E66B67300AFAD4E /* SigninView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E0F4131E66B67300AFAD4E /* SigninView.m */; };
+		73E0F4181E66BDBC00AFAD4E /* SigninDateCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E0F4161E66BDBC00AFAD4E /* SigninDateCollectionViewCell.m */; };
+		73E0F4191E66BDBC00AFAD4E /* SigninDateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F4171E66BDBC00AFAD4E /* SigninDateCollectionViewCell.xib */; };
+		73E0F41B1E66C82A00AFAD4E /* SigninViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F41A1E66C82A00AFAD4E /* SigninViewController.xib */; };
+		73E0F4261E66CA1300AFAD4E /* preparePlaceholdIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F4251E66CA1300AFAD4E /* preparePlaceholdIcon.png */; };
+		73E0F42D1E66CAF100AFAD4E /* sign_redcircle.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F4281E66CAF100AFAD4E /* sign_redcircle.png */; };
+		73E0F42E1E66CAF100AFAD4E /* signBackImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F4291E66CAF100AFAD4E /* signBackImage.png */; };
+		73E0F42F1E66CAF100AFAD4E /* signin_oringecircle.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F42A1E66CAF100AFAD4E /* signin_oringecircle.png */; };
+		73E0F4301E66CAF100AFAD4E /* signin_oringecircle_e.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F42B1E66CAF100AFAD4E /* signin_oringecircle_e.png */; };
+		73E0F4311E66CAF100AFAD4E /* 签到-按钮背景.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E0F42C1E66CAF100AFAD4E /* 签到-按钮背景.png */; };
+		73E1EBE71E640458003E7C23 /* StoreImformationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E1EBE51E640458003E7C23 /* StoreImformationCell.m */; };
+		73E1EBE81E640458003E7C23 /* StoreImformationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBE61E640458003E7C23 /* StoreImformationCell.xib */; };
+		73E1EBF51E642FA5003E7C23 /* 百度外卖.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBEA1E642FA5003E7C23 /* 百度外卖.png */; };
+		73E1EBF61E642FA5003E7C23 /* 百度外卖1.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBEB1E642FA5003E7C23 /* 百度外卖1.png */; };
+		73E1EBF71E642FA5003E7C23 /* 签到-圆圈.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBEC1E642FA5003E7C23 /* 签到-圆圈.png */; };
+		73E1EBF81E642FA5003E7C23 /* 签到-按钮背景.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBED1E642FA5003E7C23 /* 签到-按钮背景.png */; };
+		73E1EBF91E642FA5003E7C23 /* 签到-桔黄色圆.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBEE1E642FA5003E7C23 /* 签到-桔黄色圆.png */; };
+		73E1EBFA1E642FA5003E7C23 /* 签到-红色圆.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBEF1E642FA5003E7C23 /* 签到-红色圆.png */; };
+		73E1EBFB1E642FA5003E7C23 /* 签到-背景.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBF01E642FA5003E7C23 /* 签到-背景.png */; };
+		73E1EBFE1E642FA5003E7C23 /* 饿了么.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBF31E642FA5003E7C23 /* 饿了么.png */; };
+		73E1EBFF1E642FA5003E7C23 /* 饿了么1.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E1EBF41E642FA5003E7C23 /* 饿了么1.png */; };
 		73E665E41D4C8084005B11A4 /* EquipmentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E665E31D4C8084005B11A4 /* EquipmentTableViewCell.m */; };
 		73E665E71D4C852D005B11A4 /* EquipmentCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E665E61D4C852D005B11A4 /* EquipmentCollectionViewCell.m */; };
 		73E665EB1D4C86A1005B11A4 /* EquipmentcollectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E665EA1D4C86A1005B11A4 /* EquipmentcollectionModel.m */; };
@@ -583,6 +616,14 @@
 		73E666071D4C98AF005B11A4 /* equipicon4-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E665FB1D4C98AF005B11A4 /* equipicon4-2@2x.png */; };
 		73E6660B1D4C9A50005B11A4 /* ConfigurationWiFiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E666091D4C9A50005B11A4 /* ConfigurationWiFiViewController.m */; };
 		73E6660C1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73E6660A1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib */; };
+		73E888AD1E5FFECC0093C5AA /* MyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E888AA1E5FFECC0093C5AA /* MyButton.m */; };
+		73E888AE1E5FFECC0093C5AA /* MyButton+helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E888AC1E5FFECC0093C5AA /* MyButton+helper.m */; };
+		73E888B11E6013E70093C5AA /* TakeoutAccountModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E888B01E6013E70093C5AA /* TakeoutAccountModel.m */; };
+		73E888B51E6033220093C5AA /* businessAccountIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E888B21E6033220093C5AA /* businessAccountIcon.png */; };
+		73E888B61E6033220093C5AA /* signin.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E888B31E6033220093C5AA /* signin.png */; };
+		73E888B71E6033220093C5AA /* takeoutbusinessserve.png in Resources */ = {isa = PBXBuildFile; fileRef = 73E888B41E6033220093C5AA /* takeoutbusinessserve.png */; };
+		73EA1EBB1E67BA8100458808 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73EA1EBA1E67BA8100458808 /* CoreText.framework */; };
+		73EA1EBE1E67C53A00458808 /* SigninModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EA1EBD1E67C53A00458808 /* SigninModel.m */; };
 		73ED5E3D1DC866F2008647D6 /* 我开你.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73ED5E3C1DC866F2008647D6 /* 我开你.mp3 */; };
 		73F21BDA1DAB31EC00424693 /* 统计点数.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD51DAB31EC00424693 /* 统计点数.wav */; };
 		73F21BDB1DAB31EC00424693 /* 统计完点数的声音.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */; };
@@ -601,6 +642,19 @@
 		73F21BFD1DAB6A2100424693 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21BFC1DAB6A2100424693 /* UIKit.framework */; };
 		73F21BFF1DAB6A2B00424693 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21BFE1DAB6A2B00424693 /* Foundation.framework */; };
 		73F21C011DAB6A3300424693 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21C001DAB6A3300424693 /* CoreFoundation.framework */; };
+		73F3FB471E5D61F300C9FEB7 /* BusinessServeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB461E5D61F300C9FEB7 /* BusinessServeViewController.m */; };
+		73F3FB4B1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB491E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m */; };
+		73F3FB4C1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB4A1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib */; };
+		73F3FB501E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB4E1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.m */; };
+		73F3FB511E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB4F1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.xib */; };
+		73F3FB551E5D683A00C9FEB7 /* TakeoutLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB531E5D683A00C9FEB7 /* TakeoutLoginViewController.m */; };
+		73F3FB561E5D683A00C9FEB7 /* TakeoutLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB541E5D683A00C9FEB7 /* TakeoutLoginViewController.xib */; };
+		73F3FB5A1E5D700B00C9FEB7 /* StoreInformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB581E5D700B00C9FEB7 /* StoreInformationViewController.m */; };
+		73F3FB5B1E5D700B00C9FEB7 /* StoreInformationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB591E5D700B00C9FEB7 /* StoreInformationViewController.xib */; };
+		73F3FB5F1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB5D1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.m */; };
+		73F3FB601E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB5E1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.xib */; };
+		73F3FB641E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB621E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.m */; };
+		73F3FB651E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB631E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.xib */; };
 		73F405AB1E0B63A300B117F4 /* closecreatgameviewBT.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F405A81E0B63A300B117F4 /* closecreatgameviewBT.png */; };
 		73F405AC1E0B63A300B117F4 /* creatBraggamesign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F405A91E0B63A300B117F4 /* creatBraggamesign.png */; };
 		73F405AD1E0B63A300B117F4 /* creatfantasygamesign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F405AA1E0B63A300B117F4 /* creatfantasygamesign.png */; };
@@ -617,6 +671,11 @@
 		73FAEBA01D9B9E54006BA437 /* BragGameOverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEB9F1D9B9E54006BA437 /* BragGameOverView.xib */; };
 		73FAEBA21D9BA06D006BA437 /* bragGameOverSign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEBA11D9BA06D006BA437 /* bragGameOverSign.png */; };
 		73FAEBA41D9BBA0D006BA437 /* TeamHitCoin.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEBA31D9BBA0D006BA437 /* TeamHitCoin.png */; };
+		73FAFAAA1E7256E20021EE0D /* equipment5.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAFAA91E7256E20021EE0D /* equipment5.png */; };
+		73FAFAAF1E7260540021EE0D /* ConcentrationCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FAFAAD1E7260540021EE0D /* ConcentrationCollectionViewCell.m */; };
+		73FAFAB01E7260540021EE0D /* ConcentrationCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73FAFAAE1E7260540021EE0D /* ConcentrationCollectionViewCell.xib */; };
+		73FAFAB21E7261510021EE0D /* concentrationSetup.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAFAB11E7261510021EE0D /* concentrationSetup.png */; };
+		73FAFAB51E7261D40021EE0D /* ConcentrationLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FAFAB41E7261D40021EE0D /* ConcentrationLayout.m */; };
 		73FB0FEA1E484A42007E0FEE /* GamebackImage.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 73FB0FE91E484A42007E0FEE /* GamebackImage.bundle */; };
 		73FB0FED1E484B47007E0FEE /* GameBackImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FB0FEC1E484B47007E0FEE /* GameBackImageViewController.m */; };
 		73FB0FF11E484E24007E0FEE /* GameBackImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FB0FF01E484E24007E0FEE /* GameBackImageCollectionViewCell.m */; };
@@ -775,8 +834,21 @@
 		731449C41D98FAC900512E64 /* TypeofGameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TypeofGameTableViewCell.xib; sourceTree = "<group>"; };
 		731554651DC6F53400FDEF16 /* icon_open_call_point.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_open_call_point.png; sourceTree = "<group>"; };
 		731554691DC757B500FDEF16 /* 888.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 888.JPG; sourceTree = "<group>"; };
+		73162B921E7275D50041C775 /* ConcentrationlistView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcentrationlistView.h; sourceTree = "<group>"; };
+		73162B931E7275D50041C775 /* ConcentrationlistView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcentrationlistView.m; sourceTree = "<group>"; };
+		73162B951E72A79C0041C775 /* PrintHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintHistoryViewController.h; sourceTree = "<group>"; };
+		73162B961E72A79C0041C775 /* PrintHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintHistoryViewController.m; sourceTree = "<group>"; };
+		73162B981E72A8AA0041C775 /* OrderPrintTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderPrintTableViewCell.h; sourceTree = "<group>"; };
+		73162B991E72A8AA0041C775 /* OrderPrintTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderPrintTableViewCell.m; sourceTree = "<group>"; };
+		73162B9A1E72A8AA0041C775 /* OrderPrintTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderPrintTableViewCell.xib; sourceTree = "<group>"; };
+		73162B9D1E72A9620041C775 /* printOrderSelect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = printOrderSelect.png; sourceTree = "<group>"; };
+		73162B9E1E72A9620041C775 /* printOrderUnselect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = printOrderUnselect.png; sourceTree = "<group>"; };
+		73162BA11E72AD8B0041C775 /* PrintOrderModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintOrderModel.h; sourceTree = "<group>"; };
+		73162BA21E72AD8B0041C775 /* PrintOrderModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintOrderModel.m; sourceTree = "<group>"; };
 		7316F7591DC4958B00FD5D86 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		7316F75B1DC4C95100FD5D86 /* bbb.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bbb.jpg; sourceTree = "<group>"; };
+		731900D41E680D8900B36B45 /* 美团1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "美团1.png"; sourceTree = "<group>"; };
+		731900D51E680D8900B36B45 /* 美团2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "美团2.png"; sourceTree = "<group>"; };
 		73199DA41D83A38B00D5015E /* PrepareGameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrepareGameView.h; sourceTree = "<group>"; };
 		73199DA51D83A38B00D5015E /* PrepareGameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrepareGameView.m; sourceTree = "<group>"; };
 		73199DA71D83A60C00D5015E /* PrepareGameCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrepareGameCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1496,6 +1568,36 @@
 		73DEC7EA1DB78E1E00CD822D /* UserFriendCircleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserFriendCircleModel.m; sourceTree = "<group>"; };
 		73DEF8A91E2609DE0015096B /* ShuoshuoFavouriteAndCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShuoshuoFavouriteAndCommentView.h; sourceTree = "<group>"; };
 		73DEF8AA1E2609DE0015096B /* ShuoshuoFavouriteAndCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShuoshuoFavouriteAndCommentView.m; sourceTree = "<group>"; };
+		73E0057C1E65123800DF4CBD /* StoreinformationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreinformationModel.h; sourceTree = "<group>"; };
+		73E0057D1E65123800DF4CBD /* StoreinformationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreinformationModel.m; sourceTree = "<group>"; };
+		73E0057F1E65126400DF4CBD /* StoreEquipmentInfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreEquipmentInfoModel.h; sourceTree = "<group>"; };
+		73E005801E65126400DF4CBD /* StoreEquipmentInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreEquipmentInfoModel.m; sourceTree = "<group>"; };
+		73E0F40F1E66B63E00AFAD4E /* SigninViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SigninViewController.h; sourceTree = "<group>"; };
+		73E0F4101E66B63E00AFAD4E /* SigninViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SigninViewController.m; sourceTree = "<group>"; };
+		73E0F4121E66B67300AFAD4E /* SigninView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SigninView.h; sourceTree = "<group>"; };
+		73E0F4131E66B67300AFAD4E /* SigninView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SigninView.m; sourceTree = "<group>"; };
+		73E0F4151E66BDBC00AFAD4E /* SigninDateCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SigninDateCollectionViewCell.h; sourceTree = "<group>"; };
+		73E0F4161E66BDBC00AFAD4E /* SigninDateCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SigninDateCollectionViewCell.m; sourceTree = "<group>"; };
+		73E0F4171E66BDBC00AFAD4E /* SigninDateCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SigninDateCollectionViewCell.xib; sourceTree = "<group>"; };
+		73E0F41A1E66C82A00AFAD4E /* SigninViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SigninViewController.xib; sourceTree = "<group>"; };
+		73E0F4251E66CA1300AFAD4E /* preparePlaceholdIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preparePlaceholdIcon.png; sourceTree = "<group>"; };
+		73E0F4281E66CAF100AFAD4E /* sign_redcircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sign_redcircle.png; sourceTree = "<group>"; };
+		73E0F4291E66CAF100AFAD4E /* signBackImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = signBackImage.png; sourceTree = "<group>"; };
+		73E0F42A1E66CAF100AFAD4E /* signin_oringecircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = signin_oringecircle.png; sourceTree = "<group>"; };
+		73E0F42B1E66CAF100AFAD4E /* signin_oringecircle_e.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = signin_oringecircle_e.png; sourceTree = "<group>"; };
+		73E0F42C1E66CAF100AFAD4E /* 签到-按钮背景.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "签到-按钮背景.png"; sourceTree = "<group>"; };
+		73E1EBE41E640458003E7C23 /* StoreImformationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreImformationCell.h; sourceTree = "<group>"; };
+		73E1EBE51E640458003E7C23 /* StoreImformationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreImformationCell.m; sourceTree = "<group>"; };
+		73E1EBE61E640458003E7C23 /* StoreImformationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreImformationCell.xib; sourceTree = "<group>"; };
+		73E1EBEA1E642FA5003E7C23 /* 百度外卖.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "百度外卖.png"; sourceTree = "<group>"; };
+		73E1EBEB1E642FA5003E7C23 /* 百度外卖1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "百度外卖1.png"; sourceTree = "<group>"; };
+		73E1EBEC1E642FA5003E7C23 /* 签到-圆圈.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "签到-圆圈.png"; sourceTree = "<group>"; };
+		73E1EBED1E642FA5003E7C23 /* 签到-按钮背景.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "签到-按钮背景.png"; sourceTree = "<group>"; };
+		73E1EBEE1E642FA5003E7C23 /* 签到-桔黄色圆.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "签到-桔黄色圆.png"; sourceTree = "<group>"; };
+		73E1EBEF1E642FA5003E7C23 /* 签到-红色圆.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "签到-红色圆.png"; sourceTree = "<group>"; };
+		73E1EBF01E642FA5003E7C23 /* 签到-背景.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "签到-背景.png"; sourceTree = "<group>"; };
+		73E1EBF31E642FA5003E7C23 /* 饿了么.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "饿了么.png"; sourceTree = "<group>"; };
+		73E1EBF41E642FA5003E7C23 /* 饿了么1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "饿了么1.png"; sourceTree = "<group>"; };
 		73E665E21D4C8084005B11A4 /* EquipmentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquipmentTableViewCell.h; sourceTree = "<group>"; };
 		73E665E31D4C8084005B11A4 /* EquipmentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquipmentTableViewCell.m; sourceTree = "<group>"; };
 		73E665E51D4C852D005B11A4 /* EquipmentCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquipmentCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1519,6 +1621,18 @@
 		73E666081D4C9A50005B11A4 /* ConfigurationWiFiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigurationWiFiViewController.h; sourceTree = "<group>"; };
 		73E666091D4C9A50005B11A4 /* ConfigurationWiFiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigurationWiFiViewController.m; sourceTree = "<group>"; };
 		73E6660A1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfigurationWiFiViewController.xib; sourceTree = "<group>"; };
+		73E888A91E5FFECC0093C5AA /* MyButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyButton.h; sourceTree = "<group>"; };
+		73E888AA1E5FFECC0093C5AA /* MyButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyButton.m; sourceTree = "<group>"; };
+		73E888AB1E5FFECC0093C5AA /* MyButton+helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MyButton+helper.h"; sourceTree = "<group>"; };
+		73E888AC1E5FFECC0093C5AA /* MyButton+helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MyButton+helper.m"; sourceTree = "<group>"; };
+		73E888AF1E6013E70093C5AA /* TakeoutAccountModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakeoutAccountModel.h; sourceTree = "<group>"; };
+		73E888B01E6013E70093C5AA /* TakeoutAccountModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TakeoutAccountModel.m; sourceTree = "<group>"; };
+		73E888B21E6033220093C5AA /* businessAccountIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = businessAccountIcon.png; sourceTree = "<group>"; };
+		73E888B31E6033220093C5AA /* signin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = signin.png; sourceTree = "<group>"; };
+		73E888B41E6033220093C5AA /* takeoutbusinessserve.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = takeoutbusinessserve.png; sourceTree = "<group>"; };
+		73EA1EBA1E67BA8100458808 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		73EA1EBC1E67C53A00458808 /* SigninModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SigninModel.h; sourceTree = "<group>"; };
+		73EA1EBD1E67C53A00458808 /* SigninModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SigninModel.m; sourceTree = "<group>"; };
 		73ED5E3C1DC866F2008647D6 /* 我开你.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "我开你.mp3"; sourceTree = "<group>"; };
 		73F21BD51DAB31EC00424693 /* 统计点数.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "统计点数.wav"; sourceTree = "<group>"; };
 		73F21BD61DAB31EC00424693 /* 统计完点数的声音.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "统计完点数的声音.wav"; sourceTree = "<group>"; };
@@ -1538,6 +1652,26 @@
 		73F21BFC1DAB6A2100424693 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		73F21BFE1DAB6A2B00424693 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73F21C001DAB6A3300424693 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		73F3FB451E5D61F300C9FEB7 /* BusinessServeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusinessServeViewController.h; sourceTree = "<group>"; };
+		73F3FB461E5D61F300C9FEB7 /* BusinessServeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusinessServeViewController.m; sourceTree = "<group>"; };
+		73F3FB481E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakeOutNewAcountTableViewCell.h; sourceTree = "<group>"; };
+		73F3FB491E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TakeOutNewAcountTableViewCell.m; sourceTree = "<group>"; };
+		73F3FB4A1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TakeOutNewAcountTableViewCell.xib; sourceTree = "<group>"; };
+		73F3FB4D1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakeoutAccountTableViewCell.h; sourceTree = "<group>"; };
+		73F3FB4E1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TakeoutAccountTableViewCell.m; sourceTree = "<group>"; };
+		73F3FB4F1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TakeoutAccountTableViewCell.xib; sourceTree = "<group>"; };
+		73F3FB521E5D683A00C9FEB7 /* TakeoutLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakeoutLoginViewController.h; sourceTree = "<group>"; };
+		73F3FB531E5D683A00C9FEB7 /* TakeoutLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TakeoutLoginViewController.m; sourceTree = "<group>"; };
+		73F3FB541E5D683A00C9FEB7 /* TakeoutLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TakeoutLoginViewController.xib; sourceTree = "<group>"; };
+		73F3FB571E5D700B00C9FEB7 /* StoreInformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreInformationViewController.h; sourceTree = "<group>"; };
+		73F3FB581E5D700B00C9FEB7 /* StoreInformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreInformationViewController.m; sourceTree = "<group>"; };
+		73F3FB591E5D700B00C9FEB7 /* StoreInformationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreInformationViewController.xib; sourceTree = "<group>"; };
+		73F3FB5C1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBindingEquipmentViewController.h; sourceTree = "<group>"; };
+		73F3FB5D1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBindingEquipmentViewController.m; sourceTree = "<group>"; };
+		73F3FB5E1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreBindingEquipmentViewController.xib; sourceTree = "<group>"; };
+		73F3FB611E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreEquipmentInformationTableViewCell.h; sourceTree = "<group>"; };
+		73F3FB621E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreEquipmentInformationTableViewCell.m; sourceTree = "<group>"; };
+		73F3FB631E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreEquipmentInformationTableViewCell.xib; sourceTree = "<group>"; };
 		73F405A81E0B63A300B117F4 /* closecreatgameviewBT.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = closecreatgameviewBT.png; sourceTree = "<group>"; };
 		73F405A91E0B63A300B117F4 /* creatBraggamesign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = creatBraggamesign.png; sourceTree = "<group>"; };
 		73F405AA1E0B63A300B117F4 /* creatfantasygamesign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = creatfantasygamesign.png; sourceTree = "<group>"; };
@@ -1556,6 +1690,13 @@
 		73FAEB9F1D9B9E54006BA437 /* BragGameOverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BragGameOverView.xib; sourceTree = "<group>"; };
 		73FAEBA11D9BA06D006BA437 /* bragGameOverSign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bragGameOverSign.png; sourceTree = "<group>"; };
 		73FAEBA31D9BBA0D006BA437 /* TeamHitCoin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TeamHitCoin.png; sourceTree = "<group>"; };
+		73FAFAA91E7256E20021EE0D /* equipment5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = equipment5.png; sourceTree = "<group>"; };
+		73FAFAAC1E7260540021EE0D /* ConcentrationCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcentrationCollectionViewCell.h; sourceTree = "<group>"; };
+		73FAFAAD1E7260540021EE0D /* ConcentrationCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcentrationCollectionViewCell.m; sourceTree = "<group>"; };
+		73FAFAAE1E7260540021EE0D /* ConcentrationCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConcentrationCollectionViewCell.xib; sourceTree = "<group>"; };
+		73FAFAB11E7261510021EE0D /* concentrationSetup.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = concentrationSetup.png; sourceTree = "<group>"; };
+		73FAFAB31E7261D40021EE0D /* ConcentrationLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcentrationLayout.h; sourceTree = "<group>"; };
+		73FAFAB41E7261D40021EE0D /* ConcentrationLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcentrationLayout.m; sourceTree = "<group>"; };
 		73FB0FE91E484A42007E0FEE /* GamebackImage.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GamebackImage.bundle; sourceTree = "<group>"; };
 		73FB0FEB1E484B47007E0FEE /* GameBackImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameBackImageViewController.h; sourceTree = "<group>"; };
 		73FB0FEC1E484B47007E0FEE /* GameBackImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameBackImageViewController.m; sourceTree = "<group>"; };
@@ -1589,6 +1730,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73EA1EBB1E67BA8100458808 /* CoreText.framework in Frameworks */,
 				7316F75A1DC4958B00FD5D86 /* CoreMotion.framework in Frameworks */,
 				7323589A1DBDFC7B00CF21FD /* Security.framework in Frameworks */,
 				736299E71DB9FCBB004E25A9 /* StoreKit.framework in Frameworks */,
@@ -1807,6 +1949,7 @@
 				7336C9DB1DDC2DC400E29F90 /* PreparedButton.png */,
 				7336C9DC1DDC2DC400E29F90 /* quieGameButton.png */,
 				73199DAA1D83AA2200D5015E /* preparegameSign.png */,
+				73E0F4251E66CA1300AFAD4E /* preparePlaceholdIcon.png */,
 				7394BCE71DD177D600A16455 /* preparePlaceholdIcon1.png */,
 				733FA1401D82504D009A1689 /* 设置@2x.png */,
 				733FA1391D82457C009A1689 /* tm.png */,
@@ -2240,6 +2383,10 @@
 		732B93111D2DF4FA0095DD62 /* General */ = {
 			isa = PBXGroup;
 			children = (
+				73E888A91E5FFECC0093C5AA /* MyButton.h */,
+				73E888AA1E5FFECC0093C5AA /* MyButton.m */,
+				73E888AB1E5FFECC0093C5AA /* MyButton+helper.h */,
+				73E888AC1E5FFECC0093C5AA /* MyButton+helper.m */,
 				736EEFE11DC0644900DA5B5E /* print */,
 				7323589B1DBE01B300CF21FD /* Wechat */,
 				73CD8F4D1D48429800BC7EAC /* qrCode */,
@@ -2998,6 +3145,8 @@
 				73555C501DBF0A1900153E6A /* ModifyPasswordViewController.h */,
 				73555C511DBF0A1900153E6A /* ModifyPasswordViewController.m */,
 				73555C521DBF0A1900153E6A /* ModifyPasswordViewController.xib */,
+				73E0F40E1E66B4B500AFAD4E /* signin */,
+				73F3FB441E5D619000C9FEB7 /* businessServe */,
 				73555C481DBF037D00153E6A /* aboutUs */,
 				736299D21DB9A980004E25A9 /* buycoincontrollers */,
 				73BB214F1D52F33A000CBC9A /* equipmentController */,
@@ -3111,6 +3260,11 @@
 		737118191D38BFDA00B590CB /* meResource */ = {
 			isa = PBXGroup;
 			children = (
+				73E0F4271E66CAF100AFAD4E /* signinImageResource */,
+				73E1EBE91E642FA5003E7C23 /* 商家服务切图 */,
+				73E888B21E6033220093C5AA /* businessAccountIcon.png */,
+				73E888B31E6033220093C5AA /* signin.png */,
+				73E888B41E6033220093C5AA /* takeoutbusinessserve.png */,
 				731B91D01DC2038D000441C7 /* recharge.png */,
 				73555C4E1DBF087100153E6A /* forgetPassword.png */,
 				73555C681DBF477400153E6A /* share_circle.png */,
@@ -3270,6 +3424,7 @@
 		73BB214F1D52F33A000CBC9A /* equipmentController */ = {
 			isa = PBXGroup;
 			children = (
+				73FAFAAB1E7260250021EE0D /* concentration */,
 				73671A571D4C4B6E00C07823 /* EquipmentManagerViewController.h */,
 				73671A581D4C4B6E00C07823 /* EquipmentManagerViewController.m */,
 				73671A591D4C4B6E00C07823 /* EquipmentManagerViewController.xib */,
@@ -3384,6 +3539,55 @@
 			name = userFriendCircle;
 			sourceTree = "<group>";
 		};
+		73E0F40E1E66B4B500AFAD4E /* signin */ = {
+			isa = PBXGroup;
+			children = (
+				73E0F40F1E66B63E00AFAD4E /* SigninViewController.h */,
+				73E0F4101E66B63E00AFAD4E /* SigninViewController.m */,
+				73E0F41A1E66C82A00AFAD4E /* SigninViewController.xib */,
+				73E0F4121E66B67300AFAD4E /* SigninView.h */,
+				73E0F4131E66B67300AFAD4E /* SigninView.m */,
+				73E0F4151E66BDBC00AFAD4E /* SigninDateCollectionViewCell.h */,
+				73E0F4161E66BDBC00AFAD4E /* SigninDateCollectionViewCell.m */,
+				73E0F4171E66BDBC00AFAD4E /* SigninDateCollectionViewCell.xib */,
+				73EA1EBC1E67C53A00458808 /* SigninModel.h */,
+				73EA1EBD1E67C53A00458808 /* SigninModel.m */,
+			);
+			name = signin;
+			sourceTree = "<group>";
+		};
+		73E0F4271E66CAF100AFAD4E /* signinImageResource */ = {
+			isa = PBXGroup;
+			children = (
+				73E0F4281E66CAF100AFAD4E /* sign_redcircle.png */,
+				73E0F4291E66CAF100AFAD4E /* signBackImage.png */,
+				73E0F42A1E66CAF100AFAD4E /* signin_oringecircle.png */,
+				73E0F42B1E66CAF100AFAD4E /* signin_oringecircle_e.png */,
+				73E0F42C1E66CAF100AFAD4E /* 签到-按钮背景.png */,
+			);
+			path = signinImageResource;
+			sourceTree = "<group>";
+		};
+		73E1EBE91E642FA5003E7C23 /* 商家服务切图 */ = {
+			isa = PBXGroup;
+			children = (
+				73162B9D1E72A9620041C775 /* printOrderSelect.png */,
+				73162B9E1E72A9620041C775 /* printOrderUnselect.png */,
+				73E1EBEA1E642FA5003E7C23 /* 百度外卖.png */,
+				73E1EBEB1E642FA5003E7C23 /* 百度外卖1.png */,
+				73E1EBEC1E642FA5003E7C23 /* 签到-圆圈.png */,
+				73E1EBED1E642FA5003E7C23 /* 签到-按钮背景.png */,
+				73E1EBEE1E642FA5003E7C23 /* 签到-桔黄色圆.png */,
+				73E1EBEF1E642FA5003E7C23 /* 签到-红色圆.png */,
+				73E1EBF01E642FA5003E7C23 /* 签到-背景.png */,
+				731900D41E680D8900B36B45 /* 美团1.png */,
+				731900D51E680D8900B36B45 /* 美团2.png */,
+				73E1EBF31E642FA5003E7C23 /* 饿了么.png */,
+				73E1EBF41E642FA5003E7C23 /* 饿了么1.png */,
+			);
+			path = "商家服务切图";
+			sourceTree = "<group>";
+		};
 		73E665E11D4C8065005B11A4 /* view */ = {
 			isa = PBXGroup;
 			children = (
@@ -3419,6 +3623,8 @@
 				73E665F91D4C98AF005B11A4 /* equipicon4-1@2x.png */,
 				73E665FA1D4C98AF005B11A4 /* equipicon4-2.png */,
 				73E665FB1D4C98AF005B11A4 /* equipicon4-2@2x.png */,
+				73FAFAA91E7256E20021EE0D /* equipment5.png */,
+				73FAFAB11E7261510021EE0D /* concentrationSetup.png */,
 			);
 			name = equipmentResource;
 			sourceTree = "<group>";
@@ -3441,6 +3647,63 @@
 				73F21BD91DAB31EC00424693 /* 游戏赢了.wav */,
 			);
 			name = "音频文件";
+			sourceTree = "<group>";
+		};
+		73F3FB441E5D619000C9FEB7 /* businessServe */ = {
+			isa = PBXGroup;
+			children = (
+				73F3FB451E5D61F300C9FEB7 /* BusinessServeViewController.h */,
+				73F3FB461E5D61F300C9FEB7 /* BusinessServeViewController.m */,
+				73F3FB481E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.h */,
+				73F3FB491E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m */,
+				73F3FB4A1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib */,
+				73F3FB4D1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.h */,
+				73F3FB4E1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.m */,
+				73F3FB4F1E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.xib */,
+				73F3FB521E5D683A00C9FEB7 /* TakeoutLoginViewController.h */,
+				73F3FB531E5D683A00C9FEB7 /* TakeoutLoginViewController.m */,
+				73F3FB541E5D683A00C9FEB7 /* TakeoutLoginViewController.xib */,
+				73F3FB571E5D700B00C9FEB7 /* StoreInformationViewController.h */,
+				73F3FB581E5D700B00C9FEB7 /* StoreInformationViewController.m */,
+				73F3FB591E5D700B00C9FEB7 /* StoreInformationViewController.xib */,
+				73E1EBE41E640458003E7C23 /* StoreImformationCell.h */,
+				73E1EBE51E640458003E7C23 /* StoreImformationCell.m */,
+				73E1EBE61E640458003E7C23 /* StoreImformationCell.xib */,
+				73F3FB611E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.h */,
+				73F3FB621E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.m */,
+				73F3FB631E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.xib */,
+				73F3FB5C1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.h */,
+				73F3FB5D1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.m */,
+				73F3FB5E1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.xib */,
+				73E888AF1E6013E70093C5AA /* TakeoutAccountModel.h */,
+				73E888B01E6013E70093C5AA /* TakeoutAccountModel.m */,
+				73E0057C1E65123800DF4CBD /* StoreinformationModel.h */,
+				73E0057D1E65123800DF4CBD /* StoreinformationModel.m */,
+				73E0057F1E65126400DF4CBD /* StoreEquipmentInfoModel.h */,
+				73E005801E65126400DF4CBD /* StoreEquipmentInfoModel.m */,
+				73162B951E72A79C0041C775 /* PrintHistoryViewController.h */,
+				73162B961E72A79C0041C775 /* PrintHistoryViewController.m */,
+				73162B981E72A8AA0041C775 /* OrderPrintTableViewCell.h */,
+				73162B991E72A8AA0041C775 /* OrderPrintTableViewCell.m */,
+				73162B9A1E72A8AA0041C775 /* OrderPrintTableViewCell.xib */,
+				73162BA11E72AD8B0041C775 /* PrintOrderModel.h */,
+				73162BA21E72AD8B0041C775 /* PrintOrderModel.m */,
+			);
+			name = businessServe;
+			sourceTree = "<group>";
+		};
+		73FAFAAB1E7260250021EE0D /* concentration */ = {
+			isa = PBXGroup;
+			children = (
+				73162B921E7275D50041C775 /* ConcentrationlistView.h */,
+				73162B931E7275D50041C775 /* ConcentrationlistView.m */,
+				73FAFAAC1E7260540021EE0D /* ConcentrationCollectionViewCell.h */,
+				73FAFAAD1E7260540021EE0D /* ConcentrationCollectionViewCell.m */,
+				73FAFAAE1E7260540021EE0D /* ConcentrationCollectionViewCell.xib */,
+				73FAFAB31E7261D40021EE0D /* ConcentrationLayout.h */,
+				73FAFAB41E7261D40021EE0D /* ConcentrationLayout.m */,
+			);
+			name = concentration;
 			sourceTree = "<group>";
 		};
 		73FB0FEE1E484DE6007E0FEE /* gameBackimage */ = {
@@ -3484,6 +3747,7 @@
 		CDBCAD4034AC9575BD8FD84B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73EA1EBA1E67BA8100458808 /* CoreText.framework */,
 				73FCED851DD5916E000A365C /* Rong_Cloud */,
 				7316F7591DC4958B00FD5D86 /* CoreMotion.framework */,
 				732358991DBDFC7B00CF21FD /* Security.framework */,
@@ -3646,6 +3910,7 @@
 				73E665FF1D4C98AF005B11A4 /* equipicon2@2x.png in Resources */,
 				734034FE1DBD9F3B0050FC82 /* PayHistoryTableViewCell.xib in Resources */,
 				73199DB11D83AEBC00D5015E /* prepareBT.png in Resources */,
+				73E1EBF91E642FA5003E7C23 /* 签到-桔黄色圆.png in Resources */,
 				73362FEA1D59D4C800331BFB /* SearchTypeView.xib in Resources */,
 				735AC3201D61E00300D4EFE6 /* MeDetailInfomationViewController.xib in Resources */,
 				730CD9B31D7428FA00183ED8 /* personal_showBac@2x.png in Resources */,
@@ -3656,6 +3921,7 @@
 				731449C61D98FAC900512E64 /* TypeofGameTableViewCell.xib in Resources */,
 				73362FD71D59B82C00331BFB /* wifi_paring_04.png in Resources */,
 				73934A8E1DBF7920005A2BA0 /* Images.xcassets in Resources */,
+				73162BA01E72A9620041C775 /* printOrderUnselect.png in Resources */,
 				732E049C1D41C58E00BED0ED /* ico_scrawl_02_checked@2x.png in Resources */,
 				730CD9B11D7428FA00183ED8 /* fw_r2_c2@2x.png in Resources */,
 				732E04B41D41FE3400BED0ED /* dot_04.png in Resources */,
@@ -3675,6 +3941,7 @@
 				737117FF1D388B2C00B590CB /* friend-1@2x.png in Resources */,
 				73E665FC1D4C98AF005B11A4 /* equipicon1.png in Resources */,
 				73F5AA4E1D928BB200EC04D4 /* quitGameImg.png in Resources */,
+				73F3FB651E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.xib in Resources */,
 				733412E11D5AD88C00196F4E /* VirifyFriendViewController.xib in Resources */,
 				733FA1461D825CB2009A1689 /* GroupDetailViewController.xib in Resources */,
 				73FAEBA41D9BBA0D006BA437 /* TeamHitCoin.png in Resources */,
@@ -3684,26 +3951,34 @@
 				736299DA1DB9A9C6004E25A9 /* CoindetailViewController.xib in Resources */,
 				73F405B31E0B7F5800B117F4 /* fantasyChangePrivate.mp3 in Resources */,
 				7340351E1DBDDEAE0050FC82 /* mySetup.png in Resources */,
+				731900D71E680D8900B36B45 /* 美团2.png in Resources */,
 				731B91C11DC1D291000441C7 /* gender_man.png in Resources */,
 				73308D3A1E00D9610031B46C /* fantasy_operationBack.png in Resources */,
 				73199DC81D83E30800D5015E /* 骰子4.png in Resources */,
 				73362FD91D59B82C00331BFB /* wifi_paring_06.png in Resources */,
 				73308D391E00D9610031B46C /* fantasy_changeCard.png in Resources */,
 				732E04A91D41D53700BED0ED /* ico_align_center.png in Resources */,
+				73FAFAB21E7261510021EE0D /* concentrationSetup.png in Resources */,
 				730CD9AE1D7428FA00183ED8 /* 02@2x.png in Resources */,
 				732E04B21D41FE3400BED0ED /* dot_02.png in Resources */,
+				73E1EBF61E642FA5003E7C23 /* 百度外卖1.png in Resources */,
 				73DEBC1F1D863E3700395FD0 /* 输.png in Resources */,
+				73E888B71E6033220093C5AA /* takeoutbusinessserve.png in Resources */,
 				7371181E1D38BFFF00B590CB /* mall.png in Resources */,
 				732E04721D41B99D00BED0ED /* ico_size_checked@2x.png in Resources */,
 				73362FDA1D59B82C00331BFB /* wifi_paring_07.png in Resources */,
 				7336C9DE1DDC2DC400E29F90 /* quieGameButton.png in Resources */,
+				73E0F42F1E66CAF100AFAD4E /* signin_oringecircle.png in Resources */,
 				730B70D51DADCBFA005B4637 /* materia-6@2x.png in Resources */,
+				73E1EBFB1E642FA5003E7C23 /* 签到-背景.png in Resources */,
 				737117FC1D388B2C00B590CB /* chat-2@2x.png in Resources */,
 				73E666021D4C98AF005B11A4 /* equipicon3-2@2x.png in Resources */,
 				737118001D388B2C00B590CB /* friend-2@2x.png in Resources */,
 				73FE0EEA1DD40CD300684596 /* 1-10.jpg in Resources */,
 				732E049B1D41C58E00BED0ED /* ico_print_unchecked@2x.png in Resources */,
 				73308D361E00D7BA0031B46C /* bonuspoolBackgroundImage.png in Resources */,
+				73E888B61E6033220093C5AA /* signin.png in Resources */,
+				73F3FB4C1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib in Resources */,
 				731B91C21DC1D291000441C7 /* gender_secret.png in Resources */,
 				73644C571D3635830060DA9F /* camera_icon.png in Resources */,
 				7332A72F1D5C113F008D9EC3 /* icon_serach_account@2x.png in Resources */,
@@ -3729,12 +4004,14 @@
 				732BDA351D66E0B200C976CB /* 点点@2x.png in Resources */,
 				733412F01D5B1E0600196F4E /* group3.png in Resources */,
 				7390BC0B1D348A9000F5EA01 /* LoginViewController.xib in Resources */,
+				73E0F4191E66BDBC00AFAD4E /* SigninDateCollectionViewCell.xib in Resources */,
 				732BABB81D37717300D480B0 /* upload@3x.png in Resources */,
 				737118011D388B2C00B590CB /* me-1@2x.png in Resources */,
 				73BD46F81D93B60D002F38CF /* chooseDicepointCallOrOpen_open.png in Resources */,
 				730B70EB1DAE16F9005B4637 /* 素材-素材-选中@2x.png in Resources */,
 				73199DC21D83E30800D5015E /* 骰子1.png in Resources */,
 				730EB2971DCC30050045EC1C /* welcome_3.png in Resources */,
+				73E0F4311E66CAF100AFAD4E /* 签到-按钮背景.png in Resources */,
 				731B91CF1DC1E134000441C7 /* GroupMemberDetailsTableViewCell.xib in Resources */,
 				736299E91DBA392A004E25A9 /* meIcon_default.png in Resources */,
 				733FA13A1D82457C009A1689 /* tm.png in Resources */,
@@ -3754,14 +4031,17 @@
 				732E04731D41B99D00BED0ED /* ico_size_unchecked@2x.png in Resources */,
 				730B70D31DADCBFA005B4637 /* materia-4@2x.png in Resources */,
 				732B92EE1D2DE2F70095DD62 /* LaunchScreen.storyboard in Resources */,
+				73E1EBF71E642FA5003E7C23 /* 签到-圆圈.png in Resources */,
 				731449BC1D98F70800512E64 /* 21pointSign.png in Resources */,
 				7304E1761D6D80C100434A1C /* f2.png in Resources */,
+				73E0F4261E66CA1300AFAD4E /* preparePlaceholdIcon.png in Resources */,
 				73555C641DBF397A00153E6A /* ico_imagerotato_unchecked@2x.png in Resources */,
 				732BABB61D37717300D480B0 /* upload.png in Resources */,
 				730BCC4D1DFFD0D00004FD63 /* fantasy_bonuspool.png in Resources */,
 				733DFFD71D65B0FC00A6DBDF /* FriendDetailDataSettingViewController.xib in Resources */,
 				734035101DBDAD530050FC82 /* TradeDetailTableViewCell.xib in Resources */,
 				730CD9B01D7428FA00183ED8 /* button_send_comment@2x.png in Resources */,
+				73F3FB511E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.xib in Resources */,
 				736299E11DB9AAB8004E25A9 /* coin_big.png in Resources */,
 				7371182D1D38D8FD00B590CB /* FriendListViewController.xib in Resources */,
 				73F5AA4C1D9276BB00EC04D4 /* 111.gif in Resources */,
@@ -3782,11 +4062,14 @@
 				730BCC4C1DFFD0D00004FD63 /* fan.png in Resources */,
 				73362FD81D59B82C00331BFB /* wifi_paring_05.png in Resources */,
 				73555C4D1DBF039E00153E6A /* AboutUsViewController.xib in Resources */,
+				73E1EBFF1E642FA5003E7C23 /* 饿了么1.png in Resources */,
 				73DEC7DE1DB7717300CD822D /* defaultBackimge.png in Resources */,
 				73FCED931DD5916E000A365C /* RongCloud.bundle in Resources */,
 				732C51151D3CAE3E0072F709 /* addicon@2x.png in Resources */,
 				73644C581D3635830060DA9F /* logo(1).png in Resources */,
+				73E0F41B1E66C82A00AFAD4E /* SigninViewController.xib in Resources */,
 				730BCC501DFFD0D00004FD63 /* fantasy_heart.png in Resources */,
+				73F3FB5B1E5D700B00C9FEB7 /* StoreInformationViewController.xib in Resources */,
 				736EEFE01DC0604000DA5B5E /* findCreatgroup.png in Resources */,
 				732E046D1D41B99D00BED0ED /* ico_align_unchecked@2x.png in Resources */,
 				736EEFE61DC08F4600DA5B5E /* passNotes.png in Resources */,
@@ -3803,11 +4086,13 @@
 				73555C541DBF0A1900153E6A /* ModifyPasswordViewController.xib in Resources */,
 				73199DAB1D83AA2200D5015E /* preparegameSign.png in Resources */,
 				732E04AB1D41D53700BED0ED /* ico_align_right.png in Resources */,
+				73F3FB561E5D683A00C9FEB7 /* TakeoutLoginViewController.xib in Resources */,
 				73362FE01D59B82C00331BFB /* wifi_paring_13.png in Resources */,
 				732C51111D3C85A10072F709 /* newFriend.png in Resources */,
 				7316F75C1DC4C95100FD5D86 /* bbb.jpg in Resources */,
 				733412E51D5AFC7500196F4E /* forbid.png in Resources */,
 				736EEFEF1DC09B7000DA5B5E /* process_opposite.png in Resources */,
+				73E0F42E1E66CAF100AFAD4E /* signBackImage.png in Resources */,
 				737339EE1D333C5B00E9A18C /* Photo.bundle in Resources */,
 				73362FDB1D59B82C00331BFB /* wifi_paring_08.png in Resources */,
 				73E666011D4C98AF005B11A4 /* equipicon3-2.png in Resources */,
@@ -3816,6 +4101,8 @@
 				734035251DBDF5F90050FC82 /* share_friend.png in Resources */,
 				73E666041D4C98AF005B11A4 /* equipicon4-1.png in Resources */,
 				734035211DBDF4ED0050FC82 /* share_close.png in Resources */,
+				73162B9F1E72A9620041C775 /* printOrderSelect.png in Resources */,
+				73FAFAB01E7260540021EE0D /* ConcentrationCollectionViewCell.xib in Resources */,
 				736EEFF01DC09B7000DA5B5E /* process_sketch.png in Resources */,
 				7390BC101D34918500F5EA01 /* password_show.png in Resources */,
 				73644C471D35DA5A0060DA9F /* CompleteInformationViewController.xib in Resources */,
@@ -3824,6 +4111,7 @@
 				73E666031D4C98AF005B11A4 /* equipicon3.png in Resources */,
 				73362FEF1D59DE7400331BFB /* icon_find_group.png in Resources */,
 				731B11FA1DAF804D006ED0DB /* BGTopSilderBarCell.xib in Resources */,
+				73E0F4301E66CAF100AFAD4E /* signin_oringecircle_e.png in Resources */,
 				7390BC1A1D34C1E200F5EA01 /* 1px.png in Resources */,
 				7332A72E1D5C113F008D9EC3 /* icon_search_nickname@2x.png in Resources */,
 				73DEC7DC1DB7709B00CD822D /* creatGroupImage@2x.png in Resources */,
@@ -3842,13 +4130,17 @@
 				731449BE1D98F70800512E64 /* BragSign.png in Resources */,
 				730B70D61DADCBFA005B4637 /* materia-7@2x.png in Resources */,
 				73199DC41D83E30800D5015E /* 骰子2.png in Resources */,
+				73E1EBE81E640458003E7C23 /* StoreImformationCell.xib in Resources */,
 				732B92E91D2DE2F70095DD62 /* Main.storyboard in Resources */,
 				730BCC511DFFD0D00004FD63 /* fantasy_noexchange.png in Resources */,
 				733A5DE41DE44DDF008011AF /* icon1.png in Resources */,
 				73E665FE1D4C98AF005B11A4 /* equipicon2.png in Resources */,
 				730E808B1D816E6400D5EE2E /* gameBackGroundViewDown.png in Resources */,
+				73E0F42D1E66CAF100AFAD4E /* sign_redcircle.png in Resources */,
+				73E1EBFE1E642FA5003E7C23 /* 饿了么.png in Resources */,
 				737117FD1D388B2C00B590CB /* find-1@2x.png in Resources */,
 				732E04B31D41FE3400BED0ED /* dot_03.png in Resources */,
+				73E888B51E6033220093C5AA /* businessAccountIcon.png in Resources */,
 				730EB29A1DCC5DCB0045EC1C /* test.jpg in Resources */,
 				73F21BDB1DAB31EC00424693 /* 统计完点数的声音.wav in Resources */,
 				730B70D41DADCBFA005B4637 /* materia-5@2x.png in Resources */,
@@ -3862,16 +4154,20 @@
 				73555C781DBF54D800153E6A /* point_unselect.png in Resources */,
 				73199DCB1D83E30800D5015E /* 骰子6-1.png in Resources */,
 				730BCC521DFFD0D00004FD63 /* fantasy_plumblossom.png in Resources */,
+				73E1EBF81E642FA5003E7C23 /* 签到-按钮背景.png in Resources */,
 				730B70D81DADD75C005B4637 /* MateriaExpression.bundle in Resources */,
 				733A26361DB4D1BB003FADF0 /* big_next_white.png in Resources */,
 				73362FDF1D59B82C00331BFB /* wifi_paring_12.png in Resources */,
 				730BCC571DFFD0D00004FD63 /* fantasy_small_side.png in Resources */,
 				737118021D388B2C00B590CB /* me-2@2x.png in Resources */,
 				7340351C1DBDDEAE0050FC82 /* logout.png in Resources */,
+				73F3FB601E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.xib in Resources */,
 				73362DBE1D8506AB005DE81F /* 骰盅-1.png in Resources */,
 				73FCED8F1DD5916E000A365C /* Emoji.plist in Resources */,
+				731900D61E680D8900B36B45 /* 美团1.png in Resources */,
 				73555C4F1DBF087100153E6A /* forgetPassword.png in Resources */,
 				730EB2981DCC30050045EC1C /* welcome_4.png in Resources */,
+				73E1EBF51E642FA5003E7C23 /* 百度外卖.png in Resources */,
 				732607301DB5D63700B1E626 /* normalscrip.png in Resources */,
 				73BD46F71D93B60D002F38CF /* chooseDicepointCallOrOpen_call.png in Resources */,
 				730CD9B21D7428FA00183ED8 /* mao@2x.jpg in Resources */,
@@ -3896,6 +4192,7 @@
 				7326072E1DB5D63700B1E626 /* importantINformation.png in Resources */,
 				7371181D1D38BFFF00B590CB /* equipment.png in Resources */,
 				73FE00051DC98360009E4942 /* publishshuoshuoCamera@2x.png in Resources */,
+				73162B9C1E72A8AA0041C775 /* OrderPrintTableViewCell.xib in Resources */,
 				737118181D38BE7200B590CB /* next_icon.png in Resources */,
 				7340351F1DBDDEAE0050FC82 /* voice.png in Resources */,
 				737118231D38C60D00B590CB /* RoronoaZoro.jpg in Resources */,
@@ -3903,8 +4200,10 @@
 				73555C651DBF397A00153E6A /* imageTailor@2x.png in Resources */,
 				732E049A1D41C58E00BED0ED /* ico_eraser_unchecked@2x.png in Resources */,
 				73644C4F1D3619EC0060DA9F /* Address.plist in Resources */,
+				73E1EBFA1E642FA5003E7C23 /* 签到-红色圆.png in Resources */,
 				73DEBC1E1D863E3700395FD0 /* 赢.png in Resources */,
 				730BCC591DFFD0D00004FD63 /* fantasy_spade.png in Resources */,
+				73FAFAAA1E7256E20021EE0D /* equipment5.png in Resources */,
 				73DAAFC01DC2DFF4000ACB66 /* 1(1).jpg in Resources */,
 				730BCC541DFFD0D00004FD63 /* fantasy_side.png in Resources */,
 				733FA1411D82504D009A1689 /* 设置@2x.png in Resources */,
@@ -4032,9 +4331,12 @@
 				732C50F81D3C66720072F709 /* KxMenu.m in Sources */,
 				733412DC1D5ACC8600196F4E /* FriendInformationModel.m in Sources */,
 				732BAB871D37489500D480B0 /* MLSelectPhotoPickerBrowserPhotoScrollView.m in Sources */,
+				73FAFAB51E7261D40021EE0D /* ConcentrationLayout.m in Sources */,
 				73BB21451D52CC5C000CBC9A /* ConfigurationWiFiSecondViewController.m in Sources */,
 				73199DA61D83A38B00D5015E /* PrepareGameView.m in Sources */,
+				73FAFAAF1E7260540021EE0D /* ConcentrationCollectionViewCell.m in Sources */,
 				732C50EA1D3C66720072F709 /* FMDatabaseAdditions.m in Sources */,
+				73F3FB471E5D61F300C9FEB7 /* BusinessServeViewController.m in Sources */,
 				73FE00071DC98963009E4942 /* Foundation+Log.m in Sources */,
 				732C50E41D3C66720072F709 /* RCDUserInfo.m in Sources */,
 				732BAB791D37246F00D480B0 /* NSDictionary+Unicode.m in Sources */,
@@ -4043,6 +4345,7 @@
 				73336B311D5EB6E400C1DF2F /* HeadCollectionView.m in Sources */,
 				731A0F371DF9012B006F8F9D /* FantasyGameChatViewController.m in Sources */,
 				734034FD1DBD9F3B0050FC82 /* PayHistoryTableViewCell.m in Sources */,
+				73E0F4111E66B63E00AFAD4E /* SigninViewController.m in Sources */,
 				731A0F4B1DF90544006F8F9D /* FantasyGamerCardInfoModel.m in Sources */,
 				731C5B0D1D4A2CE100328503 /* NewFriendVerifyViewController.m in Sources */,
 				732C50F11D3C66720072F709 /* JSONModelError.m in Sources */,
@@ -4064,6 +4367,7 @@
 				732C51021D3C66720072F709 /* UITextFiled+Shake.m in Sources */,
 				732B93371D2E36530095DD62 /* NSDate+HDExtension.m in Sources */,
 				732C50E61D3C66720072F709 /* RCDataBaseManager.m in Sources */,
+				73EA1EBE1E67C53A00458808 /* SigninModel.m in Sources */,
 				732B933A1D2E36530095DD62 /* UIButton+HDExtension.m in Sources */,
 				73555C731DBF515300153E6A /* WelPageControl.m in Sources */,
 				732C50FE1D3C66720072F709 /* RCDUtilities.m in Sources */,
@@ -4081,10 +4385,12 @@
 				732B933B1D2E36530095DD62 /* UIColor+HDExtension.m in Sources */,
 				73DEBC221D8640F000395FD0 /* ChooseDicenumberView.m in Sources */,
 				730E80841D81036800D5EE2E /* GroupListViewController.m in Sources */,
+				73E005811E65126400DF4CBD /* StoreEquipmentInfoModel.m in Sources */,
 				73671A5A1D4C4B6E00C07823 /* EquipmentManagerViewController.m in Sources */,
 				732B93381D2E36530095DD62 /* NSString+HDExtension.m in Sources */,
 				73644C501D3619EC0060DA9F /* TWSelectCityView.m in Sources */,
 				733716591D3F6313000F8628 /* OverlayView.m in Sources */,
+				73F3FB5A1E5D700B00C9FEB7 /* StoreInformationViewController.m in Sources */,
 				73ACFC851D3DFBF20024F0D3 /* RCWKNotifier.m in Sources */,
 				73CD8F501D4842B600BC7EAC /* QRCode.m in Sources */,
 				73E665EB1D4C86A1005B11A4 /* EquipmentcollectionModel.m in Sources */,
@@ -4104,6 +4410,7 @@
 				730B70DE1DADF0AC005B4637 /* materiaCollectionView.m in Sources */,
 				73DEF8AB1E2609DE0015096B /* ShuoshuoFavouriteAndCommentView.m in Sources */,
 				7304E1741D6D489600434A1C /* CreatGroupChatRoomViewController.m in Sources */,
+				73F3FB501E5D62DE00C9FEB7 /* TakeoutAccountTableViewCell.m in Sources */,
 				731C5AF91D4994FC00328503 /* PrintPreviewController.m in Sources */,
 				732C50F71D3C66720072F709 /* JSONValueTransformer.m in Sources */,
 				73030B291D878A7300C8CD92 /* BragGameChatViewController.m in Sources */,
@@ -4122,6 +4429,7 @@
 				731279C91D7F9FEC00A576E3 /* CreatGroupViewController.m in Sources */,
 				730E80871D814F7B00D5EE2E /* GameChatViewController.m in Sources */,
 				73336B321D5EB6E400C1DF2F /* RCAnnotation.m in Sources */,
+				73F3FB551E5D683A00C9FEB7 /* TakeoutLoginViewController.m in Sources */,
 				731C5B081D4A1BC000328503 /* NewFriendModel.m in Sources */,
 				732358A11DBE028100CF21FD /* WXApiManager.m in Sources */,
 				73133BDB1E0A8535006E1A7E /* CreatGamerTypeCollectionViewCell.m in Sources */,
@@ -4185,9 +4493,12 @@
 				733412ED1D5B05C200196F4E /* SearcgGroupListCell.m in Sources */,
 				731A0F411DF90427006F8F9D /* FantasyPublishCollectionViewCell.m in Sources */,
 				732BAB901D374AA100D480B0 /* UIView+MLExtension.m in Sources */,
+				73F3FB4B1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m in Sources */,
+				73E888AE1E5FFECC0093C5AA /* MyButton+helper.m in Sources */,
 				731B91CE1DC1E134000441C7 /* GroupMemberDetailsTableViewCell.m in Sources */,
 				73199DA91D83A60C00D5015E /* PrepareGameCollectionViewCell.m in Sources */,
 				73133BD81E0A8164006E1A7E /* ChooseCreatGameTypeView.m in Sources */,
+				73E0057E1E65123800DF4CBD /* StoreinformationModel.m in Sources */,
 				73BB21491D52D870000CBC9A /* ChangeEquipmentNameView.m in Sources */,
 				731BC30C1DB8A4A500512D5B /* ExchangeBackwallImageViewController.m in Sources */,
 				733412D71D5AC0EF00196F4E /* FriendInformationViewController.m in Sources */,
@@ -4201,8 +4512,11 @@
 				733DFFCE1D655C0300A6DBDF /* ChatSettingViewController.m in Sources */,
 				73BB21531D52F38B000CBC9A /* AddEquipmentViewController.m in Sources */,
 				737118051D388B8500B590CB /* TeamHitBarButtonItem.m in Sources */,
+				73162BA31E72AD8B0041C775 /* PrintOrderModel.m in Sources */,
 				732607261DB5C9E400B1E626 /* PrintPreviewCell.m in Sources */,
+				73E0F4141E66B67300AFAD4E /* SigninView.m in Sources */,
 				73A5F7181D77D7B200B48ADF /* FriendCircleMessgaeViewController.m in Sources */,
+				73E1EBE71E640458003E7C23 /* StoreImformationCell.m in Sources */,
 				73A5F7201D77FC3200B48ADF /* FriendCircleMessgaeModel.m in Sources */,
 				73336B371D5EB6E400C1DF2F /* RealTimeLocationStartCell.m in Sources */,
 				732E044B1D41A6EF00BED0ED /* MaterialViewController.m in Sources */,
@@ -4226,6 +4540,7 @@
 				7340350B1DBDAD020050FC82 /* TradedetailViewController.m in Sources */,
 				732BABA91D374D0400D480B0 /* MLSelectPhotoPickerAssetsViewController.m in Sources */,
 				737339F81D3352F800E9A18C /* MLSelectPhotoPickerGroup.m in Sources */,
+				73162B971E72A79C0041C775 /* PrintHistoryViewController.m in Sources */,
 				731C049C1D40A708008D582F /* GraffitiView.m in Sources */,
 				732C50F31D3C66720072F709 /* JSONAPI.m in Sources */,
 				732B933E1D2E36530095DD62 /* UIView+AutoLayout.m in Sources */,
@@ -4237,6 +4552,7 @@
 				730CD9E91D742B0200183ED8 /* YMTableViewCell.m in Sources */,
 				732C51071D3C67080072F709 /* DefaultPortraitView.m in Sources */,
 				732C50F91D3C66720072F709 /* MBProgressHUD.m in Sources */,
+				73162B9B1E72A8AA0041C775 /* OrderPrintTableViewCell.m in Sources */,
 				732B931D1D2E350C0095DD62 /* HDNetworking.m in Sources */,
 				732B933F1D2E36530095DD62 /* UIView+HDExtension.m in Sources */,
 				731B11FE1DAF8119006ED0DB /* MaterialDetailViewController.m in Sources */,
@@ -4244,6 +4560,7 @@
 				733FA13D1D82468F009A1689 /* BrageGameViewHeaderView.m in Sources */,
 				739ADCA31E03C3170076961B /* BonusPoolModel.m in Sources */,
 				731A0F3E1DF9040E006F8F9D /* FantasyGamerCollectionViewCell.m in Sources */,
+				73162B941E7275D60041C775 /* ConcentrationlistView.m in Sources */,
 				73133BD11E0A5A39006E1A7E /* FantasyGameOverView.m in Sources */,
 				732C50E91D3C66720072F709 /* FMDatabase.m in Sources */,
 				73097DFF1D88F082001057F5 /* BragGameModel.m in Sources */,
@@ -4252,6 +4569,7 @@
 				732BABAA1D374D0400D480B0 /* MLSelectPhotoPickerGroupViewController.m in Sources */,
 				73644C461D35DA5A0060DA9F /* CompleteInformationViewController.m in Sources */,
 				730CD9E21D742B0200183ED8 /* WFActionSheet.m in Sources */,
+				73E888AD1E5FFECC0093C5AA /* MyButton.m in Sources */,
 				731B11F91DAF804D006ED0DB /* BGTopSilderBarCell.m in Sources */,
 				736484B91DAA155600E1C95A /* TypeofGameModel.m in Sources */,
 				7332A7351D5C5A06008D9EC3 /* RCDChatListCell.m in Sources */,
@@ -4270,6 +4588,7 @@
 				73A5F7251D783F9B00B48ADF /* NoreadMessageCell.m in Sources */,
 				732C50F01D3C66720072F709 /* JSONModelClassProperty.m in Sources */,
 				732C50F51D3C66720072F709 /* JSONModel+networking.m in Sources */,
+				73F3FB5F1E5D703F00C9FEB7 /* StoreBindingEquipmentViewController.m in Sources */,
 				731A0F481DF9052D006F8F9D /* FantasyGamerInfoModel.m in Sources */,
 				73336B351D5EB6E400C1DF2F /* RCLocationView.m in Sources */,
 				73336B381D5EB6E400C1DF2F /* RealTimeLocationStatusView.m in Sources */,
@@ -4279,12 +4598,15 @@
 				73ACFC861D3DFBF20024F0D3 /* RCWKRequestHandler.m in Sources */,
 				733412F31D5B234C00196F4E /* SearchGroupListModel.m in Sources */,
 				732358A71DBE02F800CF21FD /* WXMediaMessage+messageConstruct.m in Sources */,
+				73E888B11E6013E70093C5AA /* TakeoutAccountModel.m in Sources */,
 				732C50FB1D3C66720072F709 /* RCAnimatedImagesView.m in Sources */,
 				73DEBC281D86809700395FD0 /* ChooseDiceModel.m in Sources */,
 				730CD9E71D742B0200183ED8 /* YMReplyInputView.m in Sources */,
+				73F3FB641E5D777A00C9FEB7 /* StoreEquipmentInformationTableViewCell.m in Sources */,
 				737117CE1D387BB100B590CB /* MyTabBarController.m in Sources */,
 				731C5B011D4A19BA00328503 /* NewFriendListViewController.m in Sources */,
 				731C04A21D40AC43008D582F /* GraffitiPath.m in Sources */,
+				73E0F4181E66BDBC00AFAD4E /* SigninDateCollectionViewCell.m in Sources */,
 				732B92E01D2DE2F70095DD62 /* main.m in Sources */,
 				730BCC391DFF8D790004FD63 /* FantasyCardFlowlayout.m in Sources */,
 				732B93361D2E36530095DD62 /* Foundation+HDLog.m in Sources */,

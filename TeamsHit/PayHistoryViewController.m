@@ -39,7 +39,7 @@
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     self.title = @"购买记录";
-    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height) style:UITableViewStylePlain];
+    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height - 64) style:UITableViewStylePlain];
     self.tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableview registerNib:[UINib nibWithNibName:@"PayHistoryTableViewCell" bundle:nil] forCellReuseIdentifier:CELL_ID];
     self.tableview.delegate = self;

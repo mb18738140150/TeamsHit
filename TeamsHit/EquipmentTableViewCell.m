@@ -18,7 +18,7 @@
 @property (nonatomic, copy)EquipmentTypeBlock equipmentBlock;
 @property (nonatomic, strong)UILabel * equipmentTitle;
 @property (nonatomic, strong)UIButton * cancleBindingBT;
-@property (nonatomic, strong)UICollectionView * collectionView;
+@property (nonatomic, strong)UILabel * deviceNumberLB;
 
 @property (nonatomic, strong)NSMutableArray * array;
 
@@ -53,22 +53,29 @@
         [self.contentView addSubview:self.cancleBindingBT];
         [self.cancleBindingBT addTarget:self action:@selector(cancleBind) forControlEvents:UIControlEventTouchUpInside];
         
+        self.deviceNumberLB = [[UILabel alloc]initWithFrame:CGRectMake(15, 35, self.contentView.hd_width, 15)];
+        self.deviceNumberLB.font = [UIFont systemFontOfSize:15];
+        self.deviceNumberLB.textColor = UIColorFromRGB(0x323232);
+        self.deviceNumberLB.text = @"设备编号:";
+        [self.contentView addSubview:self.deviceNumberLB];
+        
         UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
-        layout.itemSize = CGSizeMake(frame.size.width / 4, 111);
+        layout.itemSize = CGSizeMake(frame.size.width / 5, 111);
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
         layout.minimumInteritemSpacing = 0;
         layout.minimumLineSpacing = 0;
          layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         
-        self.collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 31, frame.size.width, 111) collectionViewLayout:layout];
+        self.collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 51, frame.size.width, 96) collectionViewLayout:layout];
         self.collectionView.delegate = self;
         self.collectionView.dataSource = self;
         self.collectionView.backgroundColor = [UIColor whiteColor];
+        self.collectionView.scrollEnabled = NO;
         [self.contentView addSubview:self.collectionView];
         [self.collectionView registerClass:[EquipmentCollectionViewCell class] forCellWithReuseIdentifier:CELL_ICENTIFIRE];
-        NSArray * imageArr = @[@"equipicon1", @"equipicon2", @"equipicon3", @"equipicon4-1"];
-        NSArray * titleArr = @[@"配置WiFi", @"设备名称", @"蜂鸣器开关", @"指示灯开关"];
-        for (int i = 0; i<4; i++) {
+        NSArray * imageArr = @[@"equipicon1", @"equipicon2",@"equipment5", @"equipicon3", @"equipicon4-1"];
+        NSArray * titleArr = @[@"配置WiFi", @"设备名称", @"打印浓度", @"蜂鸣器开关", @"指示灯开关"];
+        for (int i = 0; i<imageArr.count; i++) {
             EquipmentcollectionModel * model = [[EquipmentcollectionModel alloc]init];
             model.imageName = imageArr[i];
             model.titleName = titleArr[i];
@@ -127,7 +134,7 @@
 
 - (void)setEmodel:(EquipmentModel *)emodel
 {
-    
+    _emodel = emodel;
     switch (emodel.state.intValue) {
         case 0:
         {
@@ -162,21 +169,28 @@
     CGSize size = [self.equipmentTitle.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, self.equipmentTitle.hd_height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
     self.equipmentTitle.hd_width = size.width;
     
+    self.deviceNumberLB.text = [NSString stringWithFormat:@"设备编号:%@", emodel.uuid];
+    
     if (emodel.buzzer.intValue == 1) {
-        EquipmentcollectionModel * model = self.array[2];
+        EquipmentcollectionModel * model = self.array[3];
         model.isbuzzer = YES;
     }else
     {
-        EquipmentcollectionModel * model = self.array[2];
+        EquipmentcollectionModel * model = self.array[3];
         model.isbuzzer = NO;
     }
     
+    if (emodel.concentration.intValue) {
+        EquipmentcollectionModel * model = self.array[2];
+        model.titleName = [NSString stringWithFormat:@"打印浓度:%@", emodel.concentration];
+    }
+    
     if (emodel.indicator.intValue == 1) {
-        EquipmentcollectionModel * model = self.array[3];
+        EquipmentcollectionModel * model = self.array[4];
         model.isIndicatorLight = YES;
     }else
     {
-        EquipmentcollectionModel * model = self.array[3];
+        EquipmentcollectionModel * model = self.array[4];
         model.isIndicatorLight = NO;
     }
     [self.collectionView reloadData];
@@ -207,8 +221,8 @@
     CGContextSetLineWidth(context, 1.0);
     CGContextSetRGBStrokeColor(context, .95, .95, .95, 1.0);
     CGContextBeginPath(context);
-    CGContextMoveToPoint(context, 0, 142);
-    CGContextAddLineToPoint(context, self.hd_width, 142);
+    CGContextMoveToPoint(context, 0, 147);
+    CGContextAddLineToPoint(context, self.hd_width, 147);
     CGContextStrokePath(context);
 }
 

@@ -624,7 +624,6 @@
     PlayMusicModel * playmusic = [PlayMusicModel share];
     [playmusic playMusicWithName:@"我开你" type:@"mp3"];
     
-    
 //    NSNumber * OpenUserId = [dic objectForKey:@"OpenUserId"];
 //    NSNumber * BeOpenUserId = [dic objectForKey:@"BeOpenUserId"];
     NSNumber * WinPoint = [dic objectForKey:@"WinPoint"];

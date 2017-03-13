@@ -54,6 +54,9 @@
     [super viewDidLoad];
     
 //    self.enableInteractivePopGestureRecognizer = YES;
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
     self.enableSaveNewPhotoToLocalSystem = YES;
     self.isRightBarItem = NO;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStyleDone target:self action:nil];;
@@ -234,6 +237,7 @@
                  if ([group.isDismiss isEqualToString:@"YES"]) {
                      self.navigationItem.rightBarButtonItem = nil;
                  }
+                 
                  [[RCDataBaseManager shareInstance] insertGroupToDB:group];
                  _groupMemberList = [[RCDataBaseManager shareInstance] getGroupMember:self.targetId];
                  if ([_groupMemberList count] == 0) {

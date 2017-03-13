@@ -16,7 +16,7 @@
 @property (nonatomic, strong)NSNumber *indicator;
 @property (nonatomic, strong)NSNumber * state;
 @property (nonatomic, copy)NSString * deviceMac;
-
+@property (nonatomic, strong)NSNumber * concentration;
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

@@ -11,6 +11,6 @@
 @interface PrintPreviewController : UIViewController
 
 @property (nonatomic, strong)NSMutableArray * printDataSourceArr;
-
+@property (nonatomic, copy)NSString * userName;
 @property (nonatomic, strong)NSNumber * userId;
 @end

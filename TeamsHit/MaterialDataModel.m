@@ -40,8 +40,8 @@
 - (UIImage *)calculateImagesize:(UIImage *)image
 {
     CGSize size = image.size;
-    UIGraphicsBeginImageContext(CGSizeMake(SELF_WIDTH, (int)(SELF_WIDTH *size.height / size.width)));
-    [image drawInRect:CGRectMake(0, 0, SELF_WIDTH, (int)(SELF_WIDTH *size.height / size.width))];
+    UIGraphicsBeginImageContext(CGSizeMake(SELF_WIDTH, (int )(SELF_WIDTH *size.height / size.width)));
+    [image drawInRect:CGRectMake(0, 0, SELF_WIDTH, (int )(SELF_WIDTH *size.height / size.width))];
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;

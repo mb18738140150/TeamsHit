@@ -9,8 +9,8 @@
 #define TeamsHit_pch
 
 
-#define POST_URL @"http://www.api.mstching.com/api/"
-//#define POST_URL @"http://www.test.api.mstching.com/api/"
+//#define POST_URL @"http://www.api.mstching.com/api/"
+#define POST_URL @"http://www.test.api.mstching.com/api/"
 #define POST_IMAGE_URL @"http://www.api.mstching.com/uploadimg.aspx?savetype="// 1、头像上传 2、说说图片 3、房间头像 4、朋友圈背景墙
 
 #ifdef __OBJC__
@@ -161,7 +161,8 @@ typedef NS_ENUM(NSInteger, GestureType) {
 
 #define kShuoshuoText6 @"双目瞪人玛[em:03:]丽肖,傀儡为子常怀抱,汝辈小儿需切记,梦中遇她莫尖叫"
 
-
+#define FONTNAME @"DFWaWaSC-W5"
+//#define FONTNAME @"MFQingShu_Noncommercial-Regular"
 
 #endif
 

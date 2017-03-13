@@ -35,11 +35,13 @@
 #import "WelcomeViewController.h"
 #import "BragGameChatViewController.h"
 
+#import <CoreText/CoreText.h>
+
 //#import <PgySDK/PgyManager.h>
 //#import <PgyUpdate/PgyUpdateManager.h>
 
-//#define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // 测试 
-#define RONGCLOUD_IM_APPKEY @"8brlm7ufrwl93"// 正式
+#define RONGCLOUD_IM_APPKEY @"8luwapkvu3wol" // 测试 
+//#define RONGCLOUD_IM_APPKEY @"8brlm7ufrwl93"// 正式
 
 #define UMENG_APPKEY @"563755cbe0f55a5cb300139c"
 
@@ -59,7 +61,6 @@
 @end
 
 @implementation AppDelegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -295,6 +296,8 @@
     }];
     
     [manager startMonitoring];
+    
+    [self downloadDFWaWaSCW5Font];
     
     return YES;
 }
@@ -962,6 +965,96 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
     return platform;
     
 }
+
+- (void)downloadDFWaWaSCW5Font
+{
+    [self asynchronouslySetFontName:FONTNAME];
+ 
+}
+- (void)asynchronouslySetFontName:(NSString *)fontName
+{
+    UIFont *aFont = [UIFont fontWithName:fontName size:17.0];
+    if (aFont && ([aFont.fontName compare:fontName] == NSOrderedSame || [aFont.familyName compare:fontName] == NSOrderedSame)) {
+        return;
+    }
+    
+    NSMutableDictionary * attrs = [NSMutableDictionary dictionaryWithObjectsAndKeys:fontName, kCTFontNameAttribute, nil];
+    
+    CTFontDescriptorRef desc = CTFontDescriptorCreateWithAttributes((__bridge CFDictionaryRef)attrs);
+    
+    NSMutableArray * descs = [NSMutableArray arrayWithCapacity:0];
+    [descs addObject:(__bridge id)desc];
+    CFRelease(desc);
+    
+    __block BOOL errorDuringDownload = NO;
+    
+    CTFontDescriptorMatchFontDescriptorsWithProgressHandler((__bridge CFArrayRef)descs, NULL, ^bool(CTFontDescriptorMatchingState state, CFDictionaryRef  _Nonnull progressParameter) {
+        
+        // 下载进度
+        double progressValue = [[(__bridge NSDictionary *)progressParameter objectForKey:(id)kCTFontDescriptorMatchingPercentage] doubleValue];
+        
+        if (state == kCTFontDescriptorMatchingDidBegin) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSLog(@"Begin Matching");
+            });
+        }else if (state == kCTFontDescriptorMatchingDidFinish)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)fontName, 0., NULL);
+                CFStringRef fontURL = CTFontCopyAttribute(fontRef, kCTFontURLAttribute);
+                NSLog(@"%@", (__bridge NSURL*)(fontURL));
+                CFRelease(fontURL);
+                CFRelease(fontRef);
+                if (!errorDuringDownload) {
+                    NSLog(@"%@ downloaded", fontName);
+                }
+            });
+        }else if (state == kCTFontDescriptorMatchingWillBeginDownloading) {
+            dispatch_async( dispatch_get_main_queue(), ^ {
+                // Show a progress bar
+                
+                NSLog(@"Begin Downloading");
+            });
+        } else if (state == kCTFontDescriptorMatchingDidFinishDownloading) {
+            dispatch_async( dispatch_get_main_queue(), ^ {
+                // Remove the progress bar
+                
+                NSLog(@"Finish downloading");
+            });
+        } else if (state == kCTFontDescriptorMatchingDownloading) {
+            dispatch_async( dispatch_get_main_queue(), ^ {
+                // Use the progress bar to indicate the progress of the downloading
+                
+                NSLog(@"Downloading %.0f%% complete", progressValue);
+            });
+        }else if (state == kCTFontDescriptorMatchingDidFailWithError) {
+            // An error has occurred.
+            // Get the error message
+            NSError *error = [(__bridge NSDictionary *)progressParameter objectForKey:(id)kCTFontDescriptorMatchingError];
+            
+            NSString * _errorMessage = @"";
+            
+            if (error != nil) {
+                _errorMessage = [error description];
+            } else {
+                _errorMessage = @"ERROR MESSAGE IS NOT AVAILABLE!";
+            }
+            // Set our flag
+            errorDuringDownload = YES;
+            
+            dispatch_async( dispatch_get_main_queue(), ^ {
+                
+                NSLog(@"Download error: %@", _errorMessage);
+            });
+        }
+        
+        return (bool)YES;
+        
+    });
+    
+}
+
 
 
 @end

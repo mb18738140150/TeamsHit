@@ -577,7 +577,9 @@ typedef enum {
             }
         }else
         {
-            image = [self getbeganImageWith:image height:imageHeight - 10];
+            if (imageHeight > 600) {
+                image = [self getbeganImageWith:image height:imageHeight - 10];
+            }
         }
     NSLog(@"imagesize width = %.2f, height = %.2f , screenHeight = %f", image.size.width, image.size.height, screenHeight);
     unsigned char *imgPixel = RequestImagePixelData(image);
@@ -598,8 +600,8 @@ typedef enum {
             int green = (unsigned char)imgPixel[pixOff+1];
             int blue = (unsigned char)imgPixel[pixOff+2];
             
-//            int  Y  =  0.299*red + 0.587*green + 0.114*blue;
-            int  Y  =  0.3*red + 0.6*green + 0.1*blue;
+            int  Y  =  0.299*red + 0.587*green + 0.114*blue;
+//            int  Y  =  0.3*red + 0.6*green + 0.1*blue;
             pixelsArray[x+y*w] = Y;
             pixOff += 4;
             

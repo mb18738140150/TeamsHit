@@ -22,6 +22,7 @@ static NSString * const groupMemberTableName = @"GROUPMEMBERTABLE";
 static NSString * const friendCircleMessageTableName = @"FRIENDCIRCLEMESSAGETABLE";
 static NSString * const NewFriendRequestTableName = @"NEWFRINDREQUESTTABLE";
 static NSString * const GameBackImageTableName = @"GAMEBACKIMAGETABLE";
+static NSString * const TakeoutAccountTableName = @"TAKEOUTACCOUNTTABLE";
 
 + (RCDataBaseManager*)shareInstance
 {
@@ -90,6 +91,12 @@ static NSString * const GameBackImageTableName = @"GAMEBACKIMAGETABLE";
             NSString *createTableSQL = @"CREATE TABLE GAMEBACKIMAGETABLE (id integer PRIMARY KEY autoincrement, groupid text, userid text,name text)";
             [db executeUpdate:createTableSQL];
             NSString *createIndexSQL=@"CREATE unique INDEX idx_userid ON GAMEBACKIMAGETABLE(groupid，userid);";
+            [db executeUpdate:createIndexSQL];
+        }
+        if (![DBHelper isTableOK: TakeoutAccountTableName withDB:db]) {
+            NSString *createTableSQL = @"CREATE TABLE TAKEOUTACCOUNTTABLE (id integer PRIMARY KEY autoincrement, accountName text, typeName text,password text,accountNumber text)";
+            [db executeUpdate:createTableSQL];
+            NSString *createIndexSQL=@"CREATE unique INDEX idx_userid ON TAKEOUTACCOUNTTABLE(accountName，typeName);";
             [db executeUpdate:createIndexSQL];
         }
     }];
@@ -627,6 +634,55 @@ static NSString * const GameBackImageTableName = @"GAMEBACKIMAGETABLE";
         [rs close];
     }];
     return backImageName;
+}
+
+// 授权登录
+- (void)insertTakeoutAccountModel:(TakeoutAccountModel *)model
+{
+    if (model.typeName == nil || model.typeName.length < 1) {
+        return;
+    }
+    
+    
+    NSString * insertSql = @"REPLACE INTO TAKEOUTACCOUNTTABLE (accountName,typeName,password,accountNumber) VALUES (?,?,?,?)";
+    FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
+    if (queue == nil) {
+        return;
+    }
+    
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:insertSql,model.accountName,model.typeName,model.password,model.accountNumber];
+    }];
+}
+- (NSMutableArray*)getTakeoutAccounts
+{
+    NSMutableArray * alltakeoutAccount = [NSMutableArray array];
+    FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
+    [queue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:@"SELECT * FROM TAKEOUTACCOUNTTABLE"];
+        while ([rs next]) {
+            TakeoutAccountModel * model = [[TakeoutAccountModel alloc]init];
+            model.accountName = [rs stringForColumn:@"accountName"];
+            model.typeName = [rs stringForColumn:@"typeName"];
+            model.password = [rs stringForColumn:@"password"];
+            model.accountNumber = [rs stringForColumn:@"accountNumber"];
+            [alltakeoutAccount addObject:model];
+        }
+        [rs close];
+    }];
+    return alltakeoutAccount;
+}
+
+- (void)deleteTakeoutAccountWithModel:(TakeoutAccountModel *)model
+{
+    NSString *deleteSql =[NSString stringWithFormat: @"DELETE FROM TAKEOUTACCOUNTTABLE WHERE accountNumber=%@",model.accountNumber];
+    FMDatabaseQueue *queue = [DBHelper getDatabaseQueue];
+    if (queue==nil) {
+        return ;
+    }
+    [queue inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:deleteSql];
+    }];
 }
 
 @end

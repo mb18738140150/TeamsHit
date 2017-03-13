@@ -22,6 +22,8 @@
 #import "WXApiManager.h"
 #import "TelephoneRechargeViewController.h"
 
+#import "BusinessServeViewController.h"
+#import "SigninViewController.h"
 
 static NSString *kLinkURL = @"http://download.www.mstching.com";
 static NSString *kLinkTagName = @"WECHAT_TAG_JUMP_SHOWRANK";
@@ -415,6 +417,24 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
     
     rechargeVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:rechargeVC animated:YES];
+    
+}
+- (IBAction)businessserve:(id)sender {
+    
+    BusinessServeViewController * businessserveVC = [[BusinessServeViewController alloc]init];
+    businessserveVC.hidesBottomBarWhenPushed = YES;
+    
+    [self.navigationController pushViewController:businessserveVC animated:YES];
+}
+- (IBAction)signinAction:(id)sender {
+    NSLog(@"签到");
+    
+    SigninViewController * signinVC = [[SigninViewController alloc]initWithNibName:@"SigninViewController" bundle:nil];
+    signinVC.hidesBottomBarWhenPushed = YES;
+    signinVC.iconImage = self.iconImageView.image;
+    signinVC.userName = self.userNameLabel.text;
+    signinVC.coinCount = self.counCountLabel.text.intValue;
+    [self.navigationController pushViewController:signinVC animated:YES];
     
 }
 
