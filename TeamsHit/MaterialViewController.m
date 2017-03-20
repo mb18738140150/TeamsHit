@@ -19,6 +19,9 @@
 #import "ExpressionView.h"
 #import "MaterialDetailViewController.h"
 #import "PrintPreviewController.h"
+
+#import "EquipmentModel.h"
+
 #define CELL_IDENTIFIER @"MaterialTableViewCell"
 
 #define SELF_WIDTH self.view.frame.size.width
@@ -78,13 +81,13 @@
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
-    self.title = @"素材";
+    self.title = @"内容编辑";
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印预览" style:UIBarButtonItemStylePlain target:self action:@selector(printPreviewAction)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"预览" style:UIBarButtonItemStylePlain target:self action:@selector(printPreviewAction)];
     self.tableView = [[DragCellTableView alloc]init];
-    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 64 - 45 - 10);
+    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 64 - 45 - 20);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
@@ -101,7 +104,7 @@
         });
     });
     self.imageCount = 0;
-    
+    [self getDeviceData];
     // Do any additional setup after loading the view.
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -113,6 +116,48 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+
+- (void)getDeviceData
+{
+    //    hud= [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    [hud show:YES];
+    NSString * url = [NSString stringWithFormat:@"%@userinfo/getDeviceList?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+    
+    __weak MaterialViewController * materialVC = self;
+    
+    [[HDNetworking sharedHDNetworking]GET:url parameters:nil success:^(id  _Nonnull responseObject) {
+        
+        
+        NSLog(@"responseObject = %@", responseObject);
+        int command = [[responseObject objectForKey:@"Command"] intValue];
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        
+        if (code == 200) {
+            
+            if ([Print sharePrint].deviceArr.count != 0) {
+                [[Print sharePrint].deviceArr removeAllObjects];
+            }
+            
+            NSArray * array = [responseObject objectForKey:@"DeviceList"];
+            
+            for (NSDictionary * dic in array) {
+                EquipmentModel * model = [[EquipmentModel alloc]initWithDictionary:dic];
+                
+                [[Print sharePrint].deviceArr addObject:model];
+            }
+            
+        }else
+        {
+            [materialVC getDeviceData];
+        }
+        
+    } failure:^(NSError * _Nonnull error) {
+        [materialVC getDeviceData];
+    }];
+}
+
+
 #pragma mark - 打印预览
 - (void)printPreviewAction
 {
@@ -146,7 +191,6 @@
     _qrCodeView.backgroundColor = [UIColor clearColor];
     
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
@@ -164,9 +208,8 @@
         [self.toolBar setBackgroundImage:[UIImage new]forToolbarPosition:UIBarPositionAny                      barMetrics:UIBarMetricsDefault];
         [self.toolBar setShadowImage:[UIImage new]
                   forToolbarPosition:UIToolbarPositionAny];
-        _toolBar.backgroundColor = UIColorFromRGB(0x12B7F5);
+        _toolBar.backgroundColor = [UIColor whiteColor];
         _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT - 64, SELF_WIDTH, TOOLBAR_HEIGHT);
-        
         
          _textEditItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"materia-1"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(textEdit)];
         
@@ -528,7 +571,7 @@
 {
     [self.qrCodeView removeFromSuperview];
     if (self.qrTextView.text.length != 0) {
-        UIImage * image = [[QRCode shareQRCode]createQRCodeForString:self.qrTextView.text withWidth:128];
+        UIImage * image = [[QRCode shareQRCode]createQRCodeForString:self.qrTextView.text withWidth:200];
         self.iconImageView.image = image;
         
         MaterialDataModel * model = [[MaterialDataModel alloc]init];
@@ -657,7 +700,7 @@
 //        [_materiaItem setImage:[[UIImage imageNamed:@"materia-4"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 //    }
     _toolBar.frame = CGRectMake(0, SELF_HEIGHT - TOOLBAR_HEIGHT, SELF_WIDTH, TOOLBAR_HEIGHT);
-    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 10);
+    self.tableView.frame = CGRectMake(10, 10, self.view.hd_width - 20, self.view.hd_height - 45 - 20);
 }
 
 - (void)moveToBottom

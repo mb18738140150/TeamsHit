@@ -40,10 +40,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"签到" titleColor:[UIColor whiteColor]];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    self.title = @"签到";
+//    self.title = @"签到";
     
     [self.signinDateView prepareUI];
     
@@ -175,6 +175,11 @@
             }
             [weakSelf.dataArr addObject:nModel];
             weakSelf.signinDateView.dataArr = self.dataArr;
+            
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"恭喜您获得%d碰碰币", coinCount] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [weakSelf.signinBT setTitle:[NSString stringWithFormat:@"已连续签到%d天", nModel.conSignDay] forState:UIControlStateNormal];

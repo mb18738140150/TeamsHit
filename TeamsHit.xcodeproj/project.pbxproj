@@ -13,12 +13,6 @@
 		7304E1761D6D80C100434A1C /* f2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7304E1751D6D80C100434A1C /* f2.png */; };
 		73097DFF1D88F082001057F5 /* BragGameModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73097DFE1D88F082001057F5 /* BragGameModel.m */; };
 		73097E031D88FB26001057F5 /* callDicePointState.png in Resources */ = {isa = PBXBuildFile; fileRef = 73097E001D88FB26001057F5 /* callDicePointState.png */; };
-		730B70D01DADCBFA005B4637 /* materia-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70C91DADCBFA005B4637 /* materia-1@2x.png */; };
-		730B70D11DADCBFA005B4637 /* materia-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70CA1DADCBFA005B4637 /* materia-2@2x.png */; };
-		730B70D21DADCBFA005B4637 /* materia-3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70CB1DADCBFA005B4637 /* materia-3@2x.png */; };
-		730B70D31DADCBFA005B4637 /* materia-4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70CC1DADCBFA005B4637 /* materia-4@2x.png */; };
-		730B70D41DADCBFA005B4637 /* materia-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70CD1DADCBFA005B4637 /* materia-5@2x.png */; };
-		730B70D51DADCBFA005B4637 /* materia-6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70CE1DADCBFA005B4637 /* materia-6@2x.png */; };
 		730B70D61DADCBFA005B4637 /* materia-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 730B70CF1DADCBFA005B4637 /* materia-7@2x.png */; };
 		730B70D81DADD75C005B4637 /* MateriaExpression.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 730B70D71DADD75C005B4637 /* MateriaExpression.bundle */; };
 		730B70DE1DADF0AC005B4637 /* materiaCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 730B70DD1DADF0AC005B4637 /* materiaCollectionView.m */; };
@@ -77,6 +71,9 @@
 		730EB2971DCC30050045EC1C /* welcome_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 730EB2931DCC30050045EC1C /* welcome_3.png */; };
 		730EB2981DCC30050045EC1C /* welcome_4.png in Resources */ = {isa = PBXBuildFile; fileRef = 730EB2941DCC30050045EC1C /* welcome_4.png */; };
 		730EB29A1DCC5DCB0045EC1C /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 730EB2991DCC5DCB0045EC1C /* test.jpg */; };
+		7310C4C41E77A40900840D34 /* PanTestTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7310C4C21E77A40900840D34 /* PanTestTableViewCell.m */; };
+		7310C4C51E77A40900840D34 /* PanTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7310C4C31E77A40900840D34 /* PanTestTableViewCell.xib */; };
+		7310C4C81E77BBEB00840D34 /* PanTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7310C4C71E77BBEB00840D34 /* PanTestViewController.m */; };
 		731279C91D7F9FEC00A576E3 /* CreatGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 731279C71D7F9FEC00A576E3 /* CreatGroupViewController.m */; };
 		731279CA1D7F9FEC00A576E3 /* CreatGroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 731279C81D7F9FEC00A576E3 /* CreatGroupViewController.xib */; };
 		73133BD11E0A5A39006E1A7E /* FantasyGameOverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73133BD01E0A5A39006E1A7E /* FantasyGameOverView.m */; };
@@ -642,6 +639,8 @@
 		73F21BFD1DAB6A2100424693 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21BFC1DAB6A2100424693 /* UIKit.framework */; };
 		73F21BFF1DAB6A2B00424693 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21BFE1DAB6A2B00424693 /* Foundation.framework */; };
 		73F21C011DAB6A3300424693 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F21C001DAB6A3300424693 /* CoreFoundation.framework */; };
+		73F25FD21E78D83700A2183A /* PrintDeviceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F25FD01E78D83700A2183A /* PrintDeviceTableViewCell.m */; };
+		73F25FD31E78D83700A2183A /* PrintDeviceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F25FD11E78D83700A2183A /* PrintDeviceTableViewCell.xib */; };
 		73F3FB471E5D61F300C9FEB7 /* BusinessServeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB461E5D61F300C9FEB7 /* BusinessServeViewController.m */; };
 		73F3FB4B1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F3FB491E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.m */; };
 		73F3FB4C1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F3FB4A1E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.xib */; };
@@ -667,6 +666,13 @@
 		73F5AA4A1D9270AD00EC04D4 /* bragRuleImg.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F5AA491D9270AD00EC04D4 /* bragRuleImg.png */; };
 		73F5AA4C1D9276BB00EC04D4 /* 111.gif in Resources */ = {isa = PBXBuildFile; fileRef = 73F5AA4B1D9276BB00EC04D4 /* 111.gif */; };
 		73F5AA4E1D928BB200EC04D4 /* quitGameImg.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F5AA4D1D928BB200EC04D4 /* quitGameImg.png */; };
+		73FAE3EF1E7A6E1E0033AE2D /* materia-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3E91E7A6E1E0033AE2D /* materia-1@2x.png */; };
+		73FAE3F01E7A6E1E0033AE2D /* materia-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3EA1E7A6E1E0033AE2D /* materia-2@2x.png */; };
+		73FAE3F11E7A6E1E0033AE2D /* materia-3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3EB1E7A6E1E0033AE2D /* materia-3@2x.png */; };
+		73FAE3F21E7A6E1E0033AE2D /* materia-4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3EC1E7A6E1E0033AE2D /* materia-4@2x.png */; };
+		73FAE3F31E7A6E1E0033AE2D /* materia-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3ED1E7A6E1E0033AE2D /* materia-5@2x.png */; };
+		73FAE3F41E7A6E1E0033AE2D /* materia-6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3EE1E7A6E1E0033AE2D /* materia-6@2x.png */; };
+		73FAE3F61E7A779F0033AE2D /* lunch_default.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAE3F51E7A779F0033AE2D /* lunch_default.png */; };
 		73FAEB9E1D9B9E30006BA437 /* BragGameOverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FAEB9D1D9B9E30006BA437 /* BragGameOverView.m */; };
 		73FAEBA01D9B9E54006BA437 /* BragGameOverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEB9F1D9B9E54006BA437 /* BragGameOverView.xib */; };
 		73FAEBA21D9BA06D006BA437 /* bragGameOverSign.png in Resources */ = {isa = PBXBuildFile; fileRef = 73FAEBA11D9BA06D006BA437 /* bragGameOverSign.png */; };
@@ -724,12 +730,6 @@
 		73097DFD1D88F082001057F5 /* BragGameModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BragGameModel.h; sourceTree = "<group>"; };
 		73097DFE1D88F082001057F5 /* BragGameModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BragGameModel.m; sourceTree = "<group>"; };
 		73097E001D88FB26001057F5 /* callDicePointState.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = callDicePointState.png; sourceTree = "<group>"; };
-		730B70C91DADCBFA005B4637 /* materia-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-1@2x.png"; sourceTree = "<group>"; };
-		730B70CA1DADCBFA005B4637 /* materia-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-2@2x.png"; sourceTree = "<group>"; };
-		730B70CB1DADCBFA005B4637 /* materia-3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-3@2x.png"; sourceTree = "<group>"; };
-		730B70CC1DADCBFA005B4637 /* materia-4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-4@2x.png"; sourceTree = "<group>"; };
-		730B70CD1DADCBFA005B4637 /* materia-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-5@2x.png"; sourceTree = "<group>"; };
-		730B70CE1DADCBFA005B4637 /* materia-6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-6@2x.png"; sourceTree = "<group>"; };
 		730B70CF1DADCBFA005B4637 /* materia-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-7@2x.png"; sourceTree = "<group>"; };
 		730B70D71DADD75C005B4637 /* MateriaExpression.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MateriaExpression.bundle; sourceTree = "<group>"; };
 		730B70DC1DADF0AC005B4637 /* materiaCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materiaCollectionView.h; sourceTree = "<group>"; };
@@ -813,6 +813,11 @@
 		730EB2931DCC30050045EC1C /* welcome_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = welcome_3.png; sourceTree = "<group>"; };
 		730EB2941DCC30050045EC1C /* welcome_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = welcome_4.png; sourceTree = "<group>"; };
 		730EB2991DCC5DCB0045EC1C /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
+		7310C4C11E77A40900840D34 /* PanTestTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanTestTableViewCell.h; sourceTree = "<group>"; };
+		7310C4C21E77A40900840D34 /* PanTestTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanTestTableViewCell.m; sourceTree = "<group>"; };
+		7310C4C31E77A40900840D34 /* PanTestTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PanTestTableViewCell.xib; sourceTree = "<group>"; };
+		7310C4C61E77BBEB00840D34 /* PanTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanTestViewController.h; sourceTree = "<group>"; };
+		7310C4C71E77BBEB00840D34 /* PanTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanTestViewController.m; sourceTree = "<group>"; };
 		731279C61D7F9FEC00A576E3 /* CreatGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatGroupViewController.h; sourceTree = "<group>"; };
 		731279C71D7F9FEC00A576E3 /* CreatGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreatGroupViewController.m; sourceTree = "<group>"; };
 		731279C81D7F9FEC00A576E3 /* CreatGroupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreatGroupViewController.xib; sourceTree = "<group>"; };
@@ -1652,6 +1657,9 @@
 		73F21BFC1DAB6A2100424693 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		73F21BFE1DAB6A2B00424693 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73F21C001DAB6A3300424693 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		73F25FCF1E78D83700A2183A /* PrintDeviceTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintDeviceTableViewCell.h; sourceTree = "<group>"; };
+		73F25FD01E78D83700A2183A /* PrintDeviceTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintDeviceTableViewCell.m; sourceTree = "<group>"; };
+		73F25FD11E78D83700A2183A /* PrintDeviceTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PrintDeviceTableViewCell.xib; sourceTree = "<group>"; };
 		73F3FB451E5D61F300C9FEB7 /* BusinessServeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusinessServeViewController.h; sourceTree = "<group>"; };
 		73F3FB461E5D61F300C9FEB7 /* BusinessServeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusinessServeViewController.m; sourceTree = "<group>"; };
 		73F3FB481E5D629600C9FEB7 /* TakeOutNewAcountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakeOutNewAcountTableViewCell.h; sourceTree = "<group>"; };
@@ -1685,6 +1693,13 @@
 		73F5AA491D9270AD00EC04D4 /* bragRuleImg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bragRuleImg.png; sourceTree = "<group>"; };
 		73F5AA4B1D9276BB00EC04D4 /* 111.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 111.gif; sourceTree = "<group>"; };
 		73F5AA4D1D928BB200EC04D4 /* quitGameImg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quitGameImg.png; sourceTree = "<group>"; };
+		73FAE3E91E7A6E1E0033AE2D /* materia-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-1@2x.png"; sourceTree = "<group>"; };
+		73FAE3EA1E7A6E1E0033AE2D /* materia-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-2@2x.png"; sourceTree = "<group>"; };
+		73FAE3EB1E7A6E1E0033AE2D /* materia-3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-3@2x.png"; sourceTree = "<group>"; };
+		73FAE3EC1E7A6E1E0033AE2D /* materia-4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-4@2x.png"; sourceTree = "<group>"; };
+		73FAE3ED1E7A6E1E0033AE2D /* materia-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-5@2x.png"; sourceTree = "<group>"; };
+		73FAE3EE1E7A6E1E0033AE2D /* materia-6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "materia-6@2x.png"; sourceTree = "<group>"; };
+		73FAE3F51E7A779F0033AE2D /* lunch_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lunch_default.png; sourceTree = "<group>"; };
 		73FAEB9C1D9B9E30006BA437 /* BragGameOverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BragGameOverView.h; sourceTree = "<group>"; };
 		73FAEB9D1D9B9E30006BA437 /* BragGameOverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BragGameOverView.m; sourceTree = "<group>"; };
 		73FAEB9F1D9B9E54006BA437 /* BragGameOverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BragGameOverView.xib; sourceTree = "<group>"; };
@@ -2000,6 +2015,9 @@
 				733FA1511D82ADA3009A1689 /* GroupInfoCollectionViewCell.m */,
 				73199DDC1D8405FC00D5015E /* SlideBlockView.h */,
 				73199DDD1D8405FC00D5015E /* SlideBlockView.m */,
+				73F25FCF1E78D83700A2183A /* PrintDeviceTableViewCell.h */,
+				73F25FD01E78D83700A2183A /* PrintDeviceTableViewCell.m */,
+				73F25FD11E78D83700A2183A /* PrintDeviceTableViewCell.xib */,
 				731B91CB1DC1E134000441C7 /* GroupMemberDetailsTableViewCell.h */,
 				731B91CC1DC1E134000441C7 /* GroupMemberDetailsTableViewCell.m */,
 				731B91CD1DC1E134000441C7 /* GroupMemberDetailsTableViewCell.xib */,
@@ -2474,6 +2492,7 @@
 		732B93411D2E3D8B0095DD62 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				73FAE3F51E7A779F0033AE2D /* lunch_default.png */,
 				733A5DE31DE44DDF008011AF /* icon1.png */,
 				7316F75B1DC4C95100FD5D86 /* bbb.jpg */,
 				73DAAFBF1DC2DFF4000ACB66 /* 1(1).jpg */,
@@ -2772,12 +2791,12 @@
 				732E04651D41B76300BED0ED /* textEditimageSource */,
 				730B70E81DAE16F9005B4637 /* 素材-表情-选中@2x.png */,
 				730B70E91DAE16F9005B4637 /* 素材-素材-选中@2x.png */,
-				730B70C91DADCBFA005B4637 /* materia-1@2x.png */,
-				730B70CA1DADCBFA005B4637 /* materia-2@2x.png */,
-				730B70CB1DADCBFA005B4637 /* materia-3@2x.png */,
-				730B70CC1DADCBFA005B4637 /* materia-4@2x.png */,
-				730B70CD1DADCBFA005B4637 /* materia-5@2x.png */,
-				730B70CE1DADCBFA005B4637 /* materia-6@2x.png */,
+				73FAE3E91E7A6E1E0033AE2D /* materia-1@2x.png */,
+				73FAE3EA1E7A6E1E0033AE2D /* materia-2@2x.png */,
+				73FAE3EB1E7A6E1E0033AE2D /* materia-3@2x.png */,
+				73FAE3EC1E7A6E1E0033AE2D /* materia-4@2x.png */,
+				73FAE3ED1E7A6E1E0033AE2D /* materia-5@2x.png */,
+				73FAE3EE1E7A6E1E0033AE2D /* materia-6@2x.png */,
 				730B70CF1DADCBFA005B4637 /* materia-7@2x.png */,
 				731C04A61D40B33F008D582F /* processImge */,
 			);
@@ -3688,6 +3707,11 @@
 				73162B9A1E72A8AA0041C775 /* OrderPrintTableViewCell.xib */,
 				73162BA11E72AD8B0041C775 /* PrintOrderModel.h */,
 				73162BA21E72AD8B0041C775 /* PrintOrderModel.m */,
+				7310C4C61E77BBEB00840D34 /* PanTestViewController.h */,
+				7310C4C71E77BBEB00840D34 /* PanTestViewController.m */,
+				7310C4C11E77A40900840D34 /* PanTestTableViewCell.h */,
+				7310C4C21E77A40900840D34 /* PanTestTableViewCell.m */,
+				7310C4C31E77A40900840D34 /* PanTestTableViewCell.xib */,
 			);
 			name = businessServe;
 			sourceTree = "<group>";
@@ -3905,6 +3929,7 @@
 				73DEC7DA1DB7709B00CD822D /* addFriendImage@2x.png in Resources */,
 				730BCC551DFFD0D00004FD63 /* fantasy_small_heart.png in Resources */,
 				730BCC4F1DFFD0D00004FD63 /* fantasy_exchange_public.png in Resources */,
+				73FAE3F21E7A6E1E0033AE2D /* materia-4@2x.png in Resources */,
 				73E6660C1D4C9A50005B11A4 /* ConfigurationWiFiViewController.xib in Resources */,
 				7399F5151DBB3CD5001CC3C5 /* title_right_icon@2x.png in Resources */,
 				73E665FF1D4C98AF005B11A4 /* equipicon2@2x.png in Resources */,
@@ -3927,8 +3952,8 @@
 				732E04B41D41FE3400BED0ED /* dot_04.png in Resources */,
 				73555C671DBF3B8100153E6A /* ico_effects_unchecked@2x.png in Resources */,
 				731B91C31DC1D291000441C7 /* gender_verify.png in Resources */,
+				7310C4C51E77A40900840D34 /* PanTestTableViewCell.xib in Resources */,
 				73199DC31D83E30800D5015E /* 骰子2-1.png in Resources */,
-				730B70D21DADCBFA005B4637 /* materia-3@2x.png in Resources */,
 				733A26351DB4D1BB003FADF0 /* big_next_gray.png in Resources */,
 				73097E031D88FB26001057F5 /* callDicePointState.png in Resources */,
 				73199DD01D83E32100D5015E /* 2.gif in Resources */,
@@ -3962,6 +3987,7 @@
 				730CD9AE1D7428FA00183ED8 /* 02@2x.png in Resources */,
 				732E04B21D41FE3400BED0ED /* dot_02.png in Resources */,
 				73E1EBF61E642FA5003E7C23 /* 百度外卖1.png in Resources */,
+				73FAE3EF1E7A6E1E0033AE2D /* materia-1@2x.png in Resources */,
 				73DEBC1F1D863E3700395FD0 /* 输.png in Resources */,
 				73E888B71E6033220093C5AA /* takeoutbusinessserve.png in Resources */,
 				7371181E1D38BFFF00B590CB /* mall.png in Resources */,
@@ -3969,7 +3995,6 @@
 				73362FDA1D59B82C00331BFB /* wifi_paring_07.png in Resources */,
 				7336C9DE1DDC2DC400E29F90 /* quieGameButton.png in Resources */,
 				73E0F42F1E66CAF100AFAD4E /* signin_oringecircle.png in Resources */,
-				730B70D51DADCBFA005B4637 /* materia-6@2x.png in Resources */,
 				73E1EBFB1E642FA5003E7C23 /* 签到-背景.png in Resources */,
 				737117FC1D388B2C00B590CB /* chat-2@2x.png in Resources */,
 				73E666021D4C98AF005B11A4 /* equipicon3-2@2x.png in Resources */,
@@ -4029,7 +4054,6 @@
 				7323393E1DE922CF00F0701E /* face0.jpg in Resources */,
 				73BB21461D52CC5C000CBC9A /* ConfigurationWiFiSecondViewController.xib in Resources */,
 				732E04731D41B99D00BED0ED /* ico_size_unchecked@2x.png in Resources */,
-				730B70D31DADCBFA005B4637 /* materia-4@2x.png in Resources */,
 				732B92EE1D2DE2F70095DD62 /* LaunchScreen.storyboard in Resources */,
 				73E1EBF71E642FA5003E7C23 /* 签到-圆圈.png in Resources */,
 				731449BC1D98F70800512E64 /* 21pointSign.png in Resources */,
@@ -4122,6 +4146,7 @@
 				73FCED921DD5916E000A365C /* RCConfig.plist in Resources */,
 				73CFF92E1E1E199300F32AF0 /* fantasySprinkleCoin.png in Resources */,
 				733412E61D5AFC7500196F4E /* noForbid.png in Resources */,
+				73FAE3F01E7A6E1E0033AE2D /* materia-2@2x.png in Resources */,
 				7340351B1DBDDEAE0050FC82 /* about.png in Resources */,
 				731449C11D98F70800512E64 /* findStartGame.png in Resources */,
 				7315546A1DC757B500FDEF16 /* 888.JPG in Resources */,
@@ -4143,7 +4168,6 @@
 				73E888B51E6033220093C5AA /* businessAccountIcon.png in Resources */,
 				730EB29A1DCC5DCB0045EC1C /* test.jpg in Resources */,
 				73F21BDB1DAB31EC00424693 /* 统计完点数的声音.wav in Resources */,
-				730B70D41DADCBFA005B4637 /* materia-5@2x.png in Resources */,
 				732E04A21D41CAA400BED0ED /* box_degree.png in Resources */,
 				73336B301D5EB6E400C1DF2F /* backImage.jpg in Resources */,
 				73199DCA1D83E30800D5015E /* 骰子5.png in Resources */,
@@ -4165,10 +4189,12 @@
 				73362DBE1D8506AB005DE81F /* 骰盅-1.png in Resources */,
 				73FCED8F1DD5916E000A365C /* Emoji.plist in Resources */,
 				731900D61E680D8900B36B45 /* 美团1.png in Resources */,
+				73FAE3F11E7A6E1E0033AE2D /* materia-3@2x.png in Resources */,
 				73555C4F1DBF087100153E6A /* forgetPassword.png in Resources */,
 				730EB2981DCC30050045EC1C /* welcome_4.png in Resources */,
 				73E1EBF51E642FA5003E7C23 /* 百度外卖.png in Resources */,
 				732607301DB5D63700B1E626 /* normalscrip.png in Resources */,
+				73F25FD31E78D83700A2183A /* PrintDeviceTableViewCell.xib in Resources */,
 				73BD46F71D93B60D002F38CF /* chooseDicepointCallOrOpen_call.png in Resources */,
 				730CD9B21D7428FA00183ED8 /* mao@2x.jpg in Resources */,
 				73DEC7DB1DB7709B00CD822D /* bangdingshebei@2x.png in Resources */,
@@ -4202,12 +4228,14 @@
 				73644C4F1D3619EC0060DA9F /* Address.plist in Resources */,
 				73E1EBFA1E642FA5003E7C23 /* 签到-红色圆.png in Resources */,
 				73DEBC1E1D863E3700395FD0 /* 赢.png in Resources */,
+				73FAE3F61E7A779F0033AE2D /* lunch_default.png in Resources */,
 				730BCC591DFFD0D00004FD63 /* fantasy_spade.png in Resources */,
 				73FAFAAA1E7256E20021EE0D /* equipment5.png in Resources */,
 				73DAAFC01DC2DFF4000ACB66 /* 1(1).jpg in Resources */,
 				730BCC541DFFD0D00004FD63 /* fantasy_side.png in Resources */,
 				733FA1411D82504D009A1689 /* 设置@2x.png in Resources */,
 				73F21BDC1DAB31EC00424693 /* 摇色子.wav in Resources */,
+				73FAE3F31E7A6E1E0033AE2D /* materia-5@2x.png in Resources */,
 				733A26321DB4D1BB003FADF0 /* big_before_gray.png in Resources */,
 				73F405B41E0B7F5800B117F4 /* fantasyChangePublic.mp3 in Resources */,
 				73DAAFC81DC31FCF000ACB66 /* closeStoreImage.png in Resources */,
@@ -4231,16 +4259,15 @@
 				731C5B021D4A19BA00328503 /* NewFriendListViewController.xib in Resources */,
 				73FAEBA21D9BA06D006BA437 /* bragGameOverSign.png in Resources */,
 				732E04961D41C58E00BED0ED /* ico_dot_03@2x.png in Resources */,
-				730B70D01DADCBFA005B4637 /* materia-1@2x.png in Resources */,
 				73362FDE1D59B82C00331BFB /* wifi_paring_11.png in Resources */,
 				737117FE1D388B2C00B590CB /* find-2@2x.png in Resources */,
 				73362FD61D59B82C00331BFB /* wifi_paring_03.png in Resources */,
 				73BB214B1D52D88C000CBC9A /* ChangeEquipmentNameView.xib in Resources */,
 				736EEFEE1DC09B7000DA5B5E /* process_ink.png in Resources */,
 				73362FD41D59B82C00331BFB /* wifi_paring_01.png in Resources */,
+				73FAE3F41E7A6E1E0033AE2D /* materia-6@2x.png in Resources */,
 				732BABB71D37717300D480B0 /* upload@2x.png in Resources */,
 				731449BD1D98F70800512E64 /* bragBackgroundcolorView.png in Resources */,
-				730B70D11DADCBFA005B4637 /* materia-2@2x.png in Resources */,
 				73DAAFC41DC30023000ACB66 /* mine_normal.png in Resources */,
 				73555C771DBF54D800153E6A /* point_select.png in Resources */,
 				733412EE1D5B05C200196F4E /* SearcgGroupListCell.xib in Resources */,
@@ -4344,6 +4371,7 @@
 				731B11F81DAF804D006ED0DB /* BGTopSilderBar.m in Sources */,
 				73336B311D5EB6E400C1DF2F /* HeadCollectionView.m in Sources */,
 				731A0F371DF9012B006F8F9D /* FantasyGameChatViewController.m in Sources */,
+				7310C4C41E77A40900840D34 /* PanTestTableViewCell.m in Sources */,
 				734034FD1DBD9F3B0050FC82 /* PayHistoryTableViewCell.m in Sources */,
 				73E0F4111E66B63E00AFAD4E /* SigninViewController.m in Sources */,
 				731A0F4B1DF90544006F8F9D /* FantasyGamerCardInfoModel.m in Sources */,
@@ -4417,6 +4445,7 @@
 				73336B391D5EB6E400C1DF2F /* RealTimeLocationViewController.m in Sources */,
 				731449C51D98FAC900512E64 /* TypeofGameTableViewCell.m in Sources */,
 				73336B3C1D5EB8BC00C1DF2F /* RCDTestMessageCell.m in Sources */,
+				7310C4C81E77BBEB00840D34 /* PanTestViewController.m in Sources */,
 				732BAB8F1D374AA100D480B0 /* UIImage+MLTint.m in Sources */,
 				732BABA81D374D0400D480B0 /* MLSelectPhotoNavigationViewController.m in Sources */,
 				732B93141D2DF5290095DD62 /* NSString+MD5.m in Sources */,
@@ -4498,6 +4527,7 @@
 				731B91CE1DC1E134000441C7 /* GroupMemberDetailsTableViewCell.m in Sources */,
 				73199DA91D83A60C00D5015E /* PrepareGameCollectionViewCell.m in Sources */,
 				73133BD81E0A8164006E1A7E /* ChooseCreatGameTypeView.m in Sources */,
+				73F25FD21E78D83700A2183A /* PrintDeviceTableViewCell.m in Sources */,
 				73E0057E1E65123800DF4CBD /* StoreinformationModel.m in Sources */,
 				73BB21491D52D870000CBC9A /* ChangeEquipmentNameView.m in Sources */,
 				731BC30C1DB8A4A500512D5B /* ExchangeBackwallImageViewController.m in Sources */,

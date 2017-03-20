@@ -14,11 +14,16 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#import "GroupDetailSetTipView.h"
 
 #import <opencv2/opencv.hpp>
 #import <opencv2/imgproc/types_c.h>
 #import <opencv2/imgcodecs/ios.h>
 
+
+#import "GameRulesTableViewCell.h"
+#import "EquipmentModel.h"
+#define GAME_RULECELL_IDENTIFIRE @"gamerulecell"
 #define SELF_WIDTH 384
 
 #ifdef DEBUG
@@ -31,11 +36,12 @@
 
 #endif
 
-@interface Print()
+@interface Print()<UITableViewDelegate, UITableViewDataSource>
 {
     MBProgressHUD* hud ;
 }
 @property (nonatomic, assign)BOOL materailImage;
+@property (nonatomic, copy)NSString * deviceUuids;
 @end
 
 @implementation Print
@@ -46,6 +52,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         print = [[Print alloc]init];
+        print.deviceArr = [NSMutableArray array];
     });
     return print;
 }
@@ -179,6 +186,7 @@
 
 - (void)printJsonDataStr:(NSString *)jsonStr
 {
+    
     NSString * url = [NSString stringWithFormat:@"%@userinfo/testTeamState?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
     NSDictionary * dic = @{@"ToUserId":self.userId
                            };
@@ -187,8 +195,24 @@
     } success:^(id  _Nonnull responseObject) {
         NSLog(@"responseObject = %@", responseObject);
         int code = [[responseObject objectForKey:@"Code"] intValue];
+        
         if (code == 200) {
-            [self print:jsonStr];
+            
+            if (self.deviceArr.count == 1) {
+                EquipmentModel * model = self.deviceArr[0];
+                self.deviceUuids = model.uuid;
+                [self print:jsonStr];
+            }else
+            {
+                GroupDetailSetTipView * tipView = [[GroupDetailSetTipView alloc]initWithFrame:[UIScreen mainScreen].bounds title:@"请选择您要使用的打印机" content:self.deviceArr isPrint:YES];
+                [tipView show];
+                [tipView getPickerData:^(NSString *string) {
+                    self.deviceUuids = string;
+                    
+                    [self print:jsonStr];
+                }];
+            }
+            
         }else
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -218,7 +242,8 @@
 {
     NSDictionary * dic = @{@"ToUserId":self.userId,
                          @"TaskType":self.taskType,
-                         @"DataArray":jsonStr
+                         @"DataArray":jsonStr,
+                           @"UuidList":self.deviceUuids
                          };
     NSLog(@"%@", dic);
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
@@ -249,4 +274,5 @@
     }];
 
 }
+
 @end

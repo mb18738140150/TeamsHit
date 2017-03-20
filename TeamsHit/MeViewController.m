@@ -24,7 +24,7 @@
 
 #import "BusinessServeViewController.h"
 #import "SigninViewController.h"
-
+#import "PanTestViewController.h"
 static NSString *kLinkURL = @"http://download.www.mstching.com";
 static NSString *kLinkTagName = @"WECHAT_TAG_JUMP_SHOWRANK";
 static NSString *kLinkTitle = @"当下最火的游戏娱乐APP";
@@ -426,6 +426,9 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
     
     [self.navigationController pushViewController:businessserveVC animated:YES];
 }
+
+
+
 - (IBAction)signinAction:(id)sender {
     NSLog(@"签到");
     
@@ -435,6 +438,10 @@ static NSString *kLinkDescription = @"快来跟我一起玩史上最好玩的轻
     signinVC.userName = self.userNameLabel.text;
     signinVC.coinCount = self.counCountLabel.text.intValue;
     [self.navigationController pushViewController:signinVC animated:YES];
+    
+//    PanTestViewController * vc = [[PanTestViewController alloc]init];
+//    vc.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:vc animated:YES];
     
 }
 

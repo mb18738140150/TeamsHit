@@ -58,13 +58,15 @@
 
 @interface AppDelegate ()<RCWKAppInfoProvider>
 
+@property (nonatomic, strong)UIImageView * imageview;
+
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
     
+    // Override point for customization after application launch.
     NSDictionary *remoteNotification = [launchOptions objectForKey: UIApplicationLaunchOptionsRemoteNotificationKey];
     if (nil != remoteNotification) {
         NSLog(@"remoteNotification = %@", remoteNotification);
@@ -74,6 +76,7 @@
     NSString *lastVersions = [defaults stringForKey:@"lastVersions"];
     NSString *newVersions = [[NSBundle mainBundle].infoDictionary objectForKey:@"CFBundleVersion"];
     
+    
     if ([newVersions isEqualToString:lastVersions]) {//版本相同
         //设置跟视图控制器
         
@@ -81,6 +84,11 @@
             NSString * accountNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"AccountNumber"];
             NSString * password = [[NSUserDefaults standardUserDefaults] objectForKey:@"Password"];
             if (accountNumber && password) {
+                
+                MyTabBarController * myTabbarVC = [[MyTabBarController alloc]init];
+                UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:myTabbarVC];
+                self.window.rootViewController = nav;
+                
                 __weak typeof(self) weakself = self;
                 NSDictionary * jsonDic = @{
                                            @"Account":accountNumber,
@@ -111,9 +119,13 @@
                             [weakself pushTabBarVC];
                         } error:^(RCConnectErrorCode status) {
                             NSLog(@"连接融云失败");
+                            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                            [alert show];
                             [weakself pushLoginVC];
                         } tokenIncorrect:^{
                             NSLog(@"IncorrectToken");
+                            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                            [alert show];
                             [weakself pushLoginVC];
                             
                         }];
@@ -130,6 +142,10 @@
                     
                 } failure:^(NSError * _Nonnull error) {
                     NSLog(@"error = %@", error);
+                    
+                    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"登录失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                    
                     [weakself pushLoginVC];
                 }];
             }else
@@ -140,8 +156,11 @@
             }
         }else
         {
-            [self pushLoginVC];
+            LoginViewController * loginVC = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+            UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:loginVC];
+            self.window.rootViewController = nav;
         }
+        
         [self.window makeKeyAndVisible];
         
     } else {
@@ -297,7 +316,7 @@
     
     [manager startMonitoring];
     
-    [self downloadDFWaWaSCW5Font];
+//    [self downloadDFWaWaSCW5Font];
     
     return YES;
 }

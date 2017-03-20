@@ -13,6 +13,8 @@
 @property (nonatomic, strong)NSNumber * userId;
 @property (nonatomic, strong)NSNumber * taskType;
 
+@property (nonatomic, strong)NSMutableArray * deviceArr;
+
 + (Print *)sharePrint;
 
 - (void)printMaterailImage:(UIImage *)image taskType:(NSNumber *)taskType toUserId:(NSNumber *)toUserId;

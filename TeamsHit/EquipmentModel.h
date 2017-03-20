@@ -17,6 +17,9 @@
 @property (nonatomic, strong)NSNumber * state;
 @property (nonatomic, copy)NSString * deviceMac;
 @property (nonatomic, strong)NSNumber * concentration;
+
+@property (nonatomic, assign)BOOL isSelect;
+
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

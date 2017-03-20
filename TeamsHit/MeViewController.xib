@@ -68,18 +68,18 @@
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="昵称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Te-gg-mK4">
-                                            <rect key="frame" x="101" y="29" width="31" height="15"/>
+                                            <rect key="frame" x="101" y="29" width="31" height="17"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="15" id="kOV-LT-XtN"/>
+                                                <constraint firstAttribute="height" constant="17" id="kOV-LT-XtN"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="对对号" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pfh-gb-dtv">
-                                            <rect key="frame" x="101" y="60" width="46" height="12"/>
+                                            <rect key="frame" x="101" y="62" width="46" height="13"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="12" id="vK3-59-OvI"/>
+                                                <constraint firstAttribute="height" constant="13" id="vK3-59-OvI"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

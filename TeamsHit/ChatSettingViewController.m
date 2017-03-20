@@ -267,8 +267,15 @@ clickedButtonAtIndex:(NSInteger)buttonIndex {
 
 - (void)FrienddetailTapAction:(UITapGestureRecognizer *)sender
 {
+    __weak ChatSettingViewController * weakSelf = self;
     FriendInformationViewController * friend = [[FriendInformationViewController alloc]initWithNibName:@"FriendInformationViewController" bundle:nil];
     friend.targetId = self.userId;
+    [friend changeDisplayname:^(NSString *displayName) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.model.displayName = displayName;
+        });
+    }];
+    
     [self.navigationController pushViewController:friend animated:YES];
 }
 

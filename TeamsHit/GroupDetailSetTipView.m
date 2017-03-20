@@ -10,16 +10,21 @@
 #import "AppDelegate.h"
 #import "GameRuleModel.h"
 #import "GameRulesTableViewCell.h"
+#import "PrintDeviceTableViewCell.h"
+#import "EquipmentModel.h"
 
 #define GAME_RULECELL_IDENTIFIRE @"gamerulecell"
+#define PRINTDEVICECELLID @"PrintDeviceTableViewCellid"
 
 @interface GroupDetailSetTipView ()
 {
     UIView * backWhiteView;
 }
 @property (nonatomic, strong)NSMutableArray * dataArray;
+@property (nonatomic, strong)NSMutableArray * selectArr;
 
 @property (nonatomic, assign)BOOL isQuit;
+@property (nonatomic, assign)BOOL isPrint;
 
 @end
 
@@ -33,10 +38,27 @@
     return _dataArray;
 }
 
+- (NSMutableArray *)selectArr
+{
+    if (!_selectArr) {
+        _selectArr = [NSMutableArray array];
+    }
+    return _selectArr;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content
 {
     if (self = [super initWithFrame:frame]) {
         [self prepareUIWith:title Content:content isRule:NO];
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title content:(NSArray *)content isPrint:(BOOL)isPrint
+{
+    if (self = [super initWithFrame:frame]) {
+        self.isPrint = isPrint;
+        [self prepareUIWith:title Content:content isPrint:YES];
     }
     return self;
 }
@@ -72,6 +94,59 @@
     }
     return self;
 }
+
+- (void)prepareUIWith:(NSString *)title Content:(NSArray *)content isPrint:(BOOL)isPrint
+{
+    self.backgroundColor = [UIColor clearColor];
+    self.dataArr = [NSArray arrayWithArray:content];
+    UIView * backBlackView = [[UIView alloc]initWithFrame:self.bounds];
+    backBlackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
+    [self addSubview:backBlackView];
+    
+    backWhiteView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 264, 152)];
+    backWhiteView.layer.cornerRadius = 5;
+    backWhiteView.layer.masksToBounds = YES;
+    backWhiteView.backgroundColor = [UIColor whiteColor];
+    [self addSubview:backWhiteView];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, backWhiteView.hd_width, 44)];
+    titleLabel.backgroundColor = UIColorFromRGB(0x12B7F5);
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.text = title;
+    titleLabel.textAlignment = 1;
+    UIBezierPath * maskPath = [UIBezierPath bezierPathWithRoundedRect:titleLabel.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
+    CAShapeLayer * maskLayer = [[CAShapeLayer alloc]init];
+    maskLayer.frame = titleLabel.bounds;
+    maskLayer.path = maskPath.CGPath;
+    titleLabel.layer.mask = maskLayer;
+    [backWhiteView addSubview:titleLabel];
+    
+    backWhiteView.hd_height = 213;
+    
+    self.printTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 57, backWhiteView.hd_width, 120) style:UITableViewStylePlain];
+    self.printTableView.delegate = self;
+    self.printTableView.dataSource = self;
+    self.printTableView.backgroundColor = [UIColor whiteColor];
+    self.printTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.printTableView registerNib:[UINib nibWithNibName:@"PrintDeviceTableViewCell" bundle:nil] forCellReuseIdentifier:PRINTDEVICECELLID];
+    
+    
+    UIButton * sureBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    sureBT.frame = CGRectMake(backWhiteView.hd_width - 63, 184, 34, 16);
+    [sureBT setTitle:@"确定" forState:UIControlStateNormal];
+    sureBT.titleLabel.font = [UIFont systemFontOfSize:15];
+    [sureBT setTitleColor:UIColorFromRGB(0x12B7F5) forState:UIControlStateNormal];
+    [backWhiteView addSubview:sureBT];
+    
+    [backWhiteView addSubview:self.printTableView];
+    [sureBT addTarget:self action:@selector(completeAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
+    [backBlackView addGestureRecognizer:tap];
+    
+    backWhiteView.center = self.center;
+}
+
 
 - (void)prepareUIWith:(NSString *)title Content:(NSArray *)content isRule:(BOOL)isRule
 {
@@ -127,7 +202,8 @@
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismiss)];
         [backBlackView addGestureRecognizer:tap];
         
-    }else
+    }
+    else
     {
         if (self.isQuit) {
             backWhiteView.hd_height = 141;
@@ -233,7 +309,6 @@
                 sureBT.hd_centerX = backWhiteView.hd_centerX;
             }
         }
-        
     }
     
     backWhiteView.center = self.center;
@@ -397,6 +472,7 @@
 - (void)show
 {
     AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    
     [delegate.window addSubview:self];
 }
 
@@ -405,6 +481,11 @@
     self.alpha = 1;
     [UIView animateWithDuration:.4 animations:^{
         self.alpha = 0;
+        
+        for (EquipmentModel * model in [Print sharePrint].deviceArr) {
+            model.isSelect = NO;
+        }
+        
     } completion:^(BOOL finished) {
         [self removeAllSubviews];
         [self removeFromSuperview];
@@ -427,6 +508,21 @@
         }
     }else
     {
+        if (self.isPrint) {
+            NSString * taskNumber = @"";
+            for (EquipmentModel * model in self.selectArr) {
+                taskNumber = [taskNumber stringByAppendingFormat:@"%@,", model.uuid];
+            }
+            if (taskNumber.length <= 0) {
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"您还没有选择打印机" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+                return;
+            }
+            taskNumber = [taskNumber substringToIndex:taskNumber.length - 1];
+            self.comleteString = taskNumber;
+            [self dismiss];
+        }
         
         if (self.myblock) {
             _myblock(self.comleteString);
@@ -449,28 +545,76 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if ([tableView isEqual:self.printTableView]) {
+        return self.dataArr.count;
+    }
     return self.dataArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    GameRulesTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:GAME_RULECELL_IDENTIFIRE forIndexPath:indexPath];
-    [cell creatCellWithFrame:tableView.bounds];
-    GameRuleModel * model = self.dataArray[indexPath.row];
-    cell.numberlabel.text = [NSString stringWithFormat:@"%d", model.number];
-    cell.contentLabel.text = model.content;
-    return cell;
+    if ([tableView isEqual:self.printTableView]) {
+        PrintDeviceTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:PRINTDEVICECELLID forIndexPath:indexPath];
+        EquipmentModel * model = self.dataArr[indexPath.row];
+        
+        if (model.deviceName.length == 0) {
+            cell.deviceNameLabel.text = model.uuid;
+        }else
+        {
+            cell.deviceNameLabel.text = model.deviceName;
+        }
+        
+        if (!model.isSelect) {
+            cell.typeImage.image = [UIImage imageNamed:@"printOrderUnselect.png"];
+        }else
+        {
+            cell.typeImage.image = [UIImage imageNamed:@"printOrderSelect.png"];
+        }
+        
+        return cell;
+    }else
+    {
+        GameRulesTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:GAME_RULECELL_IDENTIFIRE forIndexPath:indexPath];
+        [cell creatCellWithFrame:tableView.bounds];
+        GameRuleModel * model = self.dataArray[indexPath.row];
+        cell.numberlabel.text = [NSString stringWithFormat:@"%d", model.number];
+        cell.contentLabel.text = model.content;
+        return cell;
+    }
+    
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    GameRuleModel * model = self.dataArray[indexPath.row];
-    if (model.height < 25) {
-        return 25;
+    if ([tableView isEqual:self.printTableView]) {
+        return 31;
     }else
     {
-        return model.height + 10;
+        GameRuleModel * model = self.dataArray[indexPath.row];
+        if (model.height < 25) {
+            return 25;
+        }else
+        {
+            return model.height + 10;
+        }
     }
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([tableView isEqual:self.printTableView]) {
+        EquipmentModel * model = self.dataArr[indexPath.row];
+        if (model.isSelect) {
+            model.isSelect = NO;
+            [self.selectArr removeObject:model];
+        }else
+        {
+            model.isSelect = YES;
+            [self.selectArr addObject:model];
+        }
+        [self.printTableView reloadData];
+    }
+}
+
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

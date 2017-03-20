@@ -24,9 +24,8 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="signBackImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="7TD-FM-cBT">
-                    <rect key="frame" x="0.0" y="-17" width="374" height="700"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signBackImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="7TD-FM-cBT">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </imageView>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kct-oi-rMf">
@@ -128,10 +127,14 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="7TD-FM-cBT" secondAttribute="trailing" id="JJs-4e-apY"/>
                 <constraint firstItem="Kct-oi-rMf" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Kak-tH-NpB"/>
+                <constraint firstItem="7TD-FM-cBT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="NIL-qB-mTk"/>
                 <constraint firstAttribute="bottom" secondItem="Kct-oi-rMf" secondAttribute="bottom" id="YWQ-uz-YIk"/>
                 <constraint firstItem="Kct-oi-rMf" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="oKD-iS-Cyj"/>
                 <constraint firstAttribute="trailing" secondItem="Kct-oi-rMf" secondAttribute="trailing" id="qMd-nI-eli"/>
+                <constraint firstAttribute="bottom" secondItem="7TD-FM-cBT" secondAttribute="bottom" id="tcZ-1a-iV1"/>
+                <constraint firstItem="7TD-FM-cBT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="zP0-xe-td5"/>
             </constraints>
             <point key="canvasLocation" x="33.5" y="54.5"/>
         </view>

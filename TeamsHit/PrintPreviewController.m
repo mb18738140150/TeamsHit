@@ -149,7 +149,7 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     _imaginariView.image = [UIImage imageNamed:@"imaginaryline"];
     [_bottomView addSubview:_imaginariView];
     
-    self.toUsernameLabel = [[UILabel alloc]initWithFrame:CGRectMake(17, 81, _bottomView.hd_width - 34, 13)];
+    self.toUsernameLabel = [[UILabel alloc]initWithFrame:CGRectMake(17, 81, _bottomView.hd_width - 34, 15)];
     _toUsernameLabel.font = [UIFont systemFontOfSize:13];
     _toUsernameLabel.backgroundColor = [UIColor whiteColor];
     _toUsernameLabel.text = [NSString stringWithFormat:@"To:%@", self.userName];
@@ -159,6 +159,13 @@ static NSString* ALCELLID = @"PrintPreviewCellId";
     self.tousernameImaginariView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 103, _headerView.hd_width - 20, 2)];
     _tousernameImaginariView.image = [UIImage imageNamed:@"imaginaryline"];
     [_bottomView addSubview:_tousernameImaginariView];
+    
+    if ([self.userName isEqualToString: [RCIM sharedRCIM].currentUserInfo.name]) {
+        self.toUsernameLabel.hidden = YES;
+        self.tousernameImaginariView.hidden = YES;
+        _headerView.hd_height = 73;
+    }
+    
     
     return _headerView;
 }

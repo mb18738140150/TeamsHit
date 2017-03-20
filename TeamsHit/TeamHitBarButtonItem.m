@@ -40,13 +40,32 @@
     return barButtonItem;
 }
 
++(instancetype)leftButtonWithImage:(UIImage *)image title:(NSString *)title titleColor:(UIColor *)color
+{
+    TeamHitBarButtonItem * barButtonItem = [super buttonWithType:UIButtonTypeSystem];
+    CGSize buttontitleSize = [title sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17]}];
+    
+    barButtonItem.frame = CGRectMake(0, 0, buttontitleSize.width + 45, 33);
+    [barButtonItem setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
+    [barButtonItem setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
+    
+    [barButtonItem setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [barButtonItem setTitle:title forState:UIControlStateNormal];
+    [barButtonItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateNormal];
+    [barButtonItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateHighlighted];
+    [barButtonItem setTitleColor:UIColorFromRGB(0x323232) forState:UIControlStateSelected];
+    //按钮字体颜色默认为白色
+    [barButtonItem setTitleColor:color forState:UIControlStateNormal];
+    barButtonItem.titleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
+    return barButtonItem;
+}
+
 + (instancetype)rightButtonWithImage:(UIImage *)image
 {
     TeamHitBarButtonItem * barButtonItem = [super buttonWithType:UIButtonTypeSystem];
     barButtonItem.frame = CGRectMake(0, 0, 30, 30);
     barButtonItem.imageEdgeInsets = UIEdgeInsetsMake(0, 10, 0, -10);
     [barButtonItem setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    
     return barButtonItem;
 }
 

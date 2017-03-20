@@ -19,7 +19,8 @@
 {
     _model = model;
     self.recieverNameLB.text = [NSString stringWithFormat:@"收货人:%@", model.receiver];
-    self.printTimeLB.text = @"00:00";
+    
+    self.printTimeLB.text = model.time;
     self.orderNumber.text = model.orderNumber;
     
     switch (model.printOrderType) {

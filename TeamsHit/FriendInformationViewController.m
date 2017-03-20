@@ -12,11 +12,15 @@
 #import "FriendDetailDataSettingViewController.h"
 #import "ChatViewController.h"
 #import "UserFriendCircleViewController.h"
+#import "AppDelegate.h"
+#import "ChangeEquipmentNameView.h"
 @interface FriendInformationViewController ()
 {
     UIView * amplificationbackView;
+    MBProgressHUD * hud;
 }
 
+@property (strong, nonatomic) IBOutlet UIView *changeNickNameView;
 
 @property (strong, nonatomic) IBOutlet UIView *informationView;
 
@@ -39,7 +43,7 @@
 @property (strong, nonatomic) IBOutlet UIImageView *imageview3;
 @property (strong, nonatomic) IBOutlet UIImageView *imageview4;
 
-
+@property (nonatomic, strong)ChangeEquipmentNameView  * changeNameView;
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *viewHeight;
 
@@ -65,6 +69,10 @@
     
     UITapGestureRecognizer *amplificationTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(amplification:)];
     [self.iconImageview addGestureRecognizer:amplificationTap];
+    
+    UITapGestureRecognizer * remarkTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeNickNameAction)];
+    [self.changeNickNameView addGestureRecognizer:remarkTap];
+    
     
     if (self.IsPhoneNumber != 1) {
         self.IsPhoneNumber = 2;
@@ -277,6 +285,7 @@
         self.phoneNumberLB.hidden = YES;
         self.phoneNumberLabel.hidden = YES;
         self.assressLine.hidden = YES;
+        
     }
     
 }
@@ -325,6 +334,89 @@
         
     } failure:^(NSError * _Nonnull error) {
         NSLog(@"%@", error);
+    }];
+}
+
+#pragma mark - nickname
+
+- (void)changeNickNameAction
+{
+    if (self.changeNameView) {
+        AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+        [delegate.window addSubview:self.changeNameView];
+        self.changeNameView.alpha = 0;
+        
+        self.changeNameView.equipmentNameTF.returnKeyType = UIReturnKeyDone;
+        [UIView animateWithDuration:.3 animations:^{
+            self.changeNameView.alpha = 1;
+        }];
+    }else
+    {
+        NSArray * nibarr = [[NSBundle mainBundle]loadNibNamed:@"ChangeEquipmentNameView" owner:self options:nil];
+        self.changeNameView = [nibarr objectAtIndex:0];
+        CGRect tmpFrame = [[UIScreen mainScreen] bounds];
+        self.changeNameView.frame = tmpFrame;
+        self.changeNameView.equipmentNameTF.returnKeyType = UIReturnKeyDone;
+        self.changeNameView.equipmentNameTF.delegate = self;
+        self.changeNameView.title = @"备注";
+        self.changeNameView.titleLabel.text = @"修改备注";
+        self.changeNameView.equipmentNameTF.placeholder = @"请输入备注";
+        self.changeNameView.equipmentNameTF.text = self.nickNameLabel.text;
+        AppDelegate * delegate = [[UIApplication sharedApplication] delegate];
+        [delegate.window addSubview:self.changeNameView];
+        self.changeNameView.alpha = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            self.changeNameView.alpha = 1;
+        }];
+        __weak FriendInformationViewController * fVC = self;
+        [self.changeNameView getEquipmentOption:^(NSString *name) {
+            NSLog(@"name = %@", name);
+            [fVC.changeNameView removeFromSuperview];
+            [fVC setFriendDisplayName:name];
+            
+        }];
+    }
+}
+- (void)setFriendDisplayName:(NSString *)name
+{
+    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"设置中...";
+    [hud show:YES];
+    
+    NSDictionary * dic = @{
+                           @"TargetId":self.model.userId,
+                           @"DisplayName":name
+                           };
+    __weak FriendInformationViewController * weakSelf = self;
+    [[HDNetworking sharedHDNetworking]setFriendDisplayName:dic success:^(id  _Nonnull responseObject) {
+        [hud hide:YES];
+        int code = [[responseObject objectForKey:@"Code"] intValue];
+        if (code == 200) {
+            self.nickNameLabel.text = name;
+            self.model.displayName = name;
+            RCDUserInfo *user = [[RCDataBaseManager shareInstance]getFriendInfo:[NSString stringWithFormat:@"%@", self.model.userId]];
+            user.displayName = name;
+            [[RCDataBaseManager shareInstance]insertFriendToDB:user];
+            RCUserInfo * userInfo = [[RCDataBaseManager shareInstance]getUserByUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
+            userInfo.name = name;
+            [[RCDataBaseManager shareInstance]insertUserToDB:userInfo];
+            [[RCIM sharedRCIM]refreshUserInfoCache:userInfo withUserId:[NSString stringWithFormat:@"%@", self.model.userId]];
+            
+            if (weakSelf.myBlock) {
+                weakSelf.myBlock(name);
+            }
+            
+        }else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+        }
+    } failure:^(NSError * _Nonnull error) {
+        [hud hide:YES];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
     }];
 }
 

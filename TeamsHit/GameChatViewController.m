@@ -107,6 +107,10 @@
     [self.view addSubview:_backImageView];
     self.backImageView.userInteractionEnabled = YES;
     [self.view insertSubview:_backImageView belowSubview:self.conversationMessageCollectionView];
+    UIView *buttomView =[[UIView alloc]initWithFrame:CGRectMake(0, self.view.hd_height - 100, screenWidth, 100)];
+    buttomView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:buttomView];
+    [self.view insertSubview:buttomView belowSubview:self.conversationMessageCollectionView];
     self.navigationItem.titleView.userInteractionEnabled = YES;
     
     // 滑块view
@@ -146,6 +150,8 @@
     
     
     [self.chatSessionInputBarControl addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    
+    
     
     
     ///注册自定义测试消息Cell

@@ -17,7 +17,7 @@ typedef enum:NSInteger {
 @interface PrintOrderModel : NSObject
 
 @property (nonatomic, assign)long taskNumber;
-@property (nonatomic, assign)long time;
+@property (nonatomic, copy)NSString *time;
 @property (nonatomic, copy)NSString * orderNumber;
 @property (nonatomic, copy)NSString * receiver;
 

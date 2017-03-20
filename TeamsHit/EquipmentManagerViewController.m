@@ -164,6 +164,7 @@
                 
                 if (equipmentVC.changeNameView) {
                    AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+                    equipmentVC.changeNameView.equipmentNameTF.text = model.deviceName;
                     [delegate.window addSubview:self.changeNameView];
                 }else
                 {
@@ -177,37 +178,37 @@
                     [delegate.window addSubview:self.changeNameView];
                     
 //                    __weak EquipmentManagerViewController * equipmentVC = self;
-                    [equipmentVC.changeNameView getEquipmentOption:^(NSString *name) {
-                        NSLog(@"name = %@", name);
-                        [equipmentVC.changeNameView removeFromSuperview];
-                        
-                        NSDictionary * jsonDic = @{
-                                                   @"Uuid":model.uuid,
-                                                   @"NewDeviceName":equipmentVC.changeNameView.equipmentNameTF.text
-                                                   };
-                        
-                        NSString * url = [NSString stringWithFormat:@"%@userinfo/ModifyDeviceName?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
-                        
-                        [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
-                            ;
-                        } success:^(id  _Nonnull responseObject) {
-                            NSLog(@"responseObject = %@", responseObject);
-                            int code = [[responseObject objectForKey:@"Code"] intValue];
-                            if (code == 200) {
-                                model.deviceName = equipmentVC.changeNameView.equipmentNameTF.text;
-                            }else
-                            {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-                                [alert show];
-                                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
-                            }
-                            [equipmentVC.equipmentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                        } failure:^(NSError * _Nonnull error) {
-                            NSLog(@"%@", error);
-                        }];
-                        
-                    }];
                 }
+                [equipmentVC.changeNameView getEquipmentOption:^(NSString *name) {
+                    NSLog(@"name = %@", name);
+                    [equipmentVC.changeNameView removeFromSuperview];
+                    
+                    NSDictionary * jsonDic = @{
+                                               @"Uuid":model.uuid,
+                                               @"NewDeviceName":equipmentVC.changeNameView.equipmentNameTF.text
+                                               };
+                    
+                    NSString * url = [NSString stringWithFormat:@"%@userinfo/ModifyDeviceName?token=%@", POST_URL, [UserInfo shareUserInfo].userToken];
+                    
+                    [[HDNetworking sharedHDNetworking] POSTwithToken:url parameters:jsonDic progress:^(NSProgress * _Nullable progress) {
+                        ;
+                    } success:^(id  _Nonnull responseObject) {
+                        NSLog(@"responseObject = %@", responseObject);
+                        int code = [[responseObject objectForKey:@"Code"] intValue];
+                        if (code == 200) {
+                            model.deviceName = equipmentVC.changeNameView.equipmentNameTF.text;
+                        }else
+                        {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@", [responseObject objectForKey:@"Message"]] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                            [alert show];
+                            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+                        }
+                        [equipmentVC.equipmentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    } failure:^(NSError * _Nonnull error) {
+                        NSLog(@"%@", error);
+                    }];
+                    
+                }];
                 
             }
                 break;

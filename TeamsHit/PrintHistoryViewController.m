@@ -39,17 +39,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"订单打印记录"];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    self.title = @"授权登录";
+//    self.title = @"授权登录";
     self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
     
     TeamHitBarButtonItem * rightBarItem = [TeamHitBarButtonItem rightButtonWithTitle:@"打印" backgroundcolor:UIColorFromRGB(0x12B7F5) cornerRadio:3];
     [rightBarItem addTarget:self action:@selector(printAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:rightBarItem];
     
-    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, self.view.hd_height - 64) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.hd_width, screenHeight - 64 - 47) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerNib:[UINib nibWithNibName:@"OrderPrintTableViewCell" bundle:nil] forCellReuseIdentifier:ORDERPRINTCELLID];
@@ -57,22 +57,15 @@
     
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headRefresh)];
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(footRefresh)];
+    self.tableView.tableHeaderView = [self getHeadView];
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.dataArr = [NSMutableArray array];
     self.page = 1;
     self.allCount = 0;
-    for (int i = 0; i < 10; i++) {
-        PrintOrderModel * model = [[PrintOrderModel alloc]init];
-        model.receiver = @"小马";
-        model.orderNumber = [NSString stringWithFormat:@"dkfjbjksfdb * %d", i];
-        model.taskNumber = i;
-        model.time = 88888;
-        model.printOrderType = Print_Nomal;
-        [self.dataArr addObject:model];
-    }
+    
     [self prepareBottomView];
-//    [self.tableView.mj_header beginRefreshing];
+    [self.tableView.mj_header beginRefreshing];
 }
 - (void)backAction:(UIButton *)button
 {
@@ -83,7 +76,8 @@
 {
     NSLog(@"头部刷新");
     __weak PrintHistoryViewController * weakSelf = self;
-    
+    self.page = 1;
+    self.tableView.mj_footer.state = MJRefreshStateIdle;
     NSDictionary * jsonDic = @{
                                @"CurPage":@(self.page),
                                @"CurCount":@10,
@@ -95,6 +89,7 @@
     }  success:^(id  _Nonnull responseObject) {
         
         NSLog(@"%@", responseObject);
+        
         if ([[responseObject objectForKey:@"Code"] intValue] == 200) {
             [weakSelf.tableView.mj_header endRefreshing];
             weakSelf.allCount = [[responseObject objectForKey:@"AllCount"] intValue];
@@ -233,6 +228,22 @@
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
+- (UIView *)getHeadView
+{
+    UIView * view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, 35)];
+    view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    
+    UILabel * tipLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, screenWidth, 15)];
+    tipLB.text = @"小提示:打印记录只可以查询今天的打印记录";
+    tipLB.textAlignment = 1;
+    tipLB.font = [UIFont systemFontOfSize:13];
+    tipLB.textColor = UIColorFromRGB(0x999999);
+    [view addSubview:tipLB];
+    
+    return view;
+}
+
+
 - (void)printAction:(UIButton *)button
 {
     TeamHitBarButtonItem * rightBarItem = self.navigationItem.rightBarButtonItem.customView;
@@ -310,7 +321,7 @@
     [UIView animateWithDuration:.3 animations:^{
         self.bottomView.frame = CGRectMake(0, self.view.hd_height - 47, screenWidth, 47);
     } completion:^(BOOL finished) {
-        self.tableView.hd_height -= 47;
+        self.tableView.hd_height = screenHeight - 64 - 47;
     }];
 }
 
@@ -319,7 +330,7 @@
     [self.selectArr removeAllObjects];
     self.bottomView.frame = CGRectMake(0, self.view.hd_height, screenWidth, 47);
 
-    self.tableView.hd_height += 47;
+    self.tableView.hd_height = screenHeight - 64;
     TeamHitBarButtonItem * rightBarItem = self.navigationItem.rightBarButtonItem.customView;
     [rightBarItem setTitle:@"打印" forState:UIControlStateNormal];
 }

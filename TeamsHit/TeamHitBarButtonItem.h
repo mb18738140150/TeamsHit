@@ -21,5 +21,5 @@
 + (instancetype)rightButtonWithTitle:(NSString *)title backgroundcolor:(UIColor *)color cornerRadio:(CGFloat)cornerRadius;
 
 +(instancetype)rightButtonWithImage:(UIImage *)image title:(NSString *)title;
-
++(instancetype)leftButtonWithImage:(UIImage *)image title:(NSString *)title titleColor:(UIColor *)color;
 @end

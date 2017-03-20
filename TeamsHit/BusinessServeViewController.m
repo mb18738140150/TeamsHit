@@ -67,10 +67,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"授权登录"];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    self.title = @"授权登录";
+//    self.title = @"授权登录";
     self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
     
     
@@ -289,10 +289,19 @@
             
             int code = [[responseObject objectForKey:@"Code"] intValue];
             if (code == 200) {
-                StoreInformationViewController * storeinfoVC = [[StoreInformationViewController alloc]initWithNibName:@"StoreInformationViewController" bundle:nil];
-                storeinfoVC.accountNumber = model.accountNumber.integerValue;
-                storeinfoVC.type = type;
-                [self.navigationController pushViewController:storeinfoVC animated:YES];
+                
+                if (model.accountNumber.integerValue == 0) {
+                    takeoutloginVC.account = model.accountName;
+                    takeoutloginVC.password = model.password;
+                    takeoutloginVC.type = type;
+                    [self.navigationController pushViewController:takeoutloginVC animated:YES];
+                }else
+                {
+                    StoreInformationViewController * storeinfoVC = [[StoreInformationViewController alloc]initWithNibName:@"StoreInformationViewController" bundle:nil];
+                    storeinfoVC.accountNumber = model.accountNumber.integerValue;
+                    storeinfoVC.type = type;
+                    [self.navigationController pushViewController:storeinfoVC animated:YES];
+                }
                 
             }else
             {

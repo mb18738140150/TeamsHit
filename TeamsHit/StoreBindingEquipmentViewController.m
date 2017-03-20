@@ -25,14 +25,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@""];
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"img_back"] title:@"绑定设备"];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
-    self.title = @"商家信息";
+//    self.title = @"商家信息";
     
-    self.equipmentNumberLB.text = @"5b18606c40301f3a";
-    self.codeLB.text = @"4e767c13";
-    
+//    self.equipmentNumberLB.text = @"5b18606c40301f3a";
+//    self.codeLB.text = @"4e767c13";
+    self.equipmentNumberLB.text = @"";
+    self.codeLB.text = @"";
 }
 
 - (void)backAction:(UIButton *)button
